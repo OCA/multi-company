@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="stock.view_normal_procurement_locations_form"/>
             <field name="arch" type="xml">
                 <field name="company_id" position="attributes">
-                    <attribute name="invisible">True</attribute>
+                    <attribute name="groups">base.user_root</attribute>
                 </field>
             </field>
         </record>
