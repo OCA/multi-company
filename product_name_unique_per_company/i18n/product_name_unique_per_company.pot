@@ -1,6 +1,6 @@
 # Translation of OpenERP Server.
 # This file contains the translation of the following modules:
-#   * product_unique_per_company
+#   * product_name_unique_per_company
 #
 msgid ""
 msgstr ""
@@ -15,18 +15,18 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: product_unique_per_company
+#. module: product_name_unique_per_company
 #: sql_constraint:product.template:0
-msgid "Product must be unique for a company."
-msgstr "Le produit doit être unique pour une compagny !"
+msgid "Product name must be unique for a company."
+msgstr ""
 
-#. module: product_unique_per_company
-#: model:ir.model,name:product_unique_per_company.model_product_template
+#. module: product_name_unique_per_company
+#: model:ir.model,name:product_name_unique_per_company.model_product_template
 msgid "Product Template"
-msgstr "Template de produit"
+msgstr ""
 
-#. module: product_unique_per_company
-#: model:ir.model,name:product_unique_per_company.model_product_product
+#. module: product_name_unique_per_company
+#: model:ir.model,name:product_name_unique_per_company.model_product_product
 msgid "Product"
-msgstr "Produit"
+msgstr ""
 

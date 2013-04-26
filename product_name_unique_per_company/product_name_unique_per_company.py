@@ -24,6 +24,6 @@ from openerp.osv import fields, orm
 class product_template(orm.Model):
     _inherit = 'product.template'
     
-    _sql_constraints = [ ('product_unique_per_company', 'unique (name, company_id)', "Product must be unique for a company.") ]
+    _sql_constraints = [ ('product_name_unique_per_company', 'unique (name, company_id)', "Product name must be unique for a company.") ]
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

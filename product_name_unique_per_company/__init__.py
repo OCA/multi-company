@@ -19,6 +19,6 @@
 #
 ##############################################################################
 
-import product_multicompany_automatic_management
+import product_name_unique_per_company
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 

@@ -21,7 +21,7 @@
 ##############################################################################
 
 {
-    'name' : 'Product multicompany automatic management',
+    'name' : 'Product automatic company',
     'version' : '1.0',
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
@@ -29,11 +29,12 @@
     'category' : 'Sales',
     'depends' : ['product', 'stock'],
     'description': """
-    Make company field mandatory on product.
-    Set the default to the company of the user session.
-    Hide the field to the user.
+This module:
+    * Makes company field mandatory on product
+    * Sets the default value to the company of the user session
+    * Hides the field to the user.
 """,
-    'data' : ['product_multicompany_automatic_management_view.xml'],
+    'data' : ['product_autocompany_view.xml'],
     'auto_install': False,
     'installable': True
 }

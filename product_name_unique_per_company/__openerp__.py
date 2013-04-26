@@ -21,7 +21,7 @@
 ##############################################################################
 
 {
-    'name' : 'Product unique per company',
+    'name' : 'Product name unique per company',
     'version' : '1.0',
     "author" : "Savoir-faire Linux",
     "website" : "http://www.savoirfairelinux.com",
@@ -29,7 +29,7 @@
     'category' : 'Sales',
     'depends' : ['product'],
     'description': """
-Make the product name unique per company.
+This module makes the product name unique per company.
 """,
     'data' : [],
     'auto_install': False,
