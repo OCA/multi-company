@@ -36,7 +36,7 @@ This module:
 """,
     'data' : ['product_autocompany_view.xml'],
     'auto_install': False,
-    'installable': True,
+    'installable': False,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
