@@ -33,7 +33,7 @@ This module makes the product name unique per company.
 """,
     'data' : [],
     'auto_install': False,
-    'installable': False,  # Copied from 7.0, not yet tested on 6.1
+    'installable': True,
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
 
