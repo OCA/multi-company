@@ -27,7 +27,8 @@
     'summary': "Changes for multicompany prices",
     'description': """
 This module should be used if your companies have their currencies non shared.
-Currencies can't be shared because 'res.currency.rate' haven't company_id field
+Currencies cannot be shared because 'res.currency.rate' doesn't have
+a company_id field
 This also implies that each company must have their own price lists
     """,
     'author': 'Akretion',
