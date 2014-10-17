@@ -25,7 +25,7 @@
     'category': '',
     'sequence': 10,
     'description': """
-Check if datas in quotation are linked to the same company
+Check if data in quotation are linked to the same company
     """,
     'author': 'Akretion',
     'website': 'http://www.akretion.com',
