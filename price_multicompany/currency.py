@@ -20,7 +20,7 @@ class ResCurrency(orm.Model):
         result = []
         for currency in self.browse(cr, uid, ids, context):
             cpny = currency.company_id and currency.company_id.name
-            result.append((currency.id, currency.name + ' (' + cpny + ')'))
+            result.append((currency.id, '%s (%s)' % (currency.name, cpny)))
         return result
 
 
