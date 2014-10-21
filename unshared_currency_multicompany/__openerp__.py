@@ -20,11 +20,11 @@
 ##############################################################################
 
 {
-    'name': 'price_multicompany',
+    'name': 'Unshared Currency Multicompany',
     'version': '0.1',
     'category': '',
     'sequence': 10,
-    'summary': "Changes for multicompany prices",
+    'summary': "Currency settings multicompany",
     'description': """
 This module should be used if your companies have their currencies non shared.
 Currencies cannot be shared because 'res.currency.rate' doesn't have
