@@ -22,7 +22,7 @@
 {
     'name': 'Unshared Currency Multicompany',
     'version': '0.1',
-    'category': '',
+    'category': 'Product',
     'sequence': 10,
     'summary': "Currency settings multicompany",
     'description': """

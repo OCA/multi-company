@@ -9,6 +9,7 @@
 ##############################################################################
 
 from openerp.osv import orm
+from openerp.tools.translate import _
 
 
 class SaleOrder(orm.Model):
@@ -17,21 +18,21 @@ class SaleOrder(orm.Model):
     def _check_pricelist(self, cr, uid, ids):
         for elm in self.browse(cr, uid, ids):
             if elm.pricelist_id:
-                if isinstance(elm.company_id, orm.browse_null) \
-                        or not elm.company_id:
+                if elm.company_id:
+                    company = elm.company_id
+                else:
                     company_id = self.pool['res.company']._company_default_get(
                         cr, uid, 'sale.order')
                     company = self.pool['res.company'].browse(
                         cr, uid, company_id)
-                else:
-                    company = elm.company_id
                 if elm.pricelist_id.company_id.id != company.id:
                     raise orm.except_orm(
-                        "Invalid Pricelist",
-                        "The pricelist defined in this quotation is linked "
-                        "to '%s' company\n"
-                        "whereas the quotation is linked to '%s'"
-                        "\nChoose a pricelist which match to the company '%s'"
+                        _("Invalid Pricelist"),
+                        _("The pricelist defined in this quotation is linked "
+                          "to '%s' company\n"
+                          "whereas the quotation is linked to '%s'\n"
+                          "\nChoose a pricelist which match "
+                          "to the company '%s'")
                         % (elm.pricelist_id.company_id.name,
                            company.name, company.name))
         return True

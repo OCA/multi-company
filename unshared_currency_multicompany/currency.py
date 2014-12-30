@@ -19,8 +19,10 @@ class ResCurrency(orm.Model):
             then display have to distinguish them"""
         result = []
         for currency in self.browse(cr, uid, ids, context):
-            cpny = currency.company_id and currency.company_id.name
-            result.append((currency.id, '%s (%s)' % (currency.name, cpny)))
+            cpny_info = ''
+            if currency.company_id:
+                cpny_info = ' (%s)' % currency.company_id.name
+            result.append((currency.id, '%s%s' % (currency.name, cpny_info)))
         return result
 
 
