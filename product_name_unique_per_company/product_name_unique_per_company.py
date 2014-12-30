@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2010 Savoir-faire Linux (<http://www.savoirfairelinux.com>).
 #
@@ -19,11 +19,13 @@
 #
 ##############################################################################
 
-from openerp.osv import fields, orm
+from openerp.osv import orm
 
-class product_template(orm.Model):
+
+class ProductTemplate(orm.Model):
     _inherit = 'product.template'
-    
-    _sql_constraints = [ ('product_name_unique_per_company', 'unique (name, company_id)', "Product name must be unique for a company.") ]
 
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
+    _sql_constraints = [
+        ('product_name_unique_per_company',
+         'unique (name, company_id)',
+         "Product name must be unique for a company.")]

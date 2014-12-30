@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
-#    
+#
 #    OpenERP, Open Source Management Solution
 #    Copyright (C) 2013 Savoir-faire Linux (<http://www.savoirfairelinux.com>).
 #
@@ -19,6 +19,4 @@
 #
 ##############################################################################
 
-import product_name_unique_per_company
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
+from . import product_name_unique_per_company

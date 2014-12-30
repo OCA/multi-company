@@ -21,19 +21,17 @@
 ##############################################################################
 
 {
-    'name' : 'Product name unique per company',
-    'version' : '1.0',
-    "author" : "Savoir-faire Linux",
-    "website" : "http://www.savoirfairelinux.com",
+    'name': 'Product name unique per company',
+    'version': '1.0',
+    "author": "Savoir-faire Linux",
+    "website": "http://www.savoirfairelinux.com",
     'license': 'AGPL-3',
-    'category' : 'Sales',
-    'depends' : ['product'],
+    'category': 'Sales',
+    'depends': ['product'],
     'description': """
 This module makes the product name unique per company.
 """,
-    'data' : [],
+    'data': [],
     'auto_install': False,
     'installable': True,
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
