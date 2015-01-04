@@ -21,22 +21,20 @@
 ##############################################################################
 
 {
-    'name' : 'Product automatic company',
-    'version' : '1.0',
-    "author" : "Savoir-faire Linux",
-    "website" : "http://www.savoirfairelinux.com",
+    'name': 'Product automatic company',
+    'version': '1.0',
+    "author": "Savoir-faire Linux",
+    "website": "http://www.savoirfairelinux.com",
     'license': 'AGPL-3',
-    'category' : 'Sales',
-    'depends' : ['product', 'stock'],
+    'category': 'Sales',
+    'depends': ['product', 'stock'],
     'description': """
 This module:
     * Makes company field mandatory on product
     * Sets the default value to the company of the user session
     * Hides the field to the user.
 """,
-    'data' : ['product_autocompany_view.xml'],
+    'data': ['product_autocompany_view.xml'],
     'auto_install': False,
     'installable': True,
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
