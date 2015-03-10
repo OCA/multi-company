@@ -1,0 +1,50 @@
+-
+  One customer can be shared among several sibling companies.
+-
+  I create two new companies
+-
+  !record {model: res.company, id: company_001}:
+    name: Company1
+    parent_id: base.main_company
+-
+  !record {model: res.company, id: company_002}:
+    name: Company2
+    parent_id: base.main_company
+-
+  I create one User1 who belongs to company1
+-
+  !record {model: res.users, id: user_001}:
+    name: User1
+    login: user1
+    company_ids: [company_001]
+    company_id: company_001
+-
+  I create Partner1 whose allowed companies doesn't include company1
+-
+  !record {model: res.partner, id: partner_001}:
+    name: Partner1
+    customer: True
+    company_id: company_002
+-
+  User1 who belongs to company1 should not be able to access Partner1.
+-
+  !python {model: res.partner}: |
+    from openerp.osv import orm
+    try:
+      self.browse(cr, ref('user_001'), ref('partner_001')).name
+      assert False, "An access denied exception should have been raised, the user should have no access right to the partner."
+    except orm.except_orm:
+      # exception was raised as expected, as the user has no access right to this partner
+      pass
+-
+  I add company1 in Partner1's allowed companies
+-
+  !python {model: res.partner}: |
+    partner = self.browse(cr, uid, ref('partner_001'))
+    partner.write({'company_ids': [(4, ref('company_001'))]})
+    assert ref('company_001') in [p.id for p in partner.company_ids]
+-
+  User1 who belongs to company2 should be able to access Partner1 now.
+-
+  !python {model: res.partner}: |
+    self.browse(cr, ref('user_001'), ref('partner_001'))

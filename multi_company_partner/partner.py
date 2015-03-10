@@ -1,0 +1,53 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2010-2015 Elico Corp (<http://www.elico-corp.com>)
+#    Alex Duan <alex.duan@elico-corp.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+from openerp.osv import orm, fields
+
+
+class ResPartner(orm.Model):
+        _inherit = 'res.partner'
+
+        _columns = {
+            'company_ids': fields.many2many(
+                'res.company',
+                'res_company_partner_rel',
+                'partner_id', 'cid', 'Allowed Companies',
+                groups='base.group_multi_company'),
+        }
+
+        def init(self, cr, force=False):
+            '''Initializes the company_ids with the existing company_id.
+
+            '''
+            cr.execute('insert into res_company_partner_rel '
+                       '(select id, company_id from res_partner '
+                       'where id not in (select distinct partner_id '
+                       'from res_company_partner_rel))')
+
+        def _default_company_ids(self, cr, uid, context=None):
+            user_obj = self.pool['res.users']
+            company_id = user_obj.browse(
+                cr, uid, uid, context=context).company_id
+            return [company_id.id]
+
+        _defaults = {
+            'company_ids': _default_company_ids
+        }
