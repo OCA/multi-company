@@ -5,10 +5,10 @@ Multi Company Partner
 =====================
 
 This basic module aims to allow one customer to be shared among
-    some of the sibling companies.
+some of the sibling companies, not all or only one.
 
 Standard Odoo limitation:
-    one customer can be only private to one company or shared among
+    one customer can only be private to one company or shared among
         all the sibling companies.
 
 Note: This module add a new group who can read all the sibling companies
@@ -18,26 +18,21 @@ TODO:
     * eg, One salesperson belongs to two companies(A,B) at the same time.
         When the salesperson switch company from A to B, the users from
         company A cannot read the salesperson's information anymore.
-    To solve this, we should change the salesperson to 
 
 Installation
 ============
 
-To install this module, you need to:
-
- * have basic modules installed (sale)
+Install the module the regular way.
 
 Configuration
 =============
 
-To configure this module, you need to:
-
- * No specific configuration needed.
+Nothing special to configure.
 
 Usage
 =====
  A new field is introduced on partner form: Allowed companies under field 'System company'.
- everytime the salesperson creates a new customer,
+ everytime a salesperson creates a new customer,
  he can add allowed companies for this customer.The salesperson has to belong
  to the group "View all companies" to be able to see all the companies.
 

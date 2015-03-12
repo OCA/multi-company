@@ -20,24 +20,24 @@
 #
 ##############################################################################
 {'name': 'Multi Company Partner',
- 'version': '0.1',
+ 'version': '0.0',
  'category': '',
  'depends': ['sale'],
  'author': 'Elico Corp, Odoo Community Association (OCA)',
  'license': 'AGPL-3',
  'website': 'https://www.elico-corp.com',
  'description': """
-.. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
+ .. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
     :alt: License
 
 Multi Company Partner
 =====================
 
 This basic module aims to allow one customer to be shared among
-    some of the sibling companies.
+some of the sibling companies, not all or only one.
 
 Standard Odoo limitation:
-    one customer can be only private to one company or shared among
+    one customer can only be private to one company or shared among
         all the sibling companies.
 
 Note: This module add a new group who can read all the sibling companies
@@ -51,22 +51,18 @@ TODO:
 Installation
 ============
 
-To install this module, you need to:
-
- * have basic modules installed (sale)
+Install the module the regular way.
 
 Configuration
 =============
 
-To configure this module, you need to:
-
- * No specific configuration needed.
+Nothing special to configure.
 
 Usage
 =====
- A new field is introduced on partner form: Allowed companies
- under field 'System company'.
- everytime a salesperson creates a new customer,
+ A new field is introduced on partner form:
+ Allowed companies under field 'System company'.
+ Everytime a salesperson creates a new customer,
  he can add allowed companies for this customer.The salesperson has to belong
  to the group "View all companies" to be able to see all the companies.
 

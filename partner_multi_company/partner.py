@@ -33,15 +33,6 @@ class ResPartner(orm.Model):
                 groups='base.group_multi_company'),
         }
 
-        def init(self, cr, force=False):
-            '''Initializes the company_ids with the existing company_id.
-
-            '''
-            cr.execute('insert into res_company_partner_rel '
-                       '(select id, company_id from res_partner '
-                       'where id not in (select distinct partner_id '
-                       'from res_company_partner_rel))')
-
         def _default_company_ids(self, cr, uid, context=None):
             user_obj = self.pool['res.users']
             company_id = user_obj.browse(
