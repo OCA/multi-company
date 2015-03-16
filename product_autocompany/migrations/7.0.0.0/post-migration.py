@@ -25,7 +25,7 @@ def migrate(cr, version):
     if not version:
         # this is run only when the module is first installed
         # fill in the default company for products whose company is empty
-        cr.execute("update product_template"
+        cr.execute("update product_template "
                    "SET company_id="
                    "   (SELECT id from res_company limit 1)"
                    "    WHERE company_id is NULL;")
