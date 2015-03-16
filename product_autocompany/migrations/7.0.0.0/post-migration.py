@@ -27,4 +27,5 @@ def migrate(cr, version):
         # fill in the default company for products whose company is empty
         cr.execute("update product_template"
                    "SET company_id="
-                   "   (SELECT id from res_company limit 1);")
+                   "   (SELECT id from res_company limit 1)"
+                   "    WHERE company_id is NULL;")
