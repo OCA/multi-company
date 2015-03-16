@@ -20,7 +20,7 @@
 #
 ##############################################################################
 {'name': 'Multi Company Partner',
- 'version': '0.0',
+ 'version': '1.0',
  'category': '',
  'depends': ['sale'],
  'author': 'Elico Corp, Odoo Community Association (OCA)',
@@ -105,5 +105,4 @@ To contribute to this module, please visit http://odoo-community.org.
          'security/multi_company_orders.xml',
          'security/ir.model.access.csv',
          'partner_view.xml'],
- 'installable': True,
- 'application': False}
+ 'installable': True}
