@@ -4,17 +4,14 @@
 
         <record id="crm_case_section_view_form" model="ir.ui.view">
             <field name="model">crm.case.section</field>
-            <field name="inherit_id" ref="sales_team_invoice_partner.crm_case_section_view_form"/>
+            <field name="inherit_id" ref="sales_team.crm_case_section_view_form"/>
             <field name="arch" type="xml">
-                <field name="invoicing_partner_id" position="after">
+                <field name="user_id" position="before">
                     <field name="holding_company_id" widget="selection" attrs="{'required': [('holding_supplier_automatic_invoice', '=', True)]}"/>
                     <group string="Automatic Invoicing" colspan="4">
                         <field name="holding_customer_automatic_invoice"/>
                         <field name="holding_supplier_automatic_invoice"/>
                     </group>
-                </field>
-                <field name="invoicing_partner_id" position="attributes">
-                    <attribute name="attrs">{'required': [('holding_customer_automatic_invoice', '=', True)]}</attribute>
                 </field>
             </field>
         </record>
