@@ -9,14 +9,13 @@
                 <field name="invoice_id" position="after">
                     <field name="holding_invoice_state"
                            groups="account.group_account_invoice"
-                           attrs="{'invisible':['|',('holding_company_id', '=', False), ('invoicing_partner_id', '=', False)]}"/>
+                           attrs="{'invisible':[('holding_company_id', '=', False)]}"/>
                     <field name="holding_invoice_id"
                            groups="account.group_account_invoice"
                            attrs="{'invisible':[('holding_invoice_state', '!=', 'invoiced')]}"/>
                 </field>
                 <field name="company_id" position="after">
                     <field name="holding_company_id" invisible="1"/>
-                    <field name="invoicing_partner_id" invisible="1"/>
                 </field>
             </field>
         </record>

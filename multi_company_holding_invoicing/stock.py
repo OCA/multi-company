@@ -90,11 +90,6 @@ class StockPicking(models.Model):
         related='sale_id.section_id.holding_company_id',
         string='Holding Company for Invoicing',
         readonly=True,)
-    invoicing_partner_id = fields.Many2one(
-        'res.partner',
-        related='sale_id.section_id.invoicing_partner_id',
-        string='Final Partner for Invoicing',
-        readonly=True,)
     holding_customer_automatic_invoice = fields.Boolean(
         related='sale_id.section_id.holding_customer_automatic_invoice',
         string='Automatic invoice for holding customer')

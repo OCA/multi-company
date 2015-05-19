@@ -31,7 +31,6 @@
     'website': 'http://www.akretion.com/',
     'depends': [
         'stock_picking_invoice_link',
-        'sales_team_invoice_partner',
         'inter_company_rules'
     ],
     'data': [
@@ -39,7 +38,6 @@
         'sales_team_view.xml',
         'stock_view.xml',
         'account_invoice_view.xml',
-        'sale_view.xml',
         'security/stock_security.xml',
     ],
     'installable': True,
