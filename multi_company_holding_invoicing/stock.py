@@ -60,9 +60,9 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     @api.one
-    @api.depends('move_lines.holding_invoice_state')
+    @api.depends('move_lines', 'move_lines.holding_invoice_state')
     def get_holding_invoice_state(self):
-        holding_invoice_state = 'none'
+        holding_invoice_state = '2binvoiced'
         for move in self.move_lines:
             if move.holding_invoice_state == 'invoiced':
                 holding_invoice_state = 'invoiced'
@@ -82,8 +82,7 @@ class StockPicking(models.Model):
     holding_invoice_state = fields.Selection([
         ('invoiced', 'Invoiced'),
         ('2binvoiced', 'To Be Invoiced'),
-        ('none', 'Not Applicable'),
-    ], string='Holding Invoice Control', readonly=True,
+    ], string='Holding Invoice Control',
         compute='get_holding_invoice_state', store=True)
     holding_company_id = fields.Many2one(
         'res.company',
@@ -280,7 +279,7 @@ class StockMove(models.Model):
     holding_invoice_state = fields.Selection([
         ('invoiced', 'Invoiced'),
         ('2binvoiced', 'To Be Invoiced'),
-    ], string='Holding Invoice Control', readonly=True, default='2binvoiced')
+    ], string='Holding Invoice Control', default='2binvoiced')
 
     @api.model
     def _create_invoice_line_from_vals(self, move, invoice_line_vals):
@@ -329,6 +328,21 @@ class StockMove(models.Model):
                               property_account_income_categ.id)
             vals['account_id'] = account_id
         return vals
+
+
+class ProcurementOrder(models.Model):
+    _inherit = 'procurement.order'
+
+    holding_invoice_state = fields.Selection([
+        ('invoiced', 'Invoiced'),
+        ('2binvoiced', 'To Be Invoiced'),
+    ], string='Holding Invoice Control', default='2binvoiced')
+
+    @api.model
+    def _run_move_create(self, procurement):
+        res = super(ProcurementOrder, self)._run_move_create(procurement)
+        res.update({'holding_invoice_state': procurement.invoice_state})
+        return res
 
 
 class AccountInvoice(models.Model):

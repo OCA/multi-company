@@ -19,6 +19,15 @@
 #
 ##############################################################################
 
-from . import sales_team
-from . import stock
-from . import sale
+from openerp import models, api
+
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    @api.model
+    def _prepare_order_line_procurement(self, order, line, group_id=False):
+        vals = super(SaleOrder, self)._prepare_order_line_procurement(
+            order=order, line=line, group_id=group_id)
+        vals['holding_invoice_state'] = (order.order_policy == 'picking') and '2binvoiced'
+        return vals

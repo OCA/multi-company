@@ -30,6 +30,7 @@
     'author': 'Akretion',
     'website': 'http://www.akretion.com/',
     'depends': [
+        'sale',
         'stock_picking_invoice_link',
         'inter_company_rules'
     ],
