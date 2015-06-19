@@ -248,16 +248,25 @@ class StockPicking(models.Model):
             invoice_values = invoices.values()
         return invoice_values
 
+    def _get_domains(self, vals):
+        vals = {
+            'pickings': [
+                ('state', '=', 'done'),
+                ('invoice_state', '=', '2binvoiced')
+            ],
+            'holding_pickings': [
+                ('state', '=', 'done'),
+                ('holding_invoice_state', '=', '2binvoiced')
+            ]
+        }
+        return vals
+
     @api.multi
     def _scheduler_action_invoice_create(self):
-        pickings = self.search([
-            ('state', '=', 'done'),
-            ('invoice_state', '=', '2binvoiced')
-        ])
-        holding_pickings = self.search([
-            ('state', '=', 'done'),
-            ('holding_invoice_state', '=', '2binvoiced')
-        ])
+        domains = {}
+        domains = self._get_domains(domains)
+        pickings = self.search(domains['pickings'])
+        holding_pickings = self.search(domains['holding_pickings'])
         picking_ids = []
         holding_picking_ids = []
         for picking in pickings:
