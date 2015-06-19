@@ -29,5 +29,6 @@ class SaleOrder(models.Model):
     def _prepare_order_line_procurement(self, order, line, group_id=False):
         vals = super(SaleOrder, self)._prepare_order_line_procurement(
             order=order, line=line, group_id=group_id)
-        vals['holding_invoice_state'] = (order.order_policy == 'picking') and '2binvoiced'
+        vals['holding_invoice_state'] = ((order.order_policy == 'picking') and
+                                         '2binvoiced')
         return vals

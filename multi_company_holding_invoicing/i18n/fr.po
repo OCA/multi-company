@@ -1,0 +1,147 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* multi_company_holding_invoicing
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-06-19 10:50+0000\n"
+"PO-Revision-Date: 2015-06-19 10:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: multi_company_holding_invoicing
+#: code:addons/multi_company_holding_invoicing/stock.py:50
+#, python-format
+msgid "An invoice already exists for the picking %s"
+msgstr "Une facture existe déjà pour la préparation de commande %s"
+
+#. module: multi_company_holding_invoicing
+#: view:crm.case.section:multi_company_holding_invoicing.crm_case_section_view_form
+msgid "Automatic Invoicing"
+msgstr "Facturation Automatique"
+
+#. module: multi_company_holding_invoicing
+#: help:crm.case.section,holding_customer_automatic_invoice:0
+msgid "Check this box to invoice automatically the holding's customers from delivery orders completed"
+msgstr "Cocher cette case pour créer automatiquement les factures clients de la holding à partir des bons de livraison terminés."
+
+#. module: multi_company_holding_invoicing
+#: help:crm.case.section,holding_supplier_automatic_invoice:0
+msgid "Check this box to invoice automatically the holding's suppliers from delivery orders completed"
+msgstr "Cocher cette case pour créer automatiquement les factures fournisseurs de la holding et celà, à partir des bons de livraison terminés."
+
+#. module: multi_company_holding_invoicing
+#: field:crm.case.section,holding_company_id:0
+msgid "Holding Company for Invoicing"
+msgstr "La Holding à facturer"
+
+#. module: multi_company_holding_invoicing
+#: field:stock.picking,holding_invoice_id:0
+msgid "Holding Invoice"
+msgstr "Facture Holding"
+
+#. module: multi_company_holding_invoicing
+#: field:procurement.order,holding_invoice_state:0
+#: field:stock.picking,holding_invoice_state:0
+msgid "Holding Invoice Control"
+msgstr "Contrôle facturation Holding"
+
+#. module: multi_company_holding_invoicing
+#: field:crm.case.section,holding_customer_automatic_invoice:0
+msgid "Holding customer"
+msgstr "Client de la Holding"
+
+#. module: multi_company_holding_invoicing
+#: field:crm.case.section,holding_supplier_automatic_invoice:0
+msgid "Holding supplier"
+msgstr "Fournisseur de la Holding"
+
+#. module: multi_company_holding_invoicing
+#: model:ir.model,name:multi_company_holding_invoicing.model_account_invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: multi_company_holding_invoicing
+#: selection:procurement.order,holding_invoice_state:0
+#: selection:stock.picking,holding_invoice_state:0
+msgid "Invoiced"
+msgstr "Facturé"
+
+#. module: multi_company_holding_invoicing
+#: selection:procurement.order,holding_invoice_state:0
+#: selection:stock.picking,holding_invoice_state:0
+msgid "Not Applicable"
+msgstr "Non Applicable"
+
+#. module: multi_company_holding_invoicing
+#: model:ir.model,name:multi_company_holding_invoicing.model_stock_picking
+msgid "Picking List"
+msgstr "Opération de manutention"
+
+#. module: multi_company_holding_invoicing
+#: view:account.invoice:multi_company_holding_invoicing.invoice_form
+msgid "Pickings"
+msgstr "Préparations de commandes"
+
+#. module: multi_company_holding_invoicing
+#: model:ir.model,name:multi_company_holding_invoicing.model_procurement_order
+msgid "Procurement"
+msgstr "Approvisionnement"
+
+#. module: multi_company_holding_invoicing
+#: field:account.invoice,holding_picking_ids:0
+msgid "Related Pickings"
+msgstr "Préparations de commandes liées"
+
+#. module: multi_company_holding_invoicing
+#: help:account.invoice,holding_picking_ids:0
+msgid "Related pickings(only when the holding invoice has been generated from the picking)."
+msgstr "Préparations de commandes liées(seulement quand la facture de la Holding a été créé à partir des bons de livraison)."
+
+#. module: multi_company_holding_invoicing
+#: model:ir.model,name:multi_company_holding_invoicing.model_sale_order
+msgid "Sales Order"
+msgstr "Bon de commande"
+
+#. module: multi_company_holding_invoicing
+#: field:stock.picking,section_id:0
+msgid "Sales Team"
+msgstr "Équipes commerciales"
+
+#. module: multi_company_holding_invoicing
+#: model:ir.model,name:multi_company_holding_invoicing.model_crm_case_section
+msgid "Sales Teams"
+msgstr "Équipes commerciales"
+
+#. module: multi_company_holding_invoicing
+#: help:crm.case.section,holding_company_id:0
+msgid "Select the holding company to invoice"
+msgstr "Sélectionnez la Holding à facturer"
+
+#. module: multi_company_holding_invoicing
+#: model:ir.model,name:multi_company_holding_invoicing.model_stock_move
+msgid "Stock Move"
+msgstr "Mouvement de stock"
+
+#. module: multi_company_holding_invoicing
+#: selection:procurement.order,holding_invoice_state:0
+#: selection:stock.picking,holding_invoice_state:0
+msgid "To Be Invoiced"
+msgstr "A facturer"
+
+#. module: multi_company_holding_invoicing
+#: code:addons/multi_company_holding_invoicing/stock.py:45
+#, python-format
+msgid "You are not allowed to create invoices manually from the selected pickings because they are created automatically"
+msgstr "Vous n'êtes pas autoriser à créer des factures manuellement à partir des bons de livraison sélectionnés car elles sont créés automatiquement."
+
+#. module: multi_company_holding_invoicing
+#: view:account.invoice:multi_company_holding_invoicing.invoice_form
+msgid "{'invisible':[('picking_ids','=', [])]}"
+msgstr "{'invisible':[('picking_ids','=', [])]}"
