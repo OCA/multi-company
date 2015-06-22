@@ -271,7 +271,8 @@ class StockPicking(models.Model):
         holding_picking_ids = []
         for picking in pickings:
             if (picking.sale_id.section_id.holding_supplier_automatic_invoice
-                    and picking.invoice_state == '2binvoiced'):
+                    and picking.invoice_state == '2binvoiced'
+                    and picking.company_id != picking.sale_id.section_id.holding_company_id):
                 picking_ids.append(picking.id)
         for picking in holding_pickings:
             if (picking.sale_id.section_id.holding_customer_automatic_invoice
