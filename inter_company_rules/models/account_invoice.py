@@ -128,7 +128,7 @@ class account_invoice(models.Model):
                                                 company_id=company.id)
         return {
             'name': self.name,
-            #TODO : not sure !!
+            # TODO : not sure !!
             'origin': self.company_id.name + _(' Invoice: ') + str(
                 self.number),
             'type': inv_type,

@@ -80,7 +80,7 @@ class purchase_order(models.Model):
         if not self.partner_ref:
             self.partner_ref = sale_order.name
 
-        #Validation of sale order
+        # Validation of sale order
         if company.auto_validation:
             sale_order.sudo(intercompany_uid).signal_workflow('order_confirm')
 
