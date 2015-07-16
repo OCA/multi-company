@@ -32,6 +32,7 @@
         'inter_company_rules'
     ],
     'data': [
+        'config/sale_config.yml',
         'data/stock_account_data.xml',
         'sales_team_view.xml',
         'stock_view.xml',
