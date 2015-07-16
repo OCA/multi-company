@@ -1,8 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 AKRETION
-#    @author Chafique Delli <chafique.delli@akretion.com>
+#    Copyright (C) 2015 AKRETION (<http://www.akretion.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -71,11 +70,9 @@ class StockPicking(models.Model):
                 break
         self.holding_invoice_state = holding_invoice_state
 
-    section_id = fields.Many2one('crm.case.section',
-                                 related='sale_id.section_id',
-                                 string='Sales Team',
-                                 readonly=True,
-                                 store=True)
+    section_id = fields.Many2one('crm.case.section', string='Sales Team',
+                                 related='group_id.section_id',
+                                 readonly=True)
     holding_invoice_id = fields.Many2one('account.invoice',
                                          string='Holding Invoice',
                                          readonly=True)
@@ -87,15 +84,14 @@ class StockPicking(models.Model):
         compute='get_holding_invoice_state', store=True)
     holding_company_id = fields.Many2one(
         'res.company',
-        related='sale_id.section_id.holding_company_id',
-        string='Holding Company for Invoicing',
-        readonly=True,)
+        related='group_id.holding_company_id',
+        string='Holding Company for Invoicing', readonly=True)
     holding_customer_automatic_invoice = fields.Boolean(
-        related='sale_id.section_id.holding_customer_automatic_invoice',
-        string='Automatic invoice for holding customer')
+        related='group_id.holding_customer_automatic_invoice',
+        string='Automatic invoice for holding customer', readonly=True)
     holding_supplier_automatic_invoice = fields.Boolean(
-        related='sale_id.section_id.holding_supplier_automatic_invoice',
-        string='Automatic invoice for holding supplier')
+        related='group_id.holding_supplier_automatic_invoice',
+        string='Automatic invoice for holding supplier', readonly=True)
 
     @api.multi
     def action_invoice_create(
@@ -355,6 +351,19 @@ class ProcurementOrder(models.Model):
         res = super(ProcurementOrder, self)._run_move_create(procurement)
         res.update({'holding_invoice_state': procurement.invoice_state})
         return res
+
+
+class ProcurementGroup(models.Model):
+    _inherit = 'procurement.group'
+
+    section_id = fields.Many2one('crm.case.section', string='Sales Team',
+                                 readonly=True)
+    holding_company_id = fields.Many2one(
+        'res.company', string='Holding Company for Invoicing', readonly=True)
+    holding_customer_automatic_invoice = fields.Boolean(
+        string='Automatic invoice for holding customer', readonly=True)
+    holding_supplier_automatic_invoice = fields.Boolean(
+        string='Automatic invoice for holding supplier', readonly=True)
 
 
 class AccountInvoice(models.Model):

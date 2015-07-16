@@ -1,8 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 AKRETION
-#    @author Chafique Delli <chafique.delli@akretion.com>
+#    Copyright (C) 2015 AKRETION (<http://www.akretion.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -19,11 +18,16 @@
 #
 ##############################################################################
 
-from openerp import models, api
+from openerp import models, fields, api
 
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
+
+    holding_company_id = fields.Many2one(
+        'res.company',
+        related='section_id.holding_company_id',
+        string='Holding Company for Invoicing', readonly=True)
 
     @api.model
     def _prepare_order_line_procurement(self, order, line, group_id=False):
@@ -32,3 +36,41 @@ class SaleOrder(models.Model):
         vals['holding_invoice_state'] = ((order.order_policy == 'picking') and
                                          '2binvoiced')
         return vals
+
+    @api.model
+    def _prepare_procurement_group(self, order):
+        res = super(SaleOrder, self)._prepare_procurement_group(order)
+        res.update({
+            'section_id': order.section_id.id,
+            'holding_company_id': order.section_id.holding_company_id.id,
+            'holding_customer_automatic_invoice': (
+                order.section_id.holding_customer_automatic_invoice),
+            'holding_supplier_automatic_invoice': (
+                order.section_id.holding_supplier_automatic_invoice),
+        })
+        return res
+
+    @api.onchange('section_id', 'holding_company_id')
+    def onchange_section_id(self):
+        if self.section_id and self.holding_company_id:
+            self.order_policy = 'picking'
+        else:
+            self.order_policy = 'manual'
+
+    @api.multi
+    def write(self, values):
+        section_id = values.get('section_id', False)
+        if section_id:
+            section = self.env['crm.case.section'].browse(section_id)
+            if section.holding_company_id:
+                values.update({'order_policy': 'picking'})
+        return super(SaleOrder, self).write(values)
+
+    @api.model
+    def create(self, values):
+        section_id = values.get('section_id', False)
+        if section_id:
+            section = self.env['crm.case.section'].browse(section_id)
+            if section.holding_company_id:
+                values.update({'order_policy': 'picking'})
+        return super(SaleOrder, self).create(values)

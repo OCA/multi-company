@@ -1,8 +1,7 @@
 # -*- encoding: utf-8 -*-
 ##############################################################################
 #
-#    Copyright (C) 2015 AKRETION
-#    @author Chafique Delli <chafique.delli@akretion.com>
+#    Copyright (C) 2015 AKRETION (<http://www.akretion.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -21,16 +20,14 @@
 
 {
     'name': 'Multi Company Holding Invoicing',
-    'version': '0.1',
+    'version': '1.0',
     'category': 'Accounting & Finance',
-    'license': 'AGPL-3',
-    'summary': "",
-    'description': """
-    """,
-    'author': 'Akretion',
+    'author': 'Akretion, Odoo Community Association (OCA)',
     'website': 'http://www.akretion.com/',
+    'license': 'AGPL-3',
     'depends': [
         'sale',
+        'sales_team',
         'stock_picking_invoice_link',
         'inter_company_rules'
     ],
@@ -38,6 +35,7 @@
         'data/stock_account_data.xml',
         'sales_team_view.xml',
         'stock_view.xml',
+        'sale_view.xml',
         'account_invoice_view.xml',
         'security/stock_security.xml',
     ],
