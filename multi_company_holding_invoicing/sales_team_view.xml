@@ -9,6 +9,7 @@
                 <field name="user_id" position="before">
                     <field name="holding_company_id" widget="selection"
                            attrs="{'required': [('holding_supplier_automatic_invoice', '=', True)]}"/>
+                    <field name="holding_discount"/>
                     <group string="Automatic Invoicing" colspan="4">
                         <field name="holding_customer_automatic_invoice"/>
                         <field name="holding_supplier_automatic_invoice"/>

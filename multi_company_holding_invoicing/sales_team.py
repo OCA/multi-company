@@ -34,3 +34,4 @@ class CrmCaseSection(models.Model):
         string='Holding supplier',
         help="Check this box to invoice automatically the holding's suppliers "
              "from delivery orders completed")
+    holding_discount = fields.Float(string='Holding Discount (%)', default=0.0)

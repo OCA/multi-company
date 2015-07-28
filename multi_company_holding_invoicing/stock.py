@@ -22,10 +22,8 @@ from openerp import fields, models, api, _
 from openerp.exceptions import Warning
 from openerp.addons.stock_account.wizard.stock_invoice_onshipping import (
     stock_invoice_onshipping)
-from openerp.addons.stock_account.stock import stock_move
 
 ori_view_init = stock_invoice_onshipping.view_init
-ori_create_invoice_line_from_vals = stock_move._create_invoice_line_from_vals
 
 
 def view_init(self, fields_list):
@@ -93,191 +91,93 @@ class StockPicking(models.Model):
         related='group_id.holding_supplier_automatic_invoice',
         string='Automatic invoice for holding supplier', readonly=True)
 
-    @api.multi
-    def action_invoice_create(
-            self, journal_id, group=False, type='out_invoice'):
-        active_ids = self._context.get('active_ids', [])
-        holding_active_ids = self._context.get('holding_active_ids', [])
-        invoice_ids = []
-        if active_ids:
-            todo = {}
-            for picking in self.browse(active_ids):
-                if picking.holding_company_id:
-                    partner = picking.holding_company_id.partner_id
-                else:
-                    partner = picking.sale_id.partner_invoice_id
-                #grouping is based on the invoiced partner
-                if group:
-                    key = partner
-                else:
-                    key = picking.id
-                for move in picking.move_lines:
-                    if move.invoice_state == '2binvoiced':
-                        if (move.state != 'cancel') and not move.scrapped:
-                            todo.setdefault(key, [])
-                            todo[key].append(move)
-            for moves in todo.values():
-                invoice_ids += self._invoice_create_line(
-                    moves, journal_id, type)
-                for move in moves:
-                    invoice = move.invoice_line_id.invoice_id
-                    picking = move.picking_id
-                    picking.write({'invoice_id': invoice.id})
-        if holding_active_ids:
-            todo = {}
-            for picking in self.browse(holding_active_ids):
-                partner = picking.sale_id.partner_invoice_id
-                #grouping is based on the invoiced partner
-                if group:
-                    key = partner
-                else:
-                    key = picking.id
-                for move in picking.move_lines:
-                    if move.holding_invoice_state == '2binvoiced':
-                        if (move.state != 'cancel') and not move.scrapped:
-                            todo.setdefault(key, [])
-                            todo[key].append(move)
-            for moves in todo.values():
-                invoice_ids += self.with_context(
-                    holding_invoice=True)._invoice_create_line(
-                        moves, journal_id, type)
-                for move in moves:
-                    holding_invoice = move.invoice_line_id.invoice_id
-                    picking = move.picking_id
-                    picking.write({'holding_invoice_id': holding_invoice.id})
-        return invoice_ids
+    @api.model
+    def check_move_to_invoice(self, move, key, todo):
+        holding_invoice = self._context.get('holding_invoice', False)
+        if holding_invoice:
+            if move.holding_invoice_state == '2binvoiced':
+                if (move.state != 'cancel') and not move.scrapped:
+                    todo.setdefault(key, [])
+                    todo[key].append(move)
+            return
+        else:
+            return super(StockPicking, self).check_move_to_invoice(
+                move, key, todo)
+
+    @api.model
+    def _get_partner_to_invoice(self, picking):
+        holding_invoice = self._context.get('holding_invoice', False)
+        if picking.holding_company_id and not holding_invoice:
+            return (picking.holding_company_id.partner_id and
+                    picking.holding_company_id.partner_id.id)
+        else:
+            return (picking.sale_id.partner_invoice_id and
+                    picking.sale_id.partner_invoice_id.id)
 
     @api.model
     def _get_invoice_vals(self, key, inv_type, journal_id, move):
-        vals = super(StockPicking, self)._get_invoice_vals(
+        invoice_vals = super(StockPicking, self)._get_invoice_vals(
             key, inv_type, journal_id, move)
-        account = self.env['account.account'].browse(vals['account_id'])
-        if account.company_id.id != vals['company_id']:
-            vals['account_id'] = move.partner_id.property_account_receivable.id
-        return vals
+        invoice_vals['company_id'] = self._context['force_company']
+        invoice_vals['user_id'] = self._uid
+        journal_ids = self.env['account.journal'].search([
+            ('type', '=', 'sale'),
+            ('company_id', '=', self._context['force_company'])
+        ])
+        invoice_vals['journal_id'] = journal_ids[0].id
+        account = self.env['account.account'].browse(
+            invoice_vals['account_id'])
+        if account.company_id.id != invoice_vals['company_id']:
+            invoice_vals['account_id'] = (move.partner_id.
+                                          property_account_receivable.id)
+        return invoice_vals
 
     @api.model
-    def _invoice_create_line(self, moves, journal_id, inv_type='out_invoice'):
-        invoice_obj = self.env['account.invoice']
-        move_obj = self.env['stock.move']
-        holding_invoice = self._context.get('holding_invoice', False)
-        user_id = self._context.get('uid', False)
-        user = self.env['res.users'].browse(self._context['uid'])
-        if holding_invoice:
-            invoices = {}
-            for move in moves:
-                company = user.company_id
-                currency_id = company.currency_id.id
-                partner = move.picking_id.sale_id.partner_invoice_id
-                key = (partner, currency_id, company.id, user_id)
-                journal_ids = self.env['account.journal'].search([
-                    ('type', '=', 'sale'),
-                    ('company_id', '=', company.id)
-                ])
-                invoice_vals = self._get_invoice_vals(
-                    key, inv_type, journal_ids[0].id, move)
-                invoice_vals['user_id'] = user_id
+    def _get_invoice_domain(self, domain, company):
+        new_domain = domain[:]
+        new_domain.extend([
+            ('group_id.holding_company_id', '!=', company.id),
+            ('company_id', '=', company.id),
+            ('state', '=', 'done'),
+            ('invoice_state', '=', '2binvoiced')
+        ])
+        return new_domain
 
-                if key not in invoices:
-                    # Get account and payment terms
-                    invoice_id = self._create_invoice_from_picking(
-                        move.picking_id, invoice_vals)
-                    invoices[key] = invoice_id
-                else:
-                    invoice = self.env['account.invoice'].browse(invoices[key])
-                    if not invoice.origin or (invoice_vals['origin'] not in
-                                              invoice.origin.split(', ')):
-                        invoice_origin = filter(
-                            None, [invoice.origin, invoice_vals['origin']])
-                        invoice.write({'origin': ', '.join(invoice_origin)})
-                origin = move.picking_id.name
-                invoice_line_vals = move_obj._get_invoice_line_vals(
-                    move, partner, inv_type)
-                invoice_line_vals['invoice_id'] = invoices[key]
-                invoice_line_vals['origin'] = origin
-                move_obj._create_invoice_line_from_vals(
-                    move, invoice_line_vals)
-                move.write({'holding_invoice_state': 'invoiced'})
-            invoice_obj.button_compute(
-                set_total=(inv_type in ('in_invoice', 'in_refund')))
-            invoice_values = invoices.values()
-        else:
-            invoices = {}
-            for move in moves:
-                company = move.picking_id.company_id
-                currency_id = company.currency_id.id
-                if move.picking_id.holding_company_id:
-                    partner = move.picking_id.holding_company_id.partner_id
-                else:
-                    partner = move.picking_id.sale_id.partner_invoice_id
-                key = (partner, currency_id, company.id, user_id)
-                journal_ids = self.env['account.journal'].search([
-                    ('type', '=', 'sale'),
-                    ('company_id', '=', company.id)
-                ])
-                invoice_vals = self._get_invoice_vals(
-                    key, inv_type, journal_ids[0].id, move)
-                invoice_vals['user_id'] = user_id
-
-                if key not in invoices:
-                    # Get account and payment terms
-                    invoice_id = self._create_invoice_from_picking(
-                        move.picking_id, invoice_vals)
-                    invoices[key] = invoice_id
-                else:
-                    invoice = self.env['account.invoice'].browse(invoices[key])
-                    if not invoice.origin or (invoice_vals['origin'] not in
-                                              invoice.origin.split(', ')):
-                        invoice_origin = filter(
-                            None, [invoice.origin, invoice_vals['origin']])
-                        invoice.write({'origin': ', '.join(invoice_origin)})
-                origin = move.picking_id.name
-                invoice_line_vals = move_obj._get_invoice_line_vals(
-                    move, partner, inv_type)
-                invoice_line_vals['invoice_id'] = invoices[key]
-                invoice_line_vals['origin'] = origin
-                move_obj._create_invoice_line_from_vals(
-                    move, invoice_line_vals)
-                move.write({'invoice_state': 'invoiced'})
-            invoice_obj.button_compute(
-                set_total=(inv_type in ('in_invoice', 'in_refund')))
-            invoice_values = invoices.values()
-        return invoice_values
-
-    def _get_domains(self, vals):
-        vals = {
-            'pickings': [
-                ('state', '=', 'done'),
-                ('invoice_state', '=', '2binvoiced')
-            ],
-            'holding_pickings': [
-                ('state', '=', 'done'),
-                ('holding_invoice_state', '=', '2binvoiced')
-            ]
-        }
-        return vals
+    @api.model
+    def _get_holding_invoice_domain(self, domain, company):
+        new_domain = domain[:]
+        new_domain.extend([
+            ('group_id.holding_company_id', '=', company.id),
+            ('company_id', '!=', company.id),
+            ('state', '=', 'done'),
+            ('holding_invoice_state', '=', '2binvoiced')
+        ])
+        return new_domain
 
     @api.multi
-    def _scheduler_action_invoice_create(self):
-        domains = {}
-        domains = self._get_domains(domains)
-        pickings = self.search(domains['pickings'])
-        holding_pickings = self.search(domains['holding_pickings'])
-        picking_ids = []
-        holding_picking_ids = []
-        for picking in pickings:
-            if (picking.sale_id.section_id.holding_supplier_automatic_invoice
-                    and picking.invoice_state == '2binvoiced'
-                    and picking.company_id != picking.sale_id.section_id.holding_company_id):
-                picking_ids.append(picking.id)
-        for picking in holding_pickings:
-            if (picking.sale_id.section_id.holding_customer_automatic_invoice
-                    and picking.holding_invoice_state == '2binvoiced'):
-                holding_picking_ids.append(picking.id)
-        self.with_context(
-            holding_active_ids=holding_picking_ids,
-            active_ids=picking_ids).action_invoice_create(
-                journal_id=False, group=True, type='out_invoice')
+    def _scheduler_action_invoice_create(self, domain=None):
+        companies = self.env['res.company'].search([])
+        for company in companies:
+            new_domain = self._get_invoice_domain(domain, company)
+            picking = self.search(new_domain)
+            if picking:
+                self = self.browse(picking.ids)
+                self.with_context(
+                    holding_invoice=False,
+                    force_company=company.id).action_invoice_create(
+                        journal_id=False, group=True, type='out_invoice')
+
+    @api.multi
+    def _scheduler_action_holding_invoice_create(self, domain=None):
+        companies = self.env['res.company'].search([])
+        for company in companies:
+            new_domain = self._get_holding_invoice_domain(domain, company)
+            holding_picking = self.search(new_domain)
+            if holding_picking:
+                holding_picking.with_context(
+                    holding_invoice=True,
+                    force_company=company.id).action_invoice_create(
+                        journal_id=False, group=True, type='out_invoice')
 
 
 class StockMove(models.Model):
@@ -290,52 +190,67 @@ class StockMove(models.Model):
     ], string='Holding Invoice Control', default='none')
 
     @api.model
-    def _create_invoice_line_from_vals(self, move, invoice_line_vals):
-        invoice = self.env['account.invoice'].browse(
-            invoice_line_vals['invoice_id'])
-        account_obj = self.env['account.account']
-        tax_obj = self.env['account.tax']
-        account = account_obj.browse(invoice_line_vals['account_id'])
-        if account.company_id != invoice.company_id:
-            account = account_obj.search([
-                ('code', '=', account.code),
-                ('company_id', '=', invoice.company_id.id)
-            ])
-            invoice_line_vals['account_id'] = account.id
-        if invoice_line_vals['invoice_line_tax_id'][0][2]:
-            tax = tax_obj.browse(
-                invoice_line_vals['invoice_line_tax_id'][0][2][0])
-            if tax.company_id != invoice.company_id:
-                tax = tax_obj.search([
-                    ('type_tax_use', '=', tax.type_tax_use),
-                    ('type', '=', tax.type),
-                    ('amount', '=', tax.amount),
-                    ('company_id', '=', invoice.company_id.id)
-                ])
-                invoice_line_vals['invoice_line_tax_id'][0][2][0] = tax.id
-        inv_line_id = ori_create_invoice_line_from_vals(
-            self, move, invoice_line_vals)
-        move.write({'invoice_line_id': inv_line_id})
+    def _link_invoice_to_picking(self, move, inv_line_id, invoice_line_vals):
         holding_invoice = self._context.get('holding_invoice', False)
         if holding_invoice:
-            picking = move.picking_id
-            picking.holding_invoice_id = invoice_line_vals['invoice_id']
+            move.write({'invoice_line_id': inv_line_id,
+                        'holding_invoice_state': 'invoiced'})
+            move.picking_id.holding_invoice_id = invoice_line_vals[
+                'invoice_id']
+            return inv_line_id
         else:
-            move.picking_id.invoice_id = invoice_line_vals['invoice_id']
-        return inv_line_id
+            super(StockMove, self)._link_invoice_to_picking(
+                move, inv_line_id, invoice_line_vals)
+
+    @api.multi
+    def _prepare_product_onchange_params(self, move, inv_line_vals):
+        return [
+            (move.product_id.id, move.product_uom.id),
+            {
+                'qty': inv_line_vals['quantity'],
+                'name': '',
+                'type': 'out_invoice',
+                'partner_id': move.partner_id.id,
+                'fposition_id': False,
+                'price_unit': inv_line_vals['price_unit'],
+                'currency_id': False,
+                'company_id': False
+            }]
+
+    @api.multi
+    def _merge_product_onchange(self, move, onchange_vals, inv_line_vals):
+        holding_invoice = self._context.get('holding_invoice', False)
+        if onchange_vals.get('account_id'):
+            inv_line_vals['account_id'] = onchange_vals.get('account_id')
+        if onchange_vals.get('invoice_line_tax_id'):
+            inv_line_vals['invoice_line_tax_id'] = [[6, 0, onchange_vals.get(
+                'invoice_line_tax_id')]]
+        if not holding_invoice and move.picking_id.holding_company_id:
+            inv_line_vals['discount'] = (move.picking_id.section_id.
+                                         holding_discount)
 
     @api.model
     def _get_invoice_line_vals(self, move, partner, inv_type):
-        vals = super(StockMove, self)._get_invoice_line_vals(
+        inv_line_vals = super(StockMove, self)._get_invoice_line_vals(
             move, partner, inv_type)
-        account = self.env['account.account'].browse(vals['account_id'])
-        if account.company_id != move.company_id:
-            account_id = move.product_id.property_account_income.id
-            if not account_id:
-                account_id = (move.product_id.categ_id.
-                              property_account_income_categ.id)
-            vals['account_id'] = account_id
-        return vals
+        args, kwargs = self._prepare_product_onchange_params(
+            move, inv_line_vals)
+        onchange_vals = self.env['account.invoice.line'].product_id_change(
+            *args, **kwargs)
+        self._merge_product_onchange(
+            move, onchange_vals['value'], inv_line_vals)
+        return inv_line_vals
+
+    @api.model
+    def _get_master_data(self, move, company):
+        partner, uid, currency = super(StockMove, self)._get_master_data(
+            move, company)
+        holding_invoice = self._context.get('holding_invoice', False)
+        if move.picking_id.holding_company_id and not holding_invoice:
+            partner = move.picking_id.holding_company_id.partner_id
+        else:
+            partner = move.picking_id.sale_id.partner_invoice_id
+        return partner, uid, currency
 
 
 class ProcurementOrder(models.Model):
