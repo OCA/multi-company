@@ -134,7 +134,7 @@ class StockPicking(models.Model):
 
     @api.model
     def _get_invoice_domain(self, domain, company):
-        new_domain = domain[:]
+        new_domain = domain[:] if domain is not None else []
         new_domain.extend([
             ('group_id.holding_company_id', '!=', company.id),
             ('company_id', '=', company.id),
@@ -145,7 +145,7 @@ class StockPicking(models.Model):
 
     @api.model
     def _get_holding_invoice_domain(self, domain, company):
-        new_domain = domain[:]
+        new_domain = domain[:] if domain is not None else []
         new_domain.extend([
             ('group_id.holding_company_id', '=', company.id),
             ('company_id', '!=', company.id),
@@ -195,8 +195,10 @@ class StockMove(models.Model):
         if holding_invoice:
             move.write({'invoice_line_id': inv_line_id,
                         'holding_invoice_state': 'invoiced'})
-            move.picking_id.holding_invoice_id = invoice_line_vals[
-                'invoice_id']
+            move.picking_id.write({
+                'holding_invoice_id': invoice_line_vals['invoice_id'],
+                'holding_invoice_state': 'invoiced',
+                })
             return inv_line_id
         else:
             super(StockMove, self)._link_invoice_to_picking(
