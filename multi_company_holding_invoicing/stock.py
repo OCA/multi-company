@@ -204,43 +204,14 @@ class StockMove(models.Model):
             super(StockMove, self)._link_invoice_to_picking(
                 move, inv_line_id, invoice_line_vals)
 
-    @api.multi
-    def _prepare_product_onchange_params(self, move, inv_line_vals):
-        return [
-            (move.product_id.id, move.product_uom.id),
-            {
-                'qty': inv_line_vals['quantity'],
-                'name': '',
-                'type': 'out_invoice',
-                'partner_id': move.partner_id.id,
-                'fposition_id': False,
-                'price_unit': inv_line_vals['price_unit'],
-                'currency_id': False,
-                'company_id': False
-            }]
-
-    @api.multi
-    def _merge_product_onchange(self, move, onchange_vals, inv_line_vals):
-        holding_invoice = self._context.get('holding_invoice', False)
-        if onchange_vals.get('account_id'):
-            inv_line_vals['account_id'] = onchange_vals.get('account_id')
-        if onchange_vals.get('invoice_line_tax_id'):
-            inv_line_vals['invoice_line_tax_id'] = [[6, 0, onchange_vals.get(
-                'invoice_line_tax_id')]]
-        if not holding_invoice and move.picking_id.holding_company_id:
-            inv_line_vals['discount'] = (move.picking_id.section_id.
-                                         holding_discount)
-
     @api.model
     def _get_invoice_line_vals(self, move, partner, inv_type):
         inv_line_vals = super(StockMove, self)._get_invoice_line_vals(
             move, partner, inv_type)
-        args, kwargs = self._prepare_product_onchange_params(
-            move, inv_line_vals)
-        onchange_vals = self.env['account.invoice.line'].product_id_change(
-            *args, **kwargs)
-        self._merge_product_onchange(
-            move, onchange_vals['value'], inv_line_vals)
+        if not self._context.get('holding_invoice')\
+                and move.picking_id.holding_company_id:
+            inv_line_vals['discount'] = (move.picking_id.section_id.
+                                         holding_discount)
         return inv_line_vals
 
     @api.model
