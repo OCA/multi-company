@@ -254,6 +254,15 @@ class StockMove(models.Model):
             partner = move.picking_id.sale_id.partner_invoice_id
         return partner, uid, currency
 
+    @api.multi
+    def write(self, vals):
+        if self._context.get('holding_invoice')\
+                and vals.get('invoice_state') == 'invoiced':
+            vals.pop('invoice_state', '')
+            if not vals:
+                return True
+        return super(StockMove, self).write(vals)
+
 
 class ProcurementOrder(models.Model):
     _inherit = 'procurement.order'
