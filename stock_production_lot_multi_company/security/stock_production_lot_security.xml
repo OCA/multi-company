@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="production_lot_comp_rule" model="ir.rule">
+            <field name="name" >Serial number multi-company</field>
+            <field name="model_id" ref="model_stock_production_lot"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force"> ['|',('company_id','=',user.company_id.id),('company_id','=',False)]</field>
+        </record>
+
+    </data>
+</openerp>
