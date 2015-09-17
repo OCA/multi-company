@@ -11,9 +11,11 @@ virtualenv:
   system_site_packages: true
 
 install:
-  - git clone https://github.com/OCA/maintainer-quality-tools.git ${HOME}/maintainer-quality-tools
+  - git clone https://github.com/OCA/maintainer-quality-tools.git $HOME/maintainer-quality-tools
   - export PATH=${HOME}/maintainer-quality-tools/travis:${PATH}
   - travis_install_nightly
+  - git clone https://github.com/akretion/multi-company.git -b 8.0-inter_company_rules $HOME/multi-company-rules 
+  - git clone https://github.com/akretion/stock-logistics-workflow.git -b 8.0-refactor-stock-picking-invoice-link $HOME/stock-logistics-workflow-invoice-link 
 
 script:
   - travis_run_flake8
