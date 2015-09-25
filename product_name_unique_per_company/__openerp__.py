@@ -2,7 +2,7 @@
 
 ##############################################################################
 #
-#    OpenERP, Open Source Management Solution
+#    Odoo, Open Source Management Solution
 #    Copyright (C) 2013 Savoir-faire Linux (<http://www.savoirfairelinux.com>).
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -21,19 +21,17 @@
 ##############################################################################
 
 {
-    'name' : 'Product name unique per company',
-    'version' : '1.0',
-    "author" : "Savoir-faire Linux,Odoo Community Association (OCA)",
-    "website" : "http://www.savoirfairelinux.com",
+    'name': 'Product name unique per company',
+    'version': '1.0',
+    'author': 'Savoir-faire Linux,Odoo Community Association (OCA)',
+    'website': 'http://www.savoirfairelinux.com',
     'license': 'AGPL-3',
-    'category' : 'Sales',
-    'depends' : ['product'],
+    'category': 'Sales',
+    'depends': ['product'],
     'description': """
 This module makes the product name unique per company.
 """,
-    'data' : [],
-    'auto_install': False,
-    'installable': False,
+    'data': [],
+    'active': False,
+    'installable': True,
 }
-# vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
-
