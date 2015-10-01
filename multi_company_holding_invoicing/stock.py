@@ -118,18 +118,19 @@ class StockPicking(models.Model):
     def _get_invoice_vals(self, key, inv_type, journal_id, move):
         invoice_vals = super(StockPicking, self)._get_invoice_vals(
             key, inv_type, journal_id, move)
-        invoice_vals['company_id'] = self._context['force_company']
-        invoice_vals['user_id'] = self._uid
-        journal_ids = self.env['account.journal'].search([
-            ('type', '=', 'sale'),
-            ('company_id', '=', self._context['force_company'])
-        ])
-        invoice_vals['journal_id'] = journal_ids[0].id
-        account = self.env['account.account'].browse(
-            invoice_vals['account_id'])
-        if account.company_id.id != invoice_vals['company_id']:
-            invoice_vals['account_id'] = (move.partner_id.
-                                          property_account_receivable.id)
+#TODO FIXME this break the manual invoicing
+#        invoice_vals['company_id'] = self._context['force_company']
+#        invoice_vals['user_id'] = self._uid
+#        journal_ids = self.env['account.journal'].search([
+#            ('type', '=', 'sale'),
+#            ('company_id', '=', self._context['force_company'])
+#        ])
+#        invoice_vals['journal_id'] = journal_ids[0].id
+#        account = self.env['account.account'].browse(
+#            invoice_vals['account_id'])
+#        if account.company_id.id != invoice_vals['company_id']:
+#            invoice_vals['account_id'] = (move.partner_id.
+#                                          property_account_receivable.id)
         return invoice_vals
 
     @api.model
@@ -161,8 +162,7 @@ class StockPicking(models.Model):
             new_domain = self._get_invoice_domain(domain, company)
             picking = self.search(new_domain)
             if picking:
-                self = self.browse(picking.ids)
-                self.with_context(
+                picking.with_context(
                     holding_invoice=False,
                     force_company=company.id).action_invoice_create(
                         journal_id=False, group=True, type='out_invoice')
@@ -201,7 +201,7 @@ class StockMove(models.Model):
                 })
             return inv_line_id
         else:
-            super(StockMove, self)._link_invoice_to_picking(
+            return super(StockMove, self)._link_invoice_to_picking(
                 move, inv_line_id, invoice_line_vals)
 
     @api.model
