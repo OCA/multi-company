@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!--
         <delete id="stock.stock_picking_rule" model="ir.rule"/>
         <record forcecreate="True" model="ir.rule" id="stock.stock_picking_rule">
             <field name="name">stock_picking multi-company</field>
@@ -29,6 +30,6 @@
             <field name="global" eval="True"/>
             <field name="domain_force">['|',('company_id','=',False),'|',('company_id','child_of',[user.company_id.id]),('company_id','in',user.company_ids.ids)]</field>
         </record>
-
+-->
     </data>
 </openerp>

@@ -19,5 +19,5 @@
 ##############################################################################
 
 from . import sales_team
-from . import stock
+#from . import stock
 from . import sale

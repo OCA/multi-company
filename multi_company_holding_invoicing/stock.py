@@ -56,18 +56,6 @@ stock_invoice_onshipping.view_init = view_init
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    @api.one
-    @api.depends('move_lines', 'move_lines.holding_invoice_state')
-    def get_holding_invoice_state(self):
-        holding_invoice_state = 'none'
-        for move in self.move_lines:
-            if move.holding_invoice_state == 'invoiced':
-                holding_invoice_state = 'invoiced'
-            elif move.holding_invoice_state == '2binvoiced':
-                holding_invoice_state = '2binvoiced'
-                break
-        self.holding_invoice_state = holding_invoice_state
-
     section_id = fields.Many2one('crm.case.section', string='Sales Team',
                                  related='group_id.section_id',
                                  readonly=True)

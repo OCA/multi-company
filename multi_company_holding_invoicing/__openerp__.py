@@ -28,16 +28,14 @@
     'depends': [
         'sale',
         'sales_team',
-        'stock_picking_invoice_link',
         'inter_company_rules'
     ],
     'data': [
-        'config/sale_config.yml',
-        'data/stock_account_data.xml',
+        #'config/sale_config.yml',
+        'data/cron_data.xml',
         'sales_team_view.xml',
-        'stock_view.xml',
         'sale_view.xml',
-        'account_invoice_view.xml',
+        #'account_invoice_view.xml',
         'security/stock_security.xml',
     ],
     'installable': True,

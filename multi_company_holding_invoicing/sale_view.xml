@@ -6,11 +6,9 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
         <field name="arch" type="xml">
-            <field name="order_policy" position="before">
-               <field name="holding_company_id" invisible="1"/>
-            </field>
-            <field name="order_policy" position="attributes">
-                <attribute name="attrs">{'readonly': [('holding_company_id', '!=', False), ('order_policy', '=', 'picking')]}</attribute>
+            <field name="order_policy" position="after">
+               <field name="holding_invoice_state"/>
+               <field name="holding_invoice_id"/>
             </field>
         </field>
     </record>
