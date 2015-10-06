@@ -19,5 +19,5 @@
 ##############################################################################
 
 from . import sales_team
-#from . import stock
+from . import invoice
 from . import sale

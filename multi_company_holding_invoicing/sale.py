@@ -20,6 +20,8 @@
 
 from openerp import models, fields, api
 from openerp.exceptions import Warning as UserError
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -68,31 +70,30 @@ class SaleOrder(models.Model):
             self.order_policy = 'manual'
 
     @api.multi
-    def _prepare_invoice_line(self):
+    def _prepare_holding_invoice_line(self):
         self.ensure_one()
         return {
-            'description': self.name,
+            'name': self.name,
             'price_unit': self.amount_untaxed,
             'quantity': 1,
             }
 
     @api.multi
-    def _prepare_invoice(self):
+    def _prepare_holding_invoice(self, lines):
         partner_invoice = None
         for sale in self:
-            print sale.name
-            print sale.company_id.name
-            print sale.partner_invoice_id.name
-
             if not partner_invoice:
                 partner_invoice = sale.partner_invoice_id
             elif partner_invoice != sale.partner_invoice_id:
                 raise UserError(
                     _('Error'),
                     _('Invoice partner must be the same'))
-        return {
-            'partner_id': partner_invoice.id,
-        }
+        vals = self.env['sale.order']._prepare_invoice(self[0], lines)
+        vals.update({
+            'origin': '', # the list is too long so better to have nothing
+            'company_id': self._context['force_company'],
+            })
+        return vals
 
     @api.model
     def _get_holding_invoice_domain(self, domain, company):
@@ -116,11 +117,11 @@ class SaleOrder(models.Model):
 
     @api.multi
     def action_holding_invoice(self):
-        invoice_vals = self._prepare_invoice()
         lines = []
         for sale in self:
-            lines.append(sale._prepare_invoice_line())
-        invoice_vals['invoice_line'] = [(6, 0, lines)]
+            lines.append(self.env['account.invoice.line'].create(
+                sale._prepare_holding_invoice_line()).id)
+        invoice_vals = self._prepare_holding_invoice(lines)
         invoice = self.env['account.invoice'].create(invoice_vals)
         self.write({'holding_invoice_id': invoice.id})
         return True
