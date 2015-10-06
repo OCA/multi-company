@@ -28,10 +28,7 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     holding_company_id = fields.Many2one(
-        'res.company',
-        related='section_id.holding_company_id',
-        string='Holding Company for Invoicing',
-        readonly=True)
+        'res.company', string='Holding Company for Invoicing')
 
     #TODO rethink
     holding_invoice_id = fields.Many2one(
@@ -47,12 +44,6 @@ class SaleOrder(models.Model):
         compute='_get_holding_invoice_state',
         store=True)
 
-    holding_company_id = fields.Many2one(
-        'res.company',
-        related='section_id.holding_company_id',
-        string='Holding Company for Invoicing',
-        readonly=True)
-
     @api.one
     @api.depends('state', 'holding_invoice_id')
     def _get_holding_invoice_state(self):
@@ -64,9 +55,9 @@ class SaleOrder(models.Model):
             else:
                 sale.holding_invoice_state = 'none'
 
-    @api.onchange('section_id', 'holding_company_id')
+    @api.onchange('section_id', 'section_id.holding_company_id')
     def onchange_section_id(self):
-        if self.section_id and self.holding_company_id:
+        if self.section_id and self.section_id.holding_company_id:
             self.order_policy = 'manual'
 
     @api.multi
