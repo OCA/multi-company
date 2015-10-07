@@ -9,6 +9,7 @@
   !record {model: purchase.order, id: purchase_order_cmpa}:
     partner_id: partner_company_b
     company_id: company_a
+    location_id: location_stock_company_a
     order_line:
     - product_id: product_consultant
       name: 'Service'

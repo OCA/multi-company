@@ -23,11 +23,16 @@
 -
   !record {model: stock.warehouse, id: warehouse_company_a, view: False}:
     name: purchase warehouse - A
-    code: CMPA
-    wh_input_stock_loc_id: location_stock_company_a
+    lot_input_id: location_stock_company_a
     lot_stock_id: location_stock_company_a
-    wh_output_stock_loc_id: location_output_company_a
+    lot_output_id: location_output_company_a
     company_id: company_a
+-
+  !record {model: sale.shop, id: shop_company_a, view: False}:
+    name: Shop A
+    company_id: company_a
+    warehouse_id: warehouse_company_a
+    payment_default_id: account.account_payment_term_net
 -
   !record {model: res.partner, id: partner_company_b, view: False}:
     name: Company B
@@ -53,11 +58,16 @@
 -
   !record {model: stock.warehouse, id: warehouse_company_b, view: False}:
     name: purchase warehouse - B
-    code: CMPB
-    wh_input_stock_loc_id: location_stock_company_b
+    lot_input_id: location_stock_company_b
     lot_stock_id: location_stock_company_b
-    wh_output_stock_loc_id: location_output_company_b
+    lot_output_id: location_output_company_b
     company_id: company_b
+-
+  !record {model: sale.shop, id: shop_company_b, view: False}:
+    name: Shop B
+    company_id: company_b
+    warehouse_id: warehouse_company_b
+    payment_default_id: account.account_payment_term_net
 -
   Apply warehouse in company.
 -
