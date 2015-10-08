@@ -4,16 +4,13 @@
 
         <record id="invoice_form" model="ir.ui.view">
             <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="stock_picking_invoice_link.invoice_form"/>
+            <field name="inherit_id" ref="account.invoice_form"/>
             <field name="arch" type="xml">
                 <notebook position="inside">
-                    <page string="Pickings" name="holding_pickings" attrs="{'invisible':[('holding_picking_ids','=', [])]}">
-                        <field name="holding_picking_ids"/>
+                    <page string="Sale Orders" name="sale_orders" attrs="{'invisible':[('holding_sale_ids','=', [])]}">
+                        <field name="holding_sale_ids"/>
                     </page>
                 </notebook>
-                <xpath expr="//notebook/page[@name='pickings']" position="attributes">
-                    <attribute name="attrs">{'invisible':[('picking_ids','=', [])]}</attribute>
-                </xpath>
             </field>
         </record>
 

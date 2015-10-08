@@ -59,9 +59,9 @@ class SaleOrder(models.Model):
             else:
                 sale.holding_invoice_state = 'none'
 
-    @api.onchange('section_id', 'holding_company_id')
+    @api.onchange('section_id', 'section_id.holding_company_id')
     def onchange_section_id(self):
-        if self.section_id and self.holding_company_id:
+        if self.section_id and self.section_id.holding_company_id:
             self.order_policy = 'manual'
 
     @api.multi

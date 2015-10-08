@@ -35,7 +35,7 @@
         'data/cron_data.xml',
         'sales_team_view.xml',
         'sale_view.xml',
-        #'account_invoice_view.xml',
+        'account_invoice_view.xml',
         'security/stock_security.xml',
     ],
     'installable': True,
