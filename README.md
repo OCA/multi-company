@@ -21,7 +21,7 @@ Unported addons
 ---------------
 addon | version | summary
 --- | --- | ---
-[product_autocompany](__unported__/product_autocompany/) | 1.0 (unported) | Product automatic company
-[product_name_unique_per_company](__unported__/product_name_unique_per_company/) | 1.0 (unported) | Product name unique per company
+[product_autocompany](product_autocompany/) | 1.0 (unported) | Product automatic company
+[product_name_unique_per_company](product_name_unique_per_company/) | 1.0 (unported) | Product name unique per company
 
 [//]: # (end addons)
