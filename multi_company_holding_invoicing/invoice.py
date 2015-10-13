@@ -29,8 +29,13 @@ _logger = logging.getLogger(__name__)
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    def _holding_sale_count(self):
+        self.holding_sale_count = len(self.holding_sale_ids)
+
     company_sale_ids = fields.One2many('sale.order', 'holding_company_id')
     holding_sale_ids = fields.One2many('sale.order', 'holding_invoice_id')
+    holding_sale_count = fields.Integer(compute='_holding_sale_count',
+                                        string='# of Sales Order')
 
     @api.multi
     def unlink(self):
