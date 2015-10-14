@@ -40,4 +40,5 @@
         'security/multi_company.xml',
         'views/account_type.xml',
     ],
+    'installable': False,
 }

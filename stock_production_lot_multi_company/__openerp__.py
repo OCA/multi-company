@@ -21,5 +21,5 @@
         "security/stock_production_lot_security.xml",
         "views/stock_production_lot_view.xml",
     ],
-    "installable": True,
+    'installable': False,
 }
