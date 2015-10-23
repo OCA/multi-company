@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from openerp.exceptions import Warning as UserError
 import logging
 _logger = logging.getLogger(__name__)
@@ -87,7 +87,7 @@ class SaleOrder(models.Model):
                     _('Invoice partner must be the same'))
         vals = self.env['sale.order']._prepare_invoice(self[0], lines.ids)
         vals.update({
-            'origin': '', # the list is too long so better to have nothing
+            'origin': '',  # the list is too long so better to have nothing
             'company_id': self._context['force_company'],
             })
         return vals
