@@ -105,12 +105,15 @@ class SaleOrder(models.Model):
     @api.multi
     def _scheduler_action_holding_invoice_create(self, domain=None):
         companies = self.env['res.company'].search([])
+        invoice_ids = []
         for company in companies:
             new_domain = self._get_holding_invoice_domain(domain, company)
             sales = self.search(new_domain)
             if sales:
-                sales.with_context(force_company=company.id)\
-                    .action_holding_invoice()
+                invoice_ids.append(
+                    sales.with_context(force_company=company.id)
+                        .action_holding_invoice())
+        return invoice_ids
 
     @api.multi
     def action_holding_invoice(self):
@@ -121,7 +124,7 @@ class SaleOrder(models.Model):
         invoice_vals = self._prepare_holding_invoice(lines)
         invoice = self.env['account.invoice'].create(invoice_vals)
         self.write({'holding_invoice_id': invoice.id})
-        return True
+        return invoice.id
 
     @api.multi
     def write(self, values):
