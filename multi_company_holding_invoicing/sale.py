@@ -18,7 +18,7 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from openerp.exceptions import Warning as UserError
 import logging
 _logger = logging.getLogger(__name__)
@@ -87,8 +87,9 @@ class SaleOrder(models.Model):
                     _('Invoice partner must be the same'))
         vals = self.env['sale.order']._prepare_invoice(self[0], lines.ids)
         vals.update({
-            'origin': '', # the list is too long so better to have nothing
+            'origin': '',  # the list is too long so better to have nothing
             'company_id': self._context['force_company'],
+            'user_id': self._uid,
             })
         return vals
 
@@ -105,12 +106,15 @@ class SaleOrder(models.Model):
     @api.multi
     def _scheduler_action_holding_invoice_create(self, domain=None):
         companies = self.env['res.company'].search([])
+        invoice_ids = []
         for company in companies:
             new_domain = self._get_holding_invoice_domain(domain, company)
             sales = self.search(new_domain)
             if sales:
-                sales.with_context(force_company=company.id)\
-                    .action_holding_invoice()
+                invoice_ids.append(
+                    sales.with_context(force_company=company.id)
+                        .action_holding_invoice())
+        return invoice_ids
 
     @api.multi
     def action_holding_invoice(self):
@@ -121,7 +125,7 @@ class SaleOrder(models.Model):
         invoice_vals = self._prepare_holding_invoice(lines)
         invoice = self.env['account.invoice'].create(invoice_vals)
         self.write({'holding_invoice_id': invoice.id})
-        return True
+        return invoice.id
 
     @api.multi
     def write(self, values):
