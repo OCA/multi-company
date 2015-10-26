@@ -89,6 +89,7 @@ class SaleOrder(models.Model):
         vals.update({
             'origin': '',  # the list is too long so better to have nothing
             'company_id': self._context['force_company'],
+            'user_id': self._uid,
             })
         return vals
 
