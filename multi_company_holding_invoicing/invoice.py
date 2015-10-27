@@ -43,7 +43,8 @@ class AccountInvoice(models.Model):
         sales = sale_obj.search([('holding_invoice_id', 'in', self.ids)])
         res = super(AccountInvoice, self).unlink()
         #We use an SQL request here for solving perf issue
-        self._cr.execute("""UPDATE sale_order
-            SET holding_invoice_state = '2binvoiced'
-            WHERE id in %s""", (tuple(sales.ids),))
+        if sales:
+            self._cr.execute("""UPDATE sale_order
+                SET holding_invoice_state = '2binvoiced'
+                WHERE id in %s""", (tuple(sales.ids),))
         return res
