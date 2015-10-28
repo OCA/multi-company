@@ -32,12 +32,14 @@ class SaleOrder(models.Model):
         related='section_id.holding_company_id',
         string='Holding Company for Invoicing',
         readonly=True,
+        copy=False,
         store=True)
 
     #TODO rethink
     holding_invoice_id = fields.Many2one(
         'account.invoice',
         string='Holding Invoice',
+        copy=False,
         readonly=True)
 
     holding_invoice_state = fields.Selection([
@@ -45,6 +47,7 @@ class SaleOrder(models.Model):
         ('2binvoiced', 'To Be Invoiced'),
         ('none', 'Not Applicable')
         ], string='Holding Invoice Control',
+        copy=False,
         compute='_get_holding_invoice_state',
         store=True)
 
