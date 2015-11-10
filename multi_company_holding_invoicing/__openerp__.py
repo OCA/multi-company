@@ -28,7 +28,8 @@
     'depends': [
         'sale',
         'sales_team',
-        'inter_company_rules'
+        'inter_company_rules',
+        'base_suspend_security',
     ],
     'data': [
         #'config/sale_config.yml',
