@@ -18,6 +18,7 @@
         <field name="inherit_id" ref="sale.view_sales_order_filter"/>
         <field name="arch" type="xml">
             <field name="product_id" position="after">
+               <field name="invoice_ids"/>
                <field name="holding_invoice_id"/>
             </field>
         </field>

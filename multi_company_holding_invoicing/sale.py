@@ -127,6 +127,7 @@ class SaleOrder(models.Model):
             lines |= self.env['account.invoice.line'].create(val)
         invoice_vals = self._prepare_holding_invoice(lines)
         invoice = self.env['account.invoice'].create(invoice_vals)
+        invoice.button_reset_taxes()
         self.write({'holding_invoice_id': invoice.id})
         return invoice.id
 
@@ -147,3 +148,58 @@ class SaleOrder(models.Model):
             if section.holding_company_id:
                 values.update({'order_policy': 'manual'})
         return super(SaleOrder, self).create(values)
+
+    @api.multi
+    def _prepare_child_invoice_line(self):
+        total = 0
+        sale_lines = self.env['sale.order.line'].browse(False)
+        for sale in self:
+            total += sale.amount_untaxed
+            sale_lines |= sale.order_line
+        return [{
+            'name': self[0].holding_invoice_id.invoice_line[0].name,
+            'price_unit': total,
+            'quantity': 1,
+            'sale_line_ids': [(6, 0, sale_lines.ids)],
+            'discount': self[0].section_id.holding_discount,
+            }]
+
+    @api.multi
+    def _prepare_child_invoice(self, lines):
+        vals = self.env['sale.order']._prepare_invoice(self[0], lines)
+        holding_invoice = self[0].holding_invoice_id
+        vals.update({
+            'origin': holding_invoice.number,
+            'company_id': self._context['force_company'],
+            'user_id': self._uid,
+            'partner_id': holding_invoice.company_id.partner_id.id,
+            'holding_invoice_id': holding_invoice.id,
+            })
+        return vals
+
+    @api.multi
+    def action_child_invoice(self):
+        lines = self.env['account.invoice.line'].browse(False)
+        val_lines = self._prepare_child_invoice_line()
+        for val in val_lines:
+            lines |= self.env['account.invoice.line'].create(val)
+        invoice_vals = self._prepare_child_invoice(lines.ids)
+        invoice = self.env['account.invoice'].create(invoice_vals)
+        self.write({'invoice_ids': [(6, 0, [invoice.id])]})
+        invoice.button_reset_taxes()
+        order_lines = self.env['sale.order.line'].browse(False)
+        for sale in self:
+            for line in sale.order_line:
+                order_lines |= line
+        order_lines._store_set_values(['invoiced'])
+        return invoice
+
+    @api.model
+    def _make_invoice(self, order, lines):
+        # Warning lines are sale order line ids !
+        sale_line_ids = lines
+        if order.section_id.holding_company_id:
+            raise UserError('The sale order %s must be invoiced via '
+                'the holding company')
+        else:
+            return super(SaleOrder, self)._make_invoice(self, order, lines)
