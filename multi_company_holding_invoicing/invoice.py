@@ -74,6 +74,7 @@ class AccountInvoice(models.Model):
         invoices = self.browse(False)
         for company in self.env['res.company'].search([]):
             sales = self.env['sale.order']\
+                .suspend_security()\
                 .with_context(force_company=company.id, from_holding=True)\
                 .search([
                     ('holding_invoice_id', '=', self.id),
