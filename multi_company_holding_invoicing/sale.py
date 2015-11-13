@@ -202,4 +202,4 @@ class SaleOrder(models.Model):
             raise UserError('The sale order %s must be invoiced via '
                 'the holding company')
         else:
-            return super(SaleOrder, self)._make_invoice(self, order, lines)
+            return super(SaleOrder, self)._make_invoice(order, lines)
