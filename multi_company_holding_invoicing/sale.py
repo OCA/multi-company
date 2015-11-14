@@ -120,6 +120,10 @@ class SaleOrder(models.Model):
         return invoice_ids
 
     @api.multi
+    def _link_holding_invoice_to_order(self, invoice):
+        self.write({'holding_invoice_id': invoice.id})
+
+    @api.multi
     def action_holding_invoice(self):
         lines = self.env['account.invoice.line'].browse(False)
         val_lines = self._prepare_holding_invoice_line()
@@ -128,7 +132,7 @@ class SaleOrder(models.Model):
         invoice_vals = self._prepare_holding_invoice(lines)
         invoice = self.env['account.invoice'].create(invoice_vals)
         invoice.button_reset_taxes()
-        self.write({'holding_invoice_id': invoice.id})
+        self._link_holding_invoice_to_order(invoice)
         return invoice.id
 
     @api.multi
