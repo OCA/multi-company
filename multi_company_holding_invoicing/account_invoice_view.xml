@@ -59,7 +59,7 @@
                     <button name="generate_child_invoice"
                             type="object"
                             string="Generate Child Invoice"
-                            attrs="{'invisible':['|', ('holding_sale_count','=', 0),  ('child_invoice_count','!=', 0)]}"/>
+                            attrs="{'invisible':['|', '|', ('holding_sale_count','=', 0),  ('child_invoice_count','!=', 0), ('state', '=', 'draft')]}"/>
                 </button>
 
 

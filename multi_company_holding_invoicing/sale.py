@@ -165,14 +165,23 @@ class SaleOrder(models.Model):
             'price_unit': total,
             'quantity': 1,
             'sale_line_ids': [(6, 0, sale_lines.ids)],
-            'discount': self[0].section_id.holding_discount,
+            }, {
+            'name': 'Redevance',
+            'price_unit': total,
+            'quantity': - self[0].section_id.holding_discount/100.,
+            'sale_line_ids': [],
             }]
 
     @api.multi
     def _prepare_child_invoice(self, lines):
         vals = self.env['sale.order']._prepare_invoice(self[0], lines)
         holding_invoice = self[0].holding_invoice_id
+        journal = self.env['account.journal'].search([
+            ('company_id', '=', self._context['force_company']),
+            ('type', '=', 'sale'),
+            ])
         vals.update({
+            'journal_id': journal.id,
             'origin': holding_invoice.number,
             'company_id': self._context['force_company'],
             'user_id': self._uid,

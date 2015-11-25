@@ -85,6 +85,8 @@ class AccountInvoice(models.Model):
                 # Dummy call to workflow, will not create another invoice
                 # but bind the new invoice to the subflow
                 sales.signal_workflow('manual_invoice')
+        for invoice in invoices:
+            invoice.signal_workflow('invoice_open')
         return True
 
 
