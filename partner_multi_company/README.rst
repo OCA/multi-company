@@ -7,22 +7,25 @@ Partner permissions for discrete companies
 ==========================================
 
 This modules allows to select in which of the companies you want to use each
-of the products.
+of the partners.
 
 Installation
 ============
 
-This module uses the post and uninstall hooks for updating default product
+This module uses the post and uninstall hooks for updating default partner
 template security rule. This only means that updating the module will not
 restore the security rule this module changes. Only a complete removal and
 reinstallation will serve.
 
+It uses a module from https://github.com/OCA/server-tools called
+*base_suspend_security* that you must have available in your Odoo installation.
+
 Usage
 =====
 
-On the product form view, go to the "Information" tab, and put the companies
-in which you want to use that product. If none is selected, the product will
-be visible in all of them. The default value is the current one.
+On the partner form view, go to the "Sales & Purchases" tab, and put the
+companies in which you want to use that partner. If none is selected, the
+partner will be visible in all of them. The default value is the current one.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
@@ -47,6 +50,7 @@ Contributors
 ------------
 
 * Oihane Crucelaegui <oihanecruce@gmail.com>
+* Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
 
 Maintainer
 ----------
