@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from openerp import api, fields, models, _
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning as UserError
 
 
 class account_invoice(models.Model):
@@ -59,47 +59,54 @@ class account_invoice(models.Model):
         intercompany_uid = (company.intercompany_user_id and
                             company.intercompany_user_id.id or False)
         if not intercompany_uid:
-            raise Warning(_(
+            raise UserError(_(
                 'Provide one user for intercompany relation for % ')
                 % company.name)
 
         context = self._context.copy()
         context['force_company'] = company.id
         origin_partner_id = self.company_id.partner_id
-        invoice_line_ids = []
+        invoice_lines = []
         for line in self.invoice_line:
+            if not line.product_id:
+                raise UserError(_(
+                    "The invoice line '%s' doesn't have a product. "
+                    "All invoice lines should have a product for "
+                    "inter-company invoices.") % line.name)
             # get invoice line data from product onchange
-            product_uom_id = (line.product_id.uom_id and
-                              line.product_id.uom_id.id or False)
-            line_data = line.with_context(context).sudo().product_id_change(
-                line.product_id.id,
-                product_uom_id,
-                qty=line.quantity,
-                name='',
-                type=inv_type,
-                partner_id=origin_partner_id.id,
-                fposition_id=origin_partner_id.property_account_position.id,
-                company_id=company.id)
+            line_data = line.with_context(context).sudo(
+                intercompany_uid).product_id_change(
+                    line.product_id.id,
+                    line.product_id.uom_id.id,
+                    qty=line.quantity,
+                    name='',
+                    type=inv_type,
+                    partner_id=origin_partner_id.id,
+                    fposition_id=
+                    origin_partner_id.property_account_position.id,
+                    company_id=company.id)
             # create invoice line, as the intercompany user
             inv_line_data = self.sudo()._prepare_invoice_line_data(
                 line_data, line)
-            inv_line_id = line.with_context(context).sudo(
-                intercompany_uid).create(inv_line_data)
-            invoice_line_ids.append(inv_line_id.id)
+            invoice_lines.append((0, 0, inv_line_data))
         # create invoice, as the intercompany user
         invoice_vals = self.with_context(context).sudo()._prepare_invoice_data(
-            invoice_line_ids, inv_type, journal_type, company)[0]
+            invoice_lines, inv_type, journal_type, company)[0]
         invoice = self.with_context(context).sudo(intercompany_uid).create(
             invoice_vals)
-        return invoice.signal_workflow('invoice_open')
+        if company.auto_validation:
+            invoice.signal_workflow('invoice_open')
+        else:
+            invoice.button_reset_taxes()
+        return True
 
     @api.one
     def _prepare_invoice_data(self,
-                              invoice_line_ids, inv_type,
+                              invoice_lines, inv_type,
                               journal_type, company):
         """ Generate invoice values
-            :param invoice_line_ids : the ids of the invoice lines
-            :rtype invoice_line_ids : array of integer
+            :param invoice_lines : the list of invoice lines to create
+            :rtype invoice_line_ids : list of tuples
             :param inv_type : the type of the invoice to prepare the values
             :param journal_type : type of the journal "
             "to register the invoice_line_ids
@@ -112,7 +119,7 @@ class account_invoice(models.Model):
             ('company_id', '=', company.id)
         ], limit=1)
         if not journal:
-            raise Warning(_(
+            raise UserError(_(
                 'Please define %s journal for this company: "%s" (id:%d).')
                 % (journal_type, company.name, company.id))
 
@@ -126,19 +133,35 @@ class account_invoice(models.Model):
         partner_data = self.onchange_partner_id(inv_type,
                                                 self.company_id.partner_id.id,
                                                 company_id=company.id)
+        if not self.currency_id.company_id:
+            # currency shared between companies
+            currency_id = self.currency_id.id
+        else:
+            # currency not shared between companies
+            curs = self.env['res.currency'].with_context(context).search([
+                ('name', '=', self.currency_id.name),
+                ('company_id', '=', company.id),
+                ], limit=1)
+            if not curs:
+                raise UserError(_(
+                    "Could not find the currency '%s' in the company '%s'")
+                    % (self.currency_id.name, company.name_get()[0][1]))
+            currency_id = curs[0].id
         return {
             'name': self.name,
             # TODO : not sure !!
             'origin': self.company_id.name + _(' Invoice: ') + str(
                 self.number),
+            'supplier_invoice_number': self.number,
+            'check_total': self.amount_total,
             'type': inv_type,
             'date_invoice': self.date_invoice,
             'reference': self.reference,
             'account_id': partner_data['value'].get('account_id', False),
             'partner_id': self.company_id.partner_id.id,
             'journal_id': journal.id,
-            'invoice_line': [(6, 0, invoice_line_ids)],
-            'currency_id': self.currency_id and self.currency_id.id,
+            'invoice_line': invoice_lines,
+            'currency_id': currency_id,
             'fiscal_position': partner_data['value'].get(
                 'fiscal_position', False),
             'payment_term': partner_data['value'].get('payment_term', False),
@@ -147,7 +170,11 @@ class account_invoice(models.Model):
             'partner_bank_id': partner_data['value'].get(
                 'partner_bank_id', False),
             'auto_generated': True,
-            'auto_invoice_id': self.id,
+            # The field auto_invoice_id raises a LOT of issues with record
+            # rules because it links an invoice in company A
+            # with an invoice in company B. It even blocks the creation of the
+            # inter-company invoice !  -- Alexis de Lattre
+            # 'auto_invoice_id': self.id,
         }
 
     @api.model
@@ -160,6 +187,9 @@ class account_invoice(models.Model):
         """
         vals = {
             'name': line.name,
+            # TODO: it's wrong to just copy the price_unit
+            # You have to check if the tax is price_include True or False
+            # in source and target companies
             'price_unit': line.price_unit,
             'quantity': line.quantity,
             'discount': line.discount,
@@ -168,7 +198,12 @@ class account_invoice(models.Model):
             'sequence': line.sequence,
             'invoice_line_tax_id': [(6, 0, line_data['value'].get(
                 'invoice_line_tax_id', []))],
-            'account_analytic_id': line.account_analytic_id.id or False,
+            # Analytic accounts are per company
+            # The problem is that we can't really "guess" the
+            # analytic account to set. It probably needs to be
+            # set via an inherit of this method in a custom module
+            'account_analytic_id': line_data['value'].get(
+                'account_analytic_id'),
         }
         if line_data['value'].get('account_id'):
             vals['account_id'] = line_data['value']['account_id']
