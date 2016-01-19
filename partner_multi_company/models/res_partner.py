@@ -64,3 +64,15 @@ class ResPartner(models.Model):
                     bool(partner.company_id) != bool(partner.company_ids)):
                 partner.company_ids = ([(6, 0, partner.company_id.ids)] if
                                        partner.company_id else False)
+
+    @api.model
+    def _commercial_fields(self):
+        """Add company_ids to the commercial fields that will be synced with
+         childs. Ideal would be that this field is isolated from company field,
+         but it involves a lot of development (default value, incoherences
+         parent/child...).
+        :return: List of field names to be synced.
+        """
+        fields = super(ResPartner, self)._commercial_fields()
+        fields += ['company_ids']
+        return fields
