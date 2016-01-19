@@ -43,6 +43,11 @@ multi-company/issues/new?body=module:%20
 partner_multi_company%0Aversion:%20
 8.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
+Known issues/Roadmap
+====================
+
+* Allow to select different companies from the parent in contacts.
+
 Credits
 =======
 
