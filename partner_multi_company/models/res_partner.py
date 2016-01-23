@@ -47,7 +47,7 @@ class ResPartner(models.Model):
         self._amend_company_id(vals)
         # We must suspend security during this creation because it fails due to
         # all the mail stuff in between that confuses security rules
-        obj = self.suspend_security()
+        obj = getattr(self, 'suspend_security', lambda: self)()
         return super(ResPartner, obj).create(vals)
 
     @api.multi
