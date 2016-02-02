@@ -69,9 +69,10 @@ class SaleOrder(models.Model):
 
     @api.multi
     def _prepare_holding_invoice_line(self):
-        total = 0
-        for sale in self:
-            total += sale.amount_untaxed
+        self._cr.execute("""SELECT sum(amount_untaxed)
+            FROM sale_order
+            WHERE id in %s""", (tuple(self.ids),))
+        total = self._cr.fetchone()[0]
         return [{
             'name': 'TODO',
             'price_unit': total,
