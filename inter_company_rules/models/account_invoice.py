@@ -67,6 +67,9 @@ class account_invoice(models.Model):
         context['force_company'] = company.id
         origin_partner_id = self.company_id.partner_id
         invoice_lines = []
+        # create invoice, as the intercompany user
+        invoice_vals = self.with_context(context).sudo()._prepare_invoice_data(
+            inv_type, journal_type, company)[0]
         for line in self.invoice_line:
             if not line.product_id:
                 raise UserError(_(
@@ -82,16 +85,13 @@ class account_invoice(models.Model):
                     name='',
                     type=inv_type,
                     partner_id=origin_partner_id.id,
-                    fposition_id=
-                    origin_partner_id.property_account_position.id,
+                    fposition_id=invoice_vals['fiscal_position'],
                     company_id=company.id)
             # create invoice line, as the intercompany user
             inv_line_data = self.sudo()._prepare_invoice_line_data(
                 line_data, line)
             invoice_lines.append((0, 0, inv_line_data))
-        # create invoice, as the intercompany user
-        invoice_vals = self.with_context(context).sudo()._prepare_invoice_data(
-            invoice_lines, inv_type, journal_type, company)[0]
+        invoice_vals.update({'invoice_line': invoice_lines})
         invoice = self.with_context(context).sudo(intercompany_uid).create(
             invoice_vals)
         if company.auto_validation:
@@ -101,9 +101,7 @@ class account_invoice(models.Model):
         return True
 
     @api.one
-    def _prepare_invoice_data(self,
-                              invoice_lines, inv_type,
-                              journal_type, company):
+    def _prepare_invoice_data(self, inv_type, journal_type, company):
         """ Generate invoice values
             :param invoice_lines : the list of invoice lines to create
             :rtype invoice_line_ids : list of tuples
@@ -160,7 +158,6 @@ class account_invoice(models.Model):
             'account_id': partner_data['value'].get('account_id', False),
             'partner_id': self.company_id.partner_id.id,
             'journal_id': journal.id,
-            'invoice_line': invoice_lines,
             'currency_id': currency_id,
             'fiscal_position': partner_data['value'].get(
                 'fiscal_position', False),
