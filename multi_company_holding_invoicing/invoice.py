@@ -40,7 +40,7 @@ class AccountInvoice(models.Model):
         'account.invoice', 'holding_invoice_id')
     child_invoice_count = fields.Integer(
         compute='_child_invoice_count', string='# of Invoice')
-    holding_invoice_id = fields.Many2one('account.invoice')
+    holding_invoice_id = fields.Many2one('account.invoice', 'Holding Invoice')
 
     @api.multi
     def _holding_sale_count(self):

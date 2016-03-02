@@ -2,27 +2,39 @@
 <openerp>
   <data>
 
-    <record id="view_order_form_inherit" model="ir.ui.view">
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
-        <field name="arch" type="xml">
-            <field name="order_policy" position="after">
-               <field name="holding_invoice_state"/>
-               <field name="holding_invoice_id"/>
-            </field>
+<record id="view_order_form_inherit" model="ir.ui.view">
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+    <field name="arch" type="xml">
+        <field name="order_policy" position="after">
+           <field name="holding_invoice_state"/>
+           <field name="holding_invoice_id"/>
         </field>
-    </record>
+    </field>
+</record>
 
-    <record id="view_sales_order_filter" model="ir.ui.view">
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-        <field name="arch" type="xml">
-            <field name="product_id" position="after">
-               <field name="invoice_ids"/>
-               <field name="holding_invoice_id"/>
-            </field>
+<record id="view_sales_order_filter" model="ir.ui.view">
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+    <field name="arch" type="xml">
+        <filter string="Salesperson" position="after">
+            <filter name="holding_invoice_id"
+                    context="{'group_by':'holding_invoice_id'}"/>
+        </filter>
+        <field name="product_id" position="after">
+           <field name="invoice_ids"
+                  domain="[
+                      ('type', '=', 'out_invoice'),
+                      ('sale_ids', '!=', False),
+                      ]"/>
+           <field name="holding_invoice_id"
+                  domain="[
+                      ('type', '=', 'out_invoice'),
+                      ('holding_sale_ids', '!=', False),
+                      ]"/>
         </field>
-    </record>
+    </field>
+</record>
 
     </data>
 </openerp>
