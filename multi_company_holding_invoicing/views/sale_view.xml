@@ -2,11 +2,25 @@
 <openerp>
   <data>
 
-<record id="view_order_form_inherit" model="ir.ui.view">
+<record id="view_order_form" model="ir.ui.view">
     <field name="model">sale.order</field>
-    <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+    <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
-        <field name="order_policy" position="after">
+        <field name="invoiced" position="after">
+           <field name="holding_invoice_state"/>
+           <field name="holding_invoice_id"/>
+        </field>
+    </field>
+</record>
+
+<record id="view_order_tree" model="ir.ui.view">
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_tree"/>
+    <field name="arch" type="xml">
+        <field name="user_id" position="after">
+           <field name="section_id"/>
+        </field>
+        <field name="state" position="after">
            <field name="holding_invoice_state"/>
            <field name="holding_invoice_id"/>
         </field>
@@ -18,7 +32,11 @@
     <field name="inherit_id" ref="sale.view_sales_order_filter"/>
     <field name="arch" type="xml">
         <filter string="Salesperson" position="after">
+            <filter name="section_id"
+                    string="Section"
+                    context="{'group_by':'section_id'}"/>
             <filter name="holding_invoice_id"
+                    string="Holding Invoice"
                     context="{'group_by':'holding_invoice_id'}"/>
         </filter>
         <field name="product_id" position="after">
