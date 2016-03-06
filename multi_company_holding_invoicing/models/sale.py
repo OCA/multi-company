@@ -1,22 +1,9 @@
-# -*- encoding: utf-8 -*-
-##############################################################################
-#
-#    Copyright (C) 2015 AKRETION (<http://www.akretion.com>).
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-##############################################################################
+# -*- coding: utf-8 -*-
+# © 2015 Akretion (http://www.akretion.com)
+# Sébastien BEAU <sebastien.beau@akretion.com>
+# Chafique Delli <chafique.delli@akretion.com>
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning as UserError
@@ -35,7 +22,7 @@ class SaleOrder(models.Model):
         copy=False,
         store=True)
 
-    #TODO rethink
+    # TODO rethink
     holding_invoice_id = fields.Many2one(
         'account.invoice',
         string='Holding Invoice',
@@ -117,7 +104,7 @@ class SaleOrder(models.Model):
             if sales:
                 invoice_ids.append(
                     sales.with_context(force_company=company.id)
-                        .action_holding_invoice())
+                         .action_holding_invoice())
         return invoice_ids
 
     @api.multi
@@ -210,10 +197,8 @@ class SaleOrder(models.Model):
 
     @api.model
     def _make_invoice(self, order, lines):
-        # Warning lines are sale order line ids !
-        sale_line_ids = lines
         if order.section_id.holding_company_id:
             raise UserError('The sale order %s must be invoiced via '
-                'the holding company')
+                            'the holding company')
         else:
             return super(SaleOrder, self)._make_invoice(order, lines)
