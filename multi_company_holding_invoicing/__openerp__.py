@@ -19,9 +19,9 @@
  'data': [
      # 'config/sale_config.yml',
      'data/cron_data.xml',
-     'sales_team_view.xml',
-     'sale_view.xml',
-     'account_invoice_view.xml',
+     'views/sales_team_view.xml',
+     'views/sale_view.xml',
+     'views/account_invoice_view.xml',
      'security/stock_security.xml',
  ],
  'installable': True,
