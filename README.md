@@ -8,3 +8,21 @@ This repository provides addons for the management of multi company instances
 as well as inter company communication.
 
 
+
+[//]: # (addons)
+Available addons
+----------------
+addon | version | summary
+--- | --- | ---
+[account_type_multi_company](account_type_multi_company/) | 8.0.1.0.0 | Make account types multi-company aware
+[product_multi_company](product_multi_company/) | 8.0.1.0.0 | Select individually the product visibility on each company
+[stock_production_lot_multi_company](stock_production_lot_multi_company/) | 8.0.1.0.0 | Make serial numbers multi-company aware
+
+Unported addons
+---------------
+addon | version | summary
+--- | --- | ---
+[product_autocompany](product_autocompany/) | 1.0 (unported) | Product automatic company
+[product_name_unique_per_company](product_name_unique_per_company/) | 1.0 (unported) | Product name unique per company
+
+[//]: # (end addons)
