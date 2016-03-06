@@ -24,5 +24,11 @@
      'views/account_invoice_view.xml',
      'security/stock_security.xml',
  ],
+ 'demo': [
+    'demo/res_company_demo.xml',
+    'demo/res_users_demo.xml',
+    'demo/sales_team_demo.xml',
+    'demo/sale_order_demo.xml',
+    ],
  'installable': True,
  }

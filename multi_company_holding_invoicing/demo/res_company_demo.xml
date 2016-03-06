@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+<record id="child_company_a" model="res.company">
+    <field name="name">Company A</field>
+    <field name="parent_id" ref="base.main_company"/>
+    <field name="currency_id" ref="base.EUR"/>
+</record>
+
+<record id="child_company_b" model="res.company">
+    <field name="name">Company B</field>
+    <field name="parent_id" ref="base.main_company"/>
+    <field name="currency_id" ref="base.EUR"/>
+</record>
+
+    </data>
+</openerp>
