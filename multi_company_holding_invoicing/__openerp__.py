@@ -17,7 +17,7 @@
      'base_suspend_security',
  ],
  'data': [
-     # 'config/sale_config.yml',
+     'config/sale_config.yml',
      'data/cron_data.xml',
      'views/sales_team_view.xml',
      'views/sale_view.xml',
