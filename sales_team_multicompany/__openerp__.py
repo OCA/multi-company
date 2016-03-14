@@ -17,7 +17,7 @@
     ],
     'data': [
         'sales_team.xml',
-        'security/ir.rule.csv',
+        'security/multi_company.xml',
     ],
     'demo': [
         'demo/res.company.csv',

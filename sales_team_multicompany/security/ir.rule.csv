@@ -1,2 +1,0 @@
-id,name,model_id:id,groups:id,perm_read,perm_write,perm_create,perm_unlink,domain_force
-sales_team.crm_team_rule,crm.team multi-company,sales_team.model_crm_team,,True,False,False,False,"['|', ('company_ids', '=', 'user.company_id.id'), ('company_ids','child_of',[user.company_id.id])]"

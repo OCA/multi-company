@@ -11,6 +11,5 @@ class CrmTeam(models.Model):
     company_ids = fields.Many2many(
         'res.company',
         string='Companies',
-        required=True,
         help="Add the companies concerned by this market.")
     company_id = fields.Many2one(default=False)
