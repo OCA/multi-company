@@ -1,0 +1,3 @@
+id,name,login,groups_id/id,company_id/id,company_ids/id
+res_users1,User company 1,user_company1@gmail.com,"base.group_user,base.group_sale_salesman",res_company1,res_company1
+res_users2,User company 2,user_company2@gmail.com,"base.group_user,base.group_sale_salesman",res_company2,res_company2

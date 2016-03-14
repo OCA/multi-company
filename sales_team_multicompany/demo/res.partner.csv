@@ -1,0 +1,3 @@
+id,name,email,company_id/id,notify_email
+res_partner1,Partner 1,partner1@gmail.com,,none
+res_partner2,Partner 2,partner2@gmail.com,,none
