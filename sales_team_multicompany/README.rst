@@ -3,7 +3,7 @@
    :alt: License: AGPL-3
 
 =========================
-Sales Team Multi-Company
+Multi-Company Sales Team
 =========================
 
 This module add companies field on the sales team and allow to see only sales team of user's company.
@@ -33,14 +33,14 @@ Credits
 Contributors
 ------------
 
-* Chafique Delli (chafique.delli@akretion.com)
+* Chafique Delli chafique.delli@akretion.com
 
 Maintainer
 ----------
 
-.. image:: http://odoo-community.org/logo.png
+.. image:: https://odoo-community.org/logo.png
    :alt: Odoo Community Association
-   :target: http://odoo-community.org
+   :target: https://odoo-community.org
    
 This module is maintained by the OCA.
 
