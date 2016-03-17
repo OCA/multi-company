@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="1">
+  <record model="ir.rule" id="sales_team.sale_team_comp_rule">
+    <field name="domain_force">['|', '|', ('company_ids', '=', 'user.company_id.id'), ('company_ids','child_of',[user.company_id.id]), ('company_ids', '=', False)]</field>
+  </record>
+</data>
+</openerp>

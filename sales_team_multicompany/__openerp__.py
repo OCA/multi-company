@@ -17,12 +17,9 @@
     ],
     'data': [
         'sales_team.xml',
-        'security/multi_company.xml',
+        'security/sales_team_multicompany_security.xml',
     ],
     'demo': [
-        'demo/res.company.csv',
-        'demo/res.partner.csv',
-        'demo/res.users.csv',
-        'demo/crm.team.csv',
+        'sales_team_multicompany_demo.xml',
     ],
 }

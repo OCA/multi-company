@@ -27,5 +27,5 @@ msgstr "Sociétés"
 
 #. module: sales_team_multicompany
 #: help:crm.team,company_ids:0
-msgid "Add the companies concerned by this market."
-msgstr "Ajouter les sociétés concernées par ce marché"
+msgid "Company to which the sales team belongs"
+msgstr "Société à laquelle l'équipe de vente appartient"
