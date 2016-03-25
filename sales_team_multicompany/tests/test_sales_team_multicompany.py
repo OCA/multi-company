@@ -20,7 +20,12 @@ class TestSalesTeamMultiCompany(TransactionCase):
         self.currency_usd = self.env.ref('base.USD')
         self.secondary_company = self.company_model.create(
             {'name': 'SecondCompany',
-             'currency_id': self.currency_usd.id})
+             'currency_id': self.currency_usd.id,
+             'rml_header': self.main_company.rml_header,
+             'rml_header2': self.main_company.rml_header2,
+             'rml_header3': self.main_company.rml_header3,
+             'rml_paper_format': self.main_company.rml_paper_format,
+             })
 
         # user groups
         self.group_user = self.env.ref('base.group_user')
@@ -53,16 +58,19 @@ class TestSalesTeamMultiCompany(TransactionCase):
             {'name': 'TEST 1',
              'partner_id': self.partner2.id,
              'team_id': (self.crm_team_1.sudo(self.user_demo1.id)
-                         .read()[0]['id'])})
+                         .read()[0]['id']),
+             })
         self.env['sale.order'].create(
             {'name': 'TEST 2',
              'partner_id': self.partner1.id,
              'team_id': (self.team_sales_department.sudo(self.user_demo2.id)
-                         .read()[0]['id'])})
+                         .read()[0]['id']),
+             })
         # And this one not
         with self.assertRaises(AccessError):
             self.env['sale.order'].create(
                 {'name': 'TEST',
                  'partner_id': self.partner1.id,
                  'team_id': (self.crm_team_1.sudo(self.user_demo2.id)
-                             .read()[0]['id'])})
+                             .read()[0]['id']),
+                 })
