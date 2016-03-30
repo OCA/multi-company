@@ -10,6 +10,12 @@ as well as inter company communication.
 
 
 [//]: # (addons)
+Available addons
+----------------
+addon | version | summary
+--- | --- | ---
+[sales_team_multicompany](sales_team_multicompany/) | 9.0.1.0.0 | Add companies in sales team and filter the sales team from the company
+
 Unported addons
 ---------------
 addon | version | summary
