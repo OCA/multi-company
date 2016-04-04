@@ -3,13 +3,13 @@
     <data>
 
 <record id="section_market_1" model="crm.case.section">
-    <field name="name">Market 1</field>
+    <field name="name">Holding Market 1</field>
     <field name="holding_company_id" ref="base.main_company"/>
     <field name="holding_discount">10</field>
 </record>
 
 <record id="section_market_2" model="crm.case.section">
-    <field name="name">Market 2</field>
+    <field name="name">Holding Market 2</field>
     <field name="holding_company_id" ref="base.main_company"/>
     <field name="holding_discount">15</field>
 </record>

@@ -30,24 +30,33 @@ class SaleOrder(models.Model):
         readonly=True)
 
     holding_invoice_state = fields.Selection([
+        ('none', 'Not Applicable'),
+        ('not_ready', 'Not Ready'),
+        ('invoiceable', 'Invoiceable'),
+        ('pending', 'Pending'),
         ('invoiced', 'Invoiced'),
-        ('2binvoiced', 'To Be Invoiced'),
-        ('none', 'Not Applicable')
         ], string='Holding Invoice Control',
         copy=False,
         compute='_get_holding_invoice_state',
         store=True)
 
     @api.one
-    @api.depends('state', 'holding_invoice_id')
+    @api.depends('shipped', 'holding_invoice_id',
+                 'section_id.holding_company_id')
     def _get_holding_invoice_state(self):
         for sale in self:
-            if sale.holding_invoice_id:
-                sale.holding_invoice_state = 'invoiced'
-            elif sale.state == 'done':
-                sale.holding_invoice_state = '2binvoiced'
-            else:
+            if not sale.section_id.holding_company_id\
+                    or sale.section_id.holding_company_id == sale.company_id:
                 sale.holding_invoice_state = 'none'
+            elif sale.holding_invoice_id:
+                if sale.holding_invoice_id.state in ('open', 'done'):
+                    sale.holding_invoice_state = 'invoiced'
+                else:
+                    sale.holding_invoice_state = 'pending'
+            elif sale.shipped:
+                sale.holding_invoice_state = 'invoiceable'
+            else:
+                sale.holding_invoice_state = 'not_ready'
 
     @api.onchange('section_id')
     def onchange_section_id(self):
@@ -79,7 +88,7 @@ class SaleOrder(models.Model):
         vals = self.env['sale.order']._prepare_invoice(self[0], lines.ids)
         vals.update({
             'origin': '',  # the list is too long so better to have nothing
-            'company_id': self._context['force_company'],
+            'company_id': self._context.get('force_company'),
             'user_id': self._uid,
             })
         return vals

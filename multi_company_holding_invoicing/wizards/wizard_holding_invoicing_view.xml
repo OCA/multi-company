@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+<record id="view_wizard_holding_invoicing_form" model="ir.ui.view">
+    <field name="model">wizard.holding.invoicing</field>
+    <field name="arch" type="xml">
+        <form>
+            <newline/>
+            <div>Select the parameter for creating your invoice</div>
+            <newline/>
+            <group>
+              <field name="date_invoice"/>
+              <field name="company_id" invisible="1"/>
+              <field name="section_id"
+                     domain="[('holding_invoice_id', '=', company_id)]"/>
+            </group>
+            <footer>
+                <button name="create_invoice"
+                        string="Confirmer"
+                        type="object"/>
+                or
+                <button string="Annuler" class="oe_link" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<record id="action_wizard_holding_invoicing" model="ir.actions.act_window">
+  <field name="type">ir.actions.act_window</field>
+  <field name="res_model">wizard.holding.invoicing</field>
+  <field name="name">Holding Invoicing</field>
+  <field name="view_mode">form</field>
+  <field name="target">new</field>
+</record>
+
+<menuitem id="menu_wizard_holding_invoicing"
+          parent="account.menu_finance_receivables"
+          sequence="10"
+          action="action_wizard_holding_invoicing"/>
+
+  </data>
+</openerp>
