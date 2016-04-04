@@ -63,32 +63,24 @@ class SaleOrder(models.Model):
         if self.section_id and self.section_id.holding_company_id:
             self.order_policy = 'manual'
 
-    @api.multi
-    def _prepare_holding_invoice_line(self):
-        self._cr.execute("""SELECT sum(amount_untaxed)
-            FROM sale_order
-            WHERE id in %s""", (tuple(self.ids),))
-        total = self._cr.fetchone()[0]
+    @api.model
+    def _prepare_holding_invoice_line(self, data):
         return [{
-            'name': 'TODO',
-            'price_unit': total,
+            'name': 'Global Invoice',
+            'price_unit': data['amount_total'],
             'quantity': 1,
             }]
 
-    @api.multi
-    def _prepare_holding_invoice(self, lines):
-        partner_invoice = None
-        for sale in self:
-            if not partner_invoice:
-                partner_invoice = sale.partner_invoice_id
-            elif partner_invoice != sale.partner_invoice_id:
-                raise UserError(
-                    _('Error'),
-                    _('Invoice partner must be the same'))
-        vals = self.env['sale.order']._prepare_invoice(self[0], lines.ids)
+    @api.model
+    def _prepare_holding_invoice(self, data, lines):
+        # get default from native method _prepare_invoice
+        # use first sale order as partner and section are the same
+        sale = self.search(data['__domain'], limit=1)
+        vals = self.env['sale.order']._prepare_invoice(sale, lines.ids)
+        section = self.env['crm.case.section'].browse(data['section_id'][0])
         vals.update({
-            'origin': '',  # the list is too long so better to have nothing
-            'company_id': self._context.get('force_company'),
+            'origin': u'holding grouped',
+            'company_id': section.holding_company_id.id,
             'user_id': self._uid,
             })
         return vals
@@ -97,17 +89,35 @@ class SaleOrder(models.Model):
     def _link_holding_invoice_to_order(self, invoice):
         self.write({'holding_invoice_id': invoice.id})
 
+    @api.model
+    def _get_holding_group_fields(self):
+        return [
+            ['partner_id', 'section_id', 'amount_total'],
+            ['partner_id', 'section_id'],
+        ]
+
+    @api.model
+    def _get_holding_invoice_data(self, domain):
+        read_fields, groupby = self._get_holding_group_fields()
+        return self.read_group(domain, read_fields, groupby, lazy=False)
+
+    @api.model
+    def _generate_holding_invoice(self, domain):
+        for data in self._get_holding_invoice_data(domain):
+            lines = self.env['account.invoice.line'].browse(False)
+            val_lines = self._prepare_holding_invoice_line(data)
+            for val in val_lines:
+                lines |= self.env['account.invoice.line'].create(val)
+            invoice_vals = sales._prepare_holding_invoice(data, lines)
+            invoice = self.env['account.invoice'].create(invoice_vals)
+            invoice.button_reset_taxes()
+            sales = self.search(data['__domain'])
+            sales._link_holding_invoice_to_order(invoice)
+        return invoice.id
+
     @api.multi
     def action_holding_invoice(self):
-        lines = self.env['account.invoice.line'].browse(False)
-        val_lines = self._prepare_holding_invoice_line()
-        for val in val_lines:
-            lines |= self.env['account.invoice.line'].create(val)
-        invoice_vals = self._prepare_holding_invoice(lines)
-        invoice = self.env['account.invoice'].create(invoice_vals)
-        invoice.button_reset_taxes()
-        self._link_holding_invoice_to_order(invoice)
-        return invoice.id
+        return self._generate_holding_invoice([('id', 'in', self.ids)])
 
     @api.multi
     def write(self, values):
