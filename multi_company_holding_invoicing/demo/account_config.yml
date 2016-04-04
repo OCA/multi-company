@@ -1,0 +1,16 @@
+-
+  Account config
+-
+  !python {model: account.config.settings, id: False}: |
+    chart_template_id = self.env.ref('account.configurable_chart_template')
+    for key in ['a', 'b']:
+        xml_id = 'multi_company_holding_invoicing.child_company_%s' % key
+        company = self.env.ref(xml_id)
+        config = self.browse(False)
+        vals = config.onchange_company_id(company.id)['value']
+        if not vals.get('has_chart_of_accounts'):
+            vals['company_id'] = company.id
+            vals['chart_template_id'] = chart_template_id.id
+            vals.update(config.onchange_chart_template_id(chart_template_id.id))
+            config = self.create(vals)
+            config.execute()

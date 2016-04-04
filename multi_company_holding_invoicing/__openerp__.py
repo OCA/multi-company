@@ -15,6 +15,9 @@
      'sales_team',
      'inter_company_rules',
      'base_suspend_security',
+     # Note we depend of this module for having the sale_ids field
+     # on the invoice
+     'sale_automatic_workflow',
  ],
  'data': [
      'config/sale_config.yml',
@@ -30,6 +33,7 @@
      'demo/res_users_demo.xml',
      'demo/sales_team_demo.xml',
      'demo/sale_order_demo.xml',
+     'demo/account_config.yml',
  ],
  'installable': True,
  }

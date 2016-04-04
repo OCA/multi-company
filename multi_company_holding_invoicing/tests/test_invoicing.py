@@ -82,8 +82,47 @@ class TestInvoicing(TransactionCase):
             msg="The amount invoiced should be %s, found %s"
                 % (expected_amount, invoice.amount_total))
 
+    def _check_child_invoice(self, invoice):
+        company2sale = {}
+        for sale in invoice.holding_sale_ids:
+            if not company2sale.get(sale.company_id.id):
+                company2sale[sale.company_id.id] = sale
+            else:
+                company2sale[sale.company_id.id] |= sale
+        for child in invoice.child_invoice_ids:
+            expected_sales = company2sale.get(child.company_id.id)
+            if expected_sales:
+                expected_sales_name = ', '.join(expected_sales.mapped('name'))
+            else:
+                expected_sales_name = ''
+            if child.sale_ids:
+                found_sales_name = ', '.join(child.sale_ids.mapped('name'))
+            else:
+                found_sales_name = ''
+            self.assertEqual(
+                child.sale_ids, expected_sales,
+                msg="The child invoice generated is not linked to the "
+                    "expected sale order. Found %s, expected %s"
+                    % (found_sales_name, expected_sales_name))
+
+    def _check_child_invoice_amount(self, invoice):
+        discount = invoice.section_id.holding_discount
+        expected_amount = invoice.amount_total * (1 - discount/100)
+        computed_amount = 0
+        for child in invoice.child_invoice_ids:
+            computed_amount += child.amount_total
+        self.assertAlmostEqual(
+            expected_amount,
+            computed_amount,
+            msg="For the company %s the invoice amount is %s"
+                "expected %s"
+                % (invoice.company_id.id, computed_amount, expected_amount))
+
     def _process_and_check_sale(
             self, section_xml_id, sale_xml_ids, expected_xml_ids):
+        # tests are called before register_hook
+        # register suspend_security hook
+        self.env['ir.rule']._register_hook()
         self._validate_and_deliver_sale(sale_xml_ids)
         invoice = self._generate_holding_invoice(section_xml_id)
         self._check_number_of_invoice(invoice, 1)
@@ -91,6 +130,9 @@ class TestInvoicing(TransactionCase):
         self._check_invoiced_sale_order(invoice, sale_expected)
         expected_amount = sum(sale_expected.mapped('amount_total'))
         self._check_expected_invoice_amount(invoice, expected_amount)
+        invoice.generate_child_invoice()
+        self._check_child_invoice(invoice)
+        self._check_child_invoice_amount(invoice)
 
     def test_invoice_market_1_one_company_one_partner(self):
         self._set_partner([1, 2, 3, 4], 'base.res_partner_2')
