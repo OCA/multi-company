@@ -47,8 +47,8 @@ msgid "Holding Invoice"
 msgstr "Facture Holding"
 
 #. module: multi_company_holding_invoicing
-#: field:procurement.order,holding_invoice_state:0
-#: field:stock.picking,holding_invoice_state:0
+#: field:procurement.order,invoice_state:0
+#: field:stock.picking,invoice_state:0
 msgid "Holding Invoice Control"
 msgstr "Contrôle facturation Holding"
 
@@ -68,14 +68,14 @@ msgid "Invoice"
 msgstr "Facture"
 
 #. module: multi_company_holding_invoicing
-#: selection:procurement.order,holding_invoice_state:0
-#: selection:stock.picking,holding_invoice_state:0
+#: selection:procurement.order,invoice_state:0
+#: selection:stock.picking,invoice_state:0
 msgid "Invoiced"
 msgstr "Facturé"
 
 #. module: multi_company_holding_invoicing
-#: selection:procurement.order,holding_invoice_state:0
-#: selection:stock.picking,holding_invoice_state:0
+#: selection:procurement.order,invoice_state:0
+#: selection:stock.picking,invoice_state:0
 msgid "Not Applicable"
 msgstr "Non Applicable"
 
@@ -130,8 +130,8 @@ msgid "Stock Move"
 msgstr "Mouvement de stock"
 
 #. module: multi_company_holding_invoicing
-#: selection:procurement.order,holding_invoice_state:0
-#: selection:stock.picking,holding_invoice_state:0
+#: selection:procurement.order,invoice_state:0
+#: selection:stock.picking,invoice_state:0
 msgid "To Be Invoiced"
 msgstr "A facturer"
 

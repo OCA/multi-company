@@ -7,7 +7,7 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
         <field name="invoiced" position="after">
-           <field name="holding_invoice_state"/>
+           <field name="invoice_state"/>
            <field name="holding_invoice_id"/>
         </field>
     </field>
@@ -21,7 +21,7 @@
            <field name="section_id"/>
         </field>
         <field name="state" position="after">
-           <field name="holding_invoice_state"/>
+           <field name="invoice_state"/>
            <field name="holding_invoice_id"/>
         </field>
     </field>

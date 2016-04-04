@@ -47,7 +47,7 @@ class AccountInvoice(models.Model):
         # We use an SQL request here for solving perf issue
         if sales:
             self._cr.execute("""UPDATE sale_order
-                SET holding_invoice_state = '2binvoiced'
+                SET invoice_state = 'invoiceable'
                 WHERE id in %s""", (tuple(sales.ids),))
         return res
 

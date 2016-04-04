@@ -30,7 +30,7 @@ class InvoiceWizard(models.TransientModel):
     def _get_invoice_domain(self):
         return [
             ('section_id', '=', self.section_id.id),
-            ('holding_invoice_state', '=', 'invoiceable'),
+            ('invoice_state', '=', 'invoiceable'),
             ('holding_invoice_id', '=', False),
             ]
 
