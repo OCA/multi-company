@@ -22,7 +22,6 @@ class SaleOrder(models.Model):
         copy=False,
         store=True)
 
-    # TODO rethink
     holding_invoice_id = fields.Many2one(
         'account.invoice',
         string='Holding Invoice',
@@ -41,7 +40,7 @@ class SaleOrder(models.Model):
         store=True)
 
     @api.one
-    @api.depends('shipped', 'holding_invoice_id',
+    @api.depends('shipped', 'holding_invoice_id.state',
                  'section_id.holding_company_id')
     def _get_invoice_state(self):
         for sale in self:
@@ -66,7 +65,7 @@ class SaleOrder(models.Model):
     @api.model
     def _prepare_holding_invoice_line(self, data):
         return [{
-            'name': 'Global Invoice',
+            'name': _('Global Invoice'),
             'price_unit': data['amount_total'],
             'quantity': 1,
             }]
@@ -79,7 +78,7 @@ class SaleOrder(models.Model):
         vals = self.env['sale.order']._prepare_invoice(sale, lines.ids)
         section = self.env['crm.case.section'].browse(data['section_id'][0])
         vals.update({
-            'origin': u'holding grouped',
+            'origin': _('Holding Invoice'),
             'company_id': section.holding_company_id.id,
             'user_id': self._uid,
             })
@@ -103,6 +102,7 @@ class SaleOrder(models.Model):
 
     @api.model
     def _generate_holding_invoice(self, domain):
+        invoices = self.env['account.invoice'].browse(False)
         for data in self._get_holding_invoice_data(domain):
             lines = self.env['account.invoice.line'].browse(False)
             val_lines = self._prepare_holding_invoice_line(data)
@@ -113,7 +113,8 @@ class SaleOrder(models.Model):
             invoice.button_reset_taxes()
             sales = self.search(data['__domain'])
             sales._link_holding_invoice_to_order(invoice)
-        return invoice.id
+            invoices |= invoice
+        return invoices
 
     @api.multi
     def action_holding_invoice(self):
@@ -137,59 +138,83 @@ class SaleOrder(models.Model):
                 values.update({'order_policy': 'manual'})
         return super(SaleOrder, self).create(values)
 
-    @api.multi
-    def _prepare_child_invoice_line(self):
-        total = 0
-        sale_lines = self.env['sale.order.line'].browse(False)
-        for sale in self:
-            total += sale.amount_untaxed
-            sale_lines |= sale.order_line
+    @api.model
+    def _prepare_child_invoice_line(self, data):
+        section = self.env['crm.case.section'].browse(data['section_id'][0])
+        domain = []
+        for arg in data['__domain']:
+            if len(arg) == 3:
+                domain.append(('order_id.%s' % arg[0], arg[1], arg[2]))
+        line_ids = self.env['sale.order.line'].search(domain).ids
         return [{
-            'name': self[0].holding_invoice_id.invoice_line[0].name,
-            'price_unit': total,
+            'name': _('Global Invoice'),
+            'price_unit': data['amount_total'],
             'quantity': 1,
-            'sale_line_ids': [(6, 0, sale_lines.ids)],
+            'sale_line_ids': [(6, 0, line_ids)],
             }, {
-            'name': 'Redevance',
-            'price_unit': total,
-            'quantity': - self[0].section_id.holding_discount/100.,
+            'name': _('Royalty'),
+            'price_unit': data['amount_total'],
+            'quantity': - section.holding_discount/100.,
             'sale_line_ids': [],
             }]
 
-    @api.multi
-    def _prepare_child_invoice(self, lines):
-        vals = self.env['sale.order']._prepare_invoice(self[0], lines)
-        holding_invoice = self[0].holding_invoice_id
-        journal = self.env['account.journal'].search([
-            ('company_id', '=', self._context['force_company']),
-            ('type', '=', 'sale'),
-            ])
+    @api.model
+    def _prepare_child_invoice(self, data, lines):
+        # get default from native method _prepare_invoice
+        # use first sale order as partner and section are the same
+        sale = self.search(data['__domain'], limit=1)
+        vals = self.env['sale.order']._prepare_invoice(sale, lines.ids)
         vals.update({
-            'journal_id': journal.id,
-            'origin': holding_invoice.number,
-            'company_id': self._context['force_company'],
+            'origin': sale.holding_invoice_id.name,
+            'company_id': sale.company_id.id,
             'user_id': self._uid,
-            'partner_id': holding_invoice.company_id.partner_id.id,
-            'holding_invoice_id': holding_invoice.id,
             })
         return vals
 
+    @api.model
+    def _get_child_group_fields(self):
+        return [
+            ['partner_id', 'section_id', 'company_id', 'amount_total'],
+            ['partner_id', 'section_id', 'company_id'],
+        ]
+
+    @api.model
+    def _get_child_invoice_data(self, domain):
+        read_fields, groupby = self._get_child_group_fields()
+        return self.read_group(domain, read_fields, groupby, lazy=False)
+
+    @api.model
+    def _generate_child_invoice(self, domain):
+        invoices = self.env['account.invoice'].browse(False)
+        for data in self._get_child_invoice_data(domain):
+            env = self.with_context(force_company=data['company_id'][0]).env
+            inv_obj = env['account.invoice']
+            inv_line_obj = env['account.invoice.line']
+            sale_obj = env['sale.order']
+            sale_line_obj = env['sale.order.line']
+            lines = inv_line_obj.browse(False)
+            val_lines = sale_obj._prepare_child_invoice_line(data)
+            for val in val_lines:
+                lines |= inv_line_obj.create(val)
+            invoice_vals = sale_obj._prepare_child_invoice(data, lines)
+            invoice = inv_obj.create(invoice_vals)
+            invoice.button_reset_taxes()
+            sales = sale_obj.search(data['__domain'])
+            sales.write({'invoice_ids': [(6, 0, [invoice.id])]})
+            order_lines = sale_line_obj.browse(False)
+            for sale in self:
+                for line in sale.order_line:
+                    order_lines |= line
+            order_lines._store_set_values(['invoiced'])
+            # Dummy call to workflow, will not create another invoice
+            # but bind the new invoice to the subflow
+            sales.signal_workflow('manual_invoice')
+            invoices |= invoice
+        return invoices
+
     @api.multi
     def action_child_invoice(self):
-        lines = self.env['account.invoice.line'].browse(False)
-        val_lines = self._prepare_child_invoice_line()
-        for val in val_lines:
-            lines |= self.env['account.invoice.line'].create(val)
-        invoice_vals = self._prepare_child_invoice(lines.ids)
-        invoice = self.env['account.invoice'].create(invoice_vals)
-        self.write({'invoice_ids': [(6, 0, [invoice.id])]})
-        invoice.button_reset_taxes()
-        order_lines = self.env['sale.order.line'].browse(False)
-        for sale in self:
-            for line in sale.order_line:
-                order_lines |= line
-        order_lines._store_set_values(['invoiced'])
-        return invoice
+        return self._generate_child_invoice([('id', 'in', self.ids)])
 
     @api.model
     def _make_invoice(self, order, lines):

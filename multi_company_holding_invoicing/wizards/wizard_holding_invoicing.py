@@ -39,9 +39,9 @@ class InvoiceWizard(models.TransientModel):
         for wizard in self:
             domain = wizard._get_invoice_domain()
             sales = self.env['sale.order'].search(domain)
-            invoice_ids = sales.with_context(invoice_date=self.date_invoice).\
+            invoices = sales.with_context(invoice_date=self.date_invoice).\
                 action_holding_invoice()
-        if invoice_ids:
+        if invoices:
             return {
                 'name': "Invoice Generated",
                 'res_model': 'account.invoice',
@@ -49,6 +49,6 @@ class InvoiceWizard(models.TransientModel):
                 'target': 'current',
                 'res_id': self.env.ref('account.action_invoice_tree1').id,
                 'view_mode': 'tree,form',
-                'domain': [('id', 'in', invoice_ids)]
+                'domain': [('id', 'in', invoices.ids)]
             }
         return True

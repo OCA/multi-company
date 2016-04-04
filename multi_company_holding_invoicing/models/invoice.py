@@ -52,22 +52,11 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def generate_child_invoice(self):
-        invoices = self.browse(False)
-        for company in self.env['res.company'].search([]):
-            sales = self.env['sale.order']\
-                .suspend_security()\
-                .with_context(force_company=company.id, from_holding=True)\
-                .search([
-                    ('holding_invoice_id', '=', self.id),
-                    ('company_id', '=', company.id),
-                    ])
-            if sales:
-                invoices |= sales.action_child_invoice()
-                # Dummy call to workflow, will not create another invoice
-                # but bind the new invoice to the subflow
-                sales.signal_workflow('manual_invoice')
-        for invoice in invoices:
-            invoice.signal_workflow('invoice_open')
+        for invoice in self:
+            child_invoices = self.holding_sale_ids.action_child_invoice()
+            child_invoices.write({'holding_invoice_id': invoice.id})
+            for child_invoice in child_invoices:
+                child_invoice.signal_workflow('invoice_open')
         return True
 
 

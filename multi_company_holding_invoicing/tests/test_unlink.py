@@ -7,10 +7,7 @@
 from .common import (
     CommonInvoicing,
     XML_SECTION_1,
-    XML_SECTION_2,
     XML_COMPANY_A,
-    XML_COMPANY_B,
-    XML_COMPANY_HOLDING,
     XML_PARTNER_ID,
     )
 

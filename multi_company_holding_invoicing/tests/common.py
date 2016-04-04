@@ -115,9 +115,8 @@ class CommonInvoicing(TransactionCase):
         self.assertAlmostEqual(
             expected_amount,
             computed_amount,
-            msg="For the company %s the invoice amount is %s"
-                "expected %s"
-                % (invoice.company_id.id, computed_amount, expected_amount))
+            msg="The total amoutn of child invoice is %s expected %s"
+                % (computed_amount, expected_amount))
 
     def _check_sale_state(self, sales, expected_state):
         for sale in sales:
@@ -128,17 +127,40 @@ class CommonInvoicing(TransactionCase):
 
     def _process_and_check_sale(
             self, section_xml_id, sale_xml_ids, expected_xml_ids):
+        "This function will test a full scenario of invoicing."
         # tests are called before register_hook
         # register suspend_security hook
         self.env['ir.rule']._register_hook()
+
+        # Check if current state of sale order is correct
+        sales = self._get_sales(sale_xml_ids)
+        self._check_sale_state(sales, 'not_ready')
+
+        # Validate the sale order (sale_xml_ids) and check the state
         self._validate_and_deliver_sale(sale_xml_ids)
+        sales = self._get_sales(expected_xml_ids)
+        self._check_sale_state(sales, 'invoiceable')
+
+        # Generate the holding invoice and check the :
+        # - sales invoiced
+        # - sales state
+        # - invoiced amount
         invoice = self._generate_holding_invoice(section_xml_id)
         self._check_number_of_invoice(invoice, 1)
-        sale_expected = self._get_sales(expected_xml_ids)
-        self._check_invoiced_sale_order(invoice, sale_expected)
-        self._check_sale_state(sale_expected, 'pending')
-        expected_amount = sum(sale_expected.mapped('amount_total'))
+        sales_expected = self._get_sales(expected_xml_ids)
+        self._check_invoiced_sale_order(invoice, sales_expected)
+        self._check_sale_state(sales_expected, 'pending')
+        expected_amount = sum(sales_expected.mapped('amount_total'))
         self._check_expected_invoice_amount(invoice, expected_amount)
+
+        # Validad Invoice and check sale invoice state
+        invoice.signal_workflow('invoice_open')
+        self._check_sale_state(sales_expected, 'invoiced')
+
+        # Generate the child invoice and check
+        # - that child invoice have been generated
+        # - check the invoiced amount
+        # - check the sale state
         invoice.generate_child_invoice()
         self._check_child_invoice(invoice)
         self._check_child_invoice_amount(invoice)
