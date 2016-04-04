@@ -93,29 +93,6 @@ class SaleOrder(models.Model):
             })
         return vals
 
-    @api.model
-    def _get_holding_invoice_domain(self, domain, company):
-        new_domain = domain[:] if domain is not None else []
-        new_domain.extend([
-            ('holding_company_id', '=', company.id),
-            ('company_id', '!=', company.id),
-            ('invoice_state', '=', 'invoiceable'),
-        ])
-        return new_domain
-
-    @api.multi
-    def _scheduler_action_holding_invoice_create(self, domain=None):
-        companies = self.env['res.company'].search([])
-        invoice_ids = []
-        for company in companies:
-            new_domain = self._get_holding_invoice_domain(domain, company)
-            sales = self.search(new_domain)
-            if sales:
-                invoice_ids.append(
-                    sales.with_context(force_company=company.id)
-                         .action_holding_invoice())
-        return invoice_ids
-
     @api.multi
     def _link_holding_invoice_to_order(self, invoice):
         self.write({'holding_invoice_id': invoice.id})
