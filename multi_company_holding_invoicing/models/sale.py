@@ -108,7 +108,7 @@ class SaleOrder(models.Model):
             val_lines = self._prepare_holding_invoice_line(data)
             for val in val_lines:
                 lines |= self.env['account.invoice.line'].create(val)
-            invoice_vals = sales._prepare_holding_invoice(data, lines)
+            invoice_vals = self._prepare_holding_invoice(data, lines)
             invoice = self.env['account.invoice'].create(invoice_vals)
             invoice.button_reset_taxes()
             sales = self.search(data['__domain'])

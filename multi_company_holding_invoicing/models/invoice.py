@@ -12,7 +12,6 @@ _logger = logging.getLogger(__name__)
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
-    company_sale_ids = fields.One2many('sale.order', 'holding_company_id')
     holding_sale_ids = fields.One2many('sale.order', 'holding_invoice_id')
     holding_sale_count = fields.Integer(
         compute='_holding_sale_count', string='# of Sales Order')
