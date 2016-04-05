@@ -6,7 +6,6 @@
 
 
 from openerp import models, fields, api, _
-from openerp.exceptions import Warning as UserError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -238,11 +237,3 @@ class SaleOrder(models.Model):
     @api.multi
     def action_child_invoice(self):
         return self._generate_child_invoice([('id', 'in', self.ids)])
-
-    @api.model
-    def _make_invoice(self, order, lines):
-        if order.section_id.holding_company_id:
-            raise UserError('The sale order %s must be invoiced via '
-                            'the holding company')
-        else:
-            return super(SaleOrder, self)._make_invoice(order, lines)

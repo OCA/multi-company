@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+<record id="view_sale_order_make_invoice" model="ir.ui.view">
+    <field name="model">sale.make.invoice</field>
+    <field name="inherit_id" ref="sale.view_sale_order_make_invoice"/>
+    <field name="arch" type="xml">
+        <group position="before">
+            <h1>
+                <label for="error"/>
+                <field name="error"/>
+            </h1>
+        </group>
+        <group position="attributes">
+            <attribute name="attrs">{'invisible': [('error', '!=', False)]}</attribute>
+        </group>
+        <button name="make_invoices" position="attributes">
+            <attribute name="attrs">{'invisible': [('error', '!=', False)]}</attribute>
+        </button>
+        <field name="grouped" position="after">
+            <field name="section_id"/>
+        </field>
+        <field name="grouped" position="attributes">
+            <attribute name="attrs">{'invisible': [('section_id', '!=', False)]}</attribute>
+        </field>
+
+    </field>
+</record>
+
+  </data>
+</openerp>

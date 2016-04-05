@@ -7,13 +7,11 @@
             <field name="inherit_id" ref="sales_team.crm_case_section_view_form"/>
             <field name="arch" type="xml">
                 <field name="user_id" position="before">
-                    <field name="holding_company_id" widget="selection"
-                           attrs="{'required': [('holding_supplier_automatic_invoice', '=', True)]}"/>
-                    <field name="holding_discount"/>
-                    <group string="Automatic Invoicing" colspan="4">
-                        <field name="holding_customer_automatic_invoice"/>
-                        <field name="holding_supplier_automatic_invoice"/>
-                    </group>
+                    <field name="holding_company_id" widget="selection"/>
+                    <field name="holding_discount"
+                        attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
+                    <field name="holding_invoice_generated_by"
+                        attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
                 </field>
             </field>
         </record>
