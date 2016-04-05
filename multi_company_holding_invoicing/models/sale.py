@@ -40,9 +40,11 @@ class SaleOrder(models.Model):
         store=True)
 
     @api.one
-    @api.depends('shipped', 'holding_invoice_id.state',
-                 'section_id.holding_company_id')
+    @api.depends('shipped', 'section_id.holding_company_id')
     def _get_invoice_state(self):
+        # Note for perf issue the 'holding_invoice_id.state' is not set here
+        # as a dependency. Indeed the dependency is manually triggered when
+        # the holding_invoice is generated or the state is changed
         for sale in self:
             if not sale.section_id.holding_company_id\
                     or sale.section_id.holding_company_id == sale.company_id:
@@ -56,6 +58,14 @@ class SaleOrder(models.Model):
                 sale.invoice_state = 'invoiceable'
             else:
                 sale.invoice_state = 'not_ready'
+
+    @api.multi
+    def _set_invoice_state(self, state):
+        if self:
+            self._cr.execute("""UPDATE sale_order
+                SET invoice_state=%s
+                WHERE id in %s""", (state, tuple(self.ids)))
+            self.invalidate_cache()
 
     @api.onchange('section_id')
     def onchange_section_id(self):
@@ -76,23 +86,25 @@ class SaleOrder(models.Model):
         # use first sale order as partner and section are the same
         sale = self.search(data['__domain'], limit=1)
         vals = self.env['sale.order']._prepare_invoice(sale, lines.ids)
-        section = self.env['crm.case.section'].browse(data['section_id'][0])
         vals.update({
             'origin': _('Holding Invoice'),
-            'company_id': section.holding_company_id.id,
+            'company_id': self._context['force_company'],
             'user_id': self._uid,
             })
         return vals
 
     @api.multi
     def _link_holding_invoice_to_order(self, invoice):
-        self.write({'holding_invoice_id': invoice.id})
+        self._cr.execute("""UPDATE sale_order
+            SET holding_invoice_id=%s, invoice_state='pending'
+            WHERE id in %s""", (invoice.id, tuple(self.ids)))
+        self.invalidate_cache()
 
     @api.model
     def _get_holding_group_fields(self):
         return [
-            ['partner_id', 'section_id', 'amount_total'],
-            ['partner_id', 'section_id'],
+            ['partner_invoice_id', 'section_id', 'amount_total'],
+            ['partner_invoice_id', 'section_id'],
         ]
 
     @api.model
@@ -103,15 +115,26 @@ class SaleOrder(models.Model):
     @api.model
     def _generate_holding_invoice(self, domain):
         invoices = self.env['account.invoice'].browse(False)
+        _logger.debug('Retrieve data for generating the holding invoice')
         for data in self._get_holding_invoice_data(domain):
-            lines = self.env['account.invoice.line'].browse(False)
-            val_lines = self._prepare_holding_invoice_line(data)
+            section = self.env['crm.case.section'].browse(
+                data['section_id'][0])
+            company = section.holding_company_id
+            env = self.with_context(force_company=company.id).env
+            inv_obj = env['account.invoice']
+            inv_line_obj = env['account.invoice.line']
+            sale_obj = env['sale.order']
+            _logger.debug('Prepare vals for holding invoice')
+            lines = inv_line_obj.browse(False)
+            val_lines = sale_obj._prepare_holding_invoice_line(data)
             for val in val_lines:
-                lines |= self.env['account.invoice.line'].create(val)
-            invoice_vals = self._prepare_holding_invoice(data, lines)
-            invoice = self.env['account.invoice'].create(invoice_vals)
+                lines |= inv_line_obj.create(val)
+            invoice_vals = sale_obj._prepare_holding_invoice(data, lines)
+            _logger.debug('Generate the holding invoice')
+            invoice = inv_obj.create(invoice_vals)
             invoice.button_reset_taxes()
-            sales = self.search(data['__domain'])
+            sales = sale_obj.search(data['__domain'])
+            _logger.debug('Link the holding invoice with the sale order')
             sales._link_holding_invoice_to_order(invoice)
             invoices |= invoice
         return invoices
@@ -174,8 +197,8 @@ class SaleOrder(models.Model):
     @api.model
     def _get_child_group_fields(self):
         return [
-            ['partner_id', 'section_id', 'company_id', 'amount_total'],
-            ['partner_id', 'section_id', 'company_id'],
+            ['partner_invoice_id', 'section_id', 'company_id', 'amount_total'],
+            ['partner_invoice_id', 'section_id', 'company_id'],
         ]
 
     @api.model

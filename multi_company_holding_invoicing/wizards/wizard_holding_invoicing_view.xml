@@ -11,9 +11,8 @@
             <newline/>
             <group>
               <field name="date_invoice"/>
-              <field name="company_id" invisible="1"/>
               <field name="section_id"
-                     domain="[('holding_invoice_id', '=', company_id)]"/>
+                     domain="[('holding_company_id', '!=', False)]"/>
             </group>
             <footer>
                 <button name="create_invoice"

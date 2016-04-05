@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 
 
 class InvoiceWizard(models.TransientModel):
@@ -17,17 +17,10 @@ class InvoiceWizard(models.TransientModel):
     section_id = fields.Many2one(
         'crm.case.section',
         required=True)
-    company_id = fields.Many2one(
-        'res.company',
-        compute='_compute_company')
 
-    @api.model
-    def _compute_company(self):
-        user = self.env['res.user'].browse(self._uid)
-        return user.company_id.id
-
-    @api.model
+    @api.multi
     def _get_invoice_domain(self):
+        self.ensure_one()
         return [
             ('section_id', '=', self.section_id.id),
             ('invoice_state', '=', 'invoiceable'),
@@ -43,7 +36,7 @@ class InvoiceWizard(models.TransientModel):
                 action_holding_invoice()
         if invoices:
             return {
-                'name': "Invoice Generated",
+                'name': _("Invoice Generated"),
                 'res_model': 'account.invoice',
                 'type': 'ir.actions.act_window',
                 'target': 'current',

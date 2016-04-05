@@ -39,15 +39,17 @@ class AccountInvoice(models.Model):
             inv.child_invoice_count = len(inv.child_invoice_ids)
 
     @api.multi
+    def invoice_validate(self):
+        for invoice in self:
+            invoice.holding_sale_ids._set_invoice_state('invoiced')
+        return super(AccountInvoice, self).invoice_validate()
+
+    @api.multi
     def unlink(self):
         sale_obj = self.env['sale.order']
         sales = sale_obj.search([('holding_invoice_id', 'in', self.ids)])
         res = super(AccountInvoice, self).unlink()
-        # We use an SQL request here for solving perf issue
-        if sales:
-            self._cr.execute("""UPDATE sale_order
-                SET invoice_state = 'invoiceable'
-                WHERE id in %s""", (tuple(sales.ids),))
+        sales._set_invoice_state('invoiceable')
         return res
 
     @api.multi
