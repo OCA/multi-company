@@ -36,12 +36,12 @@ class SaleOrder(models.Model):
         ('invoiced', 'Invoiced'),
         ], string='Holding Invoice Control',
         copy=False,
-        compute='_get_invoice_state',
+        compute='_compute_invoice_state',
         store=True)
 
     @api.one
     @api.depends('shipped', 'section_id.holding_company_id')
-    def _get_invoice_state(self):
+    def _compute_invoice_state(self):
         # Note for perf issue the 'holding_invoice_id.state' is not set here
         # as a dependency. Indeed the dependency is manually triggered when
         # the holding_invoice is generated or the state is changed
