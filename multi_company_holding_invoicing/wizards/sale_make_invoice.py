@@ -4,6 +4,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from openerp import models, fields, api, _
+from openerp.exceptions import Warning as UserError
 import logging
 _logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ class SaleMakeInvoice(models.TransientModel):
                     if user.company_id == section.holding_company_id:
                         return {
                             'error': (
-                                _('The sale order %s must be invoiced via '
+                                _('The sale order %s must be invoiced from '
                                   'the holding company')
                                 % (', '.join(sales.mapped('name'))))}
                 else:
@@ -69,15 +70,12 @@ class SaleMakeInvoice(models.TransientModel):
     @api.multi
     def make_invoices(self):
         self.ensure_one()
+        if self.error:
+            raise UserError(self.error)
         if self.section_id:
-            sales = self.env['sale.order'].browse(
-                self._context['active_ids'])
-            invoices = sales.suspend_security()\
-                .with_context(
-                    invoice_date=self.invoice_date,
-                    invoice_section_id=self.section_id.id,
-                    force_company=self.section_id.holding_company_id.id)\
-                .action_holding_invoice()
+            domain = [('id', 'in', self._context['active_ids'])]
+            invoices = self.env['holding.invoicing'].\
+                _generate_invoice(domain, date_invoice=self.invoice_date)
             if invoices:
                 return {
                     'name': _("Invoice Generated"),

@@ -31,9 +31,8 @@ class InvoiceWizard(models.TransientModel):
     def create_invoice(self):
         for wizard in self:
             domain = wizard._get_invoice_domain()
-            sales = self.env['sale.order'].search(domain)
-            invoices = sales.with_context(invoice_date=self.date_invoice).\
-                action_holding_invoice()
+            invoices = self.env['holding.invoicing'].\
+                _generate_invoice(domain, date_invoice=self.date_invoice)
         if invoices:
             return {
                 'name': _("Invoice Generated"),

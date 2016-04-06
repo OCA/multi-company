@@ -17,6 +17,12 @@ XML_PARTNER_ID = 'base.res_partner_2'
 
 class CommonInvoicing(TransactionCase):
 
+    def setUp(self):
+        super(CommonInvoicing, self).setUp()
+        # tests are called before register_hook
+        # register suspend_security hook
+        self.env['ir.rule']._register_hook()
+
     def _get_sales(self, xml_ids):
         sales = self.env['sale.order'].browse(False)
         for xml_id in xml_ids:
@@ -60,6 +66,16 @@ class CommonInvoicing(TransactionCase):
             'date_invoice': date_invoice,
             })
         res = wizard.create_invoice()
+        invoices = self.env['account.invoice'].browse(res['domain'][0][2])
+        return invoices
+
+    def _generate_holding_invoice_from_sale(self, sales):
+        date_invoice = datetime.today()
+        wizard = self.env['sale.make.invoice'].with_context(
+            active_ids=sales.ids).create({
+                'invoice_date': date_invoice,
+                })
+        res = wizard.make_invoices()
         invoices = self.env['account.invoice'].browse(res['domain'][0][2])
         return invoices
 
@@ -124,44 +140,3 @@ class CommonInvoicing(TransactionCase):
                 sale.invoice_state, expected_state,
                 msg="Invoice state is '%s' indeed of '%s'"
                     % (sale.invoice_state, expected_state))
-
-    def _process_and_check_sale(
-            self, section_xml_id, sale_xml_ids, expected_xml_ids):
-        "This function will test a full scenario of invoicing."
-        # tests are called before register_hook
-        # register suspend_security hook
-        self.env['ir.rule']._register_hook()
-
-        # Check if current state of sale order is correct
-        sales = self._get_sales(sale_xml_ids)
-        self._check_sale_state(sales, 'not_ready')
-
-        # Validate the sale order (sale_xml_ids) and check the state
-        self._validate_and_deliver_sale(sale_xml_ids)
-        sales = self._get_sales(expected_xml_ids)
-        self._check_sale_state(sales, 'invoiceable')
-
-        # Generate the holding invoice and check the :
-        # - sales invoiced
-        # - sales state
-        # - invoiced amount
-        invoice = self._generate_holding_invoice(section_xml_id)
-        self._check_number_of_invoice(invoice, 1)
-        sales_expected = self._get_sales(expected_xml_ids)
-        self._check_invoiced_sale_order(invoice, sales_expected)
-        self._check_sale_state(sales_expected, 'pending')
-        expected_amount = sum(sales_expected.mapped('amount_total'))
-        self._check_expected_invoice_amount(invoice, expected_amount)
-
-        # Validad Invoice and check sale invoice state
-        invoice.signal_workflow('invoice_open')
-        self._check_sale_state(sales_expected, 'invoiced')
-
-        # Generate the child invoice and check
-        # - that child invoice have been generated
-        # - check the invoiced amount
-        # - check the sale state
-        invoice.generate_child_invoice()
-        self._check_child_invoice(invoice)
-        self._check_child_invoice_amount(invoice)
-        return invoice

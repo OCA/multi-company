@@ -55,7 +55,9 @@ class AccountInvoice(models.Model):
     @api.multi
     def generate_child_invoice(self):
         for invoice in self:
-            child_invoices = self.holding_sale_ids.action_child_invoice()
+            child_invoices = self.env['child.invoicing']._generate_invoice([
+                ('id', 'in', self.holding_sale_ids.ids),
+                ])
             child_invoices.write({'holding_invoice_id': invoice.id})
             for child_invoice in child_invoices:
                 child_invoice.signal_workflow('invoice_open')
