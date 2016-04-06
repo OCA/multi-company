@@ -12,6 +12,8 @@
                         attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
                     <field name="holding_invoice_generated_by"
                         attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
+                    <field name="holding_invoice_group_by"
+                        attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
                 </field>
             </field>
         </record>

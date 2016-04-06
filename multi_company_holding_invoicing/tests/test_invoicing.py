@@ -42,3 +42,19 @@ class TestInvoicing(CommonInvoicing):
         self._process_and_check_sale(XML_SECTION_1, [1, 2, 3, 4], [1, 2, 3])
         sales = self._get_sales([4])
         self._check_sale_state(sales, 'none')
+
+    def test_invoice_market_1_one_company_one_partner_by_sale(self):
+        section = self.env.ref(XML_SECTION_1)
+        section.write({'holding_invoice_group_by': 'sale'})
+        self.test_invoice_market_1_one_company_one_partner()
+
+    def test_invoice_market_1_multi_company_one_partner_by_sale(self):
+        section = self.env.ref(XML_SECTION_1)
+        section.write({'holding_invoice_group_by': 'sale'})
+        self.test_invoice_market_1_multi_company_one_partner()
+
+    def test_invoice_market_1_multi_company_with_holding_one_partner_by_sale(
+            self):
+        section = self.env.ref(XML_SECTION_1)
+        section.write({'holding_invoice_group_by': 'sale'})
+        self.test_invoice_market_1_multi_company_with_holding_one_partner()

@@ -8,6 +8,7 @@
 from openerp import models, fields, api, _
 import logging
 _logger = logging.getLogger(__name__)
+from collections import defaultdict
 
 
 class SaleOrder(models.Model):
@@ -73,11 +74,29 @@ class SaleOrder(models.Model):
 
     @api.model
     def _prepare_holding_invoice_line(self, data):
-        return [{
-            'name': _('Global Invoice'),
-            'price_unit': data['amount_total'],
-            'quantity': 1,
-            }]
+        section_id = data['section_id'][0]
+        if section_id:
+            section = self.env['crm.case.section'].browse(section_id)
+            if section.holding_invoice_group_by == 'none':
+                return [{
+                    'name': _('Global Invoice'),
+                    'price_unit': data['amount_total'],
+                    'quantity': 1,
+                }]
+            else:
+                read_fields, groupby = self._get_holding_group_fields()
+                read_fields.append('name')
+                groupby.append('name')
+                datas = self.read_group(
+                    data['__domain'], read_fields, groupby, lazy=False)
+                res = []
+                for line in datas:
+                    res.append({
+                        'name': line['name'],
+                        'price_unit': line['amount_total'],
+                        'quantity': 1,
+                    })
+                return res
 
     @api.model
     def _prepare_holding_invoice(self, data, lines):
@@ -162,23 +181,40 @@ class SaleOrder(models.Model):
 
     @api.model
     def _prepare_child_invoice_line(self, data):
+        lines = []
         section = self.env['crm.case.section'].browse(data['section_id'][0])
-        domain = []
-        for arg in data['__domain']:
-            if len(arg) == 3:
-                domain.append(('order_id.%s' % arg[0], arg[1], arg[2]))
-        line_ids = self.env['sale.order.line'].search(domain).ids
-        return [{
-            'name': _('Global Invoice'),
-            'price_unit': data['amount_total'],
-            'quantity': 1,
-            'sale_line_ids': [(6, 0, line_ids)],
-            }, {
+        if section.holding_invoice_group_by == 'none':
+            read_fields, groupby = self._get_holding_group_fields()
+            read_fields.append('name')
+            groupby.append('name')
+            datas = self.read_group(
+                data['__domain'], read_fields, groupby, lazy=False)
+            res = []
+            for line in datas:
+                lines.append({
+                    'name': line['name'],
+                    'price_unit': line['amount_total'],
+                    'quantity': 1,
+                })
+        else:
+            domain = []
+            for arg in data['__domain']:
+                if len(arg) == 3:
+                    domain.append(('order_id.%s' % arg[0], arg[1], arg[2]))
+            line_ids = self.env['sale.order.line'].search(domain).ids
+            lines.append({
+                'name': _('Global Invoice'),
+                'price_unit': data['amount_total'],
+                'quantity': 1,
+                'sale_line_ids': [(6, 0, line_ids)],
+                })
+        lines.append({
             'name': _('Royalty'),
             'price_unit': data['amount_total'],
             'quantity': - section.holding_discount/100.,
             'sale_line_ids': [],
-            }]
+            })
+        return lines
 
     @api.model
     def _prepare_child_invoice(self, data, lines):

@@ -73,7 +73,10 @@ class SaleMakeInvoice(models.TransientModel):
             sales = self.env['sale.order'].browse(
                 self._context['active_ids'])
             invoices = sales.suspend_security()\
-                .with_context(invoice_date=self.invoice_date)\
+                .with_context(
+                    invoice_date=self.invoice_date,
+                    invoice_section_id=self.section_id.id,
+                    force_company=self.section_id.holding_company_id.id)\
                 .action_holding_invoice()
             if invoices:
                 return {
@@ -87,4 +90,4 @@ class SaleMakeInvoice(models.TransientModel):
                 }
             return True
         else:
-            super(SaleMakeInvoice, self).make_invoices()
+            return super(SaleMakeInvoice, self).make_invoices()
