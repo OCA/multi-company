@@ -24,7 +24,6 @@
      'views/sales_team_view.xml',
      'views/sale_view.xml',
      'views/account_invoice_view.xml',
-     'security/stock_security.xml',
      'wizards/wizard_holding_invoicing_view.xml',
      'wizards/sale_make_invoice_view.xml',
  ],

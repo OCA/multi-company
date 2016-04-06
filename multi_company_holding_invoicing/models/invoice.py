@@ -41,16 +41,24 @@ class AccountInvoice(models.Model):
     @api.multi
     def invoice_validate(self):
         for invoice in self:
+            if invoice.holding_sale_ids and invoice.user_id.id == self._uid:
+                invoice = invoice.suspend_security()
             invoice.holding_sale_ids._set_invoice_state('invoiced')
-        return super(AccountInvoice, self).invoice_validate()
+            super(AccountInvoice, self).invoice_validate()
+        return True
 
     @api.multi
     def unlink(self):
-        sale_obj = self.env['sale.order']
-        sales = sale_obj.search([('holding_invoice_id', 'in', self.ids)])
-        res = super(AccountInvoice, self).unlink()
-        sales._set_invoice_state('invoiceable')
-        return res
+        # Give some extra right to the user who have generated
+        # the holding invoice
+        for invoice in self:
+            if invoice.holding_sale_ids and invoice.user_id.id == self._uid:
+                invoice = invoice.suspend_security()
+            sale_obj = self.env['sale.order']
+            sales = sale_obj.search([('holding_invoice_id', '=', invoice.id)])
+            super(AccountInvoice, invoice).unlink()
+            sales._set_invoice_state('invoiceable')
+        return True
 
     @api.multi
     def generate_child_invoice(self):
