@@ -10,7 +10,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-class BaseInvoicing(models.AbstractModel):
+class BaseHoldingInvoicing(models.AbstractModel):
     _name = 'base.holding.invoicing'
 
     @api.model

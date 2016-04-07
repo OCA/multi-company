@@ -8,7 +8,6 @@
     <field name="arch" type="xml">
         <group position="before">
             <h1>
-                <label for="error"/>
                 <field name="error"/>
             </h1>
         </group>
