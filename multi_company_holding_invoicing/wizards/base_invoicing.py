@@ -31,7 +31,7 @@ class BaseHoldingInvoicing(models.AbstractModel):
     def _prepare_invoice_line(self, data_line):
         return {
             'name': data_line['name'],
-            'price_unit': data_line['amount_total'],
+            'price_unit': data_line['amount_untaxed'],
             'quantity': data_line.get('quantity', 1),
             }
 
@@ -105,7 +105,7 @@ class HoldingInvoicing(models.TransientModel):
     @api.model
     def _get_group_fields(self):
         return [
-            ['partner_invoice_id', 'section_id', 'amount_total'],
+            ['partner_invoice_id', 'section_id', 'amount_untaxed'],
             ['partner_invoice_id', 'section_id'],
         ]
 
@@ -149,7 +149,7 @@ class ChildInvoicing(models.TransientModel):
         data_lines = super(ChildInvoicing, self)._get_invoice_line_data(data)
         data_lines.append({
             'name': _('Royalty'),
-            'amount_total': data['amount_total'],
+            'amount_untaxed': data['amount_untaxed'],
             'quantity': - section.holding_discount/100.,
             'sale_line_ids': [],
             })
@@ -178,6 +178,6 @@ class ChildInvoicing(models.TransientModel):
     @api.model
     def _get_group_fields(self):
         return [
-            ['partner_invoice_id', 'section_id', 'company_id', 'amount_total'],
+            ['partner_invoice_id', 'section_id', 'company_id', 'amount_untaxed'],
             ['partner_invoice_id', 'section_id', 'company_id'],
         ]
