@@ -178,6 +178,7 @@ class ChildInvoicing(models.TransientModel):
     @api.model
     def _get_group_fields(self):
         return [
-            ['partner_invoice_id', 'section_id', 'company_id', 'amount_untaxed'],
+            ['partner_invoice_id', 'section_id',
+             'company_id', 'amount_untaxed'],
             ['partner_invoice_id', 'section_id', 'company_id'],
         ]
