@@ -74,8 +74,8 @@ class SaleMakeInvoice(models.TransientModel):
             raise UserError(self.error)
         if self.section_id:
             domain = [('id', 'in', self._context['active_ids'])]
-            invoices = self.env['holding.invoicing'].\
-                _generate_invoice(domain, date_invoice=self.invoice_date)
+            invoices = self.env['holding.invoicing'].suspend_security()\
+                ._generate_invoice(domain, date_invoice=self.invoice_date)
             if invoices:
                 return {
                     'name': _("Invoice Generated"),
