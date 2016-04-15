@@ -33,7 +33,7 @@ class SaleOrder(models.Model):
         ('invoiceable', 'Invoiceable'),
         ('pending', 'Pending'),
         ('invoiced', 'Invoiced'),
-        ], string='Holding Invoice Control',
+        ], string='Invoice State',
         copy=False,
         compute='_compute_invoice_state',
         store=True)

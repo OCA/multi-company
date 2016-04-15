@@ -16,6 +16,7 @@ class InvoiceWizard(models.TransientModel):
         default=fields.Datetime.now)
     section_id = fields.Many2one(
         'crm.case.section',
+        string="Sale Section",
         required=True)
 
     @api.multi
