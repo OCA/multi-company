@@ -11,7 +11,8 @@ class account_invoice(models.Model):
                                     copy=False, default=False)
     auto_invoice_id = fields.Many2one('account.invoice',
                                       string='Source Invoice',
-                                      readonly=True, copy=False)
+                                      readonly=True, copy=False,
+                                      _prefetch=False)
 
     @api.multi
     def invoice_validate(self):
@@ -167,11 +168,7 @@ class account_invoice(models.Model):
             'partner_bank_id': partner_data['value'].get(
                 'partner_bank_id', False),
             'auto_generated': True,
-            # The field auto_invoice_id raises a LOT of issues with record
-            # rules because it links an invoice in company A
-            # with an invoice in company B. It even blocks the creation of the
-            # inter-company invoice !  -- Alexis de Lattre
-            # 'auto_invoice_id': self.id,
+            'auto_invoice_id': self.id,
         }
 
     @api.model
