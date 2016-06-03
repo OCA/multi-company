@@ -63,6 +63,15 @@ class account_invoice(models.Model):
             raise UserError(_(
                 'Provide one user for intercompany relation for % ')
                 % company.name)
+        # if an invoice has already been genereted
+        # delete it and force the same number
+        inter_invoice = self.sudo(intercompany_uid).search(
+            [('auto_invoice_id', '=', self.id)])
+        force_number = False
+        if inter_invoice:
+            force_number = inter_invoice.internal_number
+            inter_invoice.internal_number = False
+            inter_invoice.unlink()
 
         context = self._context.copy()
         context['force_company'] = company.id
@@ -71,6 +80,8 @@ class account_invoice(models.Model):
         # create invoice, as the intercompany user
         invoice_vals = self.with_context(context).sudo()._prepare_invoice_data(
             inv_type, journal_type, company)[0]
+        if force_number:
+            invoice_vals['internal_number'] = force_number
         for line in self.invoice_line:
             if not line.product_id:
                 raise UserError(_(
