@@ -219,7 +219,8 @@ class account_invoice(models.Model):
         for invoice in self:
             company = self.env['res.company']._find_company_from_partner(
                 invoice.partner_id.id)
-            if company.intercompany_user_id and not invoice.auto_generated:
+            if (company and company.intercompany_user_id
+                    and not invoice.auto_generated):
                 intercompany_uid = company.intercompany_user_id.id
                 for inter_invoice in self.sudo(intercompany_uid).search(
                         [('auto_invoice_id', '=', invoice.id)]):
