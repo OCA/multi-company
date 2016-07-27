@@ -172,7 +172,9 @@ class ChildInvoicing(models.TransientModel):
     def _prepare_invoice(self, data, lines):
         vals = super(ChildInvoicing, self)._prepare_invoice(data, lines)
         sale = self.env['sale.order'].search(data['__domain'], limit=1)
-        vals['origin'] = sale.holding_invoice_id.name,
+        holding_invoice = sale.holding_invoice_id
+        vals['origin'] = holding_invoice.name
+        vals['partner_id'] = holding_invoice.company_id.partner_id.id
         return vals
 
     @api.model

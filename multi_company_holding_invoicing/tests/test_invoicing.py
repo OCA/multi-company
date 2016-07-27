@@ -47,10 +47,12 @@ class TestInvoicing(CommonInvoicing):
 
         # Generate the child invoice and check
         # - that child invoice have been generated
+        # - that the partner on child invoice is correct
         # - check the invoiced amount
         # - check the sale state
         invoice.generate_child_invoice()
         self._check_child_invoice(invoice)
+        self._check_child_invoice_partner(invoice)
         self._check_child_invoice_amount(invoice)
         return invoice
 

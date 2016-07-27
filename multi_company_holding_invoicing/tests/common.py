@@ -122,6 +122,15 @@ class CommonInvoicing(TransactionCase):
                     "expected sale order. Found %s, expected %s"
                     % (found_sales_name, expected_sales_name))
 
+    def _check_child_invoice_partner(self, invoice):
+        holding_partner = invoice.company_id.partner_id
+        for child in invoice.child_invoice_ids:
+            self.assertEqual(
+                child.partner_id.id,
+                holding_partner.id,
+                msg="The partner invoiced is not correct excepted %s get %s"
+                    % (holding_partner.name, child.partner_id.name))
+
     def _check_child_invoice_amount(self, invoice):
         discount = invoice.section_id.holding_discount
         expected_amount = invoice.amount_total * (1 - discount/100)
