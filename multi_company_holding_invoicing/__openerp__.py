@@ -5,7 +5,7 @@
 
 
 {'name': 'Multi Company Holding Invoicing',
- 'version': '1.0',
+ 'version': '8.0.0.0.1',
  'category': 'Accounting & Finance',
  'author': 'Akretion, Odoo Community Association (OCA)',
  'website': 'http://www.akretion.com/',

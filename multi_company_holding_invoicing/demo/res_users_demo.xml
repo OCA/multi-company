@@ -2,14 +2,14 @@
 <openerp>
     <data>
 
-<record id="user_a" model="res.users">
+<record id="user_a" model="res.users" context="{'no_reset_password': True}">
     <field name="name">Sébastien Beau</field>
     <field name="login">seb</field>
     <field name="company_id" ref="child_company_a"/>
     <field name="company_ids" eval="[(4, ref('child_company_a'))]"/>
 </record>
 
-<record id="user_b" model="res.users">
+<record id="user_b" model="res.users" context="{'no_reset_password': True}">
     <field name="name">Chafique Delli</field>
     <field name="login">chafique</field>
     <field name="company_id" ref="child_company_b"/>

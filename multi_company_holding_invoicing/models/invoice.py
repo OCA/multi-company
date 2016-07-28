@@ -14,27 +14,27 @@ class AccountInvoice(models.Model):
 
     holding_sale_ids = fields.One2many('sale.order', 'holding_invoice_id')
     holding_sale_count = fields.Integer(
-        compute='_holding_sale_count', string='# of Sales Order')
+        compute='_compute_holding_sale_count', string='# of Sales Order')
     sale_count = fields.Integer(
-        compute='_sale_count', string='# of Sales Order')
+        compute='_compute_sale_count', string='# of Sales Order')
     child_invoice_ids = fields.One2many(
         'account.invoice', 'holding_invoice_id')
     child_invoice_count = fields.Integer(
-        compute='_child_invoice_count', string='# of Invoice')
+        compute='_compute_child_invoice_count', string='# of Invoice')
     holding_invoice_id = fields.Many2one('account.invoice', 'Holding Invoice')
 
     @api.multi
-    def _holding_sale_count(self):
+    def _compute_holding_sale_count(self):
         for inv in self:
             inv.holding_sale_count = len(inv.holding_sale_ids)
 
     @api.multi
-    def _sale_count(self):
+    def _compute_sale_count(self):
         for inv in self:
             inv.sale_count = len(inv.sale_ids)
 
     @api.multi
-    def _child_invoice_count(self):
+    def _compute_child_invoice_count(self):
         for inv in self:
             inv.child_invoice_count = len(inv.child_invoice_ids)
 

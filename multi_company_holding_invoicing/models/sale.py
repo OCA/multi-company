@@ -38,7 +38,7 @@ class SaleOrder(models.Model):
         compute='_compute_invoice_state',
         store=True)
 
-    @api.one
+    @api.multi
     @api.depends('shipped', 'section_id.holding_company_id')
     def _compute_invoice_state(self):
         # Note for perf issue the 'holding_invoice_id.state' is not set here
