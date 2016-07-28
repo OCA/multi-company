@@ -67,6 +67,14 @@ class BaseHoldingInvoicing(models.AbstractModel):
         return NotImplemented
 
     @api.model
+    def _create_inv_lines(self, val_lines):
+        inv_line_obj = self.env['account.invoice.line']
+        lines = inv_line_obj.browse(False)
+        for val_line in val_lines:
+            lines |= inv_line_obj.create(val_line)
+        return lines
+
+    @api.model
     def _generate_invoice(self, domain, date_invoice=None):
         invoices = self.env['account.invoice'].browse(False)
         _logger.debug('Retrieve data for generating the invoice')
@@ -78,18 +86,15 @@ class BaseHoldingInvoicing(models.AbstractModel):
                 force_company=company.id,
                 invoice_date=date_invoice)
 
-            inv_obj = loc_self.env['account.invoice']
-            inv_line_obj = loc_self.env['account.invoice.line']
-
             _logger.debug('Prepare vals for holding invoice')
-            lines = inv_line_obj.browse(False)
             data_lines = loc_self._get_invoice_line_data(data)
+            val_lines = []
             for data_line in data_lines:
-                val_line = loc_self._prepare_invoice_line(data_line)
-                lines |= inv_line_obj.create(val_line)
+                val_lines.append(loc_self._prepare_invoice_line(data_line))
+            lines = loc_self._create_inv_lines(val_lines)
             invoice_vals = loc_self._prepare_invoice(data, lines)
             _logger.debug('Generate the holding invoice')
-            invoice = inv_obj.create(invoice_vals)
+            invoice = loc_self.env['account.invoice'].create(invoice_vals)
             invoice.button_reset_taxes()
             _logger.debug('Link the invoice with the sale order')
             sales = self.env['sale.order'].search(data['__domain'])

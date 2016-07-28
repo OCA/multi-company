@@ -14,13 +14,19 @@ class AccountInvoice(models.Model):
 
     holding_sale_ids = fields.One2many('sale.order', 'holding_invoice_id')
     holding_sale_count = fields.Integer(
-        compute='_compute_holding_sale_count', string='# of Sales Order')
+        compute='_compute_holding_sale_count',
+        string='# of Sales Order',
+        compute_sudo=True)
     sale_count = fields.Integer(
-        compute='_compute_sale_count', string='# of Sales Order')
+        compute='_compute_sale_count',
+        string='# of Sales Order',
+        compute_sudo=True)
     child_invoice_ids = fields.One2many(
         'account.invoice', 'holding_invoice_id')
     child_invoice_count = fields.Integer(
-        compute='_compute_child_invoice_count', string='# of Invoice')
+        compute='_compute_child_invoice_count',
+        string='# of Invoice',
+        compute_sudo=True)
     holding_invoice_id = fields.Many2one('account.invoice', 'Holding Invoice')
 
     @api.multi
@@ -36,7 +42,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_child_invoice_count(self):
         for inv in self:
-            inv.child_invoice_count = len(inv.child_invoice_ids)
+            inv.child_invoice_count = len(inv.sudo().child_invoice_ids)
 
     @api.multi
     def invoice_validate(self):
@@ -62,6 +68,8 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def generate_child_invoice(self):
+        # TODO add a group and check it
+        self = self.suspend_security()
         for invoice in self:
             child_invoices = self.env['child.invoicing']._generate_invoice([
                 ('id', 'in', self.holding_sale_ids.ids),
