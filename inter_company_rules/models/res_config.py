@@ -2,7 +2,7 @@
 from openerp import models, fields, api
 
 
-class inter_company_rules_configuration(models.TransientModel):
+class InterCompanyRulesConfig(models.TransientModel):
 
     _inherit = 'base.config.settings'
 

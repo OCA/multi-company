@@ -3,7 +3,7 @@ from openerp import api, fields, models, _, SUPERUSER_ID
 from openerp.exceptions import ValidationError
 
 
-class res_company(models.Model):
+class ResCompany(models.Model):
 
     _inherit = 'res.company'
 

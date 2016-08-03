@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from openerp import api, fields, models, _
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning as UserError
 
 
-class sale_order(models.Model):
+class SaleOrder(models.Model):
 
     _inherit = "sale.order"
 
@@ -16,7 +16,7 @@ class sale_order(models.Model):
     @api.multi
     def action_button_confirm(self):
         """ Generate inter company purchase order based on conditions """
-        res = super(sale_order, self).action_button_confirm()
+        res = super(SaleOrder, self).action_button_confirm()
         for order in self:
             # if company_id not found, return to normal behavior
             if not order.company_id:
@@ -48,13 +48,13 @@ class sale_order(models.Model):
         intercompany_uid = (company.intercompany_user_id and
                             company.intercompany_user_id.id or False)
         if not intercompany_uid:
-            raise Warning(_(
+            raise UserError(_(
                 'Provide one user for intercompany relation for % ')
                 % company.name)
         # check intercompany user access rights
         if not PurchaseOrder.sudo(intercompany_uid).check_access_rights(
                 'create', raise_exception=False):
-            raise Warning(_(
+            raise UserError(_(
                 "Inter company user of company %s doesn't have enough "
                 "access rights") % company.name)
 
@@ -62,7 +62,7 @@ class sale_order(models.Model):
         if self.pricelist_id.currency_id.id != (
             company_partner.property_product_pricelist_purchase.
                 currency_id.id):
-            raise Warning(_(
+            raise UserError(_(
                 'You cannot create PO from SO because '
                 'purchase pricelist currency is different than '
                 'sale pricelist currency.'))
@@ -103,7 +103,7 @@ class sale_order(models.Model):
                      company.warehouse_id.company_id.id == company.id and
                      company.warehouse_id or False)
         if not warehouse:
-            raise Warning(_(
+            raise UserError(_(
                 'Configure correct warehouse for company(%s) from '
                 'Menu: Settings/companies/companies' % (company.name)))
 
