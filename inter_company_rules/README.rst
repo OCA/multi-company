@@ -50,6 +50,7 @@ Contributors
 * Odoo S.A.
 * Chafique Delli <chafique.delli@akretion.com>
 * Alexis de Lattre <alexis.delattre@akretion.com>
+* Lorenzo Battistini <lorenzo.battistini@agilebg.com>
 
 Maintainer
 ----------
