@@ -73,6 +73,7 @@
     assert supplier_invoice.invoice_line[0].account_id.company_id.id == ref("company_b"), "Applied account in created invoice line is not relevant to company."
     
     assert supplier_invoice.state == "draft", "invoice should be in draft state."
-    assert supplier_invoice.amount_total == 450.0, "Total amount is incorrect."
+    # invoice total must include tax (in configurable CoA is 15%)
+    assert supplier_invoice.amount_total == 517.5, "Total amount is incorrect. Found %s" % supplier_invoice.amount_total
     assert supplier_invoice.company_id.id == ref("company_b"), "Applied company in created invoice is incorrect."
     assert supplier_invoice.account_id.company_id.id == ref("company_b"), "Applied account in created invoice is not relevant to company."

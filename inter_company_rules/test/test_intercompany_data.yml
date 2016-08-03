@@ -101,6 +101,12 @@
       - base.group_sale_salesman
       - purchase.group_purchase_user
 -
+  !record {model: res.company, id: company_a, view: False}:
+    intercompany_user_id: res_users_company_a
+-
+  !record {model: res.company, id: company_b, view: False}:
+    intercompany_user_id: res_users_company_b
+-
   Install COA for new companies.
 -
   !python {model: account.installer}: |
