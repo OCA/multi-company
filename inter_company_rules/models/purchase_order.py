@@ -133,20 +133,24 @@ class PurchaseOrder(models.Model):
         # it may not affected because of parallel company relation
         price = line.price_unit or 0.0
         taxes = line.taxes_id
+        product = None
         if line.product_id:
-            taxes = line.product_id.taxes_id
+            # make a new browse otherwise line._uid keeps the purchasing
+            # company's user and can't see the selling company's taxes
+            product = self.env['product.product'].browse(line.product_id.id)
+            taxes = product.taxes_id
         company_taxes = [tax_rec.id
                          for tax_rec in taxes
                          if tax_rec.company_id.id == company.id]
         return {
-            'name': line.product_id and line.product_id.name or line.name,
+            'name': product and product.name or line.name,
             'order_id': sale_id,
             'product_uom_qty': line.product_qty,
-            'product_id': line.product_id and line.product_id.id or False,
-            'product_uom': (line.product_id and line.product_id.uom_id.id or
+            'product_id': product and product.id or False,
+            'product_uom': (product and product.uom_id.id or
                             line.product_uom.id),
             'price_unit': price,
-            'delay': line.product_id and line.product_id.sale_delay or 0.0,
+            'delay': product and product.sale_delay or 0.0,
             'company_id': company.id,
             'tax_id': [(6, 0, company_taxes)],
         }
