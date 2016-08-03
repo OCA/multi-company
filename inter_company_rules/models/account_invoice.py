@@ -3,7 +3,7 @@ from openerp import api, fields, models, _
 from openerp.exceptions import Warning as UserError
 
 
-class account_invoice(models.Model):
+class AccountInvoice(models.Model):
 
     _inherit = 'account.invoice'
 
@@ -40,7 +40,7 @@ class account_invoice(models.Model):
                     invoice.inter_company_create_invoice(company,
                                                          'out_refund',
                                                          'sale_refund')
-        return super(account_invoice, self).invoice_validate()
+        return super(AccountInvoice, self).invoice_validate()
 
     @api.one
     def inter_company_create_invoice(self, company, inv_type, journal_type):
@@ -219,10 +219,12 @@ class account_invoice(models.Model):
         for invoice in self:
             company = self.env['res.company']._find_company_from_partner(
                 invoice.partner_id.id)
-            if (company and company.intercompany_user_id
-                    and not invoice.auto_generated):
+            if (
+                company and company.intercompany_user_id and not
+                invoice.auto_generated
+            ):
                 intercompany_uid = company.intercompany_user_id.id
                 for inter_invoice in self.sudo(intercompany_uid).search(
                         [('auto_invoice_id', '=', invoice.id)]):
                     inter_invoice.signal_workflow('invoice_cancel')
-        return super(account_invoice, self).action_cancel()
+        return super(AccountInvoice, self).action_cancel()

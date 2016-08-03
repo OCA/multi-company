@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from openerp import api, fields, models, _
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning as UserError
 
 
-class purchase_order(models.Model):
+class PurchaseOrder(models.Model):
 
     _inherit = "purchase.order"
 
@@ -16,7 +16,7 @@ class purchase_order(models.Model):
     @api.multi
     def wkf_confirm_order(self):
         """ Generate inter company sale order base on conditions."""
-        res = super(purchase_order, self).wkf_confirm_order()
+        res = super(PurchaseOrder, self).wkf_confirm_order()
         for order in self:
             # get the company from partner then trigger action of
             # intercompany relation
@@ -44,20 +44,20 @@ class purchase_order(models.Model):
         intercompany_uid = (company.intercompany_user_id and
                             company.intercompany_user_id.id or False)
         if not intercompany_uid:
-            raise Warning(_(
+            raise UserError(_(
                 'Provide at least one user for inter company relation for % ')
                 % company.name)
         # check intercompany user access rights
         if not SaleOrder.sudo(intercompany_uid).check_access_rights(
                 'create', raise_exception=False):
-            raise Warning(_(
+            raise UserError(_(
                 "Inter company user of company %s doesn't have enough "
                 "access rights") % company.name)
 
         # check pricelist currency should be same with SO/PO document
         if self.pricelist_id.currency_id.id != (
                 company_partner.property_product_pricelist.currency_id.id):
-            raise Warning(_(
+            raise UserError(_(
                 'You cannot create SO from PO because '
                 'sale price list currency is different than '
                 'purchase price list currency.'))
@@ -102,8 +102,10 @@ class purchase_order(models.Model):
                                                    'delivery',
                                                    'contact'])
         return {
-            'name': (self.env['ir.sequence'].sudo().next_by_code('sale.order')
-                     or '/'),
+            'name': (
+                self.env['ir.sequence'].sudo().next_by_code('sale.order') or
+                '/'
+            ),
             'company_id': company.id,
             'client_order_ref': name,
             'partner_id': partner.id,
