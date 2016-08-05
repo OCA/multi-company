@@ -38,7 +38,6 @@ class PurchaseOrder(models.Model):
             :rtype company : res.company record
         """
         SaleOrder = self.env['sale.order']
-        company_partner = self.company_id.partner_id
 
         # find user for creating and validation SO/PO from partner company
         intercompany_uid = (company.intercompany_user_id and
@@ -53,6 +52,11 @@ class PurchaseOrder(models.Model):
             raise UserError(_(
                 "Inter company user of company %s doesn't have enough "
                 "access rights") % company.name)
+
+        # Accessing to selling partner with selling user, so data like
+        # property_account_position can be retrieved
+        company_partner = self.env['res.partner'].sudo(
+            intercompany_uid).browse(self.company_id.partner_id.id)
 
         # check pricelist currency should be same with SO/PO document
         if self.pricelist_id.currency_id.id != (
