@@ -147,7 +147,7 @@ class PurchaseOrder(models.Model):
                          for tax_rec in taxes
                          if tax_rec.company_id.id == company.id]
         return {
-            'name': product and product.name or line.name,
+            'name': line.name,
             'order_id': sale_id,
             'product_uom_qty': line.product_qty,
             'product_id': product and product.id or False,
