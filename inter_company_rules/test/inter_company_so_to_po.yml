@@ -1,4 +1,9 @@
 -
+  I set 'Service' product with no company
+-
+  !python {model: product.product}: |
+    self.write(cr, uid, [ref('product_consultant')], {'company_id': None})
+-
   In order to check Inter-Company Rule of creating PO from SO, I login with user company A
 -
   !context
