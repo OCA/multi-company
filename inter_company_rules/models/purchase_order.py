@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from openerp import api, fields, models, _
-from openerp.exceptions import Warning
+from openerp.exceptions import Warning as UserError
 
 
-class purchase_order(models.Model):
+class PurchaseOrder(models.Model):
 
     _inherit = "purchase.order"
 
@@ -16,7 +16,7 @@ class purchase_order(models.Model):
     @api.multi
     def wkf_confirm_order(self):
         """ Generate inter company sale order base on conditions."""
-        res = super(purchase_order, self).wkf_confirm_order()
+        res = super(PurchaseOrder, self).wkf_confirm_order()
         for order in self:
             # get the company from partner then trigger action of
             # intercompany relation
@@ -38,26 +38,30 @@ class purchase_order(models.Model):
             :rtype company : res.company record
         """
         SaleOrder = self.env['sale.order']
-        company_partner = self.company_id.partner_id
 
         # find user for creating and validation SO/PO from partner company
         intercompany_uid = (company.intercompany_user_id and
                             company.intercompany_user_id.id or False)
         if not intercompany_uid:
-            raise Warning(_(
+            raise UserError(_(
                 'Provide at least one user for inter company relation for % ')
                 % company.name)
         # check intercompany user access rights
         if not SaleOrder.sudo(intercompany_uid).check_access_rights(
                 'create', raise_exception=False):
-            raise Warning(_(
+            raise UserError(_(
                 "Inter company user of company %s doesn't have enough "
                 "access rights") % company.name)
+
+        # Accessing to selling partner with selling user, so data like
+        # property_account_position can be retrieved
+        company_partner = self.env['res.partner'].sudo(
+            intercompany_uid).browse(self.company_id.partner_id.id)
 
         # check pricelist currency should be same with SO/PO document
         if self.pricelist_id.currency_id.id != (
                 company_partner.property_product_pricelist.currency_id.id):
-            raise Warning(_(
+            raise UserError(_(
                 'You cannot create SO from PO because '
                 'sale price list currency is different than '
                 'purchase price list currency.'))
@@ -102,8 +106,10 @@ class purchase_order(models.Model):
                                                    'delivery',
                                                    'contact'])
         return {
-            'name': (self.env['ir.sequence'].sudo().next_by_code('sale.order')
-                     or '/'),
+            'name': (
+                self.env['ir.sequence'].sudo().next_by_code('sale.order') or
+                '/'
+            ),
             'company_id': company.id,
             'client_order_ref': name,
             'partner_id': partner.id,
@@ -131,20 +137,24 @@ class purchase_order(models.Model):
         # it may not affected because of parallel company relation
         price = line.price_unit or 0.0
         taxes = line.taxes_id
+        product = None
         if line.product_id:
-            taxes = line.product_id.taxes_id
+            # make a new browse otherwise line._uid keeps the purchasing
+            # company's user and can't see the selling company's taxes
+            product = self.env['product.product'].browse(line.product_id.id)
+            taxes = product.taxes_id
         company_taxes = [tax_rec.id
                          for tax_rec in taxes
                          if tax_rec.company_id.id == company.id]
         return {
-            'name': line.product_id and line.product_id.name or line.name,
+            'name': line.name,
             'order_id': sale_id,
             'product_uom_qty': line.product_qty,
-            'product_id': line.product_id and line.product_id.id or False,
-            'product_uom': (line.product_id and line.product_id.uom_id.id or
+            'product_id': product and product.id or False,
+            'product_uom': (product and product.uom_id.id or
                             line.product_uom.id),
             'price_unit': price,
-            'delay': line.product_id and line.product_id.sale_delay or 0.0,
+            'delay': product and product.sale_delay or 0.0,
             'company_id': company.id,
             'tax_id': [(6, 0, company_taxes)],
         }
