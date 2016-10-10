@@ -84,7 +84,7 @@ class AccountInvoiceLine(models.Model):
     _inherit = 'account.invoice.line'
 
     sale_line_ids = fields.Many2many(
-        comodel_name='account.invoice.line',
+        comodel_name='sale.order.line',
         relation='sale_order_line_invoice_rel',
         column1='invoice_id',
         column2='order_line_id')
