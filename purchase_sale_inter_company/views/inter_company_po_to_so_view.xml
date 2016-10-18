@@ -9,6 +9,7 @@
                 <xpath expr="//notebook" position="inside">
                     <page string="Inter-Company">
                         <group string="Purchase to Sale">
+                            <field name="warehouse_id" attrs="{'required': True}" domain="[('company_id', '=', active_id)]"/>
                             <field name="sale_auto_validation"/>
                             <field name="intercompany_user_id" colspan="2" attrs="{'required': True}" domain="[('id', '!=', 1), ('company_id', '=', id)]"/>
                         </group>
