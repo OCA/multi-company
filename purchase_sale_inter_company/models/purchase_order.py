@@ -67,10 +67,10 @@ class PurchaseOrder(models.Model):
             self.name, company_partner, company,
             self.dest_address_id and self.dest_address_id.id or False)
         sale_order = SaleOrder.sudo(intercompany_uid).create(
-            sale_order_data[0])
-        for line in self.order_line:
+            sale_order_data)
+        for po_line in self.order_line:
             so_line_vals = self.sudo()._prepare_sale_order_line_data(
-                line, company, sale_order.id)
+                po_line, company, sale_order.id)
             SaleOrderLine.sudo(intercompany_uid).create(so_line_vals)
 
         # write supplier reference field on PO
@@ -99,6 +99,14 @@ class PurchaseOrder(models.Model):
                                                    'invoice',
                                                    'delivery',
                                                    'contact'])
+        # find location and warehouse, pick warehouse from company object
+        warehouse = (company.warehouse_id and
+                     company.warehouse_id.company_id.id == company.id and
+                     company.warehouse_id or False)
+        if not warehouse:
+            raise UserError(_(
+                'Configure correct warehouse for company(%s) from '
+                'Menu: Settings/companies/companies' % (company.name)))
         return {
             'name': (
                 self.env['ir.sequence'].sudo().next_by_code('sale.order') or
@@ -107,6 +115,7 @@ class PurchaseOrder(models.Model):
             'company_id': company.id,
             'client_order_ref': name,
             'partner_id': partner.id,
+            'warehouse_id': warehouse.id,
             'pricelist_id': partner.property_product_pricelist.id,
             'partner_invoice_id': partner_addr['invoice'],
             'date_order': self.date_order,

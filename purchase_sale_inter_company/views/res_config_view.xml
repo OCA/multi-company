@@ -10,6 +10,10 @@
                     <div name="module_purchase_sale_inter_company_company_id">
                         <field name="company_id" widget="selection" class="oe_inline"/>
                     </div>
+                    <div name="module_purchase_sale_inter_company_warehouse_id">
+                        <label for="warehouse_id"/>
+                        <field name="warehouse_id" class="oe_inline" attrs="{'required': True}" domain="[('company_id', '=', company_id)]"/>
+                    </div>
                     <div name="module_purchase_sale_inter_company_set_sale_auto_validation">
                         <field name="sale_auto_validation"/>
                         <label for="sale_auto_validation"/>
