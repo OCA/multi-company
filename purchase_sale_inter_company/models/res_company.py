@@ -18,6 +18,10 @@ class ResCompany(models.Model):
         "intercompany rules. You cannot select the administrator, because "
         "the administrator by-passes the record rules, which is a problem "
         "when Odoo reads taxes on products.")
+    warehouse_id = fields.Many2one(
+        'stock.warehouse', string='Warehouse For Sale Orders',
+        help="Default value to set on Sale Orders that "
+        "will be created based on Purchase Orders made to this company")
 
     @api.model
     def _find_company_from_partner(self, partner_id):
