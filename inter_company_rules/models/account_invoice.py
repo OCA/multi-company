@@ -109,7 +109,7 @@ class AccountInvoice(models.Model):
         if company.auto_validation:
             invoice.signal_workflow('invoice_open')
         else:
-            invoice.button_reset_taxes()
+            invoice.compute_taxes()
         return True
 
     @api.one

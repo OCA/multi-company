@@ -14,9 +14,9 @@ class PurchaseOrder(models.Model):
                                          readonly=True, copy=False)
 
     @api.multi
-    def wkf_confirm_order(self):
+    def button_confirm(self):
         """ Generate inter company sale order base on conditions."""
-        res = super(PurchaseOrder, self).wkf_confirm_order()
+        res = super(PurchaseOrder, self).button_confirm()
         for order in self:
             # get the company from partner then trigger action of
             # intercompany relation
@@ -44,7 +44,7 @@ class PurchaseOrder(models.Model):
                             company.intercompany_user_id.id or False)
         if not intercompany_uid:
             raise UserError(_(
-                'Provide at least one user for inter company relation for % ')
+                'Provide at least one user for inter company relation for %s')
                 % company.name)
         # check intercompany user access rights
         if not SaleOrder.sudo(intercompany_uid).check_access_rights(
@@ -59,7 +59,7 @@ class PurchaseOrder(models.Model):
             intercompany_uid).browse(self.company_id.partner_id.id)
 
         # check pricelist currency should be same with SO/PO document
-        if self.pricelist_id.currency_id.id != (
+        if self.currency_id.id != (
                 company_partner.property_product_pricelist.currency_id.id):
             raise UserError(_(
                 'You cannot create SO from PO because '
@@ -86,7 +86,7 @@ class PurchaseOrder(models.Model):
 
         # Validation of sale order
         if company.auto_validation:
-            sale_order.sudo(intercompany_uid).signal_workflow('order_confirm')
+            sale_order.sudo(intercompany_uid).action_confirm()
 
     @api.one
     def _prepare_sale_order_data(self, name, partner, company,
@@ -116,13 +116,14 @@ class PurchaseOrder(models.Model):
             'pricelist_id': partner.property_product_pricelist.id,
             'partner_invoice_id': partner_addr['invoice'],
             'date_order': self.date_order,
-            'fiscal_position': (partner.property_account_position and
-                                partner.property_account_position.id or False),
+            'fiscal_position_id': partner.property_account_position_id.id,
             'user_id': False,
             'auto_generated': True,
             'auto_purchase_order_id': self.id,
             'partner_shipping_id': (direct_delivery_address or
-                                    partner_addr['delivery'])
+                                    partner_addr['delivery']),
+            'warehouse_id': company.warehouse_id.filtered(
+                lambda x: x.company_id == company).id,
         }
 
     @api.model
@@ -154,7 +155,7 @@ class PurchaseOrder(models.Model):
             'product_uom': (product and product.uom_id.id or
                             line.product_uom.id),
             'price_unit': price,
-            'delay': product and product.sale_delay or 0.0,
+            'customer_lead': product and product.sale_delay or 0.0,
             'company_id': company.id,
             'tax_id': [(6, 0, company_taxes)],
         }

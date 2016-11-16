@@ -20,7 +20,7 @@
 ##############################################################################
 {
     'name': 'Inter Company Module for Sale/Purchase Orders and Invoices',
-    'version': '8.0.1.1.0',
+    'version': '9.0.1.0.0',
     'summary': 'Intercompany SO/PO/INV rules',
     'author': 'Odoo SA, Odoo Community Association (OCA)',
     'website': 'http://www.odoo.com',
@@ -41,7 +41,5 @@
         'test/inter_company_po_to_so.yml',
         'test/inter_company_invoice.yml'
     ],
-    'demo': [],
     'installable': True,
-    'auto_install': False,
 }

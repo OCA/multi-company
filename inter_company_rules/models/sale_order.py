@@ -14,9 +14,9 @@ class SaleOrder(models.Model):
                                              readonly=True, copy=False)
 
     @api.multi
-    def action_button_confirm(self):
+    def action_confirm(self):
         """ Generate inter company purchase order based on conditions """
-        res = super(SaleOrder, self).action_button_confirm()
+        res = super(SaleOrder, self).action_confirm()
         for order in self:
             # if company_id not found, return to normal behavior
             if not order.company_id:
@@ -86,8 +86,7 @@ class SaleOrder(models.Model):
 
         # auto-validate the purchase order if needed
         if company.auto_validation:
-            purchase_order.sudo(intercompany_uid).signal_workflow(
-                'purchase_confirm')
+            purchase_order.sudo(intercompany_uid).button_confirm()
 
     @api.one
     def _prepare_purchase_order_data(self, company, company_partner):
@@ -117,15 +116,14 @@ class SaleOrder(models.Model):
                              property_product_pricelist_purchase.id),
             'date_order': self.date_order,
             'company_id': company.id,
-            'fiscal_position': (company_partner.property_account_position or
-                                False),
-            'payment_term_id': (company_partner.
-                                property_supplier_payment_term.id or False),
+            'fiscal_position_id':
+                company_partner.property_account_position_id.id,
+            'payment_term_id':
+                company_partner.property_supplier_payment_term_id.id,
             'auto_generated': True,
             'auto_sale_order_id': self.id,
             'partner_ref': self.name,
-            'dest_address_id': (self.partner_shipping_id and
-                                self.partner_shipping_id.id or False),
+            'dest_address_id': self.partner_shipping_id.id,
         }
 
     @api.model
