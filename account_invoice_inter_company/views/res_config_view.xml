@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_general_configuration_account_invoice_inter_company" model="ir.ui.view">
+            <field name="model">base.config.settings</field>
+            <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='multi_company']" position='after'>
+                    <div name="module_account_invoice_inter_company_company_id">
+                        <label for="company_id"/>
+                        <field name="company_id" widget="selection" class="oe_inline"/>
+                    </div>
+                    <div name="module_account_invoice_inter_company_set_invoice_auto_validation" attrs="{'invisible':[('company_id', '=', False)]}">
+                        <field name="invoice_auto_validation"/>
+                        <label for="invoice_auto_validation"/>
+                    </div>
+                 </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
