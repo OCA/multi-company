@@ -15,12 +15,12 @@
         'sale',
         'purchase',
         'sale_stock',
-        'sale_order_dates'
+        'sale_order_dates',
+        'account_invoice_inter_company'
     ],
     'data': [
         'views/inter_company_po_to_so_view.xml',
         'views/res_config_view.xml',
-        'config.yml'
     ],
     'test': [
         'test/test_intercompany_data.yml',
