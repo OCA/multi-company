@@ -42,7 +42,7 @@ class AccountInvoice(models.Model):
                                                              'sale_refund')
         return super(AccountInvoice, self).invoice_validate()
 
-    @api.one
+    @api.multi
     def inter_company_create_invoice(
             self, dest_company, dest_inv_type, dest_journal_type):
         """ create an invoice for the given company : it will copy "
@@ -57,6 +57,9 @@ class AccountInvoice(models.Model):
             "to register the invoice
             :rtype dest_journal_type : string
         """
+        self.ensure_one()
+        AccountInvoice = self.env['account.invoice']
+
         # find user for creating the invoice from company
         intercompany_uid = (dest_company.intercompany_user_id and
                             dest_company.intercompany_user_id.id or False)
@@ -64,6 +67,12 @@ class AccountInvoice(models.Model):
             raise UserError(_(
                 'Provide one user for intercompany relation for % ')
                 % dest_company.name)
+        # check intercompany user access rights
+        if not AccountInvoice.sudo(intercompany_uid).check_access_rights(
+                'create', raise_exception=False):
+            raise UserError(_(
+                "Inter company user of company %s doesn't have enough "
+                "access rights") % dest_company.name)
 
         # check intercompany product
         for line in self.invoice_line:
@@ -116,11 +125,6 @@ class AccountInvoice(models.Model):
             dest_inv_line_data = self.sudo()._prepare_invoice_line_data(
                 dest_line_data, src_line)
             dest_invoice_lines.append((0, 0, dest_inv_line_data))
-        # create invoice, as the intercompany user
-        dest_invoice_vals = self.with_context(
-            context).sudo()._prepare_invoice_data(
-                dest_invoice_lines, dest_inv_type,
-                dest_journal_type, dest_company)[0]
         dest_invoice = self.with_context(context).sudo(
             intercompany_uid).create(dest_invoice_vals)
         if dest_company.invoice_auto_validation:
