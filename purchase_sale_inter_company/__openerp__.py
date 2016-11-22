@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
-    'name': 'Inter Company Module for Purchase to Sale Orders',
+    'name': 'Inter Company Module for Purchase to Sale Order',
     'summary': 'Intercompany PO/SO rules',
     'version': '8.0.1.0.0',
     'category': 'Purchase Management',
