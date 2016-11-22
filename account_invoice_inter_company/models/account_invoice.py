@@ -64,6 +64,17 @@ class AccountInvoice(models.Model):
             raise UserError(_(
                 'Provide one user for intercompany relation for % ')
                 % dest_company.name)
+
+        # check intercompany product
+        for line in self.invoice_line:
+            try:
+                line.product_id.sudo(intercompany_uid).read()
+            except:
+                raise UserError(_(
+                    "You cannot create invoice in company '%s' because "
+                    "product '%s' is not intercompany")
+                    % (dest_company.name, line.product_id.name))
+
         # if an invoice has already been genereted
         # delete it and force the same number
         inter_invoice = self.sudo(intercompany_uid).search(
