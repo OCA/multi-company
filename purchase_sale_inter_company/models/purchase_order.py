@@ -16,7 +16,8 @@ class PurchaseOrder(models.Model):
             # intercompany relation
             company_rec = self.env['res.company']._find_company_from_partner(
                 purchase_order.partner_id.id)
-            purchase_order.inter_company_create_sale_order(company_rec)
+            if company_rec:
+                purchase_order.inter_company_create_sale_order(company_rec)
         return res
 
     @api.multi
@@ -45,6 +46,15 @@ class PurchaseOrder(models.Model):
             raise UserError(_(
                 "Inter company user of company %s doesn't have enough "
                 "access rights") % company.name)
+
+        # check intercompany product
+        for line in self.order_line:
+            try:
+                line.product_id.sudo(intercompany_uid).read()
+            except:
+                raise UserError(_(
+                    "You cannot create SO from PO because product '%s' "
+                    "is not intercompany") % line.product_id.name)
 
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
