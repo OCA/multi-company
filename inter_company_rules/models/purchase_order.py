@@ -159,3 +159,43 @@ class PurchaseOrder(models.Model):
             'company_id': company.id,
             'tax_id': [(6, 0, company_taxes)],
         }
+
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    @api.multi
+    def do_transfer(self):
+        # Only DropShip pickings
+        po_picks = self.browse()
+        for pick in self.filtered(
+                lambda x: x.location_dest_id.usage == 'customer'):
+            purchase = pick.sale_id.auto_purchase_order_id
+            if not purchase:
+                continue
+            for operation in pick.pack_operation_product_ids:
+                po_operations = purchase.sudo().picking_ids.mapped(
+                        'pack_operation_product_ids').filtered(
+                            lambda x: x.product_id == operation.product_id and
+                            not x.processed_boolean)
+                qty_done = operation.qty_done
+                for po_operation in po_operations:
+                    if po_operation.product_qty >= qty_done:
+                        po_operation.qty_done = qty_done
+                        qty_done = 0.0
+                    else:
+                        po_operation.qty_done = po_operation.product_qty
+                        qty_done -= po_operation.product_qty
+                    po_picks |= po_operation.picking_id
+                if qty_done and po_operations:
+                    po_operations[-1:].qty_done += qty_done
+                elif not po_operations:
+                    raise UserError(_('Any picking to assign units'))
+                    # TODO: Create new DropShip Picking
+        # Done dropship pickings
+        po_self = self.with_context(
+            force_company=po_picks[0].sudo().company_id.id).sudo()
+        for po_pick in po_picks:
+            po_self.env['stock.backorder.confirmation'].new(
+                {'pick_id': po_pick.id}).process()
+        return super(StockPicking, self).do_transfer()
