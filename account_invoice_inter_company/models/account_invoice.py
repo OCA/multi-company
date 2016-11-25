@@ -102,7 +102,7 @@ class AccountInvoice(models.Model):
         dest_invoice_vals = self.with_context(
             context).sudo()._prepare_invoice_data(
                 dest_invoice_lines, dest_inv_type,
-                dest_journal_type, dest_company)[0]
+                dest_journal_type, dest_company)
         if force_number:
             dest_invoice_vals['internal_number'] = force_number
         for src_line in self.invoice_line:
@@ -128,19 +128,24 @@ class AccountInvoice(models.Model):
             dest_invoice_lines.append((0, 0, dest_inv_line_data))
         dest_invoice = self.with_context(context).sudo(
             intercompany_uid).create(dest_invoice_vals)
-        if dest_company.invoice_auto_validation:
+        precision = self.env['decimal.precision'].precision_get('Account')
+        if (dest_company.invoice_auto_validation and
+                not float_compare(self.amount_total,
+                                  dest_invoice.amount_total,
+                                  precision_digits=precision)):
             dest_invoice.signal_workflow('invoice_open')
         else:
             dest_invoice.button_reset_taxes()
-        precision = self.env['decimal.precision'].precision_get('Account')
-        if float_compare(self.amount_untaxed, dest_invoice.amount_untaxed,
+
+        if float_compare(self.amount_total, dest_invoice.amount_total,
                          precision_digits=precision):
-            raise UserError(_(
-                "Failure in the inter-company invoice creation process: "
-                "the untaxed amount of this invoice is %s but the untaxed "
-                "amount in the company %s is %s")
-                % (self.amount_untaxed, dest_company.name,
-                   dest_invoice.amount_untaxed))
+            body = (_(
+                "WARNING!!!!! Failure in the inter-company invoice creation "
+                "process: the total amount of this invoice is %s but the "
+                "total amount in the company %s is %s")
+                % (dest_invoice.amount_total, self.company_id.name,
+                   self.amount_total))
+            dest_invoice.message_post(body=body)
 
         sales = self.env['sale.order'].search([
             ('invoice_ids', '=', self.id),
@@ -161,7 +166,7 @@ class AccountInvoice(models.Model):
                             (4, invoice_line.id)]
         return True
 
-    @api.one
+    @api.multi
     def _prepare_invoice_data(self,
                               dest_invoice_lines, dest_inv_type,
                               dest_journal_type, dest_company):
@@ -175,6 +180,7 @@ class AccountInvoice(models.Model):
             :rtype dest_journal_type : string
             :rtype dest_company : res.company record
         """
+        self.ensure_one()
         # find the correct journal
         dest_journal = self.env['account.journal'].search([
             ('type', '=', dest_journal_type),

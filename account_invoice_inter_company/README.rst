@@ -17,7 +17,7 @@ Configuration
 
 To configure this module, you need to go to the menu *Settings > Companies > Companies*, select one of the companies and go to the tab *Inter-Company*. You have to choose which scenario you want to have for interactions between companies: either automate the creation of sale.order between companies.
 
-Another important configuration is the *Inter Company User* : it is the user that will be used to automatically generate the corresponding object in the other company. One important thing to understand is that the fields *Customer Taxes* (technical field field: *taxes_id*) and *Supplier Taxes* (technical field field: *supplier_taxes_id*) on product.template are **NOT** property fields (in new API, we would say: *company_dependant=False*). So you cannot select the administrator as *Inter Company User* because this user by-passes the record rules ; you have to select a regular user that is attached to the company and only to this company (don't select a user that is allowed to switch between companies).
+Another important configuration is the *Inter Company User* : it is the user that will be used to automatically generate the corresponding object in the other company. One important thing to understand is that the fields *Customer Taxes* (technical field: *taxes_id*) and *Supplier Taxes* (technical field: *supplier_taxes_id*) on product.template are **NOT** property fields (in new API, we would say: *company_dependant=False*). So you cannot select the administrator as *Inter Company User* because this user by-passes the record rules ; you have to select a regular user that is attached to the company and only to this company (don't select a user that is allowed to switch between companies).
 
 Usage
 =====
