@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-from openerp import api, models, _
+from openerp import api, models, _, fields
 from openerp.exceptions import Warning as UserError
 
 
 class PurchaseOrder(models.Model):
 
     _inherit = 'purchase.order'
+
+    invoice_method = fields.Selection(
+        selection_add=[('intercompany', 'Based on intercompany invoice')])
 
     @api.multi
     def wkf_confirm_order(self):
@@ -48,13 +51,13 @@ class PurchaseOrder(models.Model):
                 "access rights") % company.name)
 
         # check intercompany product
-        for line in self.order_line:
+        for purchase_line in self.order_line:
             try:
-                line.product_id.sudo(intercompany_uid).read()
+                purchase_line.product_id.sudo(intercompany_uid).read()
             except:
                 raise UserError(_(
                     "You cannot create SO from PO because product '%s' "
-                    "is not intercompany") % line.product_id.name)
+                    "is not intercompany") % purchase_line.product_id.name)
 
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
@@ -78,14 +81,18 @@ class PurchaseOrder(models.Model):
             self.dest_address_id and self.dest_address_id.id or False)
         sale_order = SaleOrder.sudo(intercompany_uid).create(
             sale_order_data)
-        for po_line in self.order_line:
-            so_line_vals = self.sudo()._prepare_sale_order_line_data(
-                po_line, company, sale_order.id)
-            SaleOrderLine.sudo(intercompany_uid).create(so_line_vals)
+        for purchase_line in self.order_line:
+            sale_line_vals = self.sudo()._prepare_sale_order_line_data(
+                purchase_line, company, sale_order.id)
+            SaleOrderLine.sudo(intercompany_uid).create(sale_line_vals)
 
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
+
+        # write invoice method field on PO
+        if self.invoice_method != 'intercompany':
+            self.invoice_method = 'intercompany'
 
         # Validation of sale order
         if company.sale_auto_validation:
@@ -139,7 +146,7 @@ class PurchaseOrder(models.Model):
         }
 
     @api.model
-    def _prepare_sale_order_line_data(self, line, company, sale_id):
+    def _prepare_sale_order_line_data(self, purchase_line, company, sale_id):
         """ Generate the Sale Order Line values from the PO line
             :param line : the origin Purchase Order Line
             :rtype line : purchase.order.line record
@@ -148,26 +155,45 @@ class PurchaseOrder(models.Model):
             :param sale_id : the id of the SO
         """
         # it may not affected because of parallel company relation
-        price = line.price_unit or 0.0
-        taxes = line.taxes_id
+        price = purchase_line.price_unit or 0.0
+        taxes = purchase_line.taxes_id
         product = None
-        if line.product_id:
+        if purchase_line.product_id:
             # make a new browse otherwise line._uid keeps the purchasing
             # company's user and can't see the selling company's taxes
-            product = self.env['product.product'].browse(line.product_id.id)
+            product = self.env['product.product'].browse(
+                purchase_line.product_id.id)
             taxes = product.taxes_id
         company_taxes = [tax_rec.id
                          for tax_rec in taxes
                          if tax_rec.company_id.id == company.id]
         return {
-            'name': line.name,
+            'name': purchase_line.name,
             'order_id': sale_id,
-            'product_uom_qty': line.product_qty,
+            'product_uom_qty': purchase_line.product_qty,
             'product_id': product and product.id or False,
             'product_uom': (product and product.uom_id.id or
-                            line.product_uom.id),
+                            purchase_line.product_uom.id),
             'price_unit': price,
             'delay': product and product.sale_delay or 0.0,
             'company_id': company.id,
             'tax_id': [(6, 0, company_taxes)],
+            'auto_purchase_line_id': purchase_line.id
         }
+
+    @api.multi
+    def action_cancel(self):
+        for purchase in self:
+            company = self.env['res.company']._find_company_from_partner(
+                self.partner_id.id)
+            intercompany_uid = company.intercompany_user_id.id
+            for sale_order in self.env['sale.order'].sudo(
+                intercompany_uid).search([
+                    ('auto_purchase_order_id', '=', self.id)]):
+                sale_order.action_cancel()
+            res = super(PurchaseOrder, self).action_cancel()
+            if self.invoice_method == 'intercompany':
+                self.invoice_method = 'order'
+            if self.partner_ref:
+                self.partner_ref = ''
+        return res
