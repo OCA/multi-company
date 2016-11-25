@@ -65,8 +65,9 @@ class AccountInvoice(models.Model):
                             dest_company.intercompany_user_id.id or False)
         if not intercompany_uid:
             raise UserError(_(
-                'Provide one user for intercompany relation for % ')
+                'Provide one user for intercompany relation for %s ')
                 % dest_company.name)
+
         # check intercompany user access rights
         if not AccountInvoice.sudo(intercompany_uid).check_access_rights(
                 'create', raise_exception=False):
@@ -132,16 +133,32 @@ class AccountInvoice(models.Model):
         else:
             dest_invoice.button_reset_taxes()
         precision = self.env['decimal.precision'].precision_get('Account')
-        if not float_compare(
-                self.amount_total,
-                dest_invoice.amount_total,
-                precision_digits=precision):
+        if float_compare(self.amount_untaxed, dest_invoice.amount_untaxed,
+                         precision_digits=precision):
             raise UserError(_(
                 "Failure in the inter-company invoice creation process: "
-                "the total amount of this invoice is %s but the total "
+                "the untaxed amount of this invoice is %s but the untaxed "
                 "amount in the company %s is %s")
-                % (self.amount_total, dest_company.name,
-                   dest_invoice.amount_total))
+                % (self.amount_untaxed, dest_company.name,
+                   dest_invoice.amount_untaxed))
+
+        sales = self.env['sale.order'].search([
+            ('invoice_ids', '=', self.id),
+            ('auto_purchase_order_id', '!=', False)])
+        for sale in sales:
+            purchase = sale.auto_purchase_order_id.sudo(intercompany_uid)
+            purchase.invoice_ids = [(4, dest_invoice.id)]
+            if dest_invoice.state not in ['draft', 'cancel']:
+                        purchase.order_line.write({'invoiced': True})
+
+            for sale_line in sale.order_line:
+                purchase_line = (sale_line.auto_purchase_line_id.
+                                 sudo(intercompany_uid))
+                for invoice_line in dest_invoice.invoice_line:
+                    if (sale_line.invoice_lines == invoice_line.
+                            auto_invoice_line_id):
+                        purchase_line.invoice_lines = [
+                            (4, invoice_line.id)]
         return True
 
     @api.one
@@ -246,7 +263,8 @@ class AccountInvoice(models.Model):
             # set via an inherit of this method in a custom module
             'account_analytic_id': dest_line_data['value'].get(
                 'account_analytic_id'),
-            'account_id': dest_line_data['value']['account_id']
+            'account_id': dest_line_data['value']['account_id'],
+            'auto_invoice_line_id': src_line.id
         }
         return vals
 
@@ -264,3 +282,13 @@ class AccountInvoice(models.Model):
                         [('auto_invoice_id', '=', invoice.id)]):
                     inter_invoice.signal_workflow('invoice_cancel')
         return super(AccountInvoice, self).action_cancel()
+
+
+class AccountInvoiceLine(models.Model):
+
+    _inherit = 'account.invoice.line'
+
+    auto_invoice_line_id = fields.Many2one('account.invoice.line',
+                                           string='Source Invoice Line',
+                                           readonly=True, copy=False,
+                                           _prefetch=False)
