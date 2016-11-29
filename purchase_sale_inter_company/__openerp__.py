@@ -19,11 +19,12 @@
         'account_invoice_inter_company'
     ],
     'data': [
-        'views/inter_company_po_to_so_view.xml',
+        'views/res_company_view.xml',
         'views/res_config_view.xml',
+        'views/purchase_order_view.xml',
     ],
     'test': [
-        'test/test_intercompany_data.yml',
-        'test/inter_company_po_to_so.yml',
+        #'test/test_intercompany_data.yml',
+        #'test/inter_company_po_to_so.yml',
     ],
 }
