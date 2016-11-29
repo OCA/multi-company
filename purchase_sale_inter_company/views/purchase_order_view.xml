@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="purchase_order_form_account_invoice_inter_company">
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[@name='view_invoice']" position="attributes">
+                    <attribute name="attrs">{'invisible':['|', ('invoice_method','in', ['picking', 'manual', 'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
