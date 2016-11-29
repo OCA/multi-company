@@ -129,6 +129,7 @@ class AccountInvoice(models.Model):
         dest_invoice = self.with_context(context).sudo(
             intercompany_uid).create(dest_invoice_vals)
         precision = self.env['decimal.precision'].precision_get('Account')
+
         if (dest_company.invoice_auto_validation and
                 not float_compare(self.amount_total,
                                   dest_invoice.amount_total,
@@ -146,7 +147,15 @@ class AccountInvoice(models.Model):
                 % (dest_invoice.amount_total, self.company_id.name,
                    self.amount_total))
             dest_invoice.message_post(body=body)
+            dest_invoice.check_total = self.self.amount_total
 
+        self._link_invoice_purchase(intercompany_uid, dest_invoice)
+
+        return True
+
+    @api.multi
+    def _link_invoice_purchase(self, intercompany_uid, dest_invoice):
+        self.ensure_one()
         sales = self.env['sale.order'].search([
             ('invoice_ids', '=', self.id),
             ('auto_purchase_order_id', '!=', False)])
@@ -155,7 +164,6 @@ class AccountInvoice(models.Model):
             purchase.invoice_ids = [(4, dest_invoice.id)]
             if dest_invoice.state not in ['draft', 'cancel']:
                         purchase.order_line.write({'invoiced': True})
-
             for sale_line in sale.order_line:
                 purchase_line = (sale_line.auto_purchase_line_id.
                                  sudo(intercompany_uid))
@@ -164,7 +172,6 @@ class AccountInvoice(models.Model):
                             auto_invoice_line_id):
                         purchase_line.invoice_lines = [
                             (4, invoice_line.id)]
-        return True
 
     @api.multi
     def _prepare_invoice_data(self,
@@ -217,11 +224,9 @@ class AccountInvoice(models.Model):
             dest_currency_id = dest_curs[0].id
         return {
             'name': self.name,
-            # TODO : not sure !!
             'origin': self.company_id.name + _(' Invoice: ') + str(
                 self.number),
             'supplier_invoice_number': self.number,
-            'check_total': self.amount_total,
             'type': dest_inv_type,
             'date_invoice': self.date_invoice,
             'reference': self.reference,

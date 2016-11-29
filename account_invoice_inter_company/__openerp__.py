@@ -15,12 +15,12 @@
         'account',
     ],
     'data': [
-        'views/inter_company_invoice_view.xml',
+        'views/res_company_view.xml',
         'views/res_config_view.xml',
         'config.yml'
     ],
     'test': [
-        'test/test_intercompany_data.yml',
-        'test/inter_company_invoice.yml',
+        #'test/test_intercompany_data.yml',
+        #'test/inter_company_invoice.yml',
     ],
 }
