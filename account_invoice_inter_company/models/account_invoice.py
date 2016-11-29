@@ -129,7 +129,7 @@ class AccountInvoice(models.Model):
         dest_invoice = self.with_context(context).sudo(
             intercompany_uid).create(dest_invoice_vals)
         precision = self.env['decimal.precision'].precision_get('Account')
-
+        # Validation of account invoice
         if (dest_company.invoice_auto_validation and
                 not float_compare(self.amount_total,
                                   dest_invoice.amount_total,
@@ -137,20 +137,19 @@ class AccountInvoice(models.Model):
             dest_invoice.signal_workflow('invoice_open')
         else:
             dest_invoice.button_reset_taxes()
-
-        if float_compare(self.amount_total, dest_invoice.amount_total,
-                         precision_digits=precision):
-            body = (_(
-                "WARNING!!!!! Failure in the inter-company invoice creation "
-                "process: the total amount of this invoice is %s but the "
-                "total amount in the company %s is %s")
-                % (dest_invoice.amount_total, self.company_id.name,
-                   self.amount_total))
-            dest_invoice.message_post(body=body)
-            dest_invoice.check_total = self.self.amount_total
-
+            # Add warning in chatter if the total amounts are different
+            if float_compare(self.amount_total, dest_invoice.amount_total,
+                             precision_digits=precision):
+                body = (_(
+                    "WARNING!!!!! Failure in the inter-company invoice "
+                    "creation process: the total amount of this invoice "
+                    "is %s but the total amount in the company %s is %s")
+                    % (dest_invoice.amount_total, self.company_id.name,
+                       self.amount_total))
+                dest_invoice.message_post(body=body)
+                dest_invoice.check_total = self.amount_total
+        # Link intercompany purchase order with intercompany invoice
         self._link_invoice_purchase(intercompany_uid, dest_invoice)
-
         return True
 
     @api.multi
