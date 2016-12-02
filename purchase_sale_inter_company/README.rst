@@ -8,19 +8,23 @@ Purchase Sale Inter Company
 ===========================
 
 This module is usefull if there are multiple companies in the same Odoo database and those companies sell goods or services among themselves.
+It allow to create a sale order in company A from a purchase order in company B.
 
-Imagine you have company A and company B in the same Odoo database and company A purchase goods from company B: company A will create a purchase.order with company B as supplier, and company B will have to create a sale order with company A as customer. This module automate the creation of the sale order in company B.
+Imagine you have company A and company B in the same Odoo database.
+Company A purchase goods from company B: company A will create a purchase.order with company B as supplier, and company B will have to create a sale order with company A as customer. This module automate the creation of the sale order in company B.
 
 
 Configuration
 =============
 
-To configure this module, you need to go to the menu *Settings > Companies > Companies*, select one of the companies and go to the tab *Inter-Company*. You have to choose which scenario you want to have for interactions between companies: either automate the creation of sale.order between companies.
+To configure this module, you need to go to the menu *Settings > Companies > Companies*, select one of the companies and go to the tab *Inter-Company* then the group *Purchase To Sale*.
 
-Another important configuration is the *Inter Company User* : it is the user that will be used to automatically generate the corresponding object in the other company. One important thing to understand is that the fields *Customer Taxes* (technical field field: *taxes_id*) and *Supplier Taxes* (technical field field: *supplier_taxes_id*) on product.template are **NOT** property fields (in new API, we would say: *company_dependant=False*). So you cannot select the administrator as *Inter Company User* because this user by-passes the record rules ; you have to select a regular user that is attached to the company and only to this company (don't select a user that is allowed to switch between companies).
+Another important configuration is the *Warehouse For Sale Orders* : it is the warehouse that will be used to automatically generate the sale order in the other company.
 
 Usage
 =====
+
+If you choose the option *Sale Auto Validation* in the configuration of company B, when you validate a *Purchase Order* in company A with company B as supplier, then the *Sale Order* will be automatically validated in company B with company A as customer.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
