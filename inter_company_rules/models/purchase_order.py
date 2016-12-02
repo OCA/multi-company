@@ -193,9 +193,10 @@ class StockPicking(models.Model):
                     raise UserError(_('Any picking to assign units'))
                     # TODO: Create new DropShip Picking
         # Done dropship pickings
-        po_self = self.with_context(
-            force_company=po_picks[0].sudo().company_id.id).sudo()
-        for po_pick in po_picks:
-            po_self.env['stock.backorder.confirmation'].new(
-                {'pick_id': po_pick.id}).process()
+        if po_picks:
+            po_self = self.with_context(
+                force_company=po_picks[0].sudo().company_id.id).sudo()
+            for po_pick in po_picks:
+                po_self.env['stock.backorder.confirmation'].new(
+                    {'pick_id': po_pick.id}).process()
         return super(StockPicking, self).do_transfer()
