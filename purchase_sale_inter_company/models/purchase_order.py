@@ -41,7 +41,7 @@ class PurchaseOrder(models.Model):
                             company.intercompany_user_id.id or False)
         if not intercompany_uid:
             raise UserError(_(
-                'Provide at least one user for inter company relation for % ')
+                'Provide at least one user for inter company relation for %s ')
                 % company.name)
         # check intercompany user access rights
         if not SaleOrder.sudo(intercompany_uid).check_access_rights(
@@ -58,7 +58,6 @@ class PurchaseOrder(models.Model):
                 raise UserError(_(
                     "You cannot create SO from PO because product '%s' "
                     "is not intercompany") % purchase_line.product_id.name)
-
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
         company_partner = self.env['res.partner'].sudo(
@@ -83,7 +82,7 @@ class PurchaseOrder(models.Model):
             sale_order_data)
         for purchase_line in self.order_line:
             sale_line_vals = self.sudo()._prepare_sale_order_line_data(
-                purchase_line, company, sale_order.id)
+                intercompany_uid, purchase_line, company, sale_order)
             SaleOrderLine.sudo(intercompany_uid).create(sale_line_vals)
 
         # write supplier reference field on PO
@@ -146,40 +145,58 @@ class PurchaseOrder(models.Model):
         }
 
     @api.model
-    def _prepare_sale_order_line_data(self, purchase_line, company, sale_id):
+    def _prepare_sale_order_line_data(
+            self, intercompany_uid, purchase_line, company, sale_order):
         """ Generate the Sale Order Line values from the PO line
             :param line : the origin Purchase Order Line
             :rtype line : purchase.order.line record
             :param company : the company of the created SO
             :rtype company : res.company record
-            :param sale_id : the id of the SO
+            :param sale_order : the Sale Order
         """
-        # it may not affected because of parallel company relation
-        price = purchase_line.price_unit or 0.0
-        taxes = purchase_line.taxes_id
-        product = None
-        if purchase_line.product_id:
-            # make a new browse otherwise line._uid keeps the purchasing
-            # company's user and can't see the selling company's taxes
-            product = self.env['product.product'].browse(
-                purchase_line.product_id.id)
-            taxes = product.taxes_id
-        company_taxes = [tax_rec.id
-                         for tax_rec in taxes
-                         if tax_rec.company_id.id == company.id]
-        return {
-            'name': purchase_line.name,
-            'order_id': sale_id,
-            'product_uom_qty': purchase_line.product_qty,
-            'product_id': product and product.id or False,
-            'product_uom': (product and product.uom_id.id or
-                            purchase_line.product_uom.id),
-            'price_unit': price,
-            'delay': product and product.sale_delay or 0.0,
-            'company_id': company.id,
-            'tax_id': [(6, 0, company_taxes)],
-            'auto_purchase_line_id': purchase_line.id
-        }
+        context = self._context.copy()
+        context['company_id'] = company.id
+        # get sale line data from product onchange
+        sale_line_obj = self.env['sale.order.line'].browse(False)
+        sale_line_data = sale_line_obj.with_context(context).sudo(
+            intercompany_uid).product_id_change_with_wh(
+                pricelist=sale_order.pricelist_id.id,
+                product=(purchase_line.product_id and
+                         purchase_line.product_id.id or False),
+                qty=purchase_line.product_qty,
+                uom=(purchase_line.product_id and
+                     purchase_line.product_id.uom_id.id or False),
+                qty_uos=0,
+                uos=False,
+                name='',
+                partner_id=sale_order.partner_id.id,
+                lang=False,
+                update_tax=True,
+                date_order=sale_order.date_order,
+                packaging=False,
+                fiscal_position=sale_order.fiscal_position.id,
+                flag=False,
+                warehouse_id=sale_order.warehouse_id.id)
+        sale_line_data['value']['product_id'] = (
+            purchase_line.product_id and purchase_line.product_id.id or
+            False)
+        sale_line_data['value']['order_id'] = sale_order.id
+        sale_line_data['value']['delay'] = (purchase_line.product_id and
+                                            purchase_line.product_id.
+                                            sale_delay or 0.0)
+        sale_line_data['value']['company_id'] = company.id
+        sale_line_data['value']['price_unit'] = purchase_line.price_unit
+        sale_line_data['value']['product_uom_qty'] = (purchase_line.
+                                                      product_qty)
+        sale_line_data['value']['product_uom'] = (
+            purchase_line.product_id and
+            purchase_line.product_id.uom_id.id or
+            purchase_line.product_uom.id)
+        if sale_line_data['value'].get('tax_id'):
+            sale_line_data['value']['tax_id'] = ([
+                [6, 0, sale_line_data['value']['tax_id']]])
+        sale_line_data['value']['auto_purchase_line_id'] = purchase_line.id
+        return sale_line_data['value']
 
     @api.multi
     def action_cancel(self):
