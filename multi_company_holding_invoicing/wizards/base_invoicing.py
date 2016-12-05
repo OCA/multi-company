@@ -165,11 +165,10 @@ class ChildInvoicing(models.TransientModel):
         val_line = super(ChildInvoicing, self).\
             _prepare_invoice_line(data_line)
         if data_line.get('__domain'):
-            domain = []
-            for arg in data_line['__domain']:
-                if len(arg) == 3:
-                    domain.append(('order_id.%s' % arg[0], arg[1], arg[2]))
-            line_ids = self.env['sale.order.line'].search(domain).ids
+            order_ids = self.env['sale.order'].search(
+                data_line['__domain']).ids
+            line_ids = self.env['sale.order.line'].search([
+                ('order_id', 'in', order_ids)]).ids
             val_line['sale_line_ids'] = [(6, 0, line_ids)]
         return val_line
 
