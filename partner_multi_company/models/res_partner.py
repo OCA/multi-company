@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # © 2015 Oihane Crucelaegui
-# © 2015 Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
+# © 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html.html
 
 from openerp import api, fields, models
@@ -11,8 +11,7 @@ class ResPartner(models.Model):
 
     def _default_company_ids(self):
         company_model = self.env['res.company']
-        return [(6, 0,
-                 [company_model._company_default_get('res.partner')])]
+        return [(6, 0, company_model._company_default_get('res.partner').ids)]
 
     company_ids = fields.Many2many(
         comodel_name='res.company', string="Companies",
@@ -34,7 +33,7 @@ class ResPartner(models.Model):
                     elif item[0] == 6:
                         if item[2]:
                             vals['company_id'] = item[2][0]
-                        else:
+                        else:  # pragma: no cover
                             vals['company_id'] = False
         return vals
 
@@ -55,7 +54,7 @@ class ResPartner(models.Model):
     def _compute_company_id(self):
         for partner in self:
             if partner.company_id != partner.company_ids[:1]:
-                partner.company_id = partner.company_ids[:1]
+                partner.company_id = partner.company_ids[:1].id
 
     @api.multi
     def _inverse_company_id(self):
