@@ -5,8 +5,11 @@
 
 
 from openerp import models, fields, api
+from openerp.tools.translate import _
+from openerp.exceptions import Warning as UserError
 import logging
 _logger = logging.getLogger(__name__)
+
 
 
 class AccountInvoice(models.Model):
@@ -71,6 +74,10 @@ class AccountInvoice(models.Model):
         # TODO add a group and check it
         self = self.suspend_security()
         for invoice in self:
+            if invoice.child_invoice_ids:
+                raise UserError(_(
+                    'The child invoices have been already '
+                    'generated for this invoice'))
             child_invoices = self.env['child.invoicing']._generate_invoice([
                 ('id', 'in', self.holding_sale_ids.ids),
                 ])
