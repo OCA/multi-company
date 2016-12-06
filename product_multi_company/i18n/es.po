@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: product_multi_company
-#: field:product.template,company_ids:0
+#: model:ir.model.fields,field_description:product_multi_company.field_product_template_company_ids
 msgid "Companies"
 msgstr "Compañías"
 
