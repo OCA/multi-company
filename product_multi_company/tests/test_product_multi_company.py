@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-# (c) 2015 Serv. Tecnol. Avanzados - Pedro M. Baeza
+# Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 from openerp.tests import common
-from openerp.osv.osv import except_orm as AccessError
+from openerp.exceptions import AccessError
 
 
+@common.at_install(False)
+@common.post_install(True)
 class TestProductMultiCompany(common.TransactionCase):
     def setUp(self):
         super(TestProductMultiCompany, self).setUp()
@@ -42,9 +44,9 @@ class TestProductMultiCompany(common.TransactionCase):
 
     def test_create_product(self):
         product = self.env['product.product'].create({'name': 'Test'})
-        company_id = (
-            self.env['res.company']._company_default_get('product.template'))
-        self.assertTrue(company_id in product.company_ids.ids)
+        company = self.env['res.company']._company_default_get(
+            'product.template')
+        self.assertTrue(company in product.company_ids)
 
     def test_company_none(self):
         self.assertFalse(self.product_company_none.company_id)
@@ -71,7 +73,7 @@ class TestProductMultiCompany(common.TransactionCase):
             self.product_company_1.sudo(self.user_company_2).name = "Test"
 
     def test_uninstall(self):
-        from openerp.addons.product_multi_company.hooks import uninstall_hook
+        from ..hooks import uninstall_hook
         uninstall_hook(self.env.cr, None)
         rule = self.env.ref('product.product_comp_rule')
         domain = (" ['|',('company_id','=',user.company_id.id),"
