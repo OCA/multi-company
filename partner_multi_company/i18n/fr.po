@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# * sales_team_multicompany
+# * partner_multi_company
 # 
 # Translators:
 # OCA Transbot <transbot@odoo-community.org>, 2016
@@ -18,17 +18,17 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#. module: sales_team_multicompany
-#: model:ir.model.fields,field_description:sales_team_multicompany.field_crm_team_company_ids
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner_company_ids
 msgid "Companies"
 msgstr "Sociétés"
 
-#. module: sales_team_multicompany
-#: model:ir.model.fields,help:sales_team_multicompany.field_crm_team_company_ids
-msgid "Company to which the sales team belongs"
-msgstr "Société à laquelle l'équipe de vente appartient"
+#. module: partner_multi_company
+#: model:ir.model,name:partner_multi_company.model_res_partner
+msgid "Partner"
+msgstr ""
 
-#. module: sales_team_multicompany
-#: model:ir.model,name:sales_team_multicompany.model_crm_team
-msgid "Sales Team"
+#. module: partner_multi_company
+#: model:ir.model,name:partner_multi_company.model_res_users
+msgid "Users"
 msgstr ""
