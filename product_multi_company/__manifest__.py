@@ -4,14 +4,16 @@
 
 {
     'name': "Product multi-company",
-    'summary': "Select individually the product visibility on each company",
+    'summary': "Select individually the product template visibility on each "
+               "company",
     'author': "Tecnativa,"
               "Odoo Community Association (OCA)",
     'website': "https://www.tecnativa.com",
     'category': 'Product Management',
-    'version': '9.0.1.0.0',
+    'version': '10.0.1.0.0',
     'license': 'AGPL-3',
     'depends': [
+        'base_multi_company',
         'product',
     ],
     'data': [
