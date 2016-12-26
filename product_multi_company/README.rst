@@ -7,7 +7,7 @@ Product permissions for discrete companies
 ==========================================
 
 This modules allows to select in which of the companies you want to use each
-of the products.
+of the product templates.
 
 Installation
 ============
@@ -26,7 +26,7 @@ be visible in all of them. The default value is the current one.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/9.0
+   :target: https://runbot.odoo-community.org/runbot/133/10.0
 
 Bug Tracker
 ===========
@@ -43,6 +43,7 @@ Contributors
 ------------
 
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
+* Dave Lasley <dave@laslabs.com>
 
 Maintainer
 ----------
