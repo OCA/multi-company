@@ -122,7 +122,6 @@ class AccountInvoice(models.Model):
                     partner_id=src_company_partner_id.id,
                     fposition_id=dest_invoice_vals['fiscal_position'],
                     company_id=dest_company.id)
-            # create invoice line, as the intercompany user
             dest_inv_line_data = self.sudo()._prepare_invoice_line_data(
                 dest_line_data, src_line)
             dest_invoice_lines.append((0, 0, dest_inv_line_data))
@@ -148,29 +147,8 @@ class AccountInvoice(models.Model):
                        self.amount_total))
                 dest_invoice.message_post(body=body)
                 dest_invoice.check_total = self.amount_total
-        # Link intercompany purchase order with intercompany invoice
-        self._link_invoice_purchase(intercompany_uid, dest_invoice)
-        return True
-
-    @api.multi
-    def _link_invoice_purchase(self, intercompany_uid, dest_invoice):
-        self.ensure_one()
-        sales = self.env['sale.order'].search([
-            ('invoice_ids', '=', self.id),
-            ('auto_purchase_order_id', '!=', False)])
-        for sale in sales:
-            purchase = sale.auto_purchase_order_id.sudo(intercompany_uid)
-            purchase.invoice_ids = [(4, dest_invoice.id)]
-            if dest_invoice.state not in ['draft', 'cancel']:
-                        purchase.order_line.write({'invoiced': True})
-            for sale_line in sale.order_line:
-                purchase_line = (sale_line.auto_purchase_line_id.
-                                 sudo(intercompany_uid))
-                for invoice_line in dest_invoice.invoice_line:
-                    if (sale_line.invoice_lines == invoice_line.
-                            auto_invoice_line_id):
-                        purchase_line.invoice_lines = [
-                            (4, invoice_line.id)]
+        return {'intercompany_uid': intercompany_uid,
+                'dest_invoice': dest_invoice}
 
     @api.multi
     def _prepare_invoice_data(self,
@@ -272,8 +250,8 @@ class AccountInvoice(models.Model):
             # analytic account to set. It probably needs to be
             # set via an inherit of this method in a custom module
             'account_analytic_id': dest_line_data['value'].get(
-                'account_analytic_id'),
-            'account_id': dest_line_data['value']['account_id'],
+                'account_analytic_id', False),
+            'account_id': dest_line_data['value'].get('account_id', False),
             'auto_invoice_line_id': src_line.id
         }
         return vals

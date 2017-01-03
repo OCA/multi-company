@@ -19,8 +19,7 @@
         'views/res_config_view.xml',
         'config.yml'
     ],
-    'test': [
-        #'test/test_intercompany_data.yml',
-        #'test/inter_company_invoice.yml',
+    'demo': [
+        'demo/inter_company_invoice.xml',
     ],
 }
