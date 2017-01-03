@@ -170,7 +170,7 @@ class StockPicking(models.Model):
         po_picks = self.browse()
         for pick in self.filtered(
                 lambda x: x.location_dest_id.usage == 'customer'):
-            purchase = pick.sale_id.auto_purchase_order_id
+            purchase = pick.sudo().sale_id.auto_purchase_order_id
             if not purchase:
                 continue
             for operation in pick.pack_operation_product_ids:
@@ -190,7 +190,9 @@ class StockPicking(models.Model):
                 if qty_done and po_operations:
                     po_operations[-1:].qty_done += qty_done
                 elif not po_operations:
-                    raise UserError(_('Any picking to assign units'))
+                    raise UserError(
+                        _('Any picking to assign units from %s (%s)') %
+                        (pick.name, purchase.name))
                     # TODO: Create new DropShip Picking
         # Done dropship pickings
         if po_picks:
