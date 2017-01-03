@@ -17,12 +17,14 @@ class TestAccountInvoiceInterCompany(TransactionCase):
     def test_account_invoice_inter_company(self):
         # Install COA for company A and B
         installer_comp_a = self.installer_obj.create({
-            'charts': 'configurable', 'company_id': self.env.ref(
-            'account_invoice_inter_company.company_a').id})
+            'charts': 'configurable',
+            'company_id': self.env.ref(
+                'account_invoice_inter_company.company_a').id})
         installer_comp_a.execute()
         installer_comp_b = self.installer_obj.create({
-            'charts': 'configurable', 'company_id': self.env.ref(
-            'account_invoice_inter_company.company_b').id})
+            'charts': 'configurable',
+            'company_id': self.env.ref(
+                'account_invoice_inter_company.company_b').id})
         installer_comp_b.execute()
 
         wiz_comp_a = self.wizard_obj.create({
