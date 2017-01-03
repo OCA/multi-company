@@ -199,6 +199,6 @@ class StockPicking(models.Model):
             po_self = self.with_context(
                 force_company=po_picks[0].sudo().company_id.id).sudo()
             for po_pick in po_picks:
-                po_self.env['stock.backorder.confirmation'].new(
+                po_self.env['stock.backorder.confirmation'].create(
                     {'pick_id': po_pick.id}).process()
         return super(StockPicking, self).do_transfer()
