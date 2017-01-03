@@ -63,7 +63,6 @@
         ref('account.group_account_manager'),
         ref('base.group_partner_manager'),
         ref('base.group_sale_manager'),
-        ref('purchase.group_purchase_manager')
         ])]"/>
     </record>
 
