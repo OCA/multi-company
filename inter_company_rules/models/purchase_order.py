@@ -18,8 +18,6 @@ class PurchaseOrder(models.Model):
         """ Generate inter company sale order base on conditions."""
         res = super(PurchaseOrder, self).button_confirm()
         for order in self:
-            if order.state not in ['draft', 'sent']:
-                continue
             # get the company from partner then trigger action of
             # intercompany relation
             company_rec = self.env['res.company']._find_company_from_partner(
