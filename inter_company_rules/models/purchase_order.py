@@ -126,6 +126,7 @@ class PurchaseOrder(models.Model):
                                     partner_addr['delivery']),
             'warehouse_id': company.warehouse_id.filtered(
                 lambda x: x.company_id == company).id,
+            'requested_date': self.date_planned,
         }
 
     @api.model
