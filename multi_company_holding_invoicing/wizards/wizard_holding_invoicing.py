@@ -5,6 +5,7 @@
 
 
 from openerp import models, fields, api, _
+from openerp.exceptions import Warning as UserError
 
 
 class InvoiceWizard(models.TransientModel):
@@ -28,20 +29,22 @@ class InvoiceWizard(models.TransientModel):
             ('holding_invoice_id', '=', False),
             ]
 
+    def _return_open_action(self, invoices):
+        action = self.env.ref('account.action_invoice_tree').read()[0]
+        action.update({
+            'name': _("Invoice Generated"),
+            'target': 'current',
+            'domain': [('id', 'in', invoices.ids)]
+            })
+        return action
+
     @api.multi
     def create_invoice(self):
-        for wizard in self:
-            domain = wizard._get_invoice_domain()
-            invoices = self.env['holding.invoicing'].\
-                _generate_invoice(domain, date_invoice=self.date_invoice)
+        self.ensure_one()
+        domain = self._get_invoice_domain()
+        invoices = self.env['holding.invoicing']._generate_invoice(
+            domain, date_invoice=self.date_invoice)
         if invoices:
-            return {
-                'name': _("Invoice Generated"),
-                'res_model': 'account.invoice',
-                'type': 'ir.actions.act_window',
-                'target': 'current',
-                'res_id': self.env.ref('account.action_invoice_tree1').id,
-                'view_mode': 'tree,form',
-                'domain': [('id', 'in', invoices.ids)]
-            }
-        return True
+            return self._return_open_action(invoices)
+        else:
+            raise UserError('There is not invoice to generate')
