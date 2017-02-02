@@ -167,6 +167,8 @@ class PurchaseOrder(models.Model):
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
+    intercompany_picking_id = fields.Many2one(comodel_name='stock.picking')
+
     @api.multi
     def do_transfer(self):
         # Only DropShip pickings
@@ -197,6 +199,8 @@ class StockPicking(models.Model):
                         _('Any picking to assign units from %s (%s)') %
                         (pick.name, purchase.name))
                     # TODO: Create new DropShip Picking
+            pick.intercompany_picking_id = po_operation.picking_id
+            po_operation.picking_id.intercompany_picking_id = pick
         # Done dropship pickings
         if po_picks:
             po_self = self.with_context(
