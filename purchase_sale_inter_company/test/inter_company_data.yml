@@ -1,0 +1,76 @@
+-
+  !record {model: res.partner, id: partner_company_a, view: False}:
+    name: Company A
+    supplier: 1
+    customer: 1
+-
+  !record {model: res.company, id: company_a, view: False}:
+    name: Company A
+    parent_id: base.main_company
+    currency_id: base.EUR
+    partner_id: partner_company_a
+    sale_auto_validation: 1
+-
+  !record {model: stock.location, id: location_stock_company_a, view: False}:
+    name: Stock - A
+    usage: internal
+    company_id: company_a
+-
+  !record {model: stock.location, id: location_output_company_a, view: False}:
+    name: Output - A
+    usage: internal
+    company_id: company_a
+-
+  !record {model: stock.warehouse, id: warehouse_company_a, view: False}:
+    name: purchase warehouse - A
+    code: CMPA
+    wh_input_stock_loc_id: location_stock_company_a
+    lot_stock_id: location_stock_company_a
+    wh_output_stock_loc_id: location_output_company_a
+    company_id: company_a
+-
+  !record {model: res.partner, id: partner_company_b, view: False}:
+    name: Company B
+    supplier: 1
+    customer: 1
+-
+  !record {model: res.company, id: company_b, view: False}:
+    name: Company B
+    parent_id: base.main_company
+    currency_id: base.EUR
+    partner_id: partner_company_b
+    sale_auto_validation: 1
+-
+  !record {model: stock.location, id: location_stock_company_b, view: False}:
+    name: Stock - B
+    usage: internal
+    company_id: company_b
+-
+  !record {model: stock.location, id: location_output_company_b, view: False}:
+    name: Output - B
+    usage: internal
+    company_id: company_b
+-
+  !record {model: stock.warehouse, id: warehouse_company_b, view: False}:
+    name: purchase warehouse - B
+    code: CMPB
+    wh_input_stock_loc_id: location_stock_company_b
+    lot_stock_id: location_stock_company_b
+    wh_output_stock_loc_id: location_output_company_b
+    company_id: company_b
+-
+  Apply warehouse in company.
+-
+  !record {model: res.company, id: company_a}:
+    warehouse_id: warehouse_company_a
+-
+  !record {model: res.company, id: company_b}:
+    warehouse_id: warehouse_company_b
+-
+  !record {model: product.product, id: product_consultant, view: False}:
+    name: Service
+    uom_id: product.product_uom_hour
+    uom_po_id: product.product_uom_hour
+    categ_id: product.product_category_all
+    type: service
+    company_id: False

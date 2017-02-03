@@ -24,7 +24,6 @@
         'views/purchase_order_view.xml',
     ],
     'test': [
-        #'test/test_intercompany_data.yml',
-        #'test/inter_company_po_to_so.yml',
+        'test/inter_company_purchase_sale.yml',
     ],
 }
