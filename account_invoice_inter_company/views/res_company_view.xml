@@ -8,7 +8,6 @@
                 <xpath expr="//notebook" position="inside">
                     <page string="Inter-Company">
                         <group string="Invoice">
-                            <field name="intercompany_user_id" colspan="2" attrs="{'required': True}" domain="[('id', '!=', 1), ('company_id', '=', id)]"/>
                             <field name="invoice_auto_validation"/>
                         </group>
                     </page>

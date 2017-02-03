@@ -67,17 +67,6 @@
     </record>
 
     <!--
-        Update company A and B with each intercompany user
-        -->
-    <record id="company_a" model="res.company">
-        <field name="intercompany_user_id" ref="user_company_a"/>
-    </record>
-
-    <record id="company_b" model="res.company">
-        <field name="intercompany_user_id" ref="user_company_b"/>
-    </record>
-
-    <!--
         Create account account for each company (A and B)
         -->
     <record id="a_recv_company_a" model="account.account">

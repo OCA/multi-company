@@ -46,8 +46,7 @@ class AccountInvoice(models.Model):
     def inter_company_create_invoice(
             self, dest_company, dest_inv_type, dest_journal_type):
         """ create an invoice for the given company : it will copy "
-        "the invoice lines in the new
-            invoice. The intercompany user is the author of the new invoice.
+        "the invoice lines in the new invoice.
             :param dest_company : the company of the created invoice
             :rtype dest_company : res.company record
             :param dest_inv_type : the type of the invoice "
@@ -58,36 +57,11 @@ class AccountInvoice(models.Model):
             :rtype dest_journal_type : string
         """
         self.ensure_one()
-        AccountInvoice = self.env['account.invoice']
-
-        # find user for creating the invoice from company
-        intercompany_uid = (dest_company.intercompany_user_id and
-                            dest_company.intercompany_user_id.id or False)
-        if not intercompany_uid:
-            raise UserError(_(
-                'Provide one user for intercompany relation for %s ')
-                % dest_company.name)
-
-        # check intercompany user access rights
-        if not AccountInvoice.sudo(intercompany_uid).check_access_rights(
-                'create', raise_exception=False):
-            raise UserError(_(
-                "Inter company user of company %s doesn't have enough "
-                "access rights") % dest_company.name)
-
         # check intercompany product
-        for line in self.invoice_line:
-            try:
-                line.product_id.sudo(intercompany_uid).read()
-            except:
-                raise UserError(_(
-                    "You cannot create invoice in company '%s' because "
-                    "product '%s' is not intercompany")
-                    % (dest_company.name, line.product_id.name))
-
+        self._check_intercompany_product(dest_company)
         # if an invoice has already been genereted
         # delete it and force the same number
-        inter_invoice = self.sudo(intercompany_uid).search(
+        inter_invoice = self.sudo().search(
             [('auto_invoice_id', '=', self.id)])
         force_number = False
         if inter_invoice:
@@ -98,7 +72,7 @@ class AccountInvoice(models.Model):
         context['force_company'] = dest_company.id
         src_company_partner_id = self.company_id.partner_id
         dest_invoice_lines = []
-        # create invoice, as the intercompany user
+        # create invoice
         dest_invoice_vals = self.with_context(
             context).sudo()._prepare_invoice_data(
                 dest_invoice_lines, dest_inv_type,
@@ -111,22 +85,12 @@ class AccountInvoice(models.Model):
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
                     "inter-company invoices.") % src_line.name)
-            # get invoice line data from product onchange
-            dest_line_data = src_line.with_context(context).sudo(
-                intercompany_uid).product_id_change(
-                    src_line.product_id.id,
-                    src_line.product_id.uom_id.id,
-                    qty=src_line.quantity,
-                    name='',
-                    type=dest_inv_type,
-                    partner_id=src_company_partner_id.id,
-                    fposition_id=dest_invoice_vals['fiscal_position'],
-                    company_id=dest_company.id)
             dest_inv_line_data = self.sudo()._prepare_invoice_line_data(
-                dest_line_data, src_line)
+                dest_inv_type, dest_invoice_vals,
+                dest_company, src_line, src_company_partner_id, context)
             dest_invoice_lines.append((0, 0, dest_inv_line_data))
-        dest_invoice = self.with_context(context).sudo(
-            intercompany_uid).create(dest_invoice_vals)
+        dest_invoice = self.with_context(context).sudo().create(
+            dest_invoice_vals)
         precision = self.env['decimal.precision'].precision_get('Account')
         # Validation of account invoice
         if (dest_company.invoice_auto_validation and
@@ -147,8 +111,23 @@ class AccountInvoice(models.Model):
                        self.amount_total))
                 dest_invoice.message_post(body=body)
                 dest_invoice.check_total = self.amount_total
-        return {'intercompany_uid': intercompany_uid,
-                'dest_invoice': dest_invoice}
+        return {'dest_invoice': dest_invoice}
+
+    @api.multi
+    def _check_intercompany_product(self, dest_company):
+        dest_user = self.env['res.users'].search([
+            ('id', '!=', 1),
+            ('company_id', '=', dest_company.id)
+        ], limit=1)
+        if dest_user:
+            for line in self.invoice_line:
+                try:
+                    line.product_id.sudo(dest_user).read()
+                except:
+                    raise UserError(_(
+                        "You cannot create invoice in company '%s' with "
+                        "product '%s' because it is not multicompany")
+                        % (dest_company.name, line.product_id.name))
 
     @api.multi
     def _prepare_invoice_data(self,
@@ -162,6 +141,7 @@ class AccountInvoice(models.Model):
             :param dest_journal_type : type of the journal "
             "to register the invoice_line_ids
             :rtype dest_journal_type : string
+            :param dest_company : the company of the created invoice
             :rtype dest_company : res.company record
         """
         self.ensure_one()
@@ -180,6 +160,11 @@ class AccountInvoice(models.Model):
         context['company_id'] = dest_company.id
         dest_period_ids = self.env['account.period'].with_context(
             context).find(self.date_invoice)
+        if not dest_period_ids:
+            raise UserError(_(
+                "Not define period for invoice date '%s' "
+                "in this company: '%s' (id:%d).")
+                % (self.date_invoice, dest_company.name, dest_company.id))
 
         # find account, payment term, fiscal position, bank.
         dest_partner_data = self.onchange_partner_id(
@@ -190,15 +175,15 @@ class AccountInvoice(models.Model):
             dest_currency_id = self.currency_id.id
         else:
             # currency not shared between companies
-            dest_curs = self.env['res.currency'].with_context(context).search([
+            dest_currency = self.env['res.currency'].with_context(context).search([
                 ('name', '=', self.currency_id.name),
                 ('company_id', '=', dest_company.id),
             ], limit=1)
-            if not dest_curs:
+            if not dest_currency:
                 raise UserError(_(
                     "Could not find the currency '%s' in the company '%s'")
                     % (self.currency_id.name, dest_company.name_get()[0][1]))
-            dest_currency_id = dest_curs[0].id
+            dest_currency_id = dest_currency.id
         return {
             'name': self.name,
             'origin': self.company_id.name + _(' Invoice: ') + str(
@@ -222,29 +207,56 @@ class AccountInvoice(models.Model):
                 'partner_bank_id', False),
             'auto_generated': True,
             'auto_invoice_id': self.id,
+            'check_total': self.amount_total,
         }
 
     @api.model
-    def _prepare_invoice_line_data(self, dest_line_data, src_line):
+    def _prepare_invoice_line_data(self, dest_inv_type, dest_invoice_vals,
+                                   dest_company, src_line,
+                                   src_company_partner_id, context):
         """ Generate invoice line values
-            :param dest_line_data : dict of invoice line data
-            :rtype dest_line_data : dict
+            :param dest_inv_type : the type of the invoice to prepare "
+            "the values
+            :param dest_invoice_vals : dict of invoice data
+            :rtype dest_invoice_vals : dict
+            :param dest_company : the company of the created invoice
+            :rtype dest_company : res.company record
             :param src_line : the invoice line object
             :rtype src_line : account.invoice.line record
+            :rtype src_company_partner_id : res.partner record
         """
+        # get invoice line data from product onchange
+        dest_line_data = src_line.with_context(
+            context).sudo().product_id_change(
+                src_line.product_id.id,
+                src_line.product_id.uom_id.id,
+                qty=src_line.quantity,
+                name='',
+                type=dest_inv_type,
+                partner_id=src_company_partner_id.id,
+                fposition_id=dest_invoice_vals['fiscal_position'],
+                company_id=dest_company.id)
+        account_id = dest_line_data['value']['account_id']
+        account = self.env['account.account'].browse(account_id)
+        tax_id = dest_line_data['value']['invoice_line_tax_id']
+        tax = self.env['account.tax'].browse(tax_id)
+        filtered_account = account.filtered(
+            lambda r: r.company_id.id == dest_company.id)
+        filtered_tax = tax.filtered(
+            lambda r: r.company_id.id == dest_company.id)
+        dest_line_data['value']['account_id'] = filtered_account.id
+        dest_line_data['value']['invoice_line_tax_id'] = filtered_tax.id
+        dest_price_unit = self._compute_dest_price_unit(src_line)
         vals = {
             'name': src_line.name,
-            # TODO: it's wrong to just copy the price_unit
-            # You have to check if the tax is price_include True or False
-            # in source and target companies
-            'price_unit': src_line.price_unit,
+            'price_unit': dest_price_unit,
             'quantity': src_line.quantity,
             'discount': src_line.discount,
             'product_id': src_line.product_id.id or False,
             'uos_id': src_line.uos_id.id or False,
             'sequence': src_line.sequence,
-            'invoice_line_tax_id': [(6, 0, dest_line_data['value'].get(
-                'invoice_line_tax_id', []))],
+            'invoice_line_tax_id': dest_line_data['value'].get(
+                'invoice_line_tax_id', []),
             # Analytic accounts are per company
             # The problem is that we can't really "guess" the
             # analytic account to set. It probably needs to be
@@ -257,16 +269,19 @@ class AccountInvoice(models.Model):
         return vals
 
     @api.multi
+    def _compute_dest_price_unit(self, src_line):
+        # TODO: it's wrong to just copy the price_unit
+        # You have to check if the tax is price_include True or False
+        # in source and target companies
+        return src_line.price_unit
+
+    @api.multi
     def action_cancel(self):
         for invoice in self:
             company = self.env['res.company']._find_company_from_partner(
                 invoice.partner_id.id)
-            if (
-                company and company.intercompany_user_id and not
-                invoice.auto_generated
-            ):
-                intercompany_uid = company.intercompany_user_id.id
-                for inter_invoice in self.sudo(intercompany_uid).search(
+            if company and not invoice.auto_generated:
+                for inter_invoice in self.sudo().search(
                         [('auto_invoice_id', '=', invoice.id)]):
                     inter_invoice.signal_workflow('invoice_cancel')
         return super(AccountInvoice, self).action_cancel()

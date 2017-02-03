@@ -20,7 +20,6 @@ Configuration
 
 To configure this module, you need to go to the menu *Settings > Companies > Companies*, select one of the companies and go to the tab *Inter-Company* then the group *Invoice*.
 
-Another important configuration is the *Inter Company User* : it is the user that will be used to automatically generate the corresponding object in the other company.So you cannot select the administrator as *Inter Company User* because this user by-passes the record rules ; you have to select a regular user that is attached to the company and only to this company (don't select a user that is allowed to switch between companies).
 
 Usage
 =====
