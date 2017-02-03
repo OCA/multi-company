@@ -17,14 +17,14 @@ class PurchaseOrder(models.Model):
         for purchase_order in self:
             # get the company from partner then trigger action of
             # intercompany relation
-            company_rec = self.env['res.company']._find_company_from_partner(
+            dest_company = self.env['res.company']._find_company_from_partner(
                 purchase_order.partner_id.id)
-            if company_rec:
-                purchase_order.inter_company_create_sale_order(company_rec)
+            if dest_company:
+                purchase_order.inter_company_create_sale_order(dest_company)
         return res
 
     @api.multi
-    def inter_company_create_sale_order(self, company):
+    def inter_company_create_sale_order(self, dest_company):
         """ Create a Sale Order from the current PO (self)
             Note : In this method, reading the current PO is done as sudo,
             and the creation of the derived
@@ -34,34 +34,14 @@ class PurchaseOrder(models.Model):
             :rtype company : res.company record
         """
         self.ensure_one()
-        SaleOrder = self.env['sale.order']
-
-        # find user for creating and validation SO/PO from partner company
-        intercompany_uid = (company.intercompany_user_id and
-                            company.intercompany_user_id.id or False)
-        if not intercompany_uid:
-            raise UserError(_(
-                'Provide at least one user for inter company relation for %s ')
-                % company.name)
-        # check intercompany user access rights
-        if not SaleOrder.sudo(intercompany_uid).check_access_rights(
-                'create', raise_exception=False):
-            raise UserError(_(
-                "Inter company user of company %s doesn't have enough "
-                "access rights") % company.name)
 
         # check intercompany product
-        for purchase_line in self.order_line:
-            try:
-                purchase_line.product_id.sudo(intercompany_uid).read()
-            except:
-                raise UserError(_(
-                    "You cannot create SO from PO because product '%s' "
-                    "is not intercompany") % purchase_line.product_id.name)
+        self._check_intercompany_product(dest_company)
+
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
-        company_partner = self.env['res.partner'].sudo(
-            intercompany_uid).browse(self.company_id.partner_id.id)
+        company_partner = self.env['res.partner'].sudo().browse(
+            self.company_id.partner_id.id)
 
         # check pricelist currency should be same with PO/SO document
         if self.pricelist_id.currency_id.id != (
@@ -72,18 +52,15 @@ class PurchaseOrder(models.Model):
                 'purchase price list currency.'))
 
         # create the SO and generate its lines from the PO lines
-        SaleOrderLine = self.env['sale.order.line']
-        # read it as sudo, because inter-compagny user
-        # can not have the access right on PO
         sale_order_data = self.sudo()._prepare_sale_order_data(
-            self.name, company_partner, company,
+            self.name, company_partner, dest_company,
             self.dest_address_id and self.dest_address_id.id or False)
-        sale_order = SaleOrder.sudo(intercompany_uid).create(
+        sale_order = self.env['sale.order'].sudo().create(
             sale_order_data)
         for purchase_line in self.order_line:
             sale_line_vals = self.sudo()._prepare_sale_order_line_data(
-                intercompany_uid, purchase_line, company, sale_order)
-            SaleOrderLine.sudo(intercompany_uid).create(sale_line_vals)
+                purchase_line, dest_company, sale_order)
+            self.env['sale.order.line'].sudo().create(sale_line_vals)
 
         # write supplier reference field on PO
         if not self.partner_ref:
@@ -94,11 +71,26 @@ class PurchaseOrder(models.Model):
             self.invoice_method = 'intercompany'
 
         # Validation of sale order
-        if company.sale_auto_validation:
-            sale_order.sudo(intercompany_uid).signal_workflow('order_confirm')
+        if dest_company.sale_auto_validation:
+            sale_order.sudo().signal_workflow('order_confirm')
 
     @api.multi
-    def _prepare_sale_order_data(self, name, partner, company,
+    def _check_intercompany_product(self, dest_company):
+        dest_user = self.env['res.users'].search([
+            ('id', '!=', 1),
+            ('company_id', '=', dest_company.id)
+        ], limit=1)
+        if dest_user:
+            for purchase_line in self.order_line:
+                try:
+                    purchase_line.product_id.sudo(dest_user).read()
+                except:
+                    raise UserError(_(
+                        "You cannot create SO from PO because product '%s' "
+                        "is not intercompany") % purchase_line.product_id.name)
+
+    @api.multi
+    def _prepare_sale_order_data(self, name, partner, dest_company,
                                  direct_delivery_address):
         """ Generate the Sale Order values from the PO
             :param name : the origin client reference
@@ -116,19 +108,20 @@ class PurchaseOrder(models.Model):
                                                    'delivery',
                                                    'contact'])
         # find location and warehouse, pick warehouse from company object
-        warehouse = (company.warehouse_id and
-                     company.warehouse_id.company_id.id == company.id and
-                     company.warehouse_id or False)
+        warehouse = (
+            dest_company.warehouse_id and
+            dest_company.warehouse_id.company_id.id == dest_company.id and
+            dest_company.warehouse_id or False)
         if not warehouse:
             raise UserError(_(
                 'Configure correct warehouse for company(%s) from '
-                'Menu: Settings/companies/companies' % (company.name)))
+                'Menu: Settings/companies/companies' % (dest_company.name)))
         return {
             'name': (
                 self.env['ir.sequence'].sudo().next_by_code('sale.order') or
                 '/'
             ),
-            'company_id': company.id,
+            'company_id': dest_company.id,
             'client_order_ref': name,
             'partner_id': partner.id,
             'warehouse_id': warehouse.id,
@@ -146,7 +139,7 @@ class PurchaseOrder(models.Model):
 
     @api.model
     def _prepare_sale_order_line_data(
-            self, intercompany_uid, purchase_line, company, sale_order):
+            self, purchase_line, dest_company, sale_order):
         """ Generate the Sale Order Line values from the PO line
             :param line : the origin Purchase Order Line
             :rtype line : purchase.order.line record
@@ -155,11 +148,11 @@ class PurchaseOrder(models.Model):
             :param sale_order : the Sale Order
         """
         context = self._context.copy()
-        context['company_id'] = company.id
+        context['company_id'] = dest_company.id
         # get sale line data from product onchange
         sale_line_obj = self.env['sale.order.line'].browse(False)
-        sale_line_data = sale_line_obj.with_context(context).sudo(
-            intercompany_uid).product_id_change_with_wh(
+        sale_line_data = sale_line_obj.with_context(
+            context).sudo().product_id_change_with_wh(
                 pricelist=sale_order.pricelist_id.id,
                 product=(purchase_line.product_id and
                          purchase_line.product_id.id or False),
@@ -184,7 +177,7 @@ class PurchaseOrder(models.Model):
         sale_line_data['value']['delay'] = (purchase_line.product_id and
                                             purchase_line.product_id.
                                             sale_delay or 0.0)
-        sale_line_data['value']['company_id'] = company.id
+        sale_line_data['value']['company_id'] = dest_company.id
         sale_line_data['value']['price_unit'] = purchase_line.price_unit
         sale_line_data['value']['product_uom_qty'] = (purchase_line.
                                                       product_qty)
@@ -201,16 +194,12 @@ class PurchaseOrder(models.Model):
     @api.multi
     def action_cancel(self):
         for purchase in self:
-            company = self.env['res.company']._find_company_from_partner(
-                self.partner_id.id)
-            intercompany_uid = company.intercompany_user_id.id
-            for sale_order in self.env['sale.order'].sudo(
-                intercompany_uid).search([
-                    ('auto_purchase_order_id', '=', self.id)]):
+            for sale_order in self.env['sale.order'].sudo().search([
+                    ('auto_purchase_order_id', '=', purchase.id)]):
                 sale_order.action_cancel()
-            res = super(PurchaseOrder, self).action_cancel()
-            if self.invoice_method == 'intercompany':
-                self.invoice_method = 'order'
-            if self.partner_ref:
-                self.partner_ref = ''
+            res = super(PurchaseOrder, purchase).action_cancel()
+            if purchase.invoice_method == 'intercompany':
+                purchase.invoice_method = 'order'
+            if purchase.partner_ref:
+                purchase.partner_ref = ''
         return res
