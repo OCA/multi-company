@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-11 09:27+0000\n"
-"PO-Revision-Date: 2017-01-11 09:27+0000\n"
+"POT-Creation-Date: 2017-02-03 16:26+0000\n"
+"PO-Revision-Date: 2017-02-03 16:26+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -47,11 +47,6 @@ msgstr "Madame, Monsieur,\n"
 "Cordialement,"
 
 #. module: account_invoice_inter_company
-#: field:res.company,intercompany_user_id:0
-msgid "Inter Company User"
-msgstr "Utilisateur inter sociétés"
-
-#. module: account_invoice_inter_company
 #: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
 msgid "Inter-Company"
 msgstr "Inter-Sociétés"
@@ -76,11 +71,6 @@ msgstr "Lignes de facture"
 #: field:base.config.settings,invoice_auto_validation:0
 msgid "Invoices Auto Validation"
 msgstr "Auto Validation des factures"
-
-#. module: account_invoice_inter_company
-#: help:res.company,intercompany_user_id:0
-msgid "Responsible user for creation of documents triggered by intercompany rules. You cannot select the administrator, because the administrator by-passes the record rules, which is a problem when Odoo reads taxes on products."
-msgstr "Utilisateur qui est autorisé à créer les documents intersociétés. Vous ne pouvez pas choisir l'administrateur, parce que l'administrateur contourne les règles sur les enregistrements, ce qui est un problème quand Odoo lit les taxes sur les produits."
 
 #. module: account_invoice_inter_company
 #: field:base.config.settings,company_id:0

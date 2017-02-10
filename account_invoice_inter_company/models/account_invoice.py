@@ -25,22 +25,37 @@ class AccountInvoice(models.Model):
                 src_invoice.partner_id.id)
             if (dest_company and not src_invoice.auto_generated):
                 if src_invoice.type == 'out_invoice':
-                    src_invoice.inter_company_create_invoice(dest_company,
-                                                             'in_invoice',
-                                                             'purchase')
+                    dest_inv_type = 'in_invoice'
+                    dest_journal_type = 'purchase'
                 elif src_invoice.type == 'in_invoice':
-                    src_invoice.inter_company_create_invoice(dest_company,
-                                                             'out_invoice',
-                                                             'sale')
+                    dest_inv_type = 'out_invoice'
+                    dest_journal_type = 'sale'
                 elif src_invoice.type == 'out_refund':
-                    src_invoice.inter_company_create_invoice(dest_company,
-                                                             'in_refund',
-                                                             'purchase_refund')
+                    dest_inv_type = 'in_refund'
+                    dest_journal_type = 'purchase_refund'
                 elif src_invoice.type == 'in_refund':
-                    src_invoice.inter_company_create_invoice(dest_company,
-                                                             'out_refund',
-                                                             'sale_refund')
+                    dest_inv_type = 'out_refund'
+                    dest_journal_type = 'sale_refund'
+                src_invoice.inter_company_create_invoice(dest_company,
+                                                         dest_inv_type,
+                                                         dest_journal_type)
         return super(AccountInvoice, self).invoice_validate()
+
+    @api.multi
+    def _check_intercompany_product(self, dest_company):
+        dest_user = self.env['res.users'].search([
+            ('id', '!=', 1),
+            ('company_id', '=', dest_company.id)
+        ], limit=1)
+        if dest_user:
+            for line in self.invoice_line:
+                try:
+                    line.product_id.sudo(dest_user).read()
+                except:
+                    raise UserError(_(
+                        "You cannot create invoice in company '%s' with "
+                        "product '%s' because it is not multicompany")
+                        % (dest_company.name, line.product_id.name))
 
     @api.multi
     def inter_company_create_invoice(
@@ -114,22 +129,6 @@ class AccountInvoice(models.Model):
         return {'dest_invoice': dest_invoice}
 
     @api.multi
-    def _check_intercompany_product(self, dest_company):
-        dest_user = self.env['res.users'].search([
-            ('id', '!=', 1),
-            ('company_id', '=', dest_company.id)
-        ], limit=1)
-        if dest_user:
-            for line in self.invoice_line:
-                try:
-                    line.product_id.sudo(dest_user).read()
-                except:
-                    raise UserError(_(
-                        "You cannot create invoice in company '%s' with "
-                        "product '%s' because it is not multicompany")
-                        % (dest_company.name, line.product_id.name))
-
-    @api.multi
     def _prepare_invoice_data(self,
                               dest_invoice_lines, dest_inv_type,
                               dest_journal_type, dest_company):
@@ -175,10 +174,11 @@ class AccountInvoice(models.Model):
             dest_currency_id = self.currency_id.id
         else:
             # currency not shared between companies
-            dest_currency = self.env['res.currency'].with_context(context).search([
-                ('name', '=', self.currency_id.name),
-                ('company_id', '=', dest_company.id),
-            ], limit=1)
+            dest_currency = self.env['res.currency'].with_context(
+                context).search([
+                    ('name', '=', self.currency_id.name),
+                    ('company_id', '=', dest_company.id),
+                ], limit=1)
             if not dest_currency:
                 raise UserError(_(
                     "Could not find the currency '%s' in the company '%s'")
@@ -246,10 +246,12 @@ class AccountInvoice(models.Model):
             lambda r: r.company_id.id == dest_company.id)
         dest_line_data['value']['account_id'] = filtered_account.id
         dest_line_data['value']['invoice_line_tax_id'] = [(6, 0, filtered_taxes.ids)]
-        dest_price_unit = self._compute_dest_price_unit(src_line)
         vals = {
             'name': src_line.name,
-            'price_unit': dest_price_unit,
+            # TODO: it's wrong to just copy the price_unit
+            # You have to check if the tax is price_include True or False
+            # in source and target companies
+            'price_unit': src_line.price_unit,
             'quantity': src_line.quantity,
             'discount': src_line.discount,
             'product_id': src_line.product_id.id or False,
@@ -267,13 +269,6 @@ class AccountInvoice(models.Model):
             'auto_invoice_line_id': src_line.id
         }
         return vals
-
-    @api.multi
-    def _compute_dest_price_unit(self, src_line):
-        # TODO: it's wrong to just copy the price_unit
-        # You have to check if the tax is price_include True or False
-        # in source and target companies
-        return src_line.price_unit
 
     @api.multi
     def action_cancel(self):
