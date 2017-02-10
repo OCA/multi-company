@@ -238,14 +238,14 @@ class AccountInvoice(models.Model):
                 company_id=dest_company.id)
         account_id = dest_line_data['value']['account_id']
         account = self.env['account.account'].browse(account_id)
-        tax_id = dest_line_data['value']['invoice_line_tax_id']
-        tax = self.env['account.tax'].browse(tax_id)
+        tax_ids = dest_line_data['value']['invoice_line_tax_id']
+        taxes = self.env['account.tax'].browse(tax_ids)
         filtered_account = account.filtered(
             lambda r: r.company_id.id == dest_company.id)
-        filtered_tax = tax.filtered(
+        filtered_taxes = taxes.filtered(
             lambda r: r.company_id.id == dest_company.id)
         dest_line_data['value']['account_id'] = filtered_account.id
-        dest_line_data['value']['invoice_line_tax_id'] = filtered_tax.id
+        dest_line_data['value']['invoice_line_tax_id'] = [(6, 0, filtered_taxes.ids)]
         dest_price_unit = self._compute_dest_price_unit(src_line)
         vals = {
             'name': src_line.name,
