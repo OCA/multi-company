@@ -45,11 +45,7 @@
         <field name="email">usera@companya.com</field>
         <field name="company_id" ref="company_a"/>
         <field name="company_ids" eval="[(6, 0, [ref('company_a')])]"/>
-        <field name="groups_id" eval="[(6, 0, [
-        ref('account.group_account_manager'),
-        ref('base.group_partner_manager'),
-        ref('base.group_sale_manager')
-        ])]"/>
+        <field name="groups_id" eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager'), ref('base.group_sale_manager')])]"/>
     </record>
 
     <record id="user_company_b" model="res.users">
@@ -59,11 +55,7 @@
         <field name="email">userb@companyb.com</field>
         <field name="company_id" ref="company_b"/>
         <field name="company_ids" eval="[(6, 0, [ref('company_b')])]"/>
-        <field name="groups_id" eval="[(6, 0, [
-        ref('account.group_account_manager'),
-        ref('base.group_partner_manager'),
-        ref('base.group_sale_manager'),
-        ])]"/>
+        <field name="groups_id" eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager'), ref('base.group_sale_manager'),])]"/>
     </record>
 
     <!--
