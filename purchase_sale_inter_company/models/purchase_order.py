@@ -24,57 +24,6 @@ class PurchaseOrder(models.Model):
         return res
 
     @api.multi
-    def inter_company_create_sale_order(self, dest_company):
-        """ Create a Sale Order from the current PO (self)
-            Note : In this method, reading the current PO is done as sudo,
-            and the creation of the derived
-            SO as intercompany_user, minimizing the access right required
-            for the trigger user.
-            :param company : the company of the created PO
-            :rtype company : res.company record
-        """
-        self.ensure_one()
-
-        # check intercompany product
-        self._check_intercompany_product(dest_company)
-
-        # Accessing to selling partner with selling user, so data like
-        # property_account_position can be retrieved
-        company_partner = self.env['res.partner'].sudo().browse(
-            self.company_id.partner_id.id)
-
-        # check pricelist currency should be same with PO/SO document
-        if self.pricelist_id.currency_id.id != (
-                company_partner.property_product_pricelist.currency_id.id):
-            raise UserError(_(
-                'You cannot create SO from PO because '
-                'sale price list currency is different than '
-                'purchase price list currency.'))
-
-        # create the SO and generate its lines from the PO lines
-        sale_order_data = self.sudo()._prepare_sale_order_data(
-            self.name, company_partner, dest_company,
-            self.dest_address_id and self.dest_address_id.id or False)
-        sale_order = self.env['sale.order'].sudo().create(
-            sale_order_data)
-        for purchase_line in self.order_line:
-            sale_line_vals = self.sudo()._prepare_sale_order_line_data(
-                purchase_line, dest_company, sale_order)
-            self.env['sale.order.line'].sudo().create(sale_line_vals)
-
-        # write supplier reference field on PO
-        if not self.partner_ref:
-            self.partner_ref = sale_order.name
-
-        # write invoice method field on PO
-        if self.invoice_method != 'intercompany':
-            self.invoice_method = 'intercompany'
-
-        # Validation of sale order
-        if dest_company.sale_auto_validation:
-            sale_order.sudo().signal_workflow('order_confirm')
-
-    @api.multi
     def _check_intercompany_product(self, dest_company):
         dest_user = self.env['res.users'].search([
             ('id', '!=', 1),
@@ -88,6 +37,50 @@ class PurchaseOrder(models.Model):
                     raise UserError(_(
                         "You cannot create SO from PO because product '%s' "
                         "is not intercompany") % purchase_line.product_id.name)
+
+    @api.multi
+    def inter_company_create_sale_order(self, dest_company):
+        """ Create a Sale Order from the current PO (self)
+            Note : In this method, reading the current PO is done as sudo,
+            and the creation of the derived
+            SO as intercompany_user, minimizing the access right required
+            for the trigger user.
+            :param company : the company of the created PO
+            :rtype company : res.company record
+        """
+        self.ensure_one()
+        # check intercompany product
+        self._check_intercompany_product(dest_company)
+        # Accessing to selling partner with selling user, so data like
+        # property_account_position can be retrieved
+        company_partner = self.env['res.partner'].sudo().browse(
+            self.company_id.partner_id.id)
+        # check pricelist currency should be same with PO/SO document
+        if self.pricelist_id.currency_id.id != (
+                company_partner.property_product_pricelist.currency_id.id):
+            raise UserError(_(
+                'You cannot create SO from PO because '
+                'sale price list currency is different than '
+                'purchase price list currency.'))
+        # create the SO and generate its lines from the PO lines
+        sale_order_data = self.sudo()._prepare_sale_order_data(
+            self.name, company_partner, dest_company,
+            self.dest_address_id and self.dest_address_id.id or False)
+        sale_order = self.env['sale.order'].sudo().create(
+            sale_order_data)
+        for purchase_line in self.order_line:
+            sale_line_vals = self.sudo()._prepare_sale_order_line_data(
+                purchase_line, dest_company, sale_order)
+            self.env['sale.order.line'].sudo().create(sale_line_vals)
+        # write supplier reference field on PO
+        if not self.partner_ref:
+            self.partner_ref = sale_order.name
+        # write invoice method field on PO
+        if self.invoice_method != 'intercompany':
+            self.invoice_method = 'intercompany'
+        # Validation of sale order
+        if dest_company.sale_auto_validation:
+            sale_order.sudo().signal_workflow('order_confirm')
 
     @api.multi
     def _prepare_sale_order_data(self, name, partner, dest_company,
@@ -131,7 +124,6 @@ class PurchaseOrder(models.Model):
             'fiscal_position': (partner.property_account_position and
                                 partner.property_account_position.id or False),
             'user_id': False,
-            'auto_generated': True,
             'auto_purchase_order_id': self.id,
             'partner_shipping_id': (direct_delivery_address or
                                     partner_addr['delivery'])
@@ -178,7 +170,6 @@ class PurchaseOrder(models.Model):
                                             purchase_line.product_id.
                                             sale_delay or 0.0)
         sale_line_data['value']['company_id'] = dest_company.id
-        sale_line_data['value']['price_unit'] = purchase_line.price_unit
         sale_line_data['value']['product_uom_qty'] = (purchase_line.
                                                       product_qty)
         sale_line_data['value']['product_uom'] = (
