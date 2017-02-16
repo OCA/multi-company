@@ -21,7 +21,7 @@
         'views/res_config_view.xml',
         'views/purchase_order_view.xml',
     ],
-    'test': [
-        'test/inter_company_purchase_sale.yml',
+    'demo': [
+        'demo/inter_company_purchase_sale.xml',
     ],
 }
