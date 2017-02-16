@@ -497,6 +497,7 @@
         <field name="name">Service Multi Company</field>
         <field name="account_id" ref="a_sale_company_a"/>
         <field name="price_unit" eval="450.0" />
+        <field name="company_id" ref="company_a"/>
     </record>
 
 </data></openerp>
