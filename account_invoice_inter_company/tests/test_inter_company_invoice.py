@@ -11,6 +11,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.installer_obj = self.env['account.installer']
         self.wizard_obj = self.env['wizard.multi.charts.accounts']
         self.account_obj = self.env['account.account']
+        self.invoice_obj = self.env['account.invoice']
         self.invoice_company_a = self.env.ref(
             'account_invoice_inter_company.customer_invoice_company_a')
 
@@ -84,3 +85,23 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.invoice_company_a.sudo(self.env.ref(
             'account_invoice_inter_company.user_company_a')).signal_workflow(
                 'invoice_open')
+
+        # Check destination invoice created in company B
+        invoices = self.invoice_obj.sudo(self.env.ref(
+            'account_invoice_inter_company.user_company_b')).search([
+                ('auto_invoice_id', '=', self.invoice_company_a.id)
+            ])
+        self.assertNotEquals(invoices, False)
+        self.assertEquals(len(invoices), 1)
+        if invoices.company_id.invoice_auto_validation:
+            self.assertEquals(invoices.state, 'open')
+        else:
+            self.assertEquals(invoices.state, 'draft')
+        self.assertEquals(invoices.partner_id,
+                          self.invoice_company_a.company_id.partner_id)
+        self.assertEquals(invoices.company_id.partner_id,
+                          self.invoice_company_a.partner_id)
+        self.assertEquals(len(invoices.invoice_line),
+                          len(self.invoice_company_a.invoice_line))
+        self.assertEquals(invoices.invoice_line.product_id,
+                          self.invoice_company_a.invoice_line.product_id)
