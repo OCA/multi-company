@@ -14,9 +14,7 @@
     'depends': [
         'sale',
         'purchase',
-        'sale_stock',
-        'sale_order_dates',
-        'account_invoice_inter_company'
+        'account_invoice_inter_company',
     ],
     'data': [
         'views/res_company_view.xml',
