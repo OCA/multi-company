@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
-from openerp import fields, models
+from openerp import fields, models, api
 
 
 class SaleOrder(models.Model):
 
     _inherit = "sale.order"
 
-    auto_generated = fields.Boolean(string='Auto Generated Sale Order',
-                                    readonly=True, copy=False)
     auto_purchase_order_id = fields.Many2one('purchase.order',
                                              string='Source Purchase Order',
                                              readonly=True, copy=False)
+
+    @api.multi
+    def signal_workflow(self, signal):
+        for order in self:
+            if signal == 'order_confirm' and order.auto_purchase_order_id:
+                for line in order.order_line:
+                    if line.auto_purchase_line_id:
+                        line.auto_purchase_line_id.sudo().write({
+                            'price_unit': line.price_unit})
+        return super(SaleOrder, self).signal_workflow(signal=signal)
 
 
 class SaleOrderLine(models.Model):
