@@ -12,12 +12,12 @@
     'license': 'AGPL-3',
     'installable': True,
     'depends': [
-        'account',
+        'account_accountant',
+        'multi_company',
     ],
     'data': [
         'views/res_company_view.xml',
         'views/res_config_view.xml',
-        'config.yml'
     ],
     'demo': [
         'demo/inter_company_invoice.xml',
