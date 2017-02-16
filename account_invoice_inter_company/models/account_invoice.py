@@ -245,7 +245,8 @@ class AccountInvoice(models.Model):
         filtered_taxes = taxes.filtered(
             lambda r: r.company_id.id == dest_company.id)
         dest_line_data['value']['account_id'] = filtered_account.id
-        dest_line_data['value']['invoice_line_tax_id'] = [(6, 0, filtered_taxes.ids)]
+        dest_line_data['value']['invoice_line_tax_id'] = [
+            (6, 0, filtered_taxes.ids)]
         vals = {
             'name': src_line.name,
             # TODO: it's wrong to just copy the price_unit
