@@ -49,7 +49,7 @@ class SaleOrder(models.Model):
                     or sale.section_id.holding_company_id == sale.company_id:
                 sale.invoice_state = 'none'
             elif sale.holding_invoice_id:
-                if sale.holding_invoice_id.state in ('open', 'done'):
+                if sale.holding_invoice_id.state in ('open', 'paid'):
                     sale.invoice_state = 'invoiced'
                 else:
                     sale.invoice_state = 'pending'
