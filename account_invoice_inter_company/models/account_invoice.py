@@ -107,6 +107,7 @@ class AccountInvoice(models.Model):
         dest_invoice = self.with_context(context).sudo().create(
             dest_invoice_vals)
         precision = self.env['decimal.precision'].precision_get('Account')
+        dest_invoice.button_reset_taxes()
         # Validation of account invoice
         if (dest_company.invoice_auto_validation and
                 not float_compare(self.amount_total,
@@ -114,7 +115,6 @@ class AccountInvoice(models.Model):
                                   precision_digits=precision)):
             dest_invoice.signal_workflow('invoice_open')
         else:
-            dest_invoice.button_reset_taxes()
             # Add warning in chatter if the total amounts are different
             if float_compare(self.amount_total, dest_invoice.amount_total,
                              precision_digits=precision):
