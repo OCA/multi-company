@@ -14,6 +14,12 @@
                         attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
                     <field name="holding_invoice_group_by"
                         attrs="{'invisible': [('holding_company_id', '=', False)]}"/>
+                    <field name="holding_product_id"
+                        attrs="{'invisible': [('holding_company_id', '=', False)],
+                                'required': [('holding_company_id', '!=', False)]}"/>
+                    <field name="holding_royalty_product_id"
+                        attrs="{'invisible': [('holding_discount', '=', 0)],
+                                'required': [('holding_discount', '!=', 0)]}"/>
                 </field>
             </field>
         </record>

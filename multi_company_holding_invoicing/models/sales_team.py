@@ -29,3 +29,13 @@ class CrmCaseSection(models.Model):
         ], default='none',
         string='Invoice Group by',
         help="This will define how the sale order are grouped on the invoice")
+    holding_product_id = fields.Many2one(
+        'product.product',
+        string='Holding Invoice Product',
+        help=("This product will be used for the holding invoice line "
+             "accounting information will be taken on this product"))
+    holding_royalty_product_id = fields.Many2one(
+        'product.product',
+        string='Royalty Holding Invoice Product',
+        help=("This product will be used for the holding invoice line royalty "
+             "accounting information will be taken on this product"))

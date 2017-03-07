@@ -11,9 +11,8 @@
  'website': 'http://www.akretion.com/',
  'license': 'AGPL-3',
  'depends': [
-     'sale',
+     'account_invoice_inter_company',
      'sales_team',
-     'inter_company_rules',
      'base_suspend_security',
      # Note we depend of this module for having the sale_ids field
      # on the invoice

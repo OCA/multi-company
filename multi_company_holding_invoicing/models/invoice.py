@@ -80,6 +80,7 @@ class AccountInvoice(models.Model):
                     'generated for this invoice'))
             child_invoices = self.env['child.invoicing']._generate_invoice([
                 ('id', 'in', self.holding_sale_ids.ids),
+                ('company_id', '!=', self.company_id.id),
                 ])
             child_invoices.write({'holding_invoice_id': invoice.id})
             for child_invoice in child_invoices:

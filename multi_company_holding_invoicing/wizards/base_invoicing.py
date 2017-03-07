@@ -17,23 +17,39 @@ class BaseHoldingInvoicing(models.AbstractModel):
     def _get_invoice_line_data(self, data):
         section = self.env['crm.case.section'].browse(data['section_id'][0])
         if section.holding_invoice_group_by == 'none':
-            data['name'] = _('Global Invoice')
             return [data]
         else:
             read_fields, groupby = self._get_group_fields()
             read_fields.append('name')
             groupby.append('name')
-            datas = self.env['sale.order'].read_group(
+            return self.env['sale.order'].read_group(
                 data['__domain'], read_fields, groupby, lazy=False)
-            return datas
+
+    @api.model
+    def _get_accounting_value_from_product(self, data_line, product):
+        # We do not have access to the partner here so we can not
+        # play correctly the onchange
+        # We need to refactor the way to generate the line
+        # Refactor will be done in V10
+        # for now we just read the info on the product
+        # you need to set the tax by yourself
+        return {
+            'name': data_line.get('name', product.name),
+            'product_id': product.id,
+            'account_id': product.property_account_income.id,
+        }
 
     @api.model
     def _prepare_invoice_line(self, data_line):
-        return {
-            'name': data_line['name'],
+        section = self.env['crm.case.section'].browse(
+            data_line['section_id'][0])
+        vals = self._get_accounting_value_from_product(
+            data_line, section.holding_product_id)
+        vals.update({
             'price_unit': data_line['amount_untaxed'],
             'quantity': data_line.get('quantity', 1),
-            }
+            })
+        return vals
 
     @api.model
     def _prepare_invoice(self, data, lines):
@@ -153,10 +169,11 @@ class ChildInvoicing(models.TransientModel):
             data['section_id'][0])
         data_lines = super(ChildInvoicing, self)._get_invoice_line_data(data)
         data_lines.append({
-            'name': _('Royalty'),
+            'name': 'royalty',
             'amount_untaxed': data['amount_untaxed'],
             'quantity': - section.holding_discount/100.,
             'sale_line_ids': [],
+            'section_id': [section.id],
             })
         return data_lines
 
@@ -170,6 +187,16 @@ class ChildInvoicing(models.TransientModel):
             line_ids = self.env['sale.order.line'].search([
                 ('order_id', 'in', order_ids)]).ids
             val_line['sale_line_ids'] = [(6, 0, line_ids)]
+        # TODO the code is too complicated
+        # we should simplify the _get_invoice_line_data
+        # and _prepare_invoice_line to avoid this kind of hack
+        if data_line.get('name') == 'royalty':
+            section = self.env['crm.case.section'].browse(
+                data_line['section_id'][0])
+            val_line.update(self._get_accounting_value_from_product(
+                data_line,
+                section.holding_royalty_product_id))
+            val_line['name'] = section.holding_royalty_product_id.name
         return val_line
 
     @api.model
