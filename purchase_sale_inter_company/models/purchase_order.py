@@ -109,6 +109,10 @@ class PurchaseOrder(models.Model):
             raise UserError(_(
                 'Configure correct warehouse for company(%s) from '
                 'Menu: Settings/companies/companies' % (dest_company.name)))
+        partner_shipping_id = (
+            self.picking_type_id.warehouse_id and
+            self.picking_type_id.warehouse_id.partner_id and
+            self.picking_type_id.warehouse_id.partner_id.id or False)
         return {
             'name': (
                 self.env['ir.sequence'].sudo().next_by_code('sale.order') or
@@ -126,6 +130,7 @@ class PurchaseOrder(models.Model):
             'user_id': False,
             'auto_purchase_order_id': self.id,
             'partner_shipping_id': (direct_delivery_address or
+                                    partner_shipping_id or
                                     partner_addr['delivery'])
         }
 
