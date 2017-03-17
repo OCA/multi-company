@@ -50,7 +50,7 @@ class AccountInvoice(models.Model):
         if dest_user:
             for line in self.invoice_line:
                 try:
-                    line.product_id.sudo(dest_user).read()
+                    line.product_id.sudo(dest_user).read(['default_code'])
                 except:
                     raise UserError(_(
                         "You cannot create invoice in company '%s' with "
