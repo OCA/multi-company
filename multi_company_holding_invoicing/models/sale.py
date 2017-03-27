@@ -45,8 +45,7 @@ class SaleOrder(models.Model):
         # as a dependency. Indeed the dependency is manually triggered when
         # the holding_invoice is generated or the state is changed
         for sale in self:
-            if not sale.section_id.holding_company_id\
-                    or sale.section_id.holding_company_id == sale.company_id:
+            if not sale.section_id.holding_company_id:
                 sale.invoice_state = 'none'
             elif sale.holding_invoice_id:
                 if sale.holding_invoice_id.state in ('open', 'paid'):
