@@ -20,6 +20,7 @@ addon | version | summary
 [product_multi_company](product_multi_company/) | 8.0.1.0.0 | Select individually the product visibility on each company
 [stock_production_lot_multi_company](stock_production_lot_multi_company/) | 8.0.1.0.0 | Make serial numbers multi-company aware
 
+
 Unported addons
 ---------------
 addon | version | summary
