@@ -20,7 +20,9 @@ class PurchaseOrder(models.Model):
             dest_company = self.env['res.company']._find_company_from_partner(
                 purchase_order.partner_id.id)
             if dest_company:
-                purchase_order.inter_company_create_sale_order(dest_company)
+                (purchase_order.sudo().
+                 with_context(force_company=dest_company.id).
+                 _inter_company_create_sale_order(dest_company))
         return res
 
     @api.multi
@@ -39,7 +41,7 @@ class PurchaseOrder(models.Model):
                         "is not intercompany") % purchase_line.product_id.name)
 
     @api.multi
-    def inter_company_create_sale_order(self, dest_company):
+    def _inter_company_create_sale_order(self, dest_company):
         """ Create a Sale Order from the current PO (self)
             Note : In this method, reading the current PO is done as sudo,
             and the creation of the derived
