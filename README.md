@@ -10,6 +10,7 @@ as well as inter company communication.
 
 
 [//]: # (addons)
+
 Unported addons
 ---------------
 addon | version | summary
