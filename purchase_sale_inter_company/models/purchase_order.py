@@ -20,9 +20,9 @@ class PurchaseOrder(models.Model):
             dest_company = self.env['res.company']._find_company_from_partner(
                 purchase_order.partner_id.id)
             if dest_company:
-                (purchase_order.sudo().
-                 with_context(force_company=dest_company.id).
-                 _inter_company_create_sale_order(dest_company))
+                purchase_order.sudo().\
+                    with_context(force_company=dest_company.id).\
+                    _inter_company_create_sale_order(dest_company.id)
         return res
 
     @api.multi
@@ -41,22 +41,20 @@ class PurchaseOrder(models.Model):
                         "is not intercompany") % purchase_line.product_id.name)
 
     @api.multi
-    def _inter_company_create_sale_order(self, dest_company):
+    def _inter_company_create_sale_order(self, dest_company_id):
         """ Create a Sale Order from the current PO (self)
-            Note : In this method, reading the current PO is done as sudo,
-            and the creation of the derived
-            SO as intercompany_user, minimizing the access right required
-            for the trigger user.
+            Note : In this method, should be call in sudo with the propert
+            destination company in the context
             :param company : the company of the created PO
             :rtype company : res.company record
         """
         self.ensure_one()
+        dest_company = self.env['res.company'].browse(dest_company_id)
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
-        company_partner = self.env['res.partner'].sudo().browse(
-            self.company_id.partner_id.id)
+        company_partner = self.company_id.partner_id
         # check pricelist currency should be same with PO/SO document
         if self.pricelist_id.currency_id.id != (
                 company_partner.property_product_pricelist.currency_id.id):
@@ -65,15 +63,14 @@ class PurchaseOrder(models.Model):
                 'sale price list currency is different than '
                 'purchase price list currency.'))
         # create the SO and generate its lines from the PO lines
-        sale_order_data = self.sudo()._prepare_sale_order_data(
+        sale_order_data = self._prepare_sale_order_data(
             self.name, company_partner, dest_company,
             self.dest_address_id and self.dest_address_id.id or False)
-        sale_order = self.env['sale.order'].sudo().create(
-            sale_order_data)
+        sale_order = self.env['sale.order'].create(sale_order_data)
         for purchase_line in self.order_line:
-            sale_line_vals = self.sudo()._prepare_sale_order_line_data(
+            sale_line_vals = self._prepare_sale_order_line_data(
                 purchase_line, dest_company, sale_order)
-            self.env['sale.order.line'].sudo().create(sale_line_vals)
+            self.env['sale.order.line'].create(sale_line_vals)
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
@@ -82,7 +79,7 @@ class PurchaseOrder(models.Model):
             self.invoice_method = 'intercompany'
         # Validation of sale order
         if dest_company.sale_auto_validation:
-            sale_order.sudo().signal_workflow('order_confirm')
+            sale_order.signal_workflow('order_confirm')
 
     @api.multi
     def _prepare_sale_order_data(self, name, partner, dest_company,
@@ -98,10 +95,10 @@ class PurchaseOrder(models.Model):
             :rtype direct_delivery_address : res.partner record
         """
         self.ensure_one()
-        partner_addr = partner.sudo().address_get(['default',
-                                                   'invoice',
-                                                   'delivery',
-                                                   'contact'])
+        partner_addr = partner.address_get(['default',
+                                            'invoice',
+                                            'delivery',
+                                            'contact'])
         # find location and warehouse, pick warehouse from company object
         warehouse = (
             dest_company.warehouse_id and
@@ -117,8 +114,7 @@ class PurchaseOrder(models.Model):
             self.picking_type_id.warehouse_id.partner_id.id or False)
         return {
             'name': (
-                self.env['ir.sequence'].sudo().next_by_code('sale.order') or
-                '/'
+                self.env['ir.sequence'].next_by_code('sale.order') or '/'
             ),
             'company_id': dest_company.id,
             'client_order_ref': name,
@@ -151,7 +147,7 @@ class PurchaseOrder(models.Model):
         # get sale line data from product onchange
         sale_line_obj = self.env['sale.order.line'].browse(False)
         sale_line_data = sale_line_obj.with_context(
-            context).sudo().product_id_change_with_wh(
+            context).product_id_change_with_wh(
                 pricelist=sale_order.pricelist_id.id,
                 product=(purchase_line.product_id and
                          purchase_line.product_id.id or False),
