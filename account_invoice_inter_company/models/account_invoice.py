@@ -36,9 +36,11 @@ class AccountInvoice(models.Model):
                 elif src_invoice.type == 'in_refund':
                     dest_inv_type = 'out_refund'
                     dest_journal_type = 'sale_refund'
-                src_invoice.inter_company_create_invoice(dest_company,
-                                                         dest_inv_type,
-                                                         dest_journal_type)
+                src_invoice.sudo().\
+                    with_context(force_company=dest_company.id).\
+                    _inter_company_create_invoice(dest_company.id,
+                                                  dest_inv_type,
+                                                  dest_journal_type)
         return super(AccountInvoice, self).invoice_validate()
 
     @api.multi
@@ -58,8 +60,8 @@ class AccountInvoice(models.Model):
                         % (dest_company.name, line.product_id.name))
 
     @api.multi
-    def inter_company_create_invoice(
-            self, dest_company, dest_inv_type, dest_journal_type):
+    def _inter_company_create_invoice(
+            self, dest_company_id, dest_inv_type, dest_journal_type):
         """ create an invoice for the given company : it will copy "
         "the invoice lines in the new invoice.
             :param dest_company : the company of the created invoice
@@ -72,40 +74,37 @@ class AccountInvoice(models.Model):
             :rtype dest_journal_type : string
         """
         self.ensure_one()
+        dest_company = self.env['res.company'].browse(dest_company_id)
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # if an invoice has already been genereted
         # delete it and force the same number
-        inter_invoice = self.sudo().search(
+        inter_invoice = self.search(
             [('auto_invoice_id', '=', self.id)])
         force_number = False
         if inter_invoice:
             force_number = inter_invoice.internal_number
             inter_invoice.internal_number = False
             inter_invoice.unlink()
-        context = self._context.copy()
-        context['force_company'] = dest_company.id
         src_company_partner_id = self.company_id.partner_id
         dest_invoice_lines = []
         # create invoice
-        dest_invoice_vals = self.with_context(
-            context).sudo()._prepare_invoice_data(
-                dest_invoice_lines, dest_inv_type,
-                dest_journal_type, dest_company)
+        dest_invoice_data = self._prepare_invoice_data(
+            dest_invoice_lines, dest_inv_type,
+            dest_journal_type, dest_company)
         if force_number:
-            dest_invoice_vals['internal_number'] = force_number
+            dest_invoice_data['internal_number'] = force_number
         for src_line in self.invoice_line:
             if not src_line.product_id:
                 raise UserError(_(
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
                     "inter-company invoices.") % src_line.name)
-            dest_inv_line_data = self.sudo()._prepare_invoice_line_data(
-                dest_inv_type, dest_invoice_vals,
-                dest_company, src_line, src_company_partner_id, context)
+            dest_inv_line_data = self._prepare_invoice_line_data(
+                dest_inv_type, dest_invoice_data,
+                dest_company, src_line, src_company_partner_id)
             dest_invoice_lines.append((0, 0, dest_inv_line_data))
-        dest_invoice = self.with_context(context).sudo().create(
-            dest_invoice_vals)
+        dest_invoice = self.create(dest_invoice_data)
         precision = self.env['decimal.precision'].precision_get('Account')
         dest_invoice.button_reset_taxes()
         # Validation of account invoice
@@ -174,11 +173,10 @@ class AccountInvoice(models.Model):
             dest_currency_id = self.currency_id.id
         else:
             # currency not shared between companies
-            dest_currency = self.env['res.currency'].with_context(
-                context).search([
-                    ('name', '=', self.currency_id.name),
-                    ('company_id', '=', dest_company.id),
-                ], limit=1)
+            dest_currency = self.env['res.currency'].search([
+                ('name', '=', self.currency_id.name),
+                ('company_id', '=', dest_company.id),
+            ], limit=1)
             if not dest_currency:
                 raise UserError(_(
                     "Could not find the currency '%s' in the company '%s'")
@@ -213,7 +211,7 @@ class AccountInvoice(models.Model):
     @api.model
     def _prepare_invoice_line_data(self, dest_inv_type, dest_invoice_vals,
                                    dest_company, src_line,
-                                   src_company_partner_id, context):
+                                   src_company_partner_id):
         """ Generate invoice line values
             :param dest_inv_type : the type of the invoice to prepare "
             "the values
@@ -226,16 +224,15 @@ class AccountInvoice(models.Model):
             :rtype src_company_partner_id : res.partner record
         """
         # get invoice line data from product onchange
-        dest_line_data = src_line.with_context(
-            context).sudo().product_id_change(
-                src_line.product_id.id,
-                src_line.product_id.uom_id.id,
-                qty=src_line.quantity,
-                name='',
-                type=dest_inv_type,
-                partner_id=src_company_partner_id.id,
-                fposition_id=dest_invoice_vals['fiscal_position'],
-                company_id=dest_company.id)
+        dest_line_data = src_line.product_id_change(
+            src_line.product_id.id,
+            src_line.product_id.uom_id.id,
+            qty=src_line.quantity,
+            name='',
+            type=dest_inv_type,
+            partner_id=src_company_partner_id.id,
+            fposition_id=dest_invoice_vals['fiscal_position'],
+            company_id=dest_company.id)
         account_id = dest_line_data['value']['account_id']
         account = self.env['account.account'].browse(account_id)
         tax_ids = dest_line_data['value']['invoice_line_tax_id']
