@@ -4,7 +4,7 @@
 
 {
     'name': 'Inter Company Module for Invoices',
-    'summary': 'Intercompany INV rules',
+    'summary': 'Intercompany invoice rules',
     'version': '8.0.1.0.0',
     'category': 'Accounting & Finance',
     'website': 'http://www.odoo.com',

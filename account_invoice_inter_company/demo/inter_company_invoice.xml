@@ -6,14 +6,10 @@
         -->
     <record id="partner_company_a" model="res.partner">
         <field name="name">Company A</field>
-        <field name="customer">0</field>
-        <field name="supplier">1</field>
     </record>
 
     <record id="partner_company_b" model="res.partner">
         <field name="name">Company B</field>
-        <field name="customer">1</field>
-        <field name="supplier">0</field>
     </record>
 
     <!--
@@ -21,18 +17,35 @@
         -->
     <record id="company_a" model="res.company">
         <field name="name">Company A</field>
+        <field name="partner_id" ref="partner_company_a"/>
         <field name="parent_id" ref="base.main_company"/>
         <field name="currency_id" ref="base.EUR"/>
-        <field name="partner_id" ref="partner_company_a"/>
         <field name="invoice_auto_validation">1</field>
     </record>
 
     <record id="company_b" model="res.company">
         <field name="name">Company B</field>
+        <field name="partner_id" ref="partner_company_b"/>
         <field name="parent_id" ref="base.main_company"/>
         <field name="currency_id" ref="base.EUR"/>
-        <field name="partner_id" ref="partner_company_b"/>
         <field name="invoice_auto_validation">1</field>
+    </record>
+
+    <!--
+        Update partner for each company (A and B)
+        -->
+    <record id="partner_company_a" model="res.partner">
+        <field name="is_company">1</field>
+        <field name="customer" eval="False"/>
+        <field name="supplier" eval="True"/>
+        <field name="company_id" ref=""/>
+    </record>
+
+    <record id="partner_company_b" model="res.partner">
+        <field name="is_company">1</field>
+        <field name="customer" eval="True"/>
+        <field name="supplier" eval="False"/>
+        <field name="company_id" ref=""/>
     </record>
 
     <!--
