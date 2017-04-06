@@ -15,13 +15,12 @@ class BaseHoldingInvoicing(models.AbstractModel):
 
     @api.model
     def _get_invoice_line_data(self, data):
-        section = self.env['crm.case.section'].browse(data['section_id'][0])
-        if section.holding_invoice_group_by == 'none':
+        if self._context.get('section_group_by') == 'none':
             return [data]
         else:
             read_fields, groupby = self._get_group_fields()
-            read_fields.append('name')
-            groupby.append('name')
+            read_fields += ['name', 'client_order_ref']
+            groupby += ['name', 'client_order_ref']
             return self.env['sale.order'].read_group(
                 data['__domain'], read_fields, groupby, lazy=False)
 
@@ -33,8 +32,13 @@ class BaseHoldingInvoicing(models.AbstractModel):
         # Refactor will be done in V10
         # for now we just read the info on the product
         # you need to set the tax by yourself
+        if self._context.get('section_group_by') == 'none':
+            name = product.name
+        else:
+            name = '%s - %s' % (
+                data_line['name'], data_line['client_order_ref'])
         return {
-            'name': data_line.get('name', product.name),
+            'name': name,
             'product_id': product.id,
             'account_id': product.property_account_income.id,
         }
@@ -97,10 +101,15 @@ class BaseHoldingInvoicing(models.AbstractModel):
         for data in self._get_invoice_data(domain):
             company = self._get_company_invoice(data)
 
-            # add company context in the self
+            section = self.env['crm.case.section'].browse(
+                data['section_id'][0])
+
+            # add company and section info in the context
             loc_self = self.with_context(
                 force_company=company.id,
-                invoice_date=date_invoice)
+                invoice_date=date_invoice,
+                section_id=section.id,
+                section_group_by=section.holding_invoice_group_by)
 
             _logger.debug('Prepare vals for holding invoice')
             data_lines = loc_self._get_invoice_line_data(data)
