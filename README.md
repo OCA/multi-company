@@ -15,6 +15,7 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
+[account_invoice_inter_company](account_invoice_inter_company/) | 8.0.1.0.0 | Intercompany invoice rules
 [account_type_multi_company](account_type_multi_company/) | 8.0.1.0.0 | Make account types multi-company aware
 [partner_multi_company](partner_multi_company/) | 8.0.1.0.0 | Select individually the partner visibility on each company
 [product_multi_company](product_multi_company/) | 8.0.1.0.0 | Select individually the product visibility on each company
