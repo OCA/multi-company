@@ -18,21 +18,21 @@ class TestPurchaseSaleInterCompany(TransactionCase):
                 'purchase_confirm')
 
         # Check sale order created in company B
-        sales = self.sale_obj.sudo(self.env.ref(
+        sales = self.env['sale.order'].sudo(self.env.ref(
             'account_invoice_inter_company.user_company_b')).search([
                 ('auto_purchase_order_id', '=', self.purchase_company_a.id)
             ])
         self.assertNotEquals(sales, False)
         self.assertEquals(len(sales), 1)
         if sales.company_id.sale_auto_validation:
-            self.assertEquals(sales.state, 'progress')
+            self.assertEquals(sales.state, 'manual')
         else:
             self.assertEquals(sales.state, 'draft')
         self.assertEquals(sales.partner_id,
                           self.purchase_company_a.company_id.partner_id)
         self.assertEquals(sales.company_id.partner_id,
                           self.purchase_company_a.partner_id)
-        self.assertEquals(len(sales.invoice_line),
-                          len(self.purchase_company_a.invoice_line))
-        self.assertEquals(sales.invoice_line.product_id,
-                          self.purchase_company_a.invoice_line.product_id)
+        self.assertEquals(len(sales.order_line),
+                          len(self.purchase_company_a.order_line))
+        self.assertEquals(sales.order_line.product_id,
+                          self.purchase_company_a.order_line.product_id)
