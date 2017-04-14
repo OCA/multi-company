@@ -68,9 +68,9 @@ class PurchaseOrder(models.Model):
             self.dest_address_id and self.dest_address_id.id or False)
         sale_order = self.env['sale.order'].create(sale_order_data)
         for purchase_line in self.order_line:
-            sale_line_vals = self._prepare_sale_order_line_data(
+            sale_line_data = self._prepare_sale_order_line_data(
                 purchase_line, dest_company, sale_order)
-            self.env['sale.order.line'].create(sale_line_vals)
+            self.env['sale.order.line'].create(sale_line_data)
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
