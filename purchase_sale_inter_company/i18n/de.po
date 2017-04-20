@@ -1,0 +1,151 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * purchase_sale_inter_company
+# 
+# Translators:
+# Rudolf Schnapka <rs@techno-flex.de>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-22 02:48+0000\n"
+"PO-Revision-Date: 2017-04-22 02:48+0000\n"
+"Last-Translator: Rudolf Schnapka <rs@techno-flex.de>, 2017\n"
+"Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_res_company
+msgid "Companies"
+msgstr "Unternehmen"
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:114
+#, python-format
+msgid ""
+"Configure correct warehouse for company (%s) in Menu: "
+"Settings/companies/companies"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: help:res.company,warehouse_id:0
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: help:base.config.settings,warehouse_id:0
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_account_invoice
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: purchase_sale_inter_company
+#: model:stock.location,name:purchase_sale_inter_company.location_output_company_a
+msgid "Output - A"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:stock.location,name:purchase_sale_inter_company.location_output_company_b
+msgid "Output - B"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: view:res.company:purchase_sale_inter_company.view_company_inter_change_inherit_form
+msgid "Purchase to Sale"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: field:res.company,sale_auto_validation:0
+msgid "Sale Auto Validation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: field:base.config.settings,sale_auto_validation:0
+msgid "Sale Orders Auto Validation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: field:sale.order,auto_purchase_order_id:0
+msgid "Source Purchase Order"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: field:sale.order.line,auto_purchase_line_id:0
+msgid "Source Purchase Order Line"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:stock.location,name:purchase_sale_inter_company.location_stock_company_a
+msgid "Stock - A"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:stock.location,name:purchase_sale_inter_company.location_stock_company_b
+msgid "Stock - B"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: field:base.config.settings,warehouse_id:0 field:res.company,warehouse_id:0
+msgid "Warehouse For Sale Orders"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: help:res.company,sale_auto_validation:0
+msgid ""
+"When a Sale Order is created by a multi company rule for this company, it "
+"will automatically validate it"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: help:base.config.settings,sale_auto_validation:0
+msgid ""
+"When a Sale Order is created by a multi company rule for this company, it "
+"will automatically validate it."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:43
+#, python-format
+msgid "You cannot create SO from PO because product '%s' is not intercompany"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:65
+#, python-format
+msgid ""
+"You cannot create SO from PO because sale price list currency is different "
+"from purchase price list currency."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: view:purchase.order:purchase_sale_inter_company.purchase_order_form_account_invoice_inter_company
+msgid ""
+"{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+"'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
+msgstr ""
