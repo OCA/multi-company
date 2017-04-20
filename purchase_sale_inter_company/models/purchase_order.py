@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+# © 2013-Today Odoo SA
+# © 2016 Chafique DELLI @ Akretion
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
 from openerp import api, models, _, fields
 from openerp.exceptions import Warning as UserError
 
@@ -60,7 +64,7 @@ class PurchaseOrder(models.Model):
                 company_partner.property_product_pricelist.currency_id.id):
             raise UserError(_(
                 'You cannot create SO from PO because '
-                'sale price list currency is different than '
+                'sale price list currency is different from '
                 'purchase price list currency.'))
         # create the SO and generate its lines from the PO lines
         sale_order_data = self._prepare_sale_order_data(
@@ -106,7 +110,7 @@ class PurchaseOrder(models.Model):
             dest_company.warehouse_id or False)
         if not warehouse:
             raise UserError(_(
-                'Configure correct warehouse for company(%s) from '
+                'Configure correct warehouse for company (%s) in '
                 'Menu: Settings/companies/companies' % (dest_company.name)))
         partner_shipping_id = (
             self.picking_type_id.warehouse_id and
