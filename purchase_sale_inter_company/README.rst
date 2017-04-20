@@ -7,24 +7,27 @@
 Purchase Sale Inter Company
 ===========================
 
-This module is usefull if there are multiple companies in the same Odoo database and those companies sell goods or services among themselves.
-It allow to create a sale order in company A from a purchase order in company B.
+This module is useful if there are multiple companies in the same Odoo database and those companies sell goods or services among themselves.
+It allows to create a sale order in company A from a purchase order in company B.
 
-Imagine you have company A and company B in the same Odoo database.
-Company A purchase goods from company B: company A will create a purchase.order with company B as supplier, and company B will have to create a sale order with company A as customer. This module automate the creation of the sale order in company B.
+Imagine you have company A and company B in the same Odoo database:
+
+* Company A purchase goods from company B.
+* Company A will create a purchase order with company B as supplier.
+* This module automate the creation of the sale order in company B with company A as customer.
 
 
 Configuration
 =============
 
-To configure this module, you need to go to the menu *Settings > Companies > Companies*, select one of the companies and go to the tab *Inter-Company* then the group *Purchase To Sale*.
-
-Another important configuration is the *Warehouse For Sale Orders* : it is the warehouse that will be used to automatically generate the sale order in the other company.
+* To configure this module, you need to go to the menu *Settings > Companies > Companies*.
+* Select one of the companies.
+* Go to the tab *Inter-Company* then the group *Purchase To Sale*.
+* Select the *Warehouse For Sale Orders*, it is the warehouse that will be used to automatically generate the sale order in the other company.
+* If you check the option *Sale Auto Validation* in the configuration of company B, then when you validate a *Purchase Order* in company A with company B as supplier, then the *Sale Order* will be automatically validated in company B with company A as customer.
 
 Usage
 =====
-
-If you choose the option *Sale Auto Validation* in the configuration of company B, when you validate a *Purchase Order* in company A with company B as supplier, then the *Sale Order* will be automatically validated in company B with company A as customer.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
@@ -34,14 +37,10 @@ If you choose the option *Sale Auto Validation* in the configuration of company 
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues
-<https://github.com/OCA/multi-company/issues>`_. In case of trouble, please
-check there if your issue has already been reported. If you spotted it first,
-help us smashing it by providing a detailed and welcomed `feedback
-<https://github.com/OCA/
-multi-company/issues/new?body=module:%20
-purchase_sale_inter_company%0Aversion:%20
-8.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
+In case of trouble, please check there if your issue has already been reported.
+If you spotted it first, help us smash it by providing detailed and welcomed
+feedback.
 
 Credits
 =======
