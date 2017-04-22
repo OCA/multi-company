@@ -19,6 +19,7 @@ addon | version | summary
 [account_type_multi_company](account_type_multi_company/) | 8.0.1.0.0 | Make account types multi-company aware
 [partner_multi_company](partner_multi_company/) | 8.0.1.0.0 | Select individually the partner visibility on each company
 [product_multi_company](product_multi_company/) | 8.0.1.0.0 | Select individually the product visibility on each company
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 8.0.1.0.0 | Intercompany PO/SO rules
 [stock_production_lot_multi_company](stock_production_lot_multi_company/) | 8.0.1.0.0 | Make serial numbers multi-company aware
 
 
