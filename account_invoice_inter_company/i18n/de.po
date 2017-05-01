@@ -1,0 +1,177 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * account_invoice_inter_company
+# 
+# Translators:
+# Rudolf Schnapka <rs@techno-flex.de>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-22 02:48+0000\n"
+"PO-Revision-Date: 2017-04-22 02:48+0000\n"
+"Last-Translator: Rudolf Schnapka <rs@techno-flex.de>, 2017\n"
+"Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:187
+#, python-format
+msgid " Invoice: "
+msgstr "Rechnung:"
+
+#. module: account_invoice_inter_company
+#: field:account.invoice,auto_generated:0
+msgid "Auto Generated Document"
+msgstr "Aut-generiertes Dokument"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_company
+msgid "Companies"
+msgstr "Unternehmen"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:181
+#, python-format
+msgid "Could not find the currency '%s' in the company '%s'"
+msgstr "Konnte die Währung '%s' im Unternehmen '%s' nicht finden"
+
+#. module: account_invoice_inter_company
+#: model:res.company,overdue_msg:account_invoice_inter_company.company_a
+#: model:res.company,overdue_msg:account_invoice_inter_company.company_b
+msgid ""
+"Dear Sir/Madam,\n"
+"\n"
+"Our records indicate that some payments on your account are still due. Please find details below.\n"
+"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
+"If you have any queries regarding your account, Please contact us.\n"
+"\n"
+"Thank you in advance for your cooperation.\n"
+"Best Regards,"
+msgstr ""
+"Sehr geehrte Damen und Herren,\n"
+"\n"
+"Unsere Bücher weisen zu Ihrem Konto noch ausstehende Zahlungen aus. Details ersehen Sie unten.\n"
+"Sollte der Betrag zwischenzeitlich bezahlt worden sein, betrachten Sie dieses Schreiben bitte als gegenstandslos. Anderenfalls weisen Sie den unten ausgewiesenen Betrag an.\n"
+"\n"
+"Vielen Dank für Ihre Zusammenarbeit.\n"
+"Viele Grüße,"
+
+#. module: account_invoice_inter_company
+#: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
+msgid "Inter-Company"
+msgstr "Inter-Company"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_invoice
+#: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: account_invoice_inter_company
+#: field:res.company,invoice_auto_validation:0
+msgid "Invoice Auto Validation"
+msgstr "Auto-Rechnungsfreigabe"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Rechnungsposition"
+
+#. module: account_invoice_inter_company
+#: field:base.config.settings,invoice_auto_validation:0
+msgid "Invoices Auto Validation"
+msgstr "Auto-Rechnungenfreigabe"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:162
+#, python-format
+msgid "Not define period for invoice date '%s' in this company: '%s' (id:%d)."
+msgstr ""
+"Nicht definierte Periode für Rechnungsdatum '%s' in diesem Unternehmen: '%s'"
+" (Id: %d)."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:152
+#, python-format
+msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+msgstr "Bitte %s Journal festlegen für dieses Unternehmen: \"%s\" (id:%d)."
+
+#. module: account_invoice_inter_company
+#: field:base.config.settings,company_id:0
+msgid "Select Company"
+msgstr "Wähle Unternehmen"
+
+#. module: account_invoice_inter_company
+#: help:base.config.settings,company_id:0
+msgid "Select company to setup Inter company rules."
+msgstr "Wähle Unternehmen, um Inter-Company-Regeln festzulegen."
+
+#. module: account_invoice_inter_company
+#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
+msgid "Service Multi Company"
+msgstr "Mehrere Unternehmen bedienen"
+
+#. module: account_invoice_inter_company
+#: field:account.invoice,auto_invoice_id:0
+msgid "Source Invoice"
+msgstr "Herkunftsrechnung"
+
+#. module: account_invoice_inter_company
+#: field:account.invoice.line,auto_invoice_line_id:0
+msgid "Source Invoice Line"
+msgstr "Herkunfsrechnungs-Position"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:99
+#, python-format
+msgid ""
+"The invoice line '%s' doesn't have a product. All invoice lines should have "
+"a product for inter-company invoices."
+msgstr ""
+"Die Rechnungsposition '%s' enthält kein Produkt. Alle Rechnungspositionen im"
+" Inter-Company-Verkehr müssen Produkte enthalten."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:120
+#, python-format
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %s but the total amount in the company %s is"
+" %s"
+msgstr ""
+"WARNUNG: Fehler bei der Erstellung einer Inter-Company-Rechnung. Der "
+"Gesamtbetrag dieser Rechnung beträgt %s, der Gesamtbetrag im Unternehmen %s "
+"jedoch %s"
+
+#. module: account_invoice_inter_company
+#: help:res.company,invoice_auto_validation:0
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will"
+" automatically validate it"
+msgstr ""
+"Wenn eine Rechnung durch eine Inter-Company-Regel dieses Unternehmens "
+"erstellt wird, wird diese automatisch freigegeben."
+
+#. module: account_invoice_inter_company
+#: help:base.config.settings,invoice_auto_validation:0
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will"
+" automatically validate it."
+msgstr ""
+"Wenn eine Rechnung durch eine Inter-Company-Regel dieses Unternehmens "
+"erstellt wird, wird diese automatisch freigegeben."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:57
+#, python-format
+msgid ""
+"You cannot create invoice in company '%s' with product '%s' because it is "
+"not multicompany"
+msgstr ""
+"Sie dürfen im Unternehmen '%s' keine Rechnung mit Produkt '%s' anlegen, da "
+"dieses nicht unternehmensübergreifend definiert ist."

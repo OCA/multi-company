@@ -1,0 +1,173 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * account_invoice_inter_company
+# 
+# Translators:
+# Matjaž Mozetič <m.mozetic@matmoz.si>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-22 02:48+0000\n"
+"PO-Revision-Date: 2017-04-22 02:48+0000\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>, 2017\n"
+"Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: sl\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:187
+#, python-format
+msgid " Invoice: "
+msgstr " Račun: "
+
+#. module: account_invoice_inter_company
+#: field:account.invoice,auto_generated:0
+msgid "Auto Generated Document"
+msgstr "Samodejno ustvarjen dokument"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_company
+msgid "Companies"
+msgstr "Družbe"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:181
+#, python-format
+msgid "Could not find the currency '%s' in the company '%s'"
+msgstr "Ni najdene valute '%s' za družbo '%s'"
+
+#. module: account_invoice_inter_company
+#: model:res.company,overdue_msg:account_invoice_inter_company.company_a
+#: model:res.company,overdue_msg:account_invoice_inter_company.company_b
+msgid ""
+"Dear Sir/Madam,\n"
+"\n"
+"Our records indicate that some payments on your account are still due. Please find details below.\n"
+"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
+"If you have any queries regarding your account, Please contact us.\n"
+"\n"
+"Thank you in advance for your cooperation.\n"
+"Best Regards,"
+msgstr ""
+"Spoštovani.\n"
+"\n"
+"Iz naših poslovnih knjig je razvidno, da imate zapadle obveznosti do našega podjetja. Prosimo, da svoj dolg takoj poravnate na naš račun. Če ste svoj dolg medtem že poravnali, lahko ta opomin štejete za brezpredmeten.\n"
+"\n"
+"Za sodelovanje se vam v naprej zahvaljujemo.\n"
+"Lep pozdrav,"
+
+#. module: account_invoice_inter_company
+#: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
+msgid "Inter-Company"
+msgstr "Konsolidacije"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_invoice
+#: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
+msgid "Invoice"
+msgstr "Račun"
+
+#. module: account_invoice_inter_company
+#: field:res.company,invoice_auto_validation:0
+msgid "Invoice Auto Validation"
+msgstr "Samodejno overjanje računov"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Postavka računa"
+
+#. module: account_invoice_inter_company
+#: field:base.config.settings,invoice_auto_validation:0
+msgid "Invoices Auto Validation"
+msgstr "Samodejno overjanje računov"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:162
+#, python-format
+msgid "Not define period for invoice date '%s' in this company: '%s' (id:%d)."
+msgstr "Ni določenega obdobja za datum računa '%s' pri družbi: '%s' (id:%d)."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:152
+#, python-format
+msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+msgstr "Določite dnevnik %s za družbo: \"%s\" (id:%d)."
+
+#. module: account_invoice_inter_company
+#: field:base.config.settings,company_id:0
+msgid "Select Company"
+msgstr "Izberite družbo"
+
+#. module: account_invoice_inter_company
+#: help:base.config.settings,company_id:0
+msgid "Select company to setup Inter company rules."
+msgstr "Izberite družbo za nastavitev pravil konsolidiranja."
+
+#. module: account_invoice_inter_company
+#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
+msgid "Service Multi Company"
+msgstr "Strukturirano storitveno  podjetje"
+
+#. module: account_invoice_inter_company
+#: field:account.invoice,auto_invoice_id:0
+msgid "Source Invoice"
+msgstr "Izvorni račun"
+
+#. module: account_invoice_inter_company
+#: field:account.invoice.line,auto_invoice_line_id:0
+msgid "Source Invoice Line"
+msgstr "Izvorna postavka računa"
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:99
+#, python-format
+msgid ""
+"The invoice line '%s' doesn't have a product. All invoice lines should have "
+"a product for inter-company invoices."
+msgstr ""
+"Postavka računa '%s' ne vsebuje proizvoda. Za konsolidirana podjetja morajo "
+"vse postavke računov vsebovati proizvode."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:120
+#, python-format
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %s but the total amount in the company %s is"
+" %s"
+msgstr ""
+"POZOR!!!!! Napaka pri procesu ustvarjanja računa v konsolidiranem okolju: "
+"skupni znesek tega računa znaša %s , a skupni znesek za družbo %s znaša %s"
+
+#. module: account_invoice_inter_company
+#: help:res.company,invoice_auto_validation:0
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will"
+" automatically validate it"
+msgstr ""
+"Ko se ustvari račun iz pravila konsolidiranja za to družbo, se le-ta "
+"samodejno overi"
+
+#. module: account_invoice_inter_company
+#: help:base.config.settings,invoice_auto_validation:0
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will"
+" automatically validate it."
+msgstr ""
+"Ko se ustvari račun iz pravila konsolidiranja za to družbo, se le-ta "
+"samodejno overi."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:57
+#, python-format
+msgid ""
+"You cannot create invoice in company '%s' with product '%s' because it is "
+"not multicompany"
+msgstr ""
+"Za družbo '%s' s proizvodom '%s' ne morete ustvariti računa, ker ni "
+"strukturirana družba"
