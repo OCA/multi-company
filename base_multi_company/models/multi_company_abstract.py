@@ -21,6 +21,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         string='Companies',
         comodel_name='res.company.assignment',
         default=lambda s: s._default_company_ids(),
+        auto_join=True,
     )
 
     @api.model
