@@ -12,6 +12,7 @@
     'license': 'LGPL-3',
     'installable': True,
     'application': False,
+    'pre_init_hook': 'create_company_assignment_view',
     'depends': [
         'base',
     ],
