@@ -7,9 +7,18 @@ from odoo import api, SUPERUSER_ID
 
 
 __all__ = [
+    'create_company_assignment_view',
     'post_init_hook',
     'uninstall_hook',
 ]
+
+
+def create_company_assignment_view(cr):
+    cr.execute("""
+        CREATE OR REPLACE VIEW res_company_assignment
+            AS SELECT id, name
+            FROM res_company;
+    """)
 
 
 def post_init_hook(cr, rule_ref, model_name):
