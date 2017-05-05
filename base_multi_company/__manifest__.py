@@ -13,9 +13,6 @@
     'installable': True,
     'application': False,
     'pre_init_hook': 'create_company_assignment_view',
-    'depends': [
-        'base',
-    ],
     'data': [
         'security/ir.model.access.csv',
     ],
