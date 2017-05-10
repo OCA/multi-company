@@ -54,6 +54,7 @@ Contributors
 
 * Dave Lasley <dave@laslabs.com>
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
+* Laurent Mignon <laurent.mignon@acsone.eu>
 
 Maintainer
 ----------

@@ -16,7 +16,7 @@ __all__ = [
 def create_company_assignment_view(cr):
     cr.execute("""
         CREATE OR REPLACE VIEW res_company_assignment
-            AS SELECT id, name
+            AS SELECT id, name, parent_id
             FROM res_company;
     """)
 
