@@ -44,14 +44,16 @@ def post_init_hook(cr, rule_ref, model_name):
         })
         # Copy company values
         model = env[model_name]
-        groups = model.read_group([], ['company_id'], ['company_id'])
-        for group in groups:
-            if not group['company_id']:
-                continue
-            records = model.search(group['__domain'])
-            records.write({
-                'company_ids': [(6, 0, [group['company_id'][0]])],
-            })
+
+        table_name = model._fields['company_ids'].relation
+        column1 = model._fields['company_ids'].column1
+        column2 = model._fields['company_ids'].column2
+        SQL = """
+            INSERT INTO %s
+            (%s, %s)
+            SELECT id, company_id FROM %s
+        """ % (table_name, column1, column2, model._table)
+        env.cr.execute(SQL)
 
 
 def uninstall_hook(cr, rule_ref):
