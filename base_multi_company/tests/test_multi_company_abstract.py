@@ -64,6 +64,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.company_1 = Companies._company_default_get()
         self.company_2 = Companies.create({
             'name': 'Test Co 2',
+            'account_no': '123456'
         })
 
     def add_company(self, company):
@@ -99,8 +100,24 @@ class TestMultiCompanyAbstract(common.SavepointCase):
 
     def test_search_company_id(self):
         """ It should return correct record by searching company_id. """
+        self.add_company(self.company_2)
+        record = self.env['multi.company.abstract.tester'].search([
+            ('company_id.account_no', '=', self.company_2.account_no),
+            ('id', '=', self.record.id),
+        ])
+        self.assertEqual(record, self.record)
         record = self.env['multi.company.abstract.tester'].search([
             ('company_id', '=', self.company_1.id),
+            ('id', '=', self.record.id),
+        ])
+        self.assertEqual(record, self.record)
+        record = self.env['multi.company.abstract.tester'].search([
+            ('company_ids', 'child_of', self.company_1.id),
+            ('id', '=', self.record.id),
+        ])
+        self.assertEqual(record, self.record)
+        record = self.env['multi.company.abstract.tester'].search([
+            ('company_ids', 'parent_of', self.company_1.id),
             ('id', '=', self.record.id),
         ])
         self.assertEqual(record, self.record)

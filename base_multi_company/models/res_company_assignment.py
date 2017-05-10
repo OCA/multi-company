@@ -19,3 +19,8 @@ class ResCompanyAssignment(models.Model):
     _auto = False
 
     name = fields.Char()
+
+    # This field must never be exposed into the UI. The purpose of this
+    # field is to be able to use the hierarchy operators (
+    # child_of/parent_of) into search domains on company_id / company_ids
+    parent_id = fields.Many2one('res.company')
