@@ -32,7 +32,6 @@ class MultiCompanyAbstract(models.AbstractModel):
         ]
 
     @api.multi
-    @api.depends('company_ids')
     def _compute_company_id(self):
         for record in self:
             for company in record.company_ids:
@@ -43,7 +42,8 @@ class MultiCompanyAbstract(models.AbstractModel):
     @api.multi
     def _inverse_company_id(self):
         for record in self:
-            if record.company_id.id not in record.company_ids.ids:
+            if record.company_id and record.company_id.id not in \
+                    record.company_ids.ids:
                 record.company_ids = [(4, record.company_id.id)]
 
     @api.model
