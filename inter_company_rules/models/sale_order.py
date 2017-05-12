@@ -38,6 +38,8 @@ class SaleOrder(models.Model):
             :param company : the company of the created PO
             :rtype company : res.company record
         """
+        self = self.with_context(force_company=company.id,
+                                 company_id=company.id)
         PurchaseOrder = self.env['purchase.order']
         company_partner = (self.company_id and self.company_id.partner_id or
                            False)
@@ -66,8 +68,8 @@ class SaleOrder(models.Model):
                                                            company_partner)
         purchase_order = PurchaseOrder.sudo(intercompany_uid).create(
             po_vals[0])
-        for line in self.order_line:
-            po_line_vals = self.sudo()._prepare_purchase_order_line_data(
+        for line in self.order_line.sudo():
+            po_line_vals = self._prepare_purchase_order_line_data(
                 line, self.date_order, purchase_order.id, company)
             PurchaseOrderLine.sudo(intercompany_uid).create(po_line_vals)
 
@@ -102,7 +104,6 @@ class SaleOrder(models.Model):
                 'purchase.order'),
             'origin': self.name,
             'partner_id': company_partner.id,
-            'location_id': warehouse.lot_stock_id.id,
             'date_order': self.date_order,
             'company_id': company.id,
             'fiscal_position_id':
@@ -113,6 +114,8 @@ class SaleOrder(models.Model):
             'auto_sale_order_id': self.id,
             'partner_ref': self.name,
             'dest_address_id': self.partner_shipping_id.id,
+            'picking_type_id': self.env['purchase.order'].sudo(
+                company.intercompany_user_id.id)._default_picking_type().id,
         }
 
     @api.model
@@ -150,7 +153,7 @@ class SaleOrder(models.Model):
                             so_line.product_id.uom_po_id.id or
                             so_line.product_uom.id),
             'price_unit': price or 0.0,
-            'company_id': so_line.order_id.company_id.id,
+            'company_id': company.id,
             'date_planned': so_line.order_id.commitment_date or date_order,
             'taxes_id': [(6, 0, company_taxes)],
         }
