@@ -92,9 +92,24 @@ class AccountInvoice(models.Model):
         if force_number:
             dest_invoice_data['internal_number'] = force_number
         dest_invoice = self.create(dest_invoice_data)
-        precision = self.env['decimal.precision'].precision_get('Account')
-        #dest_invoice.button_reset_taxes()
+        # create invoice lines
+        src_company_partner_id = self.company_id.partner_id
+        for src_line in self.invoice_line_ids:
+            if not src_line.product_id:
+                raise UserError(_(
+                    "The invoice line '%s' doesn't have a product. "
+                    "All invoice lines should have a product for "
+                    "inter-company invoices.") % src_line.name)
+            dest_inv_line_data = self._prepare_invoice_line_data(
+                dest_invoice, dest_inv_type, dest_company, src_line,
+                src_company_partner_id)
+            self.env['account.invoice.line'].create(dest_inv_line_data)
+        # add tax_line_ids in created invoice
+        if any(line.invoice_line_tax_ids for line in dest_invoice.\
+                invoice_line_ids) and not dest_invoice.tax_line_ids:
+            dest_invoice.compute_taxes()
         # Validation of account invoice
+        precision = self.env['decimal.precision'].precision_get('Account')
         if (dest_company.invoice_auto_validation and
                 not float_compare(self.amount_total,
                                   dest_invoice.amount_total,
@@ -107,11 +122,11 @@ class AccountInvoice(models.Model):
                 body = (_(
                     "WARNING!!!!! Failure in the inter-company invoice "
                     "creation process: the total amount of this invoice "
-                    "is %s but the total amount in the company %s is %s")
-                    % (dest_invoice.amount_total, self.company_id.name,
-                       self.amount_total))
+                    "is %s but the total amount of the invoice %s "
+                    "in the company %s is %s")
+                    % (dest_invoice.amount_total, self.number,
+                       self.company_id.name, self.amount_total))
                 dest_invoice.message_post(body=body)
-                dest_invoice.check_total = self.amount_total
         return {'dest_invoice': dest_invoice}
 
     @api.multi
@@ -127,18 +142,6 @@ class AccountInvoice(models.Model):
             :rtype dest_company : res.company record
         """
         self.ensure_one()
-        # create invoice lines
-        dest_invoice_lines = []
-        src_company_partner_id = self.company_id.partner_id
-        for src_line in self.invoice_line_ids:
-            if not src_line.product_id:
-                raise UserError(_(
-                    "The invoice line '%s' doesn't have a product. "
-                    "All invoice lines should have a product for "
-                    "inter-company invoices.") % src_line.name)
-            dest_inv_line_data = self._prepare_invoice_line_data(
-                dest_inv_type, dest_company, src_line, src_company_partner_id)
-            dest_invoice_lines.append((0, 0, dest_inv_line_data))
         # find the correct journal
         dest_journal = self.env['account.journal'].search([
             ('type', '=', dest_journal_type),
@@ -149,58 +152,50 @@ class AccountInvoice(models.Model):
                 'Please define %s journal for this company: "%s" (id:%d).')
                 % (dest_journal_type, dest_company.name, dest_company.id))
         # find account, payment term, fiscal position, bank.
-        #dest_partner_data = self.onchange_partner_id(
-        #    dest_inv_type, self.company_id.partner_id.id,
-        #    company_id=dest_company.id)
         dest_partner_data = {
             'type': dest_inv_type,
             'partner_id': self.company_id.partner_id.id,
             'company_id': dest_company.id,
-            #'account_id': False,
-            'fiscal_position_id': False,
-            'payment_term_id': False,
-            'partner_bank_id': False,
         }
         dest_partner_data = self.env['account.invoice'].play_onchanges(
             dest_partner_data, ['partner_id'])
-        print 'dest_partner_data:', dest_partner_data
         return {
             'name': self.name,
             'origin': self.company_id.name + _(' Invoice: ') + str(
                 self.number),
-            'supplier_invoice_number': self.number,
             'type': dest_inv_type,
             'date_invoice': self.date_invoice,
             'reference': self.reference,
             'account_id': dest_partner_data.get('account_id', False),
             'partner_id': self.company_id.partner_id.id,
             'journal_id': dest_journal.id,
-            'invoice_line_ids': dest_invoice_lines,
             'currency_id': self.currency_id.id,
             'fiscal_position_id': dest_partner_data.get(
                 'fiscal_position_id', False),
             'payment_term_id': dest_partner_data.get(
                 'payment_term_id', False),
             'company_id': dest_company.id,
-            #'period_id': dest_period_ids and dest_period_ids[0].id or False,
             'partner_bank_id': dest_partner_data.get(
                 'partner_bank_id', False),
             'auto_generated': True,
             'auto_invoice_id': self.id,
-            'check_total': self.amount_total,
         }
 
     @api.model
-    def _prepare_invoice_line_data(self, dest_inv_type,
+    def _prepare_invoice_line_data(self, dest_invoice, dest_inv_type,
                                    dest_company, src_line,
                                    src_company_partner_id):
         """ Generate invoice line values
+            :param dest_invoice : the created invoice
+            :rtype dest_invoice : account.invoice record
             :param dest_inv_type : the type of the invoice to prepare "
             "the values
             :param dest_company : the company of the created invoice
             :rtype dest_company : res.company record
             :param src_line : the invoice line object
             :rtype src_line : account.invoice.line record
+            :param src_company_partner_id : the partner of the company "
+            "in source invoice
             :rtype src_company_partner_id : res.partner record
         """
         # get invoice line data from product onchange
@@ -211,24 +206,18 @@ class AccountInvoice(models.Model):
             'name': '',
             'partner_id': src_company_partner_id.id,
             'company_id': dest_company.id,
-            'account_id': False,
-            'account_analytic_id': False,
-            'invoice_line_tax_ids': [],
+            'invoice_id': dest_invoice.id,
         }
         dest_line_data = self.env['account.invoice.line'].play_onchanges(
             dest_line_data, ['product_id'])
-        print 'dest_line_data:', dest_line_data
         account_id = dest_line_data.get('account_id', False)
         account = self.env['account.account'].browse(account_id)
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
         taxes = self.env['account.tax'].browse(tax_ids)
         filtered_account = account.filtered(
             lambda r: r.company_id.id == dest_company.id)
-        filtered_taxes = taxes.filtered(
-            lambda r: r.company_id.id == dest_company.id)
         dest_line_data['account_id'] = filtered_account.id
-        dest_line_data['invoice_line_tax_ids'] = [
-            (6, 0, filtered_taxes.ids)]
+        dest_line_data['invoice_line_tax_ids'] = taxes.ids
         vals = {
             'name': src_line.name,
             # TODO: it's wrong to just copy the price_unit
@@ -248,7 +237,10 @@ class AccountInvoice(models.Model):
             'account_analytic_id': dest_line_data.get(
                 'account_analytic_id', False),
             'account_id': dest_line_data.get('account_id', False),
-            'auto_invoice_line_id': src_line.id
+            'auto_invoice_line_id': src_line.id,
+            'invoice_id':  dest_line_data.get('invoice_id', False),
+            'partner_id': src_company_partner_id.id,
+            'company_id': dest_company.id,
         }
         return vals
 
