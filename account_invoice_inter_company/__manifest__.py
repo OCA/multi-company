@@ -20,6 +20,6 @@
         'views/res_config_view.xml',
     ],
     'demo': [
-        #'demo/inter_company_invoice.xml',
+        'demo/inter_company_invoice.xml',
     ],
 }

@@ -16,7 +16,7 @@ class AccountInvoice(models.Model):
                                       _prefetch=False)
 
     @api.multi
-    def invoice_validate(self):
+    def action_invoice_open(self):
         """ Validated invoice generate cross invoice base on company rules """
         for src_invoice in self:
             # do not consider invoices that have already been auto-generated,
@@ -41,7 +41,7 @@ class AccountInvoice(models.Model):
                     _inter_company_create_invoice(dest_company.id,
                                                   dest_inv_type,
                                                   dest_journal_type)
-        return super(AccountInvoice, self).invoice_validate()
+        return super(AccountInvoice, self).action_invoice_open()
 
     @api.multi
     def _check_intercompany_product(self, dest_company):
@@ -114,7 +114,7 @@ class AccountInvoice(models.Model):
                 not float_compare(self.amount_total,
                                   dest_invoice.amount_total,
                                   precision_digits=precision)):
-            dest_invoice.signal_workflow('invoice_open')
+            dest_invoice.action_invoice_open()
         else:
             # Add warning in chatter if the total amounts are different
             if float_compare(self.amount_total, dest_invoice.amount_total,

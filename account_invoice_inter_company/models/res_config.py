@@ -27,18 +27,3 @@ class InterCompanyRulesConfig(models.TransientModel):
                 'invoice_auto_validation': self.invoice_auto_validation,
             }
             self.company_id.write(vals)
-
-    @api.multi
-    def set_group_multi_company(self):
-        for config in self:
-            if not config.group_multi_company:
-                config.write({'group_multi_company': True})
-        #for config in self:
-        #    group_multi_company = self.env.ref('base.group_multi_company')
-        #    group_user = self.env.ref('base.group_user')
-        #    if not config.group_multi_company:
-        #        group_user.write({
-        #            'implied_ids': [(3, group_multi_company.id)]})
-        #        group_multi_company.write({
-        #            'users': [(3, u.id) for u in group_user.users]})
-        return True
