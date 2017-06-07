@@ -4,8 +4,8 @@
 
 {
     "name": "Filters by company",
-    "version": "8.0.1.0.0",
-    "author": "Acsone SA/NV,Odoo Community Association (OCA)",
+    "version": "10.0.1.0.0",
+    "author": "ACSONE SA/NV, Odoo Community Association (OCA)",
     "category": "Hidden/Dependency",
     "website": "http://www.acsone.eu",
     "depends": [
