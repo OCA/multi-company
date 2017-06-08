@@ -23,7 +23,7 @@ class TestStockProductionLotMultiCompany(TransactionCase):
         self.main_comp = self.env.ref('base.main_company')
         self.secondary_company = self.company_model.create(
             {
-                'name':'SecondComp',
+                'name': 'SecondComp',
                 'account_no': '123456'
             })
 
