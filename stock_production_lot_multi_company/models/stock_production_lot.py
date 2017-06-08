@@ -9,3 +9,4 @@ class StockProductionLot(models.Model):
 
     _name = 'stock.production.lot'
     _inherit = ['multi.company.abstract', 'stock.production.lot']
+    _description = 'Stock production lot for multi company'

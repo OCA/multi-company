@@ -22,7 +22,5 @@
         "security/stock_production_lot_security.xml",
         "views/stock_production_lot_view.xml",
     ],
-    'post_init_hook': 'post_init_hook',
-    'uninstall_hook': 'uninstall_hook',
     'installable': True,
 }

@@ -2,8 +2,8 @@
 # (c) 2015 Ainara Galdona - AvanzOSC
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
-from odoo.osv.orm import except_orm
 from odoo.tests.common import TransactionCase
+from odoo.exceptions import AccessError
 
 
 class TestStockProductionLotMultiCompany(TransactionCase):
@@ -38,7 +38,7 @@ class TestStockProductionLotMultiCompany(TransactionCase):
              'login': 'secuser',
              'email': 'secuser@youcompany.com',
              'company_id': self.secondary_company.id,
-             'company_ids': [(6, 0, [self.secondary_company.id])],
+             'company_ids': [(6, 0, self.secondary_company.ids)],
              'groups_id': [(6, 0, [self.stock_manager_group.id,
                                    self.lot_group.id])],
              })
@@ -47,8 +47,8 @@ class TestStockProductionLotMultiCompany(TransactionCase):
              'login': 'mainuser',
              'email': 'mainuser@youcompany.com',
              'company_id': self.main_comp.id,
-             'company_ids': [(6, 0, [self.main_comp.id,
-                                     self.secondary_company.id])],
+             'company_ids': [(6, 0, (self.main_comp +
+                                     self.secondary_company).ids)],
              'groups_id': [(6, 0, [self.stock_manager_group.id,
                                    self.lot_group.id,
                                    self.group_multi_company.id])],
@@ -58,8 +58,8 @@ class TestStockProductionLotMultiCompany(TransactionCase):
              'login': 'multicompuser',
              'email': 'multicompuser@youcompany.com',
              'company_id': self.main_comp.id,
-             'company_ids': [(6, 0, [self.main_comp.id,
-                                     self.secondary_company.id])],
+             'company_ids': [(6, 0, (self.main_comp +
+                                     self.secondary_company).ids)],
              'groups_id': [(6, 0, [self.stock_manager_group.id,
                                    self.lot_group.id,
                                    self.group_multi_company.id])],
@@ -70,12 +70,12 @@ class TestStockProductionLotMultiCompany(TransactionCase):
         self.main_comp_product = self.product_model.create(
             {'name': 'Main company product',
              'default_code': '[MCP]',
-             'company_id': self.main_comp.id,
+             'company_ids': [(6, 0, self.main_comp.ids)],
              'uom_id': self.unit_uom.id})
         self.second_comp_product = self.product_model.create(
             {'name': 'Secondary company product',
              'default_code': '[SCP]',
-             'company_id': self.secondary_company.id,
+             'company_ids': [(6, 0, self.secondary_company.ids)],
              'uom_id': self.unit_uom.id})
 
     def test_00_lot_main_creation(self):
@@ -102,11 +102,8 @@ class TestStockProductionLotMultiCompany(TransactionCase):
                          'multicompany company user.')
 
     def test_03_error_lot_creation(self):
-        #with self.assertRaises(except_orm):
-        self.lot_model.sudo(self.second_user.id).create(
-            {'name': 'ERRORLOT',
-             'product_id': self.second_comp_product.id,
-             'company_id': self.main_comp.id})
-        res = self.lot_model.sudo(
-            self.second_user.id).search([('name', '=', 'ERRORLOT')])
-        print res
+        with self.assertRaises(AccessError):
+            self.lot_model.sudo(self.second_user.id).create(
+                {'name': 'ERRORLOT',
+                 'product_id': self.second_comp_product.id,
+                 'company_ids': [(6, 0, self.main_comp.ids)]})
