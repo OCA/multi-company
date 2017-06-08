@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
 
         <record id="production_lot_comp_rule" model="ir.rule">
             <field name="name" >Serial number multi-company</field>
             <field name="model_id" ref="model_stock_production_lot"/>
+            <field name="active" eval="True"/>
             <field name="global" eval="True"/>
-            <field name="domain_force">['|',('company_id','=',False),('company_id','in',user.company_ids.ids)]</field>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',user.company_id.ids)]</field>
         </record>
 
-    </data>
 </odoo>
