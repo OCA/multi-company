@@ -3,13 +3,14 @@
 # * base_multi_company
 # 
 # Translators:
+# OCA Transbot <transbot@odoo-community.org>, 2017
 # Peter Hageman <hageman.p@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-19 00:45+0000\n"
-"PO-Revision-Date: 2017-05-19 00:45+0000\n"
+"POT-Creation-Date: 2017-05-20 04:31+0000\n"
+"PO-Revision-Date: 2017-05-20 04:31+0000\n"
 "Last-Translator: Peter Hageman <hageman.p@gmail.com>, 2017\n"
 "Language-Team: Dutch (Netherlands) (https://www.transifex.com/oca/teams/23907/nl_NL/)\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +33,7 @@ msgstr "Bedrijf"
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_display_name
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment_display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Weergavenaam"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_id
