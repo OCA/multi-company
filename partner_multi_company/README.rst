@@ -29,7 +29,7 @@ partner will be visible in all of them. The default value is the current one.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/9.0
+   :target: https://runbot.odoo-community.org/runbot/133/10.0
 
 Bug Tracker
 ===========
@@ -52,6 +52,7 @@ Contributors
 
 * Oihane Crucelaegui <oihanecruce@gmail.com>
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
+* Dave Lasley <dave@laslabs.com>
 
 Maintainer
 ----------

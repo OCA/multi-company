@@ -51,16 +51,21 @@ class TestPartnerMultiCompany(common.SavepointCase):
                  (6, 0, cls.env.ref('base.group_partner_manager').ids)],
              'company_id': cls.company_2.id,
              'company_ids': [(6, 0, cls.company_2.ids)]})
+        cls.partner_company_1 = cls.partner_company_1.sudo(cls.user_company_1)
+        cls.partner_company_2 = cls.partner_company_2.sudo(cls.user_company_2)
 
     def test_create_partner(self):
         partner = self.env['res.partner'].create({'name': 'Test'})
         company = self.env['res.company']._company_default_get('res.partner')
-        self.assertIn(company, partner.company_ids)
+        self.assertIn(company.id, partner.company_ids.ids)
         partner = self.env['res.partner'].create({
             'name': 'Test 2',
             'company_ids': [(4, self.company_1.id)],
         })
-        self.assertEqual(partner.company_id, self.company_1)
+        self.assertEqual(
+            partner.sudo(self.user_company_1).company_id.id,
+            self.company_1.id,
+        )
         partner = self.env['res.partner'].create({
             'name': 'Test 2',
             'company_ids': [(5, False)],
@@ -115,5 +120,26 @@ class TestPartnerMultiCompany(common.SavepointCase):
     def test_switch_user_company(self):
         self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
         self.user_company_1.company_id = self.company_2.id
+        self.user_company_1 = self.user_company_1.sudo(self.user_company_2)
         self.assertEqual(
-            self.user_company_1.partner_id.company_id, self.company_2)
+            self.user_company_1.partner_id.company_id,
+            self.company_2,
+        )
+
+    def test_commercial_fields_implementation(self):
+        """It should add company_ids to commercial fields."""
+        self.assertIn(
+            'company_ids',
+            self.env['res.partner']._commercial_fields(),
+        )
+
+    def test_commercial_fields_result(self):
+        """It should add company_ids to children partners."""
+        partner = self.env['res.partner'].create({
+            'name': 'Child test',
+            'parent_id': self.partner_company_both.id,
+        })
+        self.assertEqual(
+            partner.company_ids,
+            self.partner_company_both.company_ids,
+        )
