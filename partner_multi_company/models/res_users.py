@@ -2,7 +2,7 @@
 # © 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html.html
 
-from openerp import api, models
+from odoo import api, models
 
 
 class ResUsers(models.Model):
