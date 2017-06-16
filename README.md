@@ -16,6 +16,7 @@ Available addons
 addon | version | summary
 --- | --- | ---
 [base_multi_company](base_multi_company/) | 10.0.1.0.0 | Provides a base for adding multi-company support to models.
+[product_multi_company](product_multi_company/) | 10.0.1.0.0 | Select individually the product template visibility on each company
 
 
 Unported addons
