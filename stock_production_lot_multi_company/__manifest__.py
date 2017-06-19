@@ -7,7 +7,7 @@
 {
     "name": "Stock Production Lot Multi Company",
     "summary": "Make serial numbers multi-company aware",
-    "version": "8.0.1.0.0",
+    "version": "10.0.1.0.0",
     "category": "Stock",
     "license": "AGPL-3",
     "author": "OdooMRP team, "
@@ -15,11 +15,12 @@
               "Serv. Tecnol. Avanzados - Pedro M. Baeza, "
               "Odoo Community Association (OCA)",
     "depends": [
+        "base_multi_company",
         "stock",
     ],
     "data": [
         "security/stock_production_lot_security.xml",
         "views/stock_production_lot_view.xml",
     ],
-    'installable': False,
+    'installable': True,
 }
