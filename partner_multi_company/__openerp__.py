@@ -6,7 +6,7 @@
 {
     "name": "Partner multi-company",
     "summary": "Select individually the partner visibility on each company",
-    "version": "8.0.1.0.0",
+    "version": "8.0.1.0.1",
     "license": "AGPL-3",
     "depends": [
         "base",

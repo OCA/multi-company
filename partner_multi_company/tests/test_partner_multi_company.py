@@ -103,3 +103,9 @@ class TestPartnerMultiCompany(common.TransactionCase):
         self.user_company_1.company_id = self.company_2.id
         self.assertEqual(
             self.user_company_1.partner_id.company_id, self.company_2)
+
+    def test_init_hook(self):
+        """It should set company_ids even on deactivated partner."""
+        deactivated_partner = self.env.ref('base.res_partner_20')
+        self.assertEqual(deactivated_partner.company_ids.ids,
+                         deactivated_partner.company_id.ids)
