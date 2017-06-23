@@ -16,7 +16,9 @@ def post_init_hook(cr, registry):
                              "('company_ids', 'in', user.company_id.id), "
                              "('company_id', '=', False)]")
         # Copy company values
-        template_model = env['product.template']
+        template_model = env['product.template'].with_context(
+            active_test=False,
+        )
         groups = template_model.read_group([], ['company_id'], ['company_id'])
         for group in groups:
             if not group['company_id']:

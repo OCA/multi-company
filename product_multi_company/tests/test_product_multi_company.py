@@ -2,6 +2,8 @@
 # (c) 2015 Serv. Tecnol. Avanzados - Pedro M. Baeza
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
+from ..hooks import post_init_hook
+
 from openerp.tests import common
 from openerp.osv.osv import except_orm as AccessError
 
@@ -77,3 +79,9 @@ class TestProductMultiCompany(common.TransactionCase):
         domain = (" ['|',('company_id','=',user.company_id.id),"
                   "('company_id','=',False)]")
         self.assertEqual(rule.domain_force, domain)
+
+    def test_init_hook(self):
+        deactivated_product = self.env.ref('product.product_product_4d')
+        self.assertFalse(deactivated_product.active)
+        self.assertEqual(deactivated_product.company_ids.ids,
+                         deactivated_product.company_id.ids)

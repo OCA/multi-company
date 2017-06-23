@@ -47,6 +47,7 @@ Contributors
 ------------
 
 * Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
+* Dave Lasley <dave@laslabs.com>
 
 Maintainer
 ----------

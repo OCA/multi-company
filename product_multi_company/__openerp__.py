@@ -9,7 +9,7 @@
               "Odoo Community Association (OCA)",
     'website': "http://serviciosbaeza.com",
     'category': 'Product Management',
-    'version': '8.0.1.0.0',
+    'version': '8.0.1.0.1',
     'license': 'AGPL-3',
     'depends': [
         'product',
