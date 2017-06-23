@@ -25,7 +25,12 @@ def post_init_hook(cr, registry):
         for group in groups:
             if not group['company_id']:
                 continue
-            templates = template_model.search(group['__domain'])
+            domain = group['__domain'] + [
+                '|',
+                ('active', '=', True),
+                ('active', '=', False),
+            ]
+            templates = template_model.search(domain)
             templates.write(
                 {'company_ids': [(6, 0, [group['company_id'][0]])]})
 

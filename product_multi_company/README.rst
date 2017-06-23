@@ -43,6 +43,7 @@ Contributors
 ------------
 
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
+* Dave Lasley <dave@laslabs.com>
 
 Maintainer
 ----------
