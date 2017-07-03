@@ -36,7 +36,7 @@ class BaseHoldingInvoicing(models.AbstractModel):
             name = product.name
         else:
             name = '%s - %s' % (
-                data_line['name'], data_line['client_order_ref'])
+                data_line['name'], data_line.get('client_order_ref', ''))
         return {
             'name': name,
             'product_id': product.id,
