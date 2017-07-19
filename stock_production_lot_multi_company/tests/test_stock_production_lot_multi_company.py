@@ -2,8 +2,8 @@
 # (c) 2015 Ainara Galdona - AvanzOSC
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
-from openerp.osv.orm import except_orm
-from openerp.tests.common import TransactionCase
+from odoo.exceptions import AccessError
+from odoo.tests.common import TransactionCase
 
 
 class TestStockProductionLotMultiCompany(TransactionCase):
@@ -102,7 +102,7 @@ class TestStockProductionLotMultiCompany(TransactionCase):
                          'multicompany company user.')
 
     def test_error_lot_creation(self):
-        with self.assertRaises(except_orm):
+        with self.assertRaises(AccessError):
             self.lot_model.sudo(self.second_user.id).create(
                 {'name': 'ERRORLOT',
                  'product_id': self.second_comp_product.id,
