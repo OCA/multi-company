@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-#############################################################################
-# (c) 2015 Ainara Galdona - AvanzOSC
-# License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
-#############################################################################
+# Copyright 2015 Ainara Galdona - AvanzOSC
+# Copyright 2017 Lorenzo Battistini - Agile Business Group
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 {
     "name": "Stock Production Lot Multi Company",
     "summary": "Make serial numbers multi-company aware",
-    "version": "8.0.1.0.0",
+    "version": "10.0.1.0.0",
     "category": "Stock",
     "license": "AGPL-3",
     "author": "OdooMRP team, "
@@ -21,5 +20,5 @@
         "security/stock_production_lot_security.xml",
         "views/stock_production_lot_view.xml",
     ],
-    'installable': False,
+    'installable': True,
 }
