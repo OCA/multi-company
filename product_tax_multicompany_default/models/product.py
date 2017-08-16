@@ -30,10 +30,10 @@ class ProductTemplate(models.Model):
         customer_tax_ids = self.taxes_id.ids
         supplier_tax_ids = self.supplier_taxes_id.ids
         company_id = self.env.user.company_id.id
-        self = self.sudo()
-        default_customer_tax_ids = self.taxes_by_company(
+        obj = self.sudo()
+        default_customer_tax_ids = obj.taxes_by_company(
             'taxes_id', company_id)
-        default_supplier_tax_ids = self.taxes_by_company(
+        default_supplier_tax_ids = obj.taxes_by_company(
             'supplier_taxes_id', company_id)
         # Use list() to copy list
         match_customer_tax_ids = (
@@ -42,11 +42,11 @@ class ProductTemplate(models.Model):
         match_suplier_tax_ids = (
             default_supplier_tax_ids != supplier_tax_ids and
             list(supplier_tax_ids) or None)
-        for company in self.env['res.company'].search(
+        for company in obj.env['res.company'].search(
                 [('id', '!=', company_id)]):
-            customer_tax_ids.extend(self.taxes_by_company(
+            customer_tax_ids.extend(obj.taxes_by_company(
                 'taxes_id', company.id, match_customer_tax_ids))
-            supplier_tax_ids.extend(self.taxes_by_company(
+            supplier_tax_ids.extend(obj.taxes_by_company(
                 'supplier_taxes_id', company.id, match_suplier_tax_ids))
         self.write({
             'taxes_id': [(6, 0, customer_tax_ids)],
