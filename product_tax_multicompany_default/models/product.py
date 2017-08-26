@@ -19,7 +19,15 @@ class ProductTemplate(models.Model):
         customer_tax_ids = self.taxes_id.ids
         supplier_tax_ids = self.supplier_taxes_id.ids
         self = self.sudo()
-        for company in self.env['res.company'].search([]):
+        if not customer_tax_ids:
+            customer_tax_ids = self.taxes_by_company(
+                'taxes_id', self.env.user.company_id.id)
+        if not supplier_tax_ids:
+            supplier_tax_ids = self.taxes_by_company(
+                'taxes_id', self.env.user.company_id.id)
+        for company in self.env['res.company'].search([
+            ('id', '!=', self.env.user.company_id.id)
+        ]):
             default_customer_tax_ids = self.taxes_by_company(
                 'taxes_id', company.id)
             default_supplier_tax_ids = self.taxes_by_company(
