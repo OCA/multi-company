@@ -9,7 +9,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     def taxes_by_company(self, field, company_id):
-        taxes_ids = self.env['ir.values'].get_default(
+        taxes_ids = self.sudo().env['ir.values'].get_default(
             'product.template', field, company_id=company_id)
         return isinstance(taxes_ids, list) and taxes_ids or []
 
@@ -18,14 +18,13 @@ class ProductTemplate(models.Model):
         self.ensure_one()
         customer_tax_ids = self.taxes_id.ids
         supplier_tax_ids = self.supplier_taxes_id.ids
-        self = self.sudo()
         if not customer_tax_ids:
             customer_tax_ids = self.taxes_by_company(
                 'taxes_id', self.env.user.company_id.id)
         if not supplier_tax_ids:
             supplier_tax_ids = self.taxes_by_company(
                 'taxes_id', self.env.user.company_id.id)
-        for company in self.env['res.company'].search([
+        for company in self.sudo().env['res.company'].search([
             ('id', '!=', self.env.user.company_id.id)
         ]):
             default_customer_tax_ids = self.taxes_by_company(
