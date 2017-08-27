@@ -35,7 +35,7 @@ class ProductTemplate(models.Model):
                 customer_tax_ids.extend(default_customer_tax_ids)
             if default_supplier_tax_ids not in supplier_tax_ids:
                 supplier_tax_ids.extend(default_supplier_tax_ids)
-        self.write({
+        self.sudo().write({
             'taxes_id': [(6, 0, customer_tax_ids)],
             'supplier_taxes_id': [(6, 0, supplier_tax_ids)],
         })
