@@ -77,6 +77,7 @@ class TestsProductTaxMulticompany(SavepointCase):
     def test_multicompany_default_tax(self):
         product = self.env['product.product'].sudo(self.user_1.id).create({
             'name': 'Test Product',
+            'company_id': self.user_1.company_id.id,
         })
         product = product.sudo()
         self.assertIn(self.tax_10_cc1, product.taxes_id)
@@ -89,6 +90,7 @@ class TestsProductTaxMulticompany(SavepointCase):
             'name': 'Test Product',
             'taxes_id': [(6, 0, self.tax_20_cc1.ids)],
             'supplier_taxes_id': [(6, 0, self.tax_20_sc1.ids)],
+            'company_id': self.user_1.company_id.id,
         })
         product = product.sudo()
         self.assertNotIn(self.tax_10_cc1, product.taxes_id)
@@ -99,6 +101,7 @@ class TestsProductTaxMulticompany(SavepointCase):
             'name': 'Test Product',
             'taxes_id': [(6, 0, self.tax_20_cc2.ids)],
             'supplier_taxes_id': [(6, 0, self.tax_20_sc2.ids)],
+            'company_id': self.user_2.company_id.id,
         })
         product = product.sudo()
         self.assertIn(self.tax_10_cc1, product.taxes_id)
@@ -117,6 +120,7 @@ class TestsProductTaxMulticompany(SavepointCase):
             'name': 'Test Product',
             'taxes_id': [(6, 0, self.tax_10_cc1.ids)],
             'supplier_taxes_id': [(6, 0, self.tax_10_sc1.ids)],
+            'company_id': self.user_1.company_id.id,
         })
         product = product.sudo()
         self.assertIn(self.tax_10_cc2, product.taxes_id)
