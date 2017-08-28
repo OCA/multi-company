@@ -123,5 +123,5 @@ class TestsProductTaxMulticompany(SavepointCase):
             'company_id': False,
         })
         product = product.sudo()
-        self.assertIn(self.tax_10_cc2, product.taxes_id)
-        self.assertIn(self.tax_10_sc2, product.supplier_taxes_id)
+        self.assertIn(self.tax_10_cc1, product.taxes_id)
+        self.assertIn(self.tax_10_sc1, product.supplier_taxes_id)
