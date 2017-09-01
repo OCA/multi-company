@@ -11,7 +11,8 @@
     "author": "LasLabs, Odoo Community Association (OCA)",
     "license": "LGPL-3",
     "installable": True,
+    "pre_init_hook": "pre_init_hook",
     "depends": [
-        'website_sale',
+        'website',
     ],
 }
