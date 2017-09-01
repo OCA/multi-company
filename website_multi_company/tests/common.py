@@ -16,6 +16,9 @@ class Common(TransactionCase):
                         user=None):
         if company is None:
             company = self._create_company()
+            if user:
+                user.company_ids = [(4, company.id)]
+                user.company_id = company.id
         return self.env['website'].create({
             'name': name,
             'domain': domain,
