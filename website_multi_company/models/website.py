@@ -31,7 +31,7 @@ class Website(models.Model):
 
     @api.multi
     def write(self, vals):
-        if vals.get('user_id'):
+        if vals.get('user_id') and not self.env.context.get('write_user'):
             raise ValidationError(_(
                 'The website public user is maintained automatically and '
                 'cannot be set.',

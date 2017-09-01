@@ -5,7 +5,7 @@
 from odoo import api, SUPERUSER_ID
 
 
-def pre_init_hook(cr):
+def post_init_hook(cr, _):
 
     with api.Environment.manage():
 
@@ -30,4 +30,4 @@ def pre_init_hook(cr):
 
             user = public_user.copy()
             user.company_id = website.company_id.id
-            website.user_id = user.id
+            website.with_context(write_user=True).user_id = user.id
