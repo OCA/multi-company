@@ -3,11 +3,13 @@
    :alt: License: LGPL-3
 
 ============================
-Website Sale - Multi-Company
+Website - Multi-Company
 ============================
 
-This module provides the logic to isolate your e-commerce store using
-the company that is defined in the current website.
+This module allows for websites to be isolated by company.
+
+It does this by automatically maintaining a unique public user for
+each website and synchronizing the company between the two.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
