@@ -11,10 +11,6 @@ def post_init_hook(cr, _):
 
         env = api.Environment(cr, SUPERUSER_ID, {})
         websites = env['website'].search([])
-
-        if len(websites) <= 1:
-            return
-
         public_user = env.ref('base.public_user')
         used_existing = False
 
