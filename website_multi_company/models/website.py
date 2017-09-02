@@ -39,10 +39,10 @@ class Website(models.Model):
             if user.company_id.id != company_id:
                 user.company_id = company_id
             vals['user_id'] = user.id
-        record = super(Website, self).create(vals)
+        user = super(Website, self).create(vals)
         # This is required to circumvent duplicate keys
-        user.login = 'public-%d' % record.id
-        return record
+        user.login = 'public-%d' % user.id
+        return user
 
     @api.multi
     def write(self, vals):

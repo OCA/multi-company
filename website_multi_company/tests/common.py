@@ -9,7 +9,10 @@ class Common(TransactionCase):
 
     def _create_company(self, name='ACME inc.'):
         company = self.env['res.company'].create({'name': name})
-        self.env.user.company_ids = [(4, company.id)]
+        self.env.user.write({
+            'company_ids': [(4, company.id)],
+            'company_id': company.id,
+        })
         return company
 
     def _create_website(self, company=None, name='Test', domain='Test',
