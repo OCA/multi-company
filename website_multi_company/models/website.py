@@ -33,16 +33,24 @@ class Website(models.Model):
     @api.model
     def create(self, vals):
         """Assign a unique public user per website and align the company."""
+        # Assign (possibly new) user if not manually selected
         if not vals.get('user_id'):
             user = self._get_new_public_user()
             company_id = vals.get('company_id') or self.env.user.company_id.id
             if user.company_id.id != company_id:
-                user.company_id = company_id
+                user.write({
+                    'company_id': company_id,
+                    'company_ids': [(6, 0, [company_id])],
+                })
             vals['user_id'] = user.id
-        user = super(Website, self).create(vals)
-        # This is required to circumvent duplicate keys
-        user.login = 'public-%d' % user.id
-        return user
+        # Create website
+        website = super(Website, self).create(vals)
+        # This is required to circumvent duplicate key on login
+        user.write({
+            'login': 'public-%d' % website.id,
+            'name': 'Public User (Website %s)' % website.id,
+        })
+        return website
 
     @api.multi
     def write(self, vals):
@@ -55,7 +63,10 @@ class Website(models.Model):
         if vals.get('company_id'):
             for record in self:
                 if record.user_id.company_id.id != vals['company_id']:
-                    record.user_id.company_id = vals['company_id']
+                    record.user_id.write({
+                        'company_id': vals['company_id'],
+                        'company_ids': [(6, 0, [company_id])],
+                    })
         return super(Website, self).write(vals)
 
     @api.model
