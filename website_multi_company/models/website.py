@@ -20,16 +20,6 @@ class Website(models.Model):
                     'You cannot assign the same public user to two websites.',
                 ))
 
-    @api.multi
-    @api.constrains('user_id.company_id', 'company_id')
-    def _check_user_id_company_id(self):
-        """Do not allow differing company on public user and website."""
-        for record in self:
-            if record.company_id != record.user_id.company_id:
-                raise ValidationError(_(
-                    'The public user company must match the website company.',
-                ))
-
     @api.model
     def create(self, vals):
         """Assign a unique public user per website and align the company."""
@@ -46,7 +36,7 @@ class Website(models.Model):
         # Create website
         website = super(Website, self).create(vals)
         # This is required to circumvent duplicate key on login
-        user.write({
+        website.user_id.write({
             'login': 'public-%d' % website.id,
             'name': 'Public User (Website %s)' % website.id,
         })
@@ -65,7 +55,7 @@ class Website(models.Model):
                 if record.user_id.company_id.id != vals['company_id']:
                     record.user_id.write({
                         'company_id': vals['company_id'],
-                        'company_ids': [(6, 0, [company_id])],
+                        'company_ids': [(6, 0, [vals['company_id']])],
                     })
         return super(Website, self).write(vals)
 

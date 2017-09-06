@@ -27,7 +27,7 @@ def post_init_hook(cr, _):
             user = public_user.copy()
             user.write({
                 'company_id': website.company_id.id,
-                'company_ids': [(6, 0, website.company_ids.ids)],
+                'company_ids': [(6, 0, website.company_id.ids)],
                 'login': 'public-%d' % website.id,
                 'name': 'Public User (Website %s)' % website.id,
             })
