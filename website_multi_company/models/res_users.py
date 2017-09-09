@@ -11,6 +11,12 @@ class ResUsers(models.Model):
 
     @api.model
     def _signup_create_user(self, values):
+        """Inject the website company into the user creation values.
+
+        This is required because there is only one template user that is used
+        between all the websites. That template user is not necessarily
+        assigned to the correct company, however.
+        """
         values.update({
             'company_id': request.website.company_id.id,
             'company_ids': [(6, 0, request.website.company_id.ids)],

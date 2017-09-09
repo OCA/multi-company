@@ -2,9 +2,9 @@
    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
    :alt: License: LGPL-3
 
-============================
+=======================
 Website - Multi-Company
-============================
+=======================
 
 This module allows for websites to be isolated by company.
 
