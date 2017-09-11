@@ -16,7 +16,4 @@
         'auth_signup',
         'website',
     ],
-    "data": [
-        "security/website_seo_metadata_security.xml",
-    ],
 }
