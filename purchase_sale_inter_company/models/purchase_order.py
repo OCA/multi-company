@@ -30,11 +30,19 @@ class PurchaseOrder(models.Model):
         return res
 
     @api.multi
-    def _check_intercompany_product(self, dest_company):
-        dest_user = self.env['res.users'].search([
+    def _get_user_domain(self, dest_company):
+        self.ensure_one()
+        group_purchase_user = self.env.ref('purchase.group_purchase_user')
+        return [
             ('id', '!=', 1),
-            ('company_id', '=', dest_company.id)
-        ], limit=1)
+            ('company_id', '=', dest_company.id),
+            ('id', 'in', group_purchase_user.users.ids),
+            ]
+
+    @api.multi
+    def _check_intercompany_product(self, dest_company):
+        domain = self._get_user_domain(dest_company)
+        dest_user = self.env['res.users'].search(domain, limit=1)
         if dest_user:
             for purchase_line in self.order_line:
                 try:
@@ -133,7 +141,8 @@ class PurchaseOrder(models.Model):
             'auto_purchase_order_id': self.id,
             'partner_shipping_id': (direct_delivery_address or
                                     partner_shipping_id or
-                                    partner_addr['delivery'])
+                                    partner_addr['delivery']),
+            'note': self.notes
         }
 
     @api.model
