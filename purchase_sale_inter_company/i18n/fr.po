@@ -134,3 +134,8 @@ msgstr "Vous ne pouvez pas créer la SO à partir de la PO car la devise sur la 
 msgid "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', 'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
 msgstr "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', 'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
 
+#. module: purchase
+#: selection:purchase.order,invoice_method:0
+msgid "Based on intercompany invoice"
+msgstr "Basé sur la facture inter-société"
+
