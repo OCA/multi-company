@@ -11,7 +11,7 @@
             <newline/>
             <group>
               <field name="date_invoice"/>
-              <field name="section_id"
+              <field name="section_id" widget="radio"
                      domain="[('holding_company_id', '!=', False)]"/>
             </group>
             <footer>
