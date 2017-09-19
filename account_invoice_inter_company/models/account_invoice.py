@@ -23,7 +23,7 @@ class AccountInvoice(models.Model):
             # nor the invoices that were already validated in the past
             dest_company = self.env['res.company']._find_company_from_partner(
                 src_invoice.partner_id.id)
-            if (dest_company and not src_invoice.auto_generated):
+            if dest_company and not src_invoice.auto_generated:
                 if src_invoice.type == 'out_invoice':
                     dest_inv_type = 'in_invoice'
                     dest_journal_type = 'purchase'
@@ -44,11 +44,19 @@ class AccountInvoice(models.Model):
         return super(AccountInvoice, self).invoice_validate()
 
     @api.multi
-    def _check_intercompany_product(self, dest_company):
-        dest_user = self.env['res.users'].search([
+    def _get_user_domain(self, dest_company):
+        self.ensure_one()
+        group_account_invoice = self.env.ref('account.group_account_invoice')
+        return [
             ('id', '!=', 1),
-            ('company_id', '=', dest_company.id)
-        ], limit=1)
+            ('company_id', '=', dest_company.id),
+            ('id', 'in', group_account_invoice.users.ids),
+        ]
+
+    @api.multi
+    def _check_intercompany_product(self, dest_company):
+        domain = self._get_user_domain(dest_company)
+        dest_user = self.env['res.users'].search(domain, limit=1)
         if dest_user:
             for line in self.invoice_line:
                 try:
@@ -206,6 +214,7 @@ class AccountInvoice(models.Model):
             'auto_generated': True,
             'auto_invoice_id': self.id,
             'check_total': self.amount_total,
+            'comment': self.comment,
         }
 
     @api.model
