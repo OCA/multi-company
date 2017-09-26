@@ -37,7 +37,7 @@ class PurchaseOrder(models.Model):
             ('id', '!=', 1),
             ('company_id', '=', dest_company.id),
             ('id', 'in', group_purchase_user.users.ids),
-            ]
+        ]
 
     @api.multi
     def _check_intercompany_product(self, dest_company):
@@ -46,7 +46,8 @@ class PurchaseOrder(models.Model):
         if dest_user:
             for purchase_line in self.order_line:
                 try:
-                    purchase_line.product_id.sudo(dest_user).read()
+                    purchase_line.product_id.sudo(dest_user).read(
+                        ['default_code'])
                 except:
                     raise UserError(_(
                         "You cannot create SO from PO because product '%s' "
