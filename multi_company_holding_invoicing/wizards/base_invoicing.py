@@ -52,7 +52,7 @@ class BaseHoldingInvoicing(models.AbstractModel):
         vals.update({
             'price_unit': data_line['amount_untaxed'],
             'quantity': data_line.get('quantity', 1),
-            })
+        })
         return vals
 
     @api.model
@@ -96,6 +96,7 @@ class BaseHoldingInvoicing(models.AbstractModel):
 
     @api.model
     def _generate_invoice(self, domain, date_invoice=None):
+        self = self.suspend_security()
         invoices = self.env['account.invoice'].browse(False)
         _logger.debug('Retrieve data for generating the invoice')
         for data in self._get_invoice_data(domain):
@@ -215,6 +216,12 @@ class ChildInvoicing(models.TransientModel):
         holding_invoice = sale.holding_invoice_id
         vals['origin'] = holding_invoice.name
         vals['partner_id'] = holding_invoice.company_id.partner_id.id
+        section = self.env['crm.case.section'].browse(data['section_id'][0])
+        vals['journal_id'] = section.journal_id.id
+        partner_data = self.env['account.invoice'].onchange_partner_id(
+            'out_invoice', holding_invoice.company_id.partner_id.id,
+            company_id=self._context['force_company'])
+        vals['account_id'] = partner_data['value'].get('account_id', False)
         return vals
 
     @api.model

@@ -7,9 +7,24 @@
 from openerp import models, fields, api
 from openerp.tools.translate import _
 from openerp.exceptions import Warning as UserError
+from openerp.addons.connector.session import ConnectorSession
+from openerp.addons.connector.queue.job import job
 import logging
 _logger = logging.getLogger(__name__)
 
+
+@job
+def generate_child_invoice_job(session, model_name, args):
+    invoice = session.env['account.invoice'].browse(args.get('invoice_id'))
+    domain = [
+        ('company_id', '=', args.get('company_id')),
+        ('id', 'in', invoice.holding_sale_ids.ids)
+    ]
+    child_invoices = session.env['child.invoicing']._generate_invoice(domain)
+    child_invoices.write({'holding_invoice_id': args.get('invoice_id')})
+    for child_invoice in child_invoices:
+        child_invoice.signal_workflow('invoice_open')
+    return True
 
 
 class AccountInvoice(models.Model):
@@ -73,18 +88,23 @@ class AccountInvoice(models.Model):
     def generate_child_invoice(self):
         # TODO add a group and check it
         self = self.suspend_security()
+        session = ConnectorSession(self.env.cr, self.env.uid, self.env.context)
         for invoice in self:
             if invoice.child_invoice_ids:
                 raise UserError(_(
                     'The child invoices have been already '
                     'generated for this invoice'))
-            child_invoices = self.env['child.invoicing']._generate_invoice([
+            companies = self.env['sale.order'].read_group([
                 ('id', 'in', self.holding_sale_ids.ids),
                 ('company_id', '!=', self.company_id.id),
-                ])
-            child_invoices.write({'holding_invoice_id': invoice.id})
-            for child_invoice in child_invoices:
-                child_invoice.signal_workflow('invoice_open')
+            ], 'company_id', 'company_id')
+            for company in companies:
+                # Vérifier qu'il n'existe pas de facture déjà créé si c'est le cas passer à la société suivante
+                description = "Generate child invoices for the company: %s" % company['company_id'][1]
+                job_uuid = generate_child_invoice_job.delay(
+                    session, self._name, {'invoice_id': invoice.id, 'company_id': company['company_id'][0]}, description=description)
+                job = self.env['queue.job'].search(
+                    [('uuid', '=', job_uuid)], limit=1)
         return True
 
 

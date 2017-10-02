@@ -17,6 +17,7 @@
      # Note we depend of this module for having the sale_ids field
      # on the invoice
      'sale_automatic_workflow',
+     'connector',
  ],
  'data': [
      'config/sale_config.yml',
