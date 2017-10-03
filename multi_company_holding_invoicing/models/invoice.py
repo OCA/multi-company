@@ -46,6 +46,10 @@ class AccountInvoice(models.Model):
         string='# of Invoice',
         compute_sudo=True)
     holding_invoice_id = fields.Many2one('account.invoice', 'Holding Invoice')
+    child_invoice_job_ids = fields.One2many('queue.job', 'holding_invoice_id')
+    child_invoice_job_count = fields.Integer(
+        compute='_compute_child_invoice_job_count',
+        string='# of Child Invoice Jobs')
 
     @api.multi
     def _compute_holding_sale_count(self):
@@ -61,6 +65,11 @@ class AccountInvoice(models.Model):
     def _compute_child_invoice_count(self):
         for inv in self:
             inv.child_invoice_count = len(inv.sudo().child_invoice_ids)
+
+    @api.multi
+    def _compute_child_invoice_job_count(self):
+        for inv in self:
+            inv.child_invoice_job_count = len(inv.child_invoice_job_ids)
 
     @api.multi
     def invoice_validate(self):
@@ -94,17 +103,28 @@ class AccountInvoice(models.Model):
                 raise UserError(_(
                     'The child invoices have been already '
                     'generated for this invoice'))
-            companies = self.env['sale.order'].read_group([
+            sale_companies = self.env['sale.order'].read_group([
                 ('id', 'in', self.holding_sale_ids.ids),
                 ('company_id', '!=', self.company_id.id),
             ], 'company_id', 'company_id')
-            for company in companies:
-                # Vérifier qu'il n'existe pas de facture déjà créé si c'est le cas passer à la société suivante
-                description = "Generate child invoices for the company: %s" % company['company_id'][1]
+            for sale_company in sale_companies:
+                company_child_invoices = self.env['account.invoice'].search([
+                    ('company_id', '=', sale_company['company_id'][0]),
+                    ('holding_invoice_id', '=', invoice.id)
+                ])
+                if company_child_invoices:
+                    break
+                description = (
+                    _('Generate child invoices for the company: %s') %
+                    sale_company['company_id'][1])
                 job_uuid = generate_child_invoice_job.delay(
-                    session, self._name, {'invoice_id': invoice.id, 'company_id': company['company_id'][0]}, description=description)
+                    session, self._name, {
+                        'invoice_id': invoice.id,
+                        'company_id': sale_company['company_id'][0]},
+                    description=description)
                 job = self.env['queue.job'].search(
                     [('uuid', '=', job_uuid)], limit=1)
+                job.write({'holding_invoice_id': invoice.id})
         return True
 
 

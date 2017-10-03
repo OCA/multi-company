@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+
+        <record id="view_queue_job_search" model="ir.ui.view">
+            <field name="model">queue.job</field>
+            <field name="inherit_id" ref="connector.view_queue_job_search"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                   <field name="holding_invoice_id"/>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</openerp>

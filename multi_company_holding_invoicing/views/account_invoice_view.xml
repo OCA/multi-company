@@ -40,6 +40,21 @@
             <field name="act_window_id" ref="act_account_invoice_2_account_invoice"/>
         </record>
 
+        <record id="action_queue_child_invoice_job" model="ir.actions.act_window">
+            <field name="name">Child Invoice Jobs</field>
+            <field name="res_model">queue.job</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_pending': 1,
+                                   'search_default_enqueued': 1,
+                                   'search_default_started': 1,
+                                   'search_default_failed': 1,
+                                   'search_default_done': 1,
+                                   'search_default_holding_invoice_id': active_id}</field>
+            <field name="view_id" ref="connector.view_queue_job_tree"/>
+            <field name="search_view_id" ref="connector.view_queue_job_search"/>
+        </record>
+
         <record id="view_account_invoice_filter" model="ir.ui.view">
             <field name="model">account.invoice</field>
             <field name="inherit_id"
@@ -59,7 +74,7 @@
                     <button name="generate_child_invoice"
                             type="object"
                             string="Generate Child Invoice"
-                            attrs="{'invisible':['|', '|', ('holding_sale_count','=', 0),  ('child_invoice_count','!=', 0), ('state', '=', 'draft')]}"/>
+                            attrs="{'invisible':['|', '|', '|',('holding_sale_count','=', 0), ('child_invoice_count','!=', 0), ('child_invoice_job_count','!=', 0), ('state', '=', 'draft')]}"/>
                 </button>
 
 
@@ -87,6 +102,14 @@
                             icon="fa-strikethrough">
                             <field string="Sales"
                                    name="sale_count"
+                                   widget="statinfo"/>
+                        </button>
+                        <button class="oe_inline oe_stat_button" type="action"
+                            name="%(action_queue_child_invoice_job)d"
+                            attrs="{'invisible':[('child_invoice_job_count', '=', 0)]}"
+                            icon="fa-strikethrough">
+                            <field string="Child Invoice Jobs"
+                                   name="child_invoice_job_count"
                                    widget="statinfo"/>
                         </button>
  
