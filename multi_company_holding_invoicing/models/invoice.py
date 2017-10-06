@@ -69,7 +69,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_child_invoice_job_count(self):
         for inv in self:
-            inv.child_invoice_job_count = len(inv.child_invoice_job_ids)
+            inv.child_invoice_job_count = len(inv.sudo().child_invoice_job_ids)
 
     @api.multi
     def invoice_validate(self):
