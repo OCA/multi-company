@@ -164,14 +164,12 @@ class ChildInvoicing(models.TransientModel):
 
     @api.model
     def _link_sale_order(self, invoice, sales):
-        sales.write({'invoice_ids': [(6, 0, [invoice.id])]})
+        sales.write({'invoice_ids': [(6, 0, [invoice.id])],
+                     'state': 'done'})
         order_lines = self.env['sale.order.line'].search([
             ('order_id', 'in', sales.ids),
-            ])
+        ])
         order_lines._store_set_values(['invoiced'])
-        # Dummy call to workflow, will not create another invoice
-        # but bind the new invoice to the subflow
-        sales.signal_workflow('manual_invoice')
 
     @api.model
     def _get_invoice_line_data(self, data):
@@ -184,7 +182,7 @@ class ChildInvoicing(models.TransientModel):
             'quantity': - section.holding_discount/100.,
             'sale_line_ids': [],
             'section_id': [section.id],
-            })
+        })
         return data_lines
 
     @api.model

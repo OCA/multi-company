@@ -58,7 +58,7 @@ msgstr "Child"
 #: view:account.invoice:multi_company_holding_invoicing.invoice_form
 #: model:ir.actions.act_window,name:multi_company_holding_invoicing.action_queue_child_invoice_job
 msgid "Child Invoice Jobs"
-msgstr "Génération factures enfants"
+msgstr "Jobs factures"
 
 #. module: multi_company_holding_invoicing
 #: view:wizard.holding.invoicing:multi_company_holding_invoicing.view_wizard_holding_invoicing_form

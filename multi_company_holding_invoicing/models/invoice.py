@@ -49,7 +49,8 @@ class AccountInvoice(models.Model):
     child_invoice_job_ids = fields.One2many('queue.job', 'holding_invoice_id')
     child_invoice_job_count = fields.Integer(
         compute='_compute_child_invoice_job_count',
-        string='# of Child Invoice Jobs')
+        string='# of Child Invoice Jobs',
+        compute_sudo=True)
 
     @api.multi
     def _compute_holding_sale_count(self):
@@ -69,7 +70,11 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_child_invoice_job_count(self):
         for inv in self:
-            inv.child_invoice_job_count = len(inv.sudo().child_invoice_job_ids)
+            child_invoice_jobs = self.env['queue.job'].search([
+                ('id', 'in', inv.sudo().child_invoice_job_ids.ids),
+                ('state', '!=', 'done')
+            ])
+            inv.child_invoice_job_count = len(child_invoice_jobs)
 
     @api.multi
     def invoice_validate(self):

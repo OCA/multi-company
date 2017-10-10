@@ -49,7 +49,6 @@
                                    'search_default_enqueued': 1,
                                    'search_default_started': 1,
                                    'search_default_failed': 1,
-                                   'search_default_done': 1,
                                    'search_default_holding_invoice_id': active_id}</field>
             <field name="view_id" ref="connector.view_queue_job_tree"/>
             <field name="search_view_id" ref="connector.view_queue_job_search"/>
