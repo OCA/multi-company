@@ -44,13 +44,21 @@ class AccountInvoice(models.Model):
         return super(AccountInvoice, self).action_invoice_open()
 
     @api.multi
-    def _check_intercompany_product(self, dest_company):
-        dest_user = self.env['res.users'].search([
+    def _get_user_domain(self, dest_company):
+        self.ensure_one()
+        group_account_invoice = self.env.ref('account.group_account_invoice')
+        return [
             ('id', '!=', 1),
-            ('company_id', '=', dest_company.id)
-        ], limit=1)
+            ('company_id', '=', dest_company.id),
+            ('id', 'in', group_account_invoice.users.ids),
+        ]
+
+    @api.multi
+    def _check_intercompany_product(self, dest_company):
+        domain = self._get_user_domain(dest_company)
+        dest_user = self.env['res.users'].search(domain, limit=1)
         if dest_user:
-            for line in self.invoice_line_ids:
+            for line in self.invoice_line:
                 try:
                     line.product_id.sudo(dest_user).read(['default_code'])
                 except:
@@ -179,6 +187,7 @@ class AccountInvoice(models.Model):
                 'partner_bank_id', False),
             'auto_generated': True,
             'auto_invoice_id': self.id,
+            'comment': self.comment,
         }
 
     @api.model
