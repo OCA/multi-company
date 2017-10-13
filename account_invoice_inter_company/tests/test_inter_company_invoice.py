@@ -8,7 +8,6 @@ from openerp.tests.common import TransactionCase
 class TestAccountInvoiceInterCompany(TransactionCase):
     def setUp(self):
         super(TestAccountInvoiceInterCompany, self).setUp()
-        self.installer_obj = self.env['account.installer']
         self.wizard_obj = self.env['wizard.multi.charts.accounts']
         self.account_obj = self.env['account.account']
         self.invoice_obj = self.env['account.invoice']
@@ -17,74 +16,67 @@ class TestAccountInvoiceInterCompany(TransactionCase):
 
     def test_account_invoice_inter_company(self):
         # Install COA for company A and B
-        installer_comp_a = self.installer_obj.create({
-            'charts': 'configurable',
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_a').id})
-        installer_comp_a.execute()
-        installer_comp_b = self.installer_obj.create({
-            'charts': 'configurable',
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_b').id})
-        installer_comp_b.execute()
-
-        wiz_comp_a = self.wizard_obj.create({
-            'chart_template_id': '1',
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_a').id,
-            'currency_id': self.env.ref('base.EUR').id,
+        wizard_comp_a = self.wizard_obj.create({
+            'company_id': self.env.ref('account_invoice_inter_company.company_a').id,
+            'chart_template_id': self.env.ref('l10n_fr.l10n_fr_pcg_chart_template').id,
             'code_digits': 6,
-            'purchase_tax': False,
-            'sale_tax': False})
-        wiz_comp_a.execute()
-        wiz_comp_b = self.wizard_obj.create({
-            'chart_template_id': '1',
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_b').id,
+            'transfer_account_id': self.env.ref('l10n_fr.pcg_58').id,
             'currency_id': self.env.ref('base.EUR').id,
+            'bank_account_code_prefix': False,
+            'cash_account_code_prefix': False,
+        })
+        wizard_comp_a.onchange_chart_template_id()
+        wizard_comp_a.execute()
+        wizard_comp_b = self.wizard_obj.create({
+            'company_id': self.env.ref('account_invoice_inter_company.company_b').id,
+            'chart_template_id': self.env.ref('l10n_fr.l10n_fr_pcg_chart_template').id,
             'code_digits': 6,
-            'purchase_tax': False,
-            'sale_tax': False})
-        wiz_comp_b.execute()
-
-        # Now remove company from related partners of company and
-        # apply default accounts
-        account_receivable_a = self.account_obj.search([
-            ('company_id', '=', self.env.ref(
-                'account_invoice_inter_company.company_a').id),
-            ('type', '=', 'receivable')
-        ])
-        account_payable_a = self.account_obj.search([
-            ('company_id', '=', self.env.ref(
-                'account_invoice_inter_company.company_a').id),
-            ('type', '=', 'payable')
-        ])
-        self.env.ref('account_invoice_inter_company.partner_company_a').write({
-            'company_id': False,
-            'property_account_receivable': account_receivable_a[0],
-            'property_account_payable': account_payable_a[0]
+            'transfer_account_id': self.env.ref('l10n_fr.pcg_58').id,
+            'currency_id': self.env.ref('base.EUR').id,
+            'bank_account_code_prefix': False,
+            'cash_account_code_prefix': False,
         })
+        wizard_comp_b.onchange_chart_template_id()
+        wizard_comp_b.execute()
 
-        account_receivable_b = self.account_obj.search([
-            ('company_id', '=', self.env.ref(
-                'account_invoice_inter_company.company_b').id),
-            ('type', '=', 'receivable')
-        ])
-        account_payable_b = self.account_obj.search([
-            ('company_id', '=', self.env.ref(
-                'account_invoice_inter_company.company_b').id),
-            ('type', '=', 'payable')
-        ])
-        self.env.ref('account_invoice_inter_company.partner_company_b').write({
-            'company_id': False,
-            'property_account_receivable': account_receivable_b[0],
-            'property_account_payable': account_payable_b[0]
-        })
+        ## Now remove company from related partners of company and
+        ## apply default accounts
+        #account_receivable_a = self.account_obj.search([
+        #    ('company_id', '=', self.env.ref(
+        #        'account_invoice_inter_company.company_a').id),
+        #    ('user_type_id', '=', self.env.ref('account.data_account_type_receivable').id)
+        #])
+        #account_payable_a = self.account_obj.search([
+        #    ('company_id', '=', self.env.ref(
+        #        'account_invoice_inter_company.company_a').id),
+        #    ('user_type_id', '=', self.env.ref('account.data_account_type_payable').id)
+        #])
+        #import pdb;pdb.set_trace()
+        #self.env.ref('account_invoice_inter_company.partner_company_a').write({
+        #    'company_id': False,
+        #    'property_account_receivable_id': account_receivable_a[0].id,
+        #    'property_account_payable_id': account_payable_a[0].id
+        #})
+        #
+        #account_receivable_b = self.account_obj.search([
+        #    ('company_id', '=', self.env.ref(
+        #        'account_invoice_inter_company.company_b').id),
+        #    ('user_type_id', '=', self.env.ref('account.data_account_type_receivable').id)
+        #])
+        #account_payable_b = self.account_obj.search([
+        #    ('company_id', '=', self.env.ref(
+        #        'account_invoice_inter_company.company_b').id),
+        #    ('user_type_id', '=', self.env.ref('account.data_account_type_payable').id)
+        #])
+        #self.env.ref('account_invoice_inter_company.partner_company_b').write({
+        #    'company_id': False,
+        #    'property_account_receivable_id': account_receivable_b[0].id,
+        #    'property_account_payable_id': account_payable_b[0].id
+        #})
 
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(self.env.ref(
-            'account_invoice_inter_company.user_company_a')).signal_workflow(
-                'invoice_open')
+            'account_invoice_inter_company.user_company_a')).action_invoice_open()
 
         # Check destination invoice created in company B
         invoices = self.invoice_obj.sudo(self.env.ref(

@@ -6,12 +6,10 @@
         -->
     <record id="partner_company_a" model="res.partner">
         <field name="name">Company A</field>
-        <field name="company_type">company</field>
     </record>
 
     <record id="partner_company_b" model="res.partner">
         <field name="name">Company B</field>
-        <field name="company_type">company</field>
     </record>
 
     <!--
@@ -108,6 +106,12 @@
         <field name="user_type_id" ref="account.data_account_type_expenses"/>
         <field name="company_id" ref="company_a"/>
     </record>
+    <record id="a_bank_company_a" model="account.account">
+        <field name="code">512001-A</field>
+        <field name="name">Bank - (company A)</field>
+        <field name="user_type_id" ref="account.data_account_type_liquidity"/>
+        <field name="company_id" ref="company_a"/>
+    </record>
     <record id="a_recv_company_b" model="account.account">
         <field name="code">X11002-B</field>
         <field name="name">Debtors - (company B)</field>
@@ -136,6 +140,12 @@
         <field name="name">Expenses - (company B)</field>
         <field name="internal_type">other</field>
         <field name="user_type_id" ref="account.data_account_type_expenses"/>
+        <field name="company_id" ref="company_b"/>
+    </record>
+    <record id="a_bank_company_b" model="account.account">
+        <field name="code">512001-B</field>
+        <field name="name">Bank - (company B)</field>
+        <field name="user_type_id" ref="account.data_account_type_liquidity"/>
         <field name="company_id" ref="company_b"/>
     </record>
 
@@ -180,6 +190,15 @@
         <field name="company_id" ref="company_a"/>
     </record>
 
+    <record id="bank_journal_company_a" model="account.journal">
+        <field name="name">Bank Journal - (Company A)</field>
+        <field name="code">BNK-A</field>
+        <field name="type">bank</field>
+        <field name="default_credit_account_id" ref="a_sale_company_a"/>
+        <field name="default_debit_account_id" ref="a_sale_company_a"/>
+        <field name="company_id" ref="company_a"/>
+    </record>
+
     <record id="purchases_journal_company_b" model="account.journal">
         <field name="name">Purchases Journal - (Company B)</field>
         <field name="code">EXJ-B</field>
@@ -187,6 +206,15 @@
         <field name="sequence_id" ref="sequence_purchase_journal_company_b"/>
         <field name="default_credit_account_id" ref="a_expense_company_b"/>
         <field name="default_debit_account_id" ref="a_expense_company_b"/>
+        <field name="company_id" ref="company_b"/>
+    </record>
+
+    <record id="bank_journal_company_b" model="account.journal">
+        <field name="name">Bank Journal - (Company B)</field>
+        <field name="code">BNK-B</field>
+        <field name="type">bank</field>
+        <field name="default_credit_account_id" ref="a_sale_company_b"/>
+        <field name="default_debit_account_id" ref="a_sale_company_b"/>
         <field name="company_id" ref="company_b"/>
     </record>
 
@@ -219,9 +247,43 @@
     </record>
 
     <!--
+        Create fiscal position for each company (A and B)
+        -->
+    <record id="1_fiscal_position_template_intraeub2b_company_a" model="account.fiscal.position">
+        <field name="name">Intra-EU B2B - (Company A)</field>
+        <field name="auto_apply" eval="True"/>
+        <field name="vat_required" eval="True"/>
+        <field name="country_group_id" ref="base.europe"/>
+        <field name="note">French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of "CGI"</field>
+        <field name="company_id" ref="company_a"/>
+    </record>
+
+    <record id="1_fiscal_position_template_import_export_company_a" model="account.fiscal.position">
+        <field name="name">Import/Export + DOM-TOM - (Company A)</field>
+        <field name="note">French VAT exemption according to articles 262 I of "CGI"</field>
+        <field name="company_id" ref="company_a"/>
+    </record>
+
+    <record id="1_fiscal_position_template_intraeub2b_company_b" model="account.fiscal.position">
+        <field name="name">Intra-EU B2B - (Company B)</field>
+        <field name="auto_apply" eval="True"/>
+        <field name="vat_required" eval="True"/>
+        <field name="country_group_id" ref="base.europe"/>
+        <field name="note">French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of "CGI"</field>
+        <field name="company_id" ref="company_b"/>
+    </record>
+
+    <record id="1_fiscal_position_template_import_export_company_b" model="account.fiscal.position">
+        <field name="name">Import/Export + DOM-TOM - (Company B)</field>
+        <field name="note">French VAT exemption according to articles 262 I of "CGI"</field>
+        <field name="company_id" ref="company_b"/>
+    </record>
+
+    <!--
         Update partner for each company (A and B)
         -->
     <record id="account_invoice_inter_company.partner_company_a" model="res.partner">
+        <field name="company_type">company</field>
         <field name="customer" eval="False"/>
         <field name="supplier" eval="True"/>
         <field name="property_account_receivable_id" ref="property_account_receivable_company_a"/>
@@ -230,6 +292,7 @@
     </record>
 
     <record id="account_invoice_inter_company.partner_company_b" model="res.partner">
+        <field name="company_type">company</field>
         <field name="customer" eval="True"/>
         <field name="supplier" eval="False"/>
         <field name="property_account_receivable_id" ref="property_account_receivable_company_b"/>
@@ -259,7 +322,7 @@
         <field name="name">Service Multi Company</field>
         <field name="uom_id" ref="product.product_uom_hour"/>
         <field name="uom_po_id" ref="product.product_uom_hour"/>
-        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="categ_id" ref="product.product_category_3"/>
         <field name="type">service</field>
         <field name="company_id" ref=""/>
     </record>

@@ -58,7 +58,7 @@ class AccountInvoice(models.Model):
         domain = self._get_user_domain(dest_company)
         dest_user = self.env['res.users'].search(domain, limit=1)
         if dest_user:
-            for line in self.invoice_line:
+            for line in self.invoice_line_ids:
                 try:
                     line.product_id.sudo(dest_user).read(['default_code'])
                 except:
