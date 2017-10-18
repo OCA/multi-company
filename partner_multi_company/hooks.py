@@ -16,7 +16,7 @@ def post_init_hook(cr, registry):
                              "('company_ids', 'in', user.company_id.id), "
                              "('company_id', '=', False)]")
         # Copy company values
-        partner_model = env['res.partner']
+        partner_model = env['res.partner'].with_context(active_test=False)
         groups = partner_model.read_group([], ['company_id'], ['company_id'])
         for group in groups:
             if group['company_id']:
