@@ -120,6 +120,7 @@ class TestPartnerMultiCompany(common.SavepointCase):
 
     def test_init_hook(self):
         """It should set company_ids even on deactivated partner."""
-        deactivated_partner = self.env.ref('base.res_partner_20')
+        deactivated_partner = self.env.ref('base.public_user_res_partner')
+        self.assertFalse(deactivated_partner.active)
         self.assertEqual(deactivated_partner.company_ids.ids,
                          deactivated_partner.company_id.ids)
