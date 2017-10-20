@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from openerp import api, fields, models, _
-from openerp.exceptions import Warning as UserError
-from openerp.tools import float_compare
+from odoo import api, fields, models, _
+from odoo.exceptions import Warning as UserError
+from odoo.tools import float_compare
 
 
 class AccountInvoice(models.Model):
