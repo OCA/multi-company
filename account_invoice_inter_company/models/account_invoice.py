@@ -18,6 +18,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def action_invoice_open(self):
         """ Validated invoice generate cross invoice base on company rules """
+        res = super(AccountInvoice, self).action_invoice_open()
         for src_invoice in self:
             # do not consider invoices that have already been auto-generated,
             # nor the invoices that were already validated in the past
@@ -41,7 +42,7 @@ class AccountInvoice(models.Model):
                     _inter_company_create_invoice(dest_company.id,
                                                   dest_inv_type,
                                                   dest_journal_type)
-        return super(AccountInvoice, self).action_invoice_open()
+        return res
 
     @api.multi
     def _get_user_domain(self, dest_company):
@@ -90,9 +91,9 @@ class AccountInvoice(models.Model):
         inter_invoice = self.search(
             [('auto_invoice_id', '=', self.id)])
         force_number = False
-        if inter_invoice:
-            force_number = inter_invoice.internal_number
-            inter_invoice.internal_number = False
+        if inter_invoice and inter_invoice.state in ['draft', 'cancel']:
+            force_number = inter_invoice.move_name
+            inter_invoice.move_name = False
             inter_invoice.unlink()
         # create invoice
         dest_invoice_data = self._prepare_invoice_data(
@@ -220,13 +221,20 @@ class AccountInvoice(models.Model):
         dest_line_data = self.env['account.invoice.line'].play_onchanges(
             dest_line_data, ['product_id'])
         account_id = dest_line_data.get('account_id', False)
-        account = self.env['account.account'].browse(account_id)
+        if account_id:
+            account = self.env['account.account'].browse(account_id)
+        else:
+            account = self.env['account.account'].search([
+                ('user_type_id', '=', self.env.ref(
+                    'account.data_account_type_revenue').id),
+                ('company_id', '=', dest_company.id)], limit=1)
+            if not account:
+                raise UserError(_(
+                    'Please define %s account for this company: "%s" (id:%d).')
+                    % (self.env.ref('account.data_account_type_revenue').name,
+                       dest_company.name, dest_company.id))
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
         taxes = self.env['account.tax'].browse(tax_ids)
-        filtered_account = account.filtered(
-            lambda r: r.company_id.id == dest_company.id)
-        dest_line_data['account_id'] = filtered_account.id
-        dest_line_data['invoice_line_tax_ids'] = taxes.ids
         vals = {
             'name': src_line.name,
             # TODO: it's wrong to just copy the price_unit
@@ -237,15 +245,14 @@ class AccountInvoice(models.Model):
             'discount': src_line.discount,
             'product_id': src_line.product_id.id or False,
             'sequence': src_line.sequence,
-            'invoice_line_tax_ids': dest_line_data.get(
-                'invoice_line_tax_ids', []),
+            'invoice_line_tax_ids': taxes.ids or [],
             # Analytic accounts are per company
             # The problem is that we can't really "guess" the
             # analytic account to set. It probably needs to be
             # set via an inherit of this method in a custom module
             'account_analytic_id': dest_line_data.get(
                 'account_analytic_id', False),
-            'account_id': dest_line_data.get('account_id', False),
+            'account_id': account.id or False,
             'auto_invoice_line_id': src_line.id,
             'invoice_id':  dest_line_data.get('invoice_id', False),
             'partner_id': src_company_partner_id.id,

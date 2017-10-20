@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0\n"
+"Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-03 16:26+0000\n"
-"PO-Revision-Date: 2017-02-03 16:26+0000\n"
+"POT-Creation-Date: 2017-10-20 15:53+0000\n"
+"PO-Revision-Date: 2017-10-20 15:53+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_invoice_inter_company
-#: field:account.invoice,auto_generated:0
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:172
+#, python-format
+msgid " Invoice: "
+msgstr " Facture: "
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice_auto_generated
 msgid "Auto Generated Document"
 msgstr "Document auto-généré"
 
@@ -47,63 +53,101 @@ msgstr "Madame, Monsieur,\n"
 "Cordialement,"
 
 #. module: account_invoice_inter_company
-#: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
+#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_import_export_company_a
+#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_import_export_company_b
+msgid "French VAT exemption according to articles 262 I of \"CGI\""
+msgstr "French VAT exemption according to articles 262 I of \"CGI\""
+
+#. module: account_invoice_inter_company
+#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_intraeub2b_company_a
+#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_intraeub2b_company_b
+msgid "French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of \"CGI\""
+msgstr "French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of \"CGI\""
+
+#. module: account_invoice_inter_company
+#: model:ir.ui.view,arch_db:account_invoice_inter_company.view_company_inter_change_inherit_form
 msgid "Inter-Company"
 msgstr "Inter-Sociétés"
 
 #. module: account_invoice_inter_company
 #: model:ir.model,name:account_invoice_inter_company.model_account_invoice
-#: view:res.company:account_invoice_inter_company.view_company_inter_change_inherit_form
+#: model:ir.ui.view,arch_db:account_invoice_inter_company.view_company_inter_change_inherit_form
 msgid "Invoice"
 msgstr "Facture"
 
 #. module: account_invoice_inter_company
-#: field:res.company,invoice_auto_validation:0
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company_invoice_auto_validation
 msgid "Invoice Auto Validation"
 msgstr "Auto Validation de la facture"
 
 #. module: account_invoice_inter_company
 #: model:ir.model,name:account_invoice_inter_company.model_account_invoice_line
 msgid "Invoice Line"
-msgstr "Lignes de facture"
+msgstr "Ligne de facture"
 
 #. module: account_invoice_inter_company
-#: field:base.config.settings,invoice_auto_validation:0
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_base_config_settings_invoice_auto_validation
 msgid "Invoices Auto Validation"
 msgstr "Auto Validation des factures"
 
 #. module: account_invoice_inter_company
-#: field:base.config.settings,company_id:0
-msgid "Select Company"
-msgstr "Sélectionner la société"
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:231
+#, python-format
+msgid "Please define %s account for this company: \"%s\" (id:%d)."
+msgstr "Please define %s account for this company: \"%s\" (id:%d)."
 
 #. module: account_invoice_inter_company
-#: help:base.config.settings,company_id:0
-msgid "Select company to setup Inter company rules."
-msgstr "Sélectionner la société sur laquelle vous souhaitez configurer les règles intersociétés."
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:159
+#, python-format
+msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+msgstr "Merci de créer un journal de type %s dans la société: \"%s\" (id:%d)."
 
 #. module: account_invoice_inter_company
+#: model:product.product,name:account_invoice_inter_company.product_consultant_multi_company
 #: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
 msgid "Service Multi Company"
 msgstr "Service Multi Société"
 
 #. module: account_invoice_inter_company
-#: field:account.invoice,auto_invoice_id:0
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice_auto_invoice_id
 msgid "Source Invoice"
 msgstr "Facture source"
 
 #. module: account_invoice_inter_company
-#: field:account.invoice.line,auto_invoice_line_id:0
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice_line_auto_invoice_line_id
 msgid "Source Invoice Line"
 msgstr "Ligne de facture source"
 
 #. module: account_invoice_inter_company
-#: help:res.company,invoice_auto_validation:0
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:107
+#, python-format
+msgid "The invoice line '%s' doesn't have a product. All invoice lines should have a product for inter-company invoices."
+msgstr "La ligne de facture '%s' n'a pas de produit. Toutes les lignes sur les factures inter-sociétés doivent avoir un produit."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:130
+#, python-format
+msgid "WARNING!!!!! Failure in the inter-company invoice creation process: the total amount of this invoice is %s but the total amount of the invoice %s in the company %s is %s"
+msgstr "ATTENTION!!!!! Echec dans le process de création de la facture inter-société: le montant total de la facture en création est %s alors que le montant total de la facture %s dans la société %s est %s"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company_invoice_auto_validation
 msgid "When an invoice is created by a multi company rule for this company, it will automatically validate it"
 msgstr "Pour cette société, lorsqu'une facture est créée par une règle multisociété, alors elle sera validé automatiquement"
 
 #. module: account_invoice_inter_company
-#: help:base.config.settings,invoice_auto_validation:0
+#: model:ir.model.fields,help:account_invoice_inter_company.field_base_config_settings_invoice_auto_validation
 msgid "When an invoice is created by a multi company rule for this company, it will automatically validate it."
 msgstr "Pour cette société, lorsqu'une facture est créée par une règle multisociété, alors elle sera validé automatiquement."
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:65
+#, python-format
+msgid "You cannot create invoice in company '%s' with product '%s' because it is not multicompany"
+msgstr "Vous ne pouvez pas créer de facture dans la société '%s' avec le produit '%s' car il n'est pas multisociété"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_base_config_settings
+msgid "base.config.settings"
+msgstr "base.config.settings"
 

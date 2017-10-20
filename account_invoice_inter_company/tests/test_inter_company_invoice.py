@@ -39,41 +39,6 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_b.onchange_chart_template_id()
         wizard_comp_b.execute()
 
-        ## Now remove company from related partners of company and
-        ## apply default accounts
-        #account_receivable_a = self.account_obj.search([
-        #    ('company_id', '=', self.env.ref(
-        #        'account_invoice_inter_company.company_a').id),
-        #    ('user_type_id', '=', self.env.ref('account.data_account_type_receivable').id)
-        #])
-        #account_payable_a = self.account_obj.search([
-        #    ('company_id', '=', self.env.ref(
-        #        'account_invoice_inter_company.company_a').id),
-        #    ('user_type_id', '=', self.env.ref('account.data_account_type_payable').id)
-        #])
-        #import pdb;pdb.set_trace()
-        #self.env.ref('account_invoice_inter_company.partner_company_a').write({
-        #    'company_id': False,
-        #    'property_account_receivable_id': account_receivable_a[0].id,
-        #    'property_account_payable_id': account_payable_a[0].id
-        #})
-        #
-        #account_receivable_b = self.account_obj.search([
-        #    ('company_id', '=', self.env.ref(
-        #        'account_invoice_inter_company.company_b').id),
-        #    ('user_type_id', '=', self.env.ref('account.data_account_type_receivable').id)
-        #])
-        #account_payable_b = self.account_obj.search([
-        #    ('company_id', '=', self.env.ref(
-        #        'account_invoice_inter_company.company_b').id),
-        #    ('user_type_id', '=', self.env.ref('account.data_account_type_payable').id)
-        #])
-        #self.env.ref('account_invoice_inter_company.partner_company_b').write({
-        #    'company_id': False,
-        #    'property_account_receivable_id': account_receivable_b[0].id,
-        #    'property_account_payable_id': account_payable_b[0].id
-        #})
-
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(self.env.ref(
             'account_invoice_inter_company.user_company_a')).action_invoice_open()
@@ -93,7 +58,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
                           self.invoice_company_a.company_id.partner_id)
         self.assertEquals(invoices.company_id.partner_id,
                           self.invoice_company_a.partner_id)
-        self.assertEquals(len(invoices.invoice_line),
-                          len(self.invoice_company_a.invoice_line))
-        self.assertEquals(invoices.invoice_line.product_id,
-                          self.invoice_company_a.invoice_line.product_id)
+        self.assertEquals(len(invoices.invoice_line_ids),
+                          len(self.invoice_company_a.invoice_line_ids))
+        self.assertEquals(invoices.invoice_line_ids[0].product_id,
+                          self.invoice_company_a.invoice_line_ids[0].product_id)
