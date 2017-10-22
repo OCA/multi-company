@@ -13,12 +13,16 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.invoice_obj = self.env['account.invoice']
         self.invoice_company_a = self.env.ref(
             'account_invoice_inter_company.customer_invoice_company_a')
+        self.user_company_a = self.env.ref(
+            'account_invoice_inter_company.user_company_a')
 
     def test_account_invoice_inter_company(self):
         # Install COA for company A and B
         wizard_comp_a = self.wizard_obj.create({
-            'company_id': self.env.ref('account_invoice_inter_company.company_a').id,
-            'chart_template_id': self.env.ref('l10n_fr.l10n_fr_pcg_chart_template').id,
+            'company_id': self.env.ref(
+                'account_invoice_inter_company.company_a').id,
+            'chart_template_id': self.env.ref(
+                'l10n_fr.l10n_fr_pcg_chart_template').id,
             'code_digits': 6,
             'transfer_account_id': self.env.ref('l10n_fr.pcg_58').id,
             'currency_id': self.env.ref('base.EUR').id,
@@ -28,8 +32,10 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_a.onchange_chart_template_id()
         wizard_comp_a.execute()
         wizard_comp_b = self.wizard_obj.create({
-            'company_id': self.env.ref('account_invoice_inter_company.company_b').id,
-            'chart_template_id': self.env.ref('l10n_fr.l10n_fr_pcg_chart_template').id,
+            'company_id': self.env.ref(
+                'account_invoice_inter_company.company_b').id,
+            'chart_template_id': self.env.ref(
+                'l10n_fr.l10n_fr_pcg_chart_template').id,
             'code_digits': 6,
             'transfer_account_id': self.env.ref('l10n_fr.pcg_58').id,
             'currency_id': self.env.ref('base.EUR').id,
@@ -40,8 +46,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_b.execute()
 
         # Confirm the invoice of company A
-        self.invoice_company_a.sudo(self.env.ref(
-            'account_invoice_inter_company.user_company_a')).action_invoice_open()
+        self.invoice_company_a.sudo(self.user_company_a).action_invoice_open()
 
         # Check destination invoice created in company B
         invoices = self.invoice_obj.sudo(self.env.ref(
@@ -60,5 +65,6 @@ class TestAccountInvoiceInterCompany(TransactionCase):
                           self.invoice_company_a.partner_id)
         self.assertEquals(len(invoices.invoice_line_ids),
                           len(self.invoice_company_a.invoice_line_ids))
-        self.assertEquals(invoices.invoice_line_ids[0].product_id,
-                          self.invoice_company_a.invoice_line_ids[0].product_id)
+        self.assertEquals(
+            invoices.invoice_line_ids[0].product_id,
+            self.invoice_company_a.invoice_line_ids[0].product_id)

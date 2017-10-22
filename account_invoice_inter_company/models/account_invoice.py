@@ -114,8 +114,10 @@ class AccountInvoice(models.Model):
                 src_company_partner_id)
             self.env['account.invoice.line'].create(dest_inv_line_data)
         # add tax_line_ids in created invoice
-        if any(line.invoice_line_tax_ids for line in dest_invoice.\
-                invoice_line_ids) and not dest_invoice.tax_line_ids:
+        dest_invoice_line_ids = dest_invoice.invoice_line_ids
+        if (any(
+            line.invoice_line_tax_ids for line in dest_invoice_line_ids) and
+                not dest_invoice.tax_line_ids):
             dest_invoice.compute_taxes()
         # Validation of account invoice
         precision = self.env['decimal.precision'].precision_get('Account')
