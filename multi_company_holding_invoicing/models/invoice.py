@@ -70,7 +70,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def _compute_child_invoice_job_count(self):
         for inv in self:
-            child_invoice_jobs = self.env['queue.job'].search([
+            child_invoice_jobs = self.env['queue.job'].sudo().search([
                 ('id', 'in', inv.sudo().child_invoice_job_ids.ids),
                 ('state', '!=', 'done')
             ])
