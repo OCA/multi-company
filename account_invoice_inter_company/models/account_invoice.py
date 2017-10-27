@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models, _
-from odoo.exceptions import Warning as UserError
+from odoo.exceptions import UserError, AccessError
 from odoo.tools import float_compare
 
 
@@ -62,7 +62,7 @@ class AccountInvoice(models.Model):
             for line in self.invoice_line_ids:
                 try:
                     line.product_id.sudo(dest_user).read(['default_code'])
-                except:
+                except AccessError:
                     raise UserError(_(
                         "You cannot create invoice in company '%s' with "
                         "product '%s' because it is not multicompany")
