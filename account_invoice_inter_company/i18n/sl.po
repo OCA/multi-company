@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-22 02:48+0000\n"
-"PO-Revision-Date: 2017-04-22 02:48+0000\n"
+"POT-Creation-Date: 2017-10-19 00:50+0000\n"
+"PO-Revision-Date: 2017-10-19 00:50+0000\n"
 "Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>, 2017\n"
 "Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:187
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:195
 #, python-format
 msgid " Invoice: "
 msgstr " Račun: "
@@ -35,7 +35,7 @@ msgid "Companies"
 msgstr "Družbe"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:181
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:189
 #, python-format
 msgid "Could not find the currency '%s' in the company '%s'"
 msgstr "Ni najdene valute '%s' za družbo '%s'"
@@ -87,13 +87,13 @@ msgid "Invoices Auto Validation"
 msgstr "Samodejno overjanje računov"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:162
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:170
 #, python-format
 msgid "Not define period for invoice date '%s' in this company: '%s' (id:%d)."
 msgstr "Ni določenega obdobja za datum računa '%s' pri družbi: '%s' (id:%d)."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:152
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:160
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Določite dnevnik %s za družbo: \"%s\" (id:%d)."
@@ -124,7 +124,7 @@ msgid "Source Invoice Line"
 msgstr "Izvorna postavka računa"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:99
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:107
 #, python-format
 msgid ""
 "The invoice line '%s' doesn't have a product. All invoice lines should have "
@@ -134,7 +134,7 @@ msgstr ""
 "vse postavke računov vsebovati proizvode."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:120
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:128
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
@@ -163,7 +163,7 @@ msgstr ""
 "samodejno overi."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:57
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:65
 #, python-format
 msgid ""
 "You cannot create invoice in company '%s' with product '%s' because it is "
