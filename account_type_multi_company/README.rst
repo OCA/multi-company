@@ -6,7 +6,7 @@
 Multi company account type
 ==========================
 
-This module makes the account types multi company aware.
+This module makes the account types multi-company aware.
 
 Installation
 ============
@@ -17,7 +17,7 @@ when installing the 'account_type_menu' module.
 Obsolete account types defined by e.g. installing multiple
 localisation modules can be hidden via the 'account_type_inactive' module.
 
-Both modules can downloaded from git, cf. https://github.com/OCA/account-financial-tools/tree/10.0
+Both modules can be downloaded from git, cf. https://github.com/OCA/account-financial-tools/tree/10.0
 
 Configuration
 =============
