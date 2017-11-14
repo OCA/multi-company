@@ -87,8 +87,10 @@ class AccountInvoice(models.Model):
         self._check_intercompany_product(dest_company)
         # if an invoice has already been genereted
         # delete it and force the same number
-        inter_invoice = self.search(
-            [('auto_invoice_id', '=', self.id)])
+        inter_invoice = self.search([
+            ('auto_invoice_id', '=', self.id),
+            ('company_id', '=', dest_company_id)
+        ])
         force_number = False
         if inter_invoice:
             force_number = inter_invoice.internal_number
