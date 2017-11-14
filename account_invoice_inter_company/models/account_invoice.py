@@ -288,6 +288,10 @@ class AccountInvoice(models.Model):
                 for inter_invoice in self.sudo().search(
                         [('auto_invoice_id', '=', invoice.id)]):
                     inter_invoice.signal_workflow('invoice_cancel')
+                    inter_invoice.write({
+                        'supplier_invoice_number': '',
+                        'origin': invoice.company_id.name +
+                        _(' Canceled Invoice: ') + str(invoice.number)})
         return super(AccountInvoice, self).action_cancel()
 
 
