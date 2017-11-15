@@ -87,8 +87,10 @@ class AccountInvoice(models.Model):
         self._check_intercompany_product(dest_company)
         # if an invoice has already been genereted
         # delete it and force the same number
-        inter_invoice = self.search(
-            [('auto_invoice_id', '=', self.id)])
+        inter_invoice = self.search([
+            ('auto_invoice_id', '=', self.id),
+            ('company_id', '=', dest_company_id)
+        ])
         force_number = False
         if inter_invoice:
             force_number = inter_invoice.internal_number
@@ -286,6 +288,10 @@ class AccountInvoice(models.Model):
                 for inter_invoice in self.sudo().search(
                         [('auto_invoice_id', '=', invoice.id)]):
                     inter_invoice.signal_workflow('invoice_cancel')
+                    inter_invoice.write({
+                        'supplier_invoice_number': False,
+                        'origin': invoice.company_id.name +
+                        _(' Canceled Invoice: ') + str(invoice.number)})
         return super(AccountInvoice, self).action_cancel()
 
 
