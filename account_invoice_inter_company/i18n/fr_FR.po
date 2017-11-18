@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-19 00:50+0000\n"
-"PO-Revision-Date: 2017-10-19 00:50+0000\n"
+"POT-Creation-Date: 2017-11-15 14:48+0000\n"
+"PO-Revision-Date: 2017-11-15 14:48+0000\n"
 "Last-Translator: OCA Transbot <transbot@odoo-community.org>, 2017\n"
 "Language-Team: French (France) (https://www.transifex.com/oca/teams/23907/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:195
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:294
+#, python-format
+msgid " Canceled Invoice: "
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:197
 #, python-format
 msgid " Invoice: "
 msgstr "Facture:"
@@ -35,7 +41,7 @@ msgid "Companies"
 msgstr "Sociétés"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:189
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:191
 #, python-format
 msgid "Could not find the currency '%s' in the company '%s'"
 msgstr "Impossible de trouver la devise '%s' dans la société '%s'"
@@ -87,7 +93,7 @@ msgid "Invoices Auto Validation"
 msgstr "Auto Validation des factures"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:170
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:172
 #, python-format
 msgid "Not define period for invoice date '%s' in this company: '%s' (id:%d)."
 msgstr ""
@@ -95,7 +101,7 @@ msgstr ""
 "'%s' (id:%d)."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:160
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:162
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Merci de définir un journal %s pour cette société: \"%s\" (id:%d)."
@@ -128,7 +134,7 @@ msgid "Source Invoice Line"
 msgstr "Ligne de facture source"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:107
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:109
 #, python-format
 msgid ""
 "The invoice line '%s' doesn't have a product. All invoice lines should have "
@@ -138,7 +144,7 @@ msgstr ""
 "inter-société doivent avoir un produit."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:128
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:130
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
