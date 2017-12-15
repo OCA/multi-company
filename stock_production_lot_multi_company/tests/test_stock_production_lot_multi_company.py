@@ -2,8 +2,8 @@
 # (c) 2015 Ainara Galdona - AvanzOSC
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
-from openerp.osv.orm import except_orm
-from openerp.tests.common import TransactionCase
+from odoo.exceptions import AccessError
+from odoo.tests.common import TransactionCase
 
 
 class TestStockProductionLotMultiCompany(TransactionCase):
@@ -55,7 +55,7 @@ class TestStockProductionLotMultiCompany(TransactionCase):
             {'name': 'Multi company user',
              'login': 'multicompuser',
              'email': 'multicompuser@youcompany.com',
-             'company_id': self.secondary_company.id,
+             'company_id': self.main_comp.id,
              'company_ids': [(6, 0, [self.main_comp.id,
                                      self.secondary_company.id])],
              'groups_id': [(6, 0, [self.stock_manager_group.id,
@@ -97,12 +97,12 @@ class TestStockProductionLotMultiCompany(TransactionCase):
         multicompuser_lot = self.lot_model.sudo(self.multicomp_user.id).create(
             {'name': 'MULTICOMPUSERLOT',
              'product_id': self.second_comp_product.id})
-        self.assertEqual(multicompuser_lot.company_id, self.secondary_company,
+        self.assertEqual(multicompuser_lot.company_id, self.main_comp,
                          'Incorrect company for the created lot in '
                          'multicompany company user.')
 
     def test_error_lot_creation(self):
-        with self.assertRaises(except_orm):
+        with self.assertRaises(AccessError):
             self.lot_model.sudo(self.second_user.id).create(
                 {'name': 'ERRORLOT',
                  'product_id': self.second_comp_product.id,
