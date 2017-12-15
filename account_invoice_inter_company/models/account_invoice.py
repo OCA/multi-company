@@ -39,7 +39,7 @@ class AccountInvoice(models.Model):
                     dest_journal_type = 'sale_refund'
                 src_invoice.sudo().\
                     with_context(force_company=dest_company.id).\
-                    _inter_company_create_invoice(dest_company.id,
+                    _inter_company_create_invoice(dest_company,
                                                   dest_inv_type,
                                                   dest_journal_type)
         return res
@@ -70,7 +70,7 @@ class AccountInvoice(models.Model):
 
     @api.multi
     def _inter_company_create_invoice(
-            self, dest_company_id, dest_inv_type, dest_journal_type):
+            self, dest_company, dest_inv_type, dest_journal_type):
         """ create an invoice for the given company : it will copy "
         "the invoice lines in the new invoice.
             :param dest_company : the company of the created invoice
@@ -83,13 +83,14 @@ class AccountInvoice(models.Model):
             :rtype dest_journal_type : string
         """
         self.ensure_one()
-        dest_company = self.env['res.company'].browse(dest_company_id)
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # if an invoice has already been genereted
         # delete it and force the same number
-        inter_invoice = self.search(
-            [('auto_invoice_id', '=', self.id)])
+        inter_invoice = self.search([
+            ('auto_invoice_id', '=', self.id),
+            ('company_id', '=', dest_company.id)
+        ])
         force_number = False
         if inter_invoice and inter_invoice.state in ['draft', 'cancel']:
             force_number = inter_invoice.move_name
@@ -99,7 +100,7 @@ class AccountInvoice(models.Model):
         dest_invoice_data = self._prepare_invoice_data(
             dest_inv_type, dest_journal_type, dest_company)
         if force_number:
-            dest_invoice_data['internal_number'] = force_number
+            dest_invoice_data['move_name'] = force_number
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         src_company_partner_id = self.company_id.partner_id
@@ -172,8 +173,8 @@ class AccountInvoice(models.Model):
             dest_partner_data, ['partner_id'])
         return {
             'name': self.name,
-            'origin': self.company_id.name + _(' Invoice: ') + str(
-                self.number),
+            'origin': _('%s - Invoice: %s') % (self.company_id.name,
+                                               self.number),
             'type': dest_inv_type,
             'date_invoice': self.date_invoice,
             'reference': self.reference,
@@ -271,6 +272,10 @@ class AccountInvoice(models.Model):
                 for inter_invoice in self.sudo().search(
                         [('auto_invoice_id', '=', invoice.id)]):
                     inter_invoice.action_invoice_cancel()
+                    inter_invoice.write({
+                        'origin': _('%s - Canceled Invoice: %s') % (
+                            invoice.company_id.name, invoice.number)
+                    })
         return super(AccountInvoice, self).action_invoice_cancel()
 
 
