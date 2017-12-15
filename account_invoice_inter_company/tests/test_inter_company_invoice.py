@@ -34,8 +34,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_b = self.wizard_obj.create({
             'company_id': self.env.ref(
                 'account_invoice_inter_company.company_b').id,
-            'chart_template_id': self.env.ref(
-                'l10n_fr.l10n_fr_pcg_chart_template').id,
+            'chart_template_id': '1',
             'code_digits': 6,
             'transfer_account_id': self.env.ref(
                 'account_invoice_inter_company.pcg_X58_b').id,
