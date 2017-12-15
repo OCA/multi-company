@@ -23,7 +23,8 @@ class TestAccountInvoiceInterCompany(TransactionCase):
                 'account_invoice_inter_company.company_a').id,
             'chart_template_id': '1',
             'code_digits': 6,
-            'transfer_account_id': self.env.ref('l10n_fr.pcg_58').id,
+            'transfer_account_id': self.env.ref(
+                'account_invoice_inter_company.pcg_X58_a').id,
             'currency_id': self.env.ref('base.EUR').id,
             'bank_account_code_prefix': False,
             'cash_account_code_prefix': False,
@@ -36,7 +37,8 @@ class TestAccountInvoiceInterCompany(TransactionCase):
             'chart_template_id': self.env.ref(
                 'l10n_fr.l10n_fr_pcg_chart_template').id,
             'code_digits': 6,
-            'transfer_account_id': self.env.ref('l10n_fr.pcg_58').id,
+            'transfer_account_id': self.env.ref(
+                'account_invoice_inter_company.pcg_X58_b').id,
             'currency_id': self.env.ref('base.EUR').id,
             'bank_account_code_prefix': False,
             'cash_account_code_prefix': False,
