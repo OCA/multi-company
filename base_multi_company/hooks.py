@@ -21,6 +21,24 @@ def create_company_assignment_view(cr):
     """)
 
 
+def set_security_rule(env, rule_ref):
+    """Set the condition for multi-company in the security rule.
+
+    :param: env: Environment
+    :param: rule_ref: XML-ID of the security rule to change.
+    """
+    rule = env.ref(rule_ref)
+    if not rule:  # safeguard if it's deleted
+        return
+    rule.write({
+        'active': True,
+        'domain_force': (
+            "['|', ('company_ids', 'in', user.company_id.ids),"
+            " ('company_id', '=', False)]"
+        ),
+    })
+
+
 def post_init_hook(cr, rule_ref, model_name):
     """ Set the `domain_force` and default `company_ids` to `company_id`.
 
@@ -33,18 +51,9 @@ def post_init_hook(cr, rule_ref, model_name):
     """
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
-        # Change access rule
-        rule = env.ref(rule_ref)
-        rule.write({
-            'active': True,
-            'domain_force': (
-                "['|', ('company_ids', 'in', user.company_id.ids),"
-                " ('company_id', '=', False)]"
-            ),
-        })
+        set_security_rule(env, rule_ref)
         # Copy company values
         model = env[model_name]
-
         table_name = model._fields['company_ids'].relation
         column1 = model._fields['company_ids'].column1
         column2 = model._fields['company_ids'].column2
