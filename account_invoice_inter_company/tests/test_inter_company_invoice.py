@@ -15,6 +15,8 @@ class TestAccountInvoiceInterCompany(TransactionCase):
             'account_invoice_inter_company.customer_invoice_company_a')
         self.user_company_a = self.env.ref(
             'account_invoice_inter_company.user_company_a')
+        self.user_company_b = self.env.ref(
+            'account_invoice_inter_company.user_company_b')
 
     def test_account_invoice_inter_company(self):
         # Install COA for company A and B
@@ -46,25 +48,25 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_b.execute()
 
         # Confirm the invoice of company A
-        self.invoice_company_a.sudo(self.user_company_a).action_invoice_open()
+        self.invoice_company_a.sudo(
+            self.user_company_a.id).action_invoice_open()
 
         # Check destination invoice created in company B
-        invoices = self.invoice_obj.sudo(self.env.ref(
-            'account_invoice_inter_company.user_company_b')).search([
-                ('auto_invoice_id', '=', self.invoice_company_a.id)
-            ])
+        invoices = self.invoice_obj.sudo(self.user_company_b.id).search([
+            ('auto_invoice_id', '=', self.invoice_company_a.id)
+        ])
         self.assertNotEquals(invoices, False)
         self.assertEquals(len(invoices), 1)
         if invoices.company_id.invoice_auto_validation:
-            self.assertEquals(invoices.state, 'open')
+            self.assertEquals(invoices[0].state, 'open')
         else:
-            self.assertEquals(invoices.state, 'draft')
-        self.assertEquals(invoices.partner_id,
+            self.assertEquals(invoices[0].state, 'draft')
+        self.assertEquals(invoices[0].partner_id,
                           self.invoice_company_a.company_id.partner_id)
-        self.assertEquals(invoices.company_id.partner_id,
+        self.assertEquals(invoices[0].company_id.partner_id,
                           self.invoice_company_a.partner_id)
-        self.assertEquals(len(invoices.invoice_line_ids),
+        self.assertEquals(len(invoices[0].invoice_line_ids),
                           len(self.invoice_company_a.invoice_line_ids))
         self.assertEquals(
-            invoices.invoice_line_ids[0].product_id,
+            invoices[0].invoice_line_ids[0].product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id)
