@@ -49,7 +49,7 @@ class AccountInvoice(models.Model):
         self.ensure_one()
         group_account_invoice = self.env.ref('account.group_account_invoice')
         return [
-            ('id', '!=', 1),
+            ('id', '!=', self.env.ref('base.user_root').id),
             ('company_id', '=', dest_company.id),
             ('id', 'in', group_account_invoice.users.ids),
         ]

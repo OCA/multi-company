@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# © 2016 Chafique DELLI @ Akretion
+# © 2015-2017 Chafique Delli <chafique.delli@akretion.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests.common import TransactionCase
@@ -54,6 +54,20 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         for line in self.invoice_company_a.invoice_line_ids:
             if line.product_id.company_ids:
                 line.product_id.company_ids = [(6, 0, [])]
+
+        # Check user of company B (company of destination)
+        # with which we check the intercompany product
+        self.assertNotEquals(self.user_company_b.id, 1)
+        dest_company = self.env['res.company']._find_company_from_partner(
+            self.invoice_company_a.partner_id.id)
+        self.assertEquals(self.user_company_b.company_id, dest_company)
+        self.assertIn(
+            self.user_company_b.id,
+            self.env.ref('account.group_account_invoice').users.ids)
+
+        # Check product is intercompany
+        for line in self.invoice_company_a.invoice_line_ids:
+            self.assertFalse(line.product_id.company_id)
 
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(
