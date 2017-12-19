@@ -237,7 +237,6 @@ class AccountInvoice(models.Model):
                     % (self.env.ref('account.data_account_type_revenue').name,
                        dest_company.name, dest_company.id))
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
-        taxes = self.env['account.tax'].browse(tax_ids)
         vals = {
             'name': src_line.name,
             # TODO: it's wrong to just copy the price_unit
@@ -248,7 +247,7 @@ class AccountInvoice(models.Model):
             'discount': src_line.discount,
             'product_id': src_line.product_id.id or False,
             'sequence': src_line.sequence,
-            'invoice_line_tax_ids': taxes.ids or [],
+            'invoice_line_tax_ids': tax_ids or [],
             # Analytic accounts are per company
             # The problem is that we can't really "guess" the
             # analytic account to set. It probably needs to be
