@@ -18,8 +18,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.user_company_b = self.env.ref(
             'account_invoice_inter_company.user_company_b')
 
-    def test_account_invoice_inter_company(self):
-        # Install COA for company A and B
+    def install_COA(self):
         wizard_comp_a = self.wizard_obj.create({
             'company_id': self.env.ref(
                 'account_invoice_inter_company.company_a').id,
@@ -47,16 +46,14 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_b.onchange_chart_template_id()
         wizard_comp_b.execute()
 
-        # Fix default value of company_id set by the company_ids field
-        # of base_multi_company module
+    def fix_default_value_company_id(self):
         if self.invoice_company_a.partner_id.company_ids:
             self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
         for line in self.invoice_company_a.invoice_line_ids:
             if line.product_id.company_ids:
                 line.product_id.company_ids = [(6, 0, [])]
 
-        # Check user of company B (company of destination)
-        # with which we check the intercompany product
+    def check_user(self):
         self.assertNotEquals(self.user_company_b.id, 1)
         dest_company = self.env['res.company']._find_company_from_partner(
             self.invoice_company_a.partner_id.id)
@@ -65,15 +62,15 @@ class TestAccountInvoiceInterCompany(TransactionCase):
             self.user_company_b.id,
             self.env.ref('account.group_account_invoice').users.ids)
 
-        # Check product is intercompany
+    def check_product(self):
         for line in self.invoice_company_a.invoice_line_ids:
             self.assertFalse(line.product_id.company_id)
 
-        # Confirm the invoice of company A
+    def confirm_invoice(self):
         self.invoice_company_a.sudo(
             self.user_company_a.id).action_invoice_open()
 
-        # Check destination invoice created in company B
+    def check_invoice(self):
         invoices = self.invoice_obj.sudo(self.user_company_b.id).search([
             ('auto_invoice_id', '=', self.invoice_company_a.id)
         ])
@@ -92,3 +89,24 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.assertEquals(
             invoices[0].invoice_line_ids[0].product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id)
+
+    def test_account_invoice_inter_company(self):
+        # Install COA for company A and B
+        self.install_COA()
+
+        # Fix default value of company_id set by the company_ids field
+        # of base_multi_company module
+        self.fix_default_value_company_id()
+
+        # Check user of company B (company of destination)
+        # with which we check the intercompany product
+        self.check_user()
+
+        # Check product is intercompany
+        self.check_product()
+
+        # Confirm the invoice of company A
+        self.confirm_invoice()
+
+        # Check destination invoice created in company B
+        self.check_invoice()
