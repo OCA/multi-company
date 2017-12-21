@@ -74,22 +74,13 @@
     </record>
 
     <!--
-        Create account temple for each company (A and B)
+        Create transfer account template
         -->
-    <record id="pcg_X58_a" model="account.account.template">
-      <field name="name">Internal Transfers - (company A)</field>
-      <field name="code">X58-A</field>
+    <record id="pcg_X58" model="account.account.template">
+      <field name="name">Internal Transfers</field>
+      <field name="code">X58</field>
       <field name="user_type_id" ref="account.data_account_type_current_assets"/>
       <field name="reconcile" eval="True"/>
-      <field name="company_id" ref="company_a"/>
-    </record>
-
-    <record id="pcg_X58_b" model="account.account.template">
-      <field name="name">Internal Transfers - (company B)</field>
-      <field name="code">X58-B</field>
-      <field name="user_type_id" ref="account.data_account_type_current_assets"/>
-      <field name="reconcile" eval="True"/>
-      <field name="company_id" ref="company_b"/>
     </record>
 
     <!--
