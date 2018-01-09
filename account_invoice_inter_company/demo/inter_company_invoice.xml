@@ -197,6 +197,7 @@
         <field name="sequence_id" ref="sequence_sale_journal_company_a"/>
         <field name="default_credit_account_id" ref="a_sale_company_a"/>
         <field name="default_debit_account_id" ref="a_sale_company_a"/>
+        <field name="update_posted" eval="True"/>
         <field name="company_id" ref="company_a"/>
     </record>
 
@@ -216,6 +217,7 @@
         <field name="sequence_id" ref="sequence_purchase_journal_company_b"/>
         <field name="default_credit_account_id" ref="a_expense_company_b"/>
         <field name="default_debit_account_id" ref="a_expense_company_b"/>
+        <field name="update_posted" eval="True"/>
         <field name="company_id" ref="company_b"/>
     </record>
 

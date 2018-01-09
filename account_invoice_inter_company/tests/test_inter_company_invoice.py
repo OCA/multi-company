@@ -3,6 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests.common import TransactionCase
+from odoo import _
 
 
 class TestAccountInvoiceInterCompany(TransactionCase):
@@ -54,7 +55,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
             if line.product_id.company_ids:
                 line.product_id.company_ids = [(6, 0, [])]
 
-    def test_check_user(self):
+    def test01_user(self):
         # Check user of company B (company of destination)
         # with which we check the intercompany product
         self.assertNotEquals(self.user_company_b.id, 1)
@@ -65,12 +66,12 @@ class TestAccountInvoiceInterCompany(TransactionCase):
             self.user_company_b.id,
             self.env.ref('account.group_account_invoice').users.ids)
 
-    def test_check_product(self):
+    def test02_product(self):
         # Check product is intercompany
         for line in self.invoice_company_a.invoice_line_ids:
             self.assertFalse(line.product_id.company_id)
 
-    def test_check_invoice(self):
+    def test03_confirm_invoice(self):
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(
             self.user_company_a.id).action_invoice_open()
@@ -93,3 +94,24 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.assertEquals(
             invoices[0].invoice_line_ids[0].product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id)
+
+    def test04_cancel_invoice(self):
+        # Confirm the invoice of company A
+        self.invoice_company_a.sudo(
+            self.user_company_a.id).action_invoice_open()
+        # Check state of invoices before to cancel invoice of company A
+        self.assertEquals(self.invoice_company_a.state, 'open')
+        invoices = self.invoice_obj.sudo(self.user_company_b.id).search([
+            ('auto_invoice_id', '=', self.invoice_company_a.id)
+        ])
+        self.assertNotEquals(invoices[0].state, 'cancel')
+        # Cancel the invoice of company A
+        origin = _('%s - Canceled Invoice: %s') % (
+            self.invoice_company_a.company_id.name,
+            self.invoice_company_a.number)
+        self.invoice_company_a.sudo(
+            self.user_company_a.id).action_invoice_cancel()
+        # Check invoices after to cancel invoice of company A
+        self.assertEquals(self.invoice_company_a.state, 'cancel')
+        self.assertEquals(invoices[0].state, 'cancel')
+        self.assertEquals(invoices[0].origin, origin)
