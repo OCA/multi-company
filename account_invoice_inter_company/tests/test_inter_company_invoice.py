@@ -23,7 +23,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_a = self.wizard_obj.create({
             'company_id': self.env.ref(
                 'account_invoice_inter_company.company_a').id,
-            'chart_template_id': '1',
+            'chart_template_id': 1,
             'code_digits': 6,
             'transfer_account_id': self.env.ref(
                 'account_invoice_inter_company.pcg_X58').id,
@@ -36,7 +36,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         wizard_comp_b = self.wizard_obj.create({
             'company_id': self.env.ref(
                 'account_invoice_inter_company.company_b').id,
-            'chart_template_id': '1',
+            'chart_template_id': 1,
             'code_digits': 6,
             'transfer_account_id': self.env.ref(
                 'account_invoice_inter_company.pcg_X58').id,
