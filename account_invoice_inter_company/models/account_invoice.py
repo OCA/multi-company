@@ -25,18 +25,20 @@ class AccountInvoice(models.Model):
             dest_company = self.env['res.company']._find_company_from_partner(
                 src_invoice.partner_id.id)
             if dest_company and not src_invoice.auto_generated:
-                if src_invoice.type == 'out_invoice':
-                    dest_inv_type = 'in_invoice'
-                    dest_journal_type = 'purchase'
-                elif src_invoice.type == 'in_invoice':
-                    dest_inv_type = 'out_invoice'
-                    dest_journal_type = 'sale'
-                elif src_invoice.type == 'out_refund':
-                    dest_inv_type = 'in_refund'
-                    dest_journal_type = 'purchase_refund'
-                elif src_invoice.type == 'in_refund':
-                    dest_inv_type = 'out_refund'
-                    dest_journal_type = 'sale_refund'
+                MAP_INVOICE_TYPE = {
+                    'out_invoice': 'in_invoice',
+                    'in_invoice': 'out_invoice',
+                    'out_refund': 'in_refund',
+                    'in_refund': 'out_refund',
+                }
+                MAP_JOURNAL_TYPE = {
+                    'out_invoice': 'purchase',
+                    'in_invoice': 'sale',
+                    'out_refund': 'purchase_refund',
+                    'in_refund': 'sale_refund',
+                }
+                dest_inv_type = MAP_INVOICE_TYPE.get(src_invoice.type)
+                dest_journal_type = MAP_JOURNAL_TYPE.get(src_invoice.type)
                 src_invoice.sudo().\
                     with_context(force_company=dest_company.id).\
                     _inter_company_create_invoice(dest_company,
