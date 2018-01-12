@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_general_configuration" model="ir.ui.view">
+        <field name="model">base.config.settings</field>
+        <field name="inherit_id" ref="base_setup.view_general_configuration"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='inter_company']" position='attributes'>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='module_inter_company_rules']" position='attributes'>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_config_settings" model="ir.ui.view">
+        <field name="model">account.config.settings</field>
+        <field name="inherit_id" ref="account.view_account_config_settings"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position='after'>
+                <div name="inter_company">
+                    <div name="inter_company_invoice_auto_validation">
+                        <field name="invoice_auto_validation"/>
+                        <label for="invoice_auto_validation" string="Invoices Auto Validation (Inter company)"/>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
