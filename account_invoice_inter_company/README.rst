@@ -1,6 +1,5 @@
-
-.. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-   :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
+.. image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+   :target: https://www.gnu.org/licenses/agpl
    :alt: License: AGPL-3
 
 =============================
@@ -18,7 +17,7 @@ Second scenario: company A create an invoice with company B as supplier. The mod
 Configuration
 =============
 
-To configure this module, you need to go to the menu *Settings > Users > Companies*, select one of the companies and go to the tab *Inter-Company* then the group *Invoice*.
+To configure this module, you need to go to the menu *Settings > Users & Companies > Companies*, select one of the companies and go to the tab *Inter-Company* then the group *Invoice*.
 
 
 Usage
@@ -28,7 +27,7 @@ If you choose the option *Invoice Auto Validation* in the configuration of compa
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/10.0
+   :target: https://runbot.odoo-community.org/runbot/133/11.0
 
 
 Bug Tracker
@@ -44,9 +43,10 @@ Credits
 Contributors
 ------------
 
-* Odoo S.A. (`original module inter_company_rules`_)
+* Odoo S.A. (original module `inter_company_rules`)
 * Chafique Delli <chafique.delli@akretion.com>
 * Alexis de Lattre <alexis.delattre@akretion.com>
+* Andrea Stirpe <a.stirpe@onestein.nl>
 
 Maintainer
 ----------
