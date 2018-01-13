@@ -6,10 +6,14 @@
         -->
     <record id="partner_company_a" model="res.partner">
         <field name="name">Company A</field>
+        <field name="customer" eval="False"/>
+        <field name="supplier" eval="True"/>
     </record>
 
     <record id="partner_company_b" model="res.partner">
         <field name="name">Company B</field>
+        <field name="customer" eval="True"/>
+        <field name="supplier" eval="False"/>
     </record>
 
     <!--
@@ -294,37 +298,18 @@
     <!--
         Update partner for each company (A and B)
         -->
-    <record id="account_invoice_inter_company.partner_company_a" model="res.partner">
+    <record id="partner_company_a" model="res.partner">
         <field name="company_type">company</field>
-        <field name="customer" eval="False"/>
-        <field name="supplier" eval="True"/>
         <field name="property_account_receivable_id" ref="property_account_receivable_company_a"/>
         <field name="property_account_payable_id" ref="property_account_payable_company_a"/>
         <field name="company_id" ref=""/>
     </record>
 
-    <record id="account_invoice_inter_company.partner_company_b" model="res.partner">
+    <record id="partner_company_b" model="res.partner">
         <field name="company_type">company</field>
-        <field name="customer" eval="True"/>
-        <field name="supplier" eval="False"/>
         <field name="property_account_receivable_id" ref="property_account_receivable_company_b"/>
         <field name="property_account_payable_id" ref="property_account_payable_company_b"/>
         <field name="company_id" ref=""/>
-    </record>
-
-    <!--
-        Update partner for each user (user A and user B)
-        -->
-    <record id="account_invoice_inter_company.partner_company_a" model="res.partner">
-        <field name="customer" eval="False"/>
-        <field name="property_account_receivable_id" ref="property_account_receivable_company_a"/>
-        <field name="property_account_payable_id" ref="property_account_payable_company_a"/>
-    </record>
-
-    <record id="account_invoice_inter_company.partner_company_b" model="res.partner">
-        <field name="customer" eval="False"/>
-        <field name="property_account_receivable_id" ref="property_account_receivable_company_b"/>
-        <field name="property_account_payable_id" ref="property_account_payable_company_b"/>
     </record>
 
     <!--
@@ -344,7 +329,7 @@
         -->
     <record id="customer_invoice_company_a" model="account.invoice">
         <field name="type">out_invoice</field>
-        <field name="partner_id" ref="account_invoice_inter_company.partner_company_b"/>
+        <field name="partner_id" ref="partner_company_b"/>
         <field name="account_id" ref="a_recv_company_a"/>
         <field name="journal_id" ref="sales_journal_company_a"/>
         <field name="company_id" ref="company_a"/>

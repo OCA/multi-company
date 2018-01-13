@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
-from odoo import models, fields
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+
+from odoo import fields, models
 
 
-class InterCompanyRulesAccountConfig(models.TransientModel):
+class InterCompanyRulesConfig(models.TransientModel):
 
-    _inherit = 'account.config.settings'
+    _inherit = 'res.config.settings'
 
     invoice_auto_validation = fields.Boolean(
         related='company_id.invoice_auto_validation',
