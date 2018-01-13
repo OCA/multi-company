@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
-# © 2015-2017 Chafique Delli <chafique.delli@akretion.com>
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2015-2017 Chafique Delli <chafique.delli@akretion.com>
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import TransactionCase
 from odoo import _
+from odoo.tests.common import TransactionCase
+from odoo.exceptions import ValidationError
 
 
 class TestAccountInvoiceInterCompany(TransactionCase):
@@ -19,48 +19,26 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.user_company_b = self.env.ref(
             'account_invoice_inter_company.user_company_b')
 
-        # Install COA for company A and B
-        wizard_comp_a = self.wizard_obj.create({
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_a').id,
-            'chart_template_id': 1,
-            'code_digits': 6,
-            'transfer_account_id': self.env.ref(
-                'account_invoice_inter_company.pcg_X58').id,
-            'currency_id': self.env.ref('base.EUR').id,
-            'bank_account_code_prefix': False,
-            'cash_account_code_prefix': False,
-        })
-        wizard_comp_a.onchange_chart_template_id()
-        wizard_comp_a.execute()
-        wizard_comp_b = self.wizard_obj.create({
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_b').id,
-            'chart_template_id': 1,
-            'code_digits': 6,
-            'transfer_account_id': self.env.ref(
-                'account_invoice_inter_company.pcg_X58').id,
-            'currency_id': self.env.ref('base.EUR').id,
-            'bank_account_code_prefix': False,
-            'cash_account_code_prefix': False,
-        })
-        wizard_comp_b.onchange_chart_template_id()
-        wizard_comp_b.execute()
+        self.chart = self.env['account.chart.template'].search([], limit=1)
+        if not self.chart:
+            raise ValidationError(
+                # translation to avoid pylint warnings
+                _("No Chart of Account Template has been defined !"))
 
         # Fix default value of company_id set by the company_ids field
         # of base_multi_company module
-        if self.invoice_company_a.partner_id.company_ids:
-            self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
-        for line in self.invoice_company_a.invoice_line_ids:
-            if line.product_id.company_ids:
-                line.product_id.company_ids = [(6, 0, [])]
+        # if self.invoice_company_a.partner_id.company_ids:
+        #     self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
+        # for line in self.invoice_company_a.invoice_line_ids:
+        #     if line.product_id.company_ids:
+        #         line.product_id.company_ids = [(6, 0, [])]
 
     def test01_user(self):
         # Check user of company B (company of destination)
         # with which we check the intercompany product
         self.assertNotEquals(self.user_company_b.id, 1)
-        dest_company = self.env['res.company']._find_company_from_partner(
-            self.invoice_company_a.partner_id.id)
+        orig_invoice = self.invoice_company_a
+        dest_company = orig_invoice._find_company_from_invoice_partner()
         self.assertEquals(self.user_company_b.company_id, dest_company)
         self.assertIn(
             self.user_company_b.id,
@@ -106,7 +84,7 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         ])
         self.assertNotEquals(invoices[0].state, 'cancel')
         # Cancel the invoice of company A
-        origin = _('%s - Canceled Invoice: %s') % (
+        origin = ('%s - Canceled Invoice: %s') % (
             self.invoice_company_a.company_id.name,
             self.invoice_company_a.number)
         self.invoice_company_a.sudo(
