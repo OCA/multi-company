@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_general_configuration_purchase_sale_inter_company" model="ir.ui.view">
+            <field name="model">base.config.settings</field>
+            <field name="inherit_id" ref="account_invoice_inter_company.view_general_configuration_account_invoice_inter_company"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='module_account_invoice_inter_company_company_id']" position='after'>
+                    <div name="module_purchase_sale_inter_company_warehouse_id" attrs="{'invisible':[('company_id', '=', False)]}">
+                        <label for="warehouse_id"/>
+                        <field name="warehouse_id" class="oe_inline" attrs="{'required': True}" domain="[('company_id', '=', company_id)]"/>
+                    </div>
+                 </xpath>
+                <xpath expr="//div[@name='module_account_invoice_inter_company_set_invoice_auto_validation']" position='after'>
+                    <div name="module_purchase_sale_inter_company_set_sale_auto_validation" attrs="{'invisible':[('company_id', '=', False)]}">
+                        <field name="sale_auto_validation"/>
+                        <label for="sale_auto_validation"/>
+                    </div>
+                 </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_company_inter_change_inherit_form">
+            <field name="inherit_id" ref="account_invoice_inter_company.view_company_inter_change_inherit_form"/>
+            <field name="model">res.company</field>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page[@string='Inter-Company']/group[@string='Invoice']" position="after">
+                    <group string="Purchase to Sale">
+                        <field name="warehouse_id" attrs="{'required': True}" domain="[('company_id', '=', active_id)]"/>
+                        <field name="sale_auto_validation"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

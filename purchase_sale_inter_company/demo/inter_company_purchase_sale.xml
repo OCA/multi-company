@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp><data>
+
+
+    <!--
+        Create warehouse in Company A and Company B
+        -->
+    <record id="location_stock_company_a" model="stock.location">
+        <field name="name">Stock - A</field>
+        <field name="usage">internal</field>
+        <field name="company_id" ref="account_invoice_inter_company.company_a"/>
+    </record>
+
+    <record id="location_output_company_a" model="stock.location">
+        <field name="name">Output - A</field>
+        <field name="usage">internal</field>
+        <field name="company_id" ref="account_invoice_inter_company.company_a"/>
+    </record>
+
+    <record id="warehouse_company_a" model="stock.warehouse">
+        <field name="name">purchase warehouse - A</field>
+        <field name="code">CMPA</field>
+        <field name="wh_input_stock_loc_id" ref="location_stock_company_a"/>
+        <field name="lot_stock_id" ref="location_stock_company_a"/>
+        <field name="wh_output_stock_loc_id" ref="location_output_company_a"/>
+        <field name="company_id" ref="account_invoice_inter_company.company_a"/>
+    </record>
+    
+    <record id="location_stock_company_b" model="stock.location">
+        <field name="name">Stock - B</field>
+        <field name="usage">internal</field>
+        <field name="company_id" ref="account_invoice_inter_company.company_b"/>
+    </record>
+
+    <record id="location_output_company_b" model="stock.location">
+        <field name="name">Output - B</field>
+        <field name="usage">internal</field>
+        <field name="company_id" ref="account_invoice_inter_company.company_b"/>
+    </record>
+
+    <record id="warehouse_company_b" model="stock.warehouse">
+        <field name="name">purchase warehouse - B</field>
+        <field name="code">CMPB</field>
+        <field name="wh_input_stock_loc_id" ref="location_stock_company_b"/>
+        <field name="lot_stock_id" ref="location_stock_company_b"/>
+        <field name="wh_output_stock_loc_id" ref="location_output_company_b"/>
+        <field name="company_id" ref="account_invoice_inter_company.company_b"/>
+    </record>
+
+    <!--
+        Apply warehouse in Company A and Company B
+        -->
+    <record id="account_invoice_inter_company.company_a" model="res.company">
+        <field name="warehouse_id" ref="warehouse_company_a"/>
+        <field name="sale_auto_validation">1</field>
+    </record>
+
+    <record id="account_invoice_inter_company.company_b" model="res.company">
+        <field name="warehouse_id" ref="warehouse_company_b"/>
+        <field name="sale_auto_validation">1</field>
+    </record>
+
+    <!--
+        Update User A and User B with purchase group
+        -->
+    <record id="account_invoice_inter_company.user_company_a" model="res.users">
+        <field name="groups_id" eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager'), ref('base.group_sale_manager'), ref('purchase.group_purchase_user')])]"/>
+    </record>
+
+    <record id="account_invoice_inter_company.user_company_b" model="res.users">
+        <field name="groups_id" eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager'), ref('base.group_sale_manager'), ref('purchase.group_purchase_user')])]"/>
+    </record>
+
+    <!--
+        Create draft purchase in Company A
+        -->
+    <record id="purchase_company_a" model="purchase.order">
+        <field name="partner_id" ref="account_invoice_inter_company.partner_company_b"/>
+        <field name="location_id" ref="location_stock_company_a"/>
+        <field name="pricelist_id" ref="purchase.list0"/>
+        <field name="state">draft</field>
+        <field name="company_id" ref="account_invoice_inter_company.company_a"/>
+    </record>
+
+    <record id="purchase_line_company_a" model="purchase.order.line">
+        <field name="order_id" ref="purchase_company_a"/>
+        <field name="product_id" ref="account_invoice_inter_company.product_consultant_multi_company"/>
+        <field name="name">Service Multi Company</field>
+        <field name="date_planned" eval="time.strftime('%Y%m%d')"/>
+        <field name="price_unit" eval="450.0"/>
+        <field name="product_qty" eval="3.0"/>
+        <field name="company_id" ref="account_invoice_inter_company.company_a"/>
+    </record>
+
+</data></openerp>
