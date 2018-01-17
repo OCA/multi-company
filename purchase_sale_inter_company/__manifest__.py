@@ -18,8 +18,8 @@
     ],
     'data': [
         'views/res_company_view.xml',
-        'views/res_config_view.xml',
-        'views/purchase_order_view.xml',
+        'views/sale_config_settings_views.xml',
+        'views/purchase_views.xml',
     ],
     'demo': [
         'demo/inter_company_purchase_sale.xml',

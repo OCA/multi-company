@@ -4,6 +4,6 @@
 
 from . import sale_config_settings
 from . import res_company
-from . import purchase_order
-from . import sale_order
+from . import purchase
+from . import sale
 from . import account_invoice
