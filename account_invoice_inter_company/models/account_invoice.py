@@ -34,8 +34,8 @@ class AccountInvoice(models.Model):
                 MAP_JOURNAL_TYPE = {
                     'out_invoice': 'purchase',
                     'in_invoice': 'sale',
-                    'out_refund': 'purchase_refund',
-                    'in_refund': 'sale_refund',
+                    'out_refund': 'purchase',
+                    'in_refund': 'sale',
                 }
                 dest_inv_type = MAP_INVOICE_TYPE.get(src_invoice.type)
                 dest_journal_type = MAP_JOURNAL_TYPE.get(src_invoice.type)
