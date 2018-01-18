@@ -5,7 +5,7 @@
 {
     "name": "Sale Layout - Multi company",
     "summary": "Multi company features for sale_layout",
-    "version": "8.0.1.0.0",
+    "version": "10.0.1.0.0",
     "category": "Sales Management",
     "website": "https://www.agilebg.com",
     "author": "Agile Business Group, Odoo Community Association (OCA)",
@@ -13,7 +13,8 @@
     "application": False,
     "installable": True,
     "depends": [
-        "sale_layout",
+        "base_multi_company",
+        "sale"
     ],
     "data": [
         "views/sale_layout_view.xml",

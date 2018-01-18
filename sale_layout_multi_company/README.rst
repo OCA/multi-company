@@ -6,14 +6,14 @@
 Sale Layout - Multi company
 ===========================
 
-This module extends the functionality of sale_layout module adding support for multi company
+This module extends the functionality of sale's layout_category model adding support for multi company
 
 Usage
 =====
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/8.0
+   :target: https://runbot.odoo-community.org/runbot/133/10.0
 
 Bug Tracker
 ===========
