@@ -65,7 +65,11 @@ class BaseHoldingInvoicing(models.AbstractModel):
             'origin': _('Holding Invoice'),
             'company_id': self._context['force_company'],
             'user_id': self._uid,
-            })
+        })
+        # Remove fiscal position from vals
+        # Because fiscal position in vals is not that of the 'force_company'
+        if vals['fiscal_position']:
+            vals['fiscal_position'] = False
         return vals
 
     @api.model
