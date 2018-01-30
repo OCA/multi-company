@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <page name="internal_notes" position="after">
+                <page string="Company Configuration">
+                    <group>
+                        <field name="property_ids" nolabel="1"/>
+                    </group>
+                </page>
+            </page>
+        </field>
+    </record>
+
+    <record id="view_partner_property_tree" model="ir.ui.view">
+        <field name="name">res.partner.property.tree</field>
+        <field name="model">res.partner.property</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="partner_id" invisible="1"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_partner_property_form" model="ir.ui.view">
+        <field name="name">res.partner.property.form</field>
+        <field name="model">res.partner.property</field>
+        <field name="arch" type="xml">
+            <form>
+                <group name="first">
+                    <field name="partner_id" invisible="1"/>
+                    <field name="company_id"/>
+                </group>
+                <notebook></notebook>
+            </form>
+        </field>
+    </record>
+</odoo>
