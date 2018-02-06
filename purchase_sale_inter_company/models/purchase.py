@@ -65,8 +65,8 @@ class PurchaseOrder(models.Model):
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
         company_partner = self.company_id.partner_id
-        # check pricelist currency should be same with PO/SO document
-        if self.pricelist_id.currency_id.id != (
+        # check currency should be same with PO/SO document
+        if self.currency_id.id != (
                 company_partner.property_product_pricelist.currency_id.id):
             raise UserError(_(
                 'You cannot create SO from PO because '

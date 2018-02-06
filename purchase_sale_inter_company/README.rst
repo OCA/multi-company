@@ -46,7 +46,7 @@ Credits
 Contributors
 ------------
 
-* Odoo S.A. (original module `inter_company_rules`)
+* Odoo S.A. (original module `inter_company_rules`_)
 * Chafique Delli <chafique.delli@akretion.com>
 * Alexis de Lattre <alexis.delattre@akretion.com>
 
