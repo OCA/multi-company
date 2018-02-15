@@ -79,7 +79,7 @@ class Partner(models.Model):
             for rec in self:
                 if not rec.company_id:
                     continue
-                field = self.search(
+                field = self.sudo().search(
                     [('commercial_partner_id', '=', rec.id),
                      ('company_id', '!=', False),
                      ('company_id', '!=', rec.company_id.id)], limit=1)
@@ -88,7 +88,7 @@ class Partner(models.Model):
                         _('You cannot change the company, as this '
                           'Res Partner is assigned to Res Partner '
                           '(%s).' % field.name_get()[0][1]))
-                field = self.search(
+                field = self.sudo().search(
                     [('parent_id', '=', rec.id),
                      ('company_id', '!=', False),
                      ('company_id', '!=', rec.company_id.id)], limit=1)
