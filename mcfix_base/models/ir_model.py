@@ -10,11 +10,12 @@ class Base(models.AbstractModel):
     def add_company_suffix(self, names):
         res = []
         multicompany_group = self.env.ref('base.group_multi_company')
-        if multicompany_group not in self.env.user.groups_id:
+        if multicompany_group not in self.env.user.groups_id or \
+                self._context.get('not_display_company'):
             return names
         for name in names:
             rec = self.browse(name[0])
-            name = '%s [%s]' % (name[1], rec.company_id.name) if \
+            name = '%s [%s]' % (name[1], rec.company_id.sudo().name) if \
                 rec.company_id else name[1]
             res += [(rec.id, name)]
         return res

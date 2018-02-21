@@ -8,8 +8,10 @@
     'license': 'LGPL-3',
     'depends': ['base', 'mcfix_base_model_create_hook'],
     'data': [
-        'data/res_partner_demo.xml',
         'security/base_security.xml',
+    ],
+    'demo': [
+        'data/res_partner_demo.xml',
     ],
     'sequence': 30,
     'installable': True,

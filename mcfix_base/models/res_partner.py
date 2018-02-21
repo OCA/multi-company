@@ -12,6 +12,16 @@ class Partner(models.Model):
         res = self.add_company_suffix(names)
         return res
 
+    @api.depends('is_company', 'name', 'parent_id.name', 'type',
+                 'company_name')
+    def _compute_display_name(self):
+        # ugly change to ensure that the display name is correctly stored.
+        # See https://github.com/odoo/odoo/issues/6276
+        for rec in self:
+            other = rec.with_context(not_display_company=True)
+            super(Partner, other)._compute_display_name()
+            rec.display_name = other.display_name
+
     @api.model
     def create(self, vals):
         """We need this to ensure that when the partner is created,
