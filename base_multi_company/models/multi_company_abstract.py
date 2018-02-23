@@ -34,10 +34,13 @@ class MultiCompanyAbstract(models.AbstractModel):
     @api.multi
     def _compute_company_id(self):
         for record in self:
-            for company in record.company_ids:
-                if company.id in self.env.user.company_ids.ids:
-                    record.company_id = company.id
-                    break
+            if self.env.user.company_id.id in record.company_ids.ids:
+                record.company_id = self.env.user.company_id
+            else:
+                for company in record.company_ids:
+                    if company.id in self.env.user.company_ids.ids:
+                        record.company_id = company.id
+                        break
 
     @api.multi
     def _inverse_company_id(self):
