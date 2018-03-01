@@ -4,8 +4,7 @@
 
 {
     'name': 'Ir Actions Report Xml Multi Company',
-    'summary': """
-        Make Report Actions multi-company aware""",
+    'summary': 'Make Report Actions multi-company aware',
     'version': '10.0.1.0.0',
     'license': 'AGPL-3',
     'author': 'ACSONE SA/NV,'

@@ -3,7 +3,6 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 
 <odoo>
-<data>
 
     <record model="ir.ui.view" id="ir_actions_report_xml_form_view">
         <field name="name">ir.actions.report.xml.form (in ir_actions_report_xml_multy_company)</field>
@@ -16,5 +15,4 @@
         </field>
     </record>
 
-</data>
 </odoo>

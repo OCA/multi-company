@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo>
-<data noupdate="1">
+<odoo noupdate="1">
 
     <record id="ir_actions_report_xml_rule" model="ir.rule">
         <field name="name" >Ir Actins Report XML multi-company</field>
@@ -10,5 +9,4 @@
         <field name="active" eval="True"/>
     </record>
 
-</data>
 </odoo>

@@ -8,16 +8,6 @@ Ir Actions Report Xml Multi Company
 
 Make Report Actions multi-company Aware
 
-Installation
-============
-
-There is no specific installatin procedure for this module
-
-Configuration
-=============
-
-There is no specific configuration for this module
-
 Usage
 =====
 
@@ -26,14 +16,6 @@ The usual multi-company record rule is installed automatically
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
    :target: https://runboddt.odoo-community.org/runbot/133/10.0
-
-.. repo_id is available in https://github.com/OCA/maintainer-tools/blob/master/tools/repos_with_ids.txt
-.. branch is "8.0" for example
-
-Known issues / Roadmap
-======================
-
-* ...
 
 Bug Tracker
 ===========
