@@ -22,7 +22,7 @@
             <field name="name">Account Invoice</field>
             <field name="res_model">account.invoice</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form,graph</field>
+            <field name="view_mode">tree,graph</field>
             <field name="context">{'search_default_holding_invoice_id': active_id}</field>
         </record>
 
