@@ -1,7 +1,8 @@
 # Copyright 2018 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import fields, models
+from odoo import _, fields, models
+from odoo.exceptions import ValidationError
 from odoo.tools import ormcache
 from odoo.tools.safe_eval import safe_eval
 
@@ -34,7 +35,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         string="Company Name",
         required=True,
     )
-    step = fields.Integer()
     currency_id = fields.Many2one(
         comodel_name='res.currency',
         string='Currency',
@@ -61,7 +61,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     )
     sequence_ids = fields.Many2many(
         comodel_name='ir.sequence',
-        string='Sequence to create',
+        string='Sequences to create',
         default=lambda s: s._default_sequence_ids(),
     )
     new_company_id = fields.Many2one(
@@ -78,7 +78,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         help='Update default taxes applied to local transactions',
     )
     default_sale_tax_id = fields.Many2one(
-        comodel_name='account.tax',
+        comodel_name='account.tax.template',
         string='Default Sales Tax',
     )
     force_sale_tax = fields.Boolean(
@@ -88,7 +88,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
              'will overwrite default taxes, but not founded will remain',
     )
     default_purchase_tax_id = fields.Many2one(
-        comodel_name='account.tax',
+        comodel_name='account.tax.template',
         string='Default Purchase Tax',
     )
     force_purchase_tax = fields.Boolean(
@@ -113,19 +113,19 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         help='Update default accounts defined in account chart template',
     )
     account_receivable_id = fields.Many2one(
-        comodel_name='account.account',
+        comodel_name='account.account.template',
         string='Default Receivable Account',
     )
     account_payable_id = fields.Many2one(
-        comodel_name='account.account',
+        comodel_name='account.account.template',
         string='Default Payable Account',
     )
     account_income_categ_id = fields.Many2one(
-        comodel_name='account.account',
+        comodel_name='account.account.template',
         string='Default Category Income Account',
     )
     account_expense_categ_id = fields.Many2one(
-        comodel_name='account.account',
+        comodel_name='account.account.template',
         string='Default Category Expense Account',
     )
 
@@ -188,7 +188,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.install_chart_account()
         self.create_bank_journals()
         self.create_sequences()
-        return self.action_reload_form()
 
     # TODO: Cache don't work
     # @ormcache(skiparg=1)
@@ -215,6 +214,17 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             return True
         return False
 
+    def match_tax(self, tax_template):
+        if not tax_template.description:
+            raise ValidationError(
+                _("Description not set in tax template: '%s'") %
+                tax_template.name
+            )
+        return self.sudo().env['account.tax'].search([
+            ('company_id', '=', self.new_company_id.id),
+            ('description', '=', tax_template.description),
+        ], limit=1)
+
     def set_product_taxes(self):
         user_company = self.env.user.company_id
         products = self.env['product.product'].sudo().search([])
@@ -226,7 +236,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     updated_sale |= product
         if self.update_default_taxes and self.force_sale_tax:
             (products - updated_sale).update({
-                'taxes_id': [(4, self.default_sale_tax_id.id)],
+                'taxes_id': [(4, self.match_tax(self.default_sale_tax_id).id)],
             })
         if self.smart_search_product_tax:
             for product in products:
@@ -235,7 +245,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     updated_purchase |= product
         if self.update_default_taxes and self.force_purchase_tax:
             (products - updated_purchase).update({
-                'supplier_taxes_id': [(4, self.default_purchase_tax_id.id)],
+                'supplier_taxes_id': [
+                    (4, self.match_tax(self.default_purchase_tax_id).id)],
             })
 
     def update_taxes(self):
@@ -245,16 +256,15 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 IrDefault.set(
                     model_name='product.template',
                     field_name='taxes_id',
-                    value=self.default_sale_tax_id.ids,
+                    value=self.match_tax(self.default_sale_tax_id).ids,
                     company_id=self.new_company_id.id)
             if self.default_purchase_tax_id:
                 IrDefault.set(
                     model_name='product.template',
                     field_name='supplier_taxes_id',
-                    value=self.default_purchase_tax_id.ids,
+                    value=self.match_tax(self.default_purchase_tax_id).ids,
                     company_id=self.new_company_id.id)
         self.set_product_taxes()
-        return self.action_reload_form()
 
     def set_specific_properties(self, model, match_field):
         user_company = self.env.user.company_id
@@ -282,17 +292,29 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     'value_integer': False,
                 })
 
+    def match_account(self, account_template):
+        code = '{code:0<{fill}}'.format(
+            code=account_template.code, fill=self.accounts_code_digits)
+        return self.sudo().env['account.account'].search([
+            ('company_id', '=', self.new_company_id.id),
+            ('code', '=', code),
+        ], limit=1)
+
     def set_global_properties(self):
         IrProperty = self.env['ir.property'].sudo()
         todo_list = [
             ('property_account_receivable_id', 'res.partner',
-             'account.account', self.account_receivable_id.id),
+             'account.account',
+             self.match_account(self.account_receivable_id).id),
             ('property_account_payable_id', 'res.partner',
-             'account.account', self.account_payable_id.id),
+             'account.account',
+             self.match_account(self.account_payable_id).id),
             ('property_account_expense_categ_id', 'product.category',
-             'account.account', self.account_expense_categ_id.id),
+             'account.account',
+             self.match_account(self.account_expense_categ_id).id),
             ('property_account_income_categ_id', 'product.category',
-             'account.account', self.account_income_categ_id.id),
+             'account.account',
+             self.match_account(self.account_income_categ_id).id),
         ]
         new_company = self.new_company_id
         for record in todo_list:
@@ -323,15 +345,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             self.set_specific_properties('account.fiscal.position', 'name')
         if self.update_default_accounts:
             self.set_global_properties()
-        return self.action_res_company_form()
-
-    def action_reload_form(self):
-        action = self.env.ref(
-            'account_multicompany_easy_creation.'
-            'wizard_multicompany_easy_creation_action').read()[0]
-        action['res_id'] = self.id
-        self.step += 1
-        return action
 
     def action_res_company_form(self):
         action = self.env.ref('base.action_res_company_form').read()[0]
@@ -341,9 +354,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         return action
 
     def action_accept(self):
-        if self.step == 0:
-            return self.create_company()
-        elif self.step == 1:
-            return self.update_taxes()
-        elif self.step == 2:
-            return self.update_properties()
+        self.create_company()
+        self.update_taxes()
+        self.update_properties()
+        return self.action_res_company_form()
