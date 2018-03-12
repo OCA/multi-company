@@ -173,13 +173,15 @@ class AccountInvoice(models.Model):
         }
         dest_partner_data = self.env['account.invoice'].play_onchanges(
             dest_partner_data, ['partner_id'])
+        if not dest_partner_data.get('payment_term_id'):
+            dest_partner_data['payment_term_id'] = self.payment_term_id.id
         return {
             'name': self.name,
             'origin': _('%s - Invoice: %s') % (self.company_id.name,
                                                self.number),
             'type': dest_inv_type,
             'date_invoice': self.date_invoice,
-            'reference': self.reference,
+            'reference': _('Invoice: %s') % self.number,
             'account_id': dest_partner_data.get('account_id', False),
             'partner_id': self.company_id.partner_id.id,
             'journal_id': dest_journal.id,
