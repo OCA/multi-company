@@ -1,3 +1,4 @@
+from . import ir_default
 from . import ir_model
 from . import ir_sequence
 from . import res_company
