@@ -39,6 +39,7 @@ class ResPartner(models.Model):
         return vals
 
     @api.model
+    @api.returns('self', lambda value: value.id)
     def create(self, vals):
         """Neutralize the default value applied to company_id that can't be
         removed in the inheritance, and that will activate the inverse method,
@@ -48,7 +49,10 @@ class ResPartner(models.Model):
         # We must suspend security during this creation because it fails due to
         # all the mail stuff in between that confuses security rules
         obj = getattr(self, 'suspend_security', lambda: self)()
-        return super(ResPartner, obj).create(vals)
+        new_record = super(ResPartner, obj).create(vals)
+        # Call check_access_rules on new record to honor security rules
+        self.browse(new_record.id).check_access_rule('create')
+        return new_record
 
     @api.multi
     @api.depends('company_ids')
