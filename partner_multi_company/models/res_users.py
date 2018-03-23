@@ -14,7 +14,7 @@ class ResUsers(models.Model):
         if 'company_ids' in vals:
             res.partner_id.company_ids = vals['company_ids']
         if 'company_id' in vals:
-            res.partner_id.company_ids = [(6, 0, [vals['company_id']])]
+            res.partner_id.company_ids = [(4, vals['company_id'])]
         return res
 
     @api.multi
@@ -22,5 +22,5 @@ class ResUsers(models.Model):
         res = super(ResUsers, self).write(vals)
         if 'company_id' in vals:
             for user in self.sudo():
-                user.partner_id.company_ids = [(6, 0, [vals['company_id']])]
+                user.partner_id.company_ids = [(4, vals['company_id'])]
         return res
