@@ -15,7 +15,7 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
-[account_invoice_inter_company](account_invoice_inter_company/) | 10.0.1.0.0 | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 10.0.1.1.0 | Intercompany invoice rules
 [account_type_multi_company](account_type_multi_company/) | 10.0.1.0.0 | Make account types multi-company aware
 [base_multi_company](base_multi_company/) | 10.0.1.0.1 | Provides a base for adding multi-company support to models.
 [partner_multi_company](partner_multi_company/) | 10.0.1.0.0 | Select individually the partner visibility on each company
