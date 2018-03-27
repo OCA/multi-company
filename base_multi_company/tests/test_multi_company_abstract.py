@@ -2,7 +2,7 @@
 # Copyright 2017 LasLabs Inc.
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
 
-from odoo import fields, models
+from odoo import exceptions, fields, models
 from odoo.tests import common
 
 
@@ -121,3 +121,69 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             ('id', '=', self.record.id),
         ])
         self.assertEqual(record, self.record)
+
+    def test_compute_company_id2(self):
+        """
+        Test the computation of company_id for a multi_company_abstract.
+        We have to ensure that the priority of the computed company_id field
+        is given on the current company of the current user.
+        And not a random company into allowed companies (company_ids of the
+        target model).
+        Because most of access rights are based on the current company of the
+        current user and not on allowed companies (company_ids).
+        :return: bool
+        """
+        user_obj = self.env['res.users']
+        company_obj = self.env['res.company']
+        tester_obj = self.env['multi.company.abstract.tester']
+        company1 = self.env.ref("base.main_company")
+        # Create companies
+        company2 = company_obj.create({
+            'name': 'High salaries',
+        })
+        company3 = company_obj.create({
+            'name': 'High salaries, twice more!',
+        })
+        company4 = company_obj.create({
+            'name': 'No salaries',
+        })
+        companies = company1
+        companies |= company2
+        companies |= company3
+        # Create a "normal" user (not the admin)
+        user = user_obj.create({
+            'name': 'Best employee',
+            'login': 'best-emplyee@example.com',
+            'company_id': company1.id,
+            'company_ids': [(6, False, companies.ids)],
+        })
+        tester = tester_obj.create({
+            'name': 'My tester',
+            'company_ids': [(6, False, companies.ids)],
+        })
+        tester = tester.sudo(user)
+        # Current company_id should be updated with current company of the user
+        for company in user.company_ids:
+            user.write({
+                'company_id': company.id,
+            })
+            # Force recompute
+            tester.invalidate_cache()
+            # Ensure that the current user is on the right company
+            self.assertEqual(user.company_id.id, company.id)
+            self.assertEqual(tester.company_id.id, company.id)
+            # So can read company fields without Access error
+            self.assertTrue(bool(tester.company_id.name))
+        # Switch to a company not in tester.company_ids
+        user.write({
+            'company_ids': [(4, company4.id, False)],
+            'company_id': company4.id,
+        })
+        # Force recompute
+        tester.invalidate_cache()
+        self.assertNotEqual(user.company_id.id, tester.company_ids.ids)
+        with self.assertRaises(exceptions.AccessError):
+            # The company is not allowed (because not the current company
+            # of the user) so we should have an exception in this case
+            self.assertTrue(bool(tester.company_id.name))
+        return True
