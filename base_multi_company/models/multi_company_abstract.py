@@ -33,7 +33,13 @@ class MultiCompanyAbstract(models.AbstractModel):
 
     @api.multi
     def _compute_company_id(self):
+        user_company = self.env.user.company_id
         for record in self:
+            # Give the priority of the current company of the user to avoid
+            # access right error
+            if user_company.id in record.company_ids.ids:
+                record.company_id = user_company.id
+                continue
             for company in record.company_ids:
                 if company.id in self.env.user.company_ids.ids:
                     record.company_id = company.id
