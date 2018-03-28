@@ -13,7 +13,7 @@
     'depends': ['base'],
     'data': [
         'views/partner.xml',
-        # 'views/company.xml'
+        'views/res_company_views.xml'
     ],
     'installable': True,
     'application': False,
