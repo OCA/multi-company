@@ -6,5 +6,4 @@ class ResPartnerBank(models.Model):
 
     @api.constrains('company_id')
     def _check_company_id_out_model(self):
-        """Method used by other modules"""
-        pass
+        self._check_company_id_base_model()

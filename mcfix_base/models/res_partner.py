@@ -77,33 +77,24 @@ class Partner(models.Model):
     @api.constrains('company_id', 'parent_id')
     def _check_company_id_parent_id(self):
         for rec in self.sudo():
-            if rec.company_id and rec.parent_id.company_id and\
-                    rec.company_id != rec.parent_id.company_id:
+            if not rec.parent_id.check_company(rec.company_id):
                 raise ValidationError(
                     _('The Company in the Res Partner and in '
                       'the parent Res Partner must be the same.'))
 
     @api.constrains('company_id')
     def _check_company_id_out_model(self):
-        if not self.env.context.get('bypass_company_validation', False):
-            for rec in self:
-                if not rec.company_id:
-                    continue
-                field = self.sudo().search(
-                    [('commercial_partner_id', '=', rec.id),
-                     ('company_id', '!=', False),
-                     ('company_id', '!=', rec.company_id.id)], limit=1)
-                if field:
-                    raise ValidationError(
-                        _('You cannot change the company, as this '
-                          'Res Partner is assigned to Res Partner '
-                          '(%s).' % field.name_get()[0][1]))
-                field = self.sudo().search(
-                    [('parent_id', '=', rec.id),
-                     ('company_id', '!=', False),
-                     ('company_id', '!=', rec.company_id.id)], limit=1)
-                if field:
-                    raise ValidationError(
-                        _('You cannot change the company, as this '
-                          'Res Partner is assigned to Res Partner '
-                          '(%s).' % field.name_get()[0][1]))
+        self._check_company_id_base_model()
+
+    def _check_company_id_fields(self):
+        res = super()._check_company_id_fields()
+        res += [self.child_ids, self.bank_ids, ]
+        return res
+
+    def _check_company_id_search(self):
+        res = super(Partner, self)._check_company_id_search()
+        res += [
+            ('res.partner', [('parent_id', '=', self.id)]),
+            ('res.partner', [('commercial_partner_id', '=', self.id)]),
+        ]
+        return res
