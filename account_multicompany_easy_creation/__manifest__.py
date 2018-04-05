@@ -3,8 +3,8 @@
 {
     'name': 'Multicompany Easy Creation',
     'summary': 'This module adds a wizard to create companies easily',
-    'version': '10.0.1.0.0',
-    'category': 'Uncategorized',
+    'version': '11.0.1.0.0',
+    'category': 'Multicompany',
     'website': 'https://github.com/OCA/multi-company/tree/11.0/'
                'account_multicompany_easy_creation',
     'author': 'Tecnativa, Odoo Community Association (OCA)',

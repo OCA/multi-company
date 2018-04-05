@@ -7,16 +7,6 @@ from odoo.tools import ormcache
 from odoo.tools.safe_eval import safe_eval
 
 
-class AccountMulticompanyBankWiz(models.TransientModel):
-    _inherit = 'res.partner.bank'
-    _name = 'account.multicompany.bank.wiz'
-    _order = 'id'
-
-    wizard_id = fields.Many2one(
-        comodel_name='account.multicompany.easy.creation.wiz',
-    )
-
-
 class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     _name = 'account.multicompany.easy.creation.wiz'
 
@@ -358,3 +348,13 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.update_taxes()
         self.update_properties()
         return self.action_res_company_form()
+
+
+class AccountMulticompanyBankWiz(models.TransientModel):
+    _inherit = 'res.partner.bank'
+    _name = 'account.multicompany.bank.wiz'
+    _order = 'id'
+
+    wizard_id = fields.Many2one(
+        comodel_name='account.multicompany.easy.creation.wiz',
+    )
