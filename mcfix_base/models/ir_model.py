@@ -1,3 +1,6 @@
+# Copyright 2018 Creu Blanca
+# Copyright 2018 Eficent Business and IT Consulting Services, S.L.
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 import logging
 from odoo import api, models, _
 from odoo.exceptions import ValidationError
@@ -24,6 +27,9 @@ class Base(models.AbstractModel):
     @api.multi
     @api.depends('company_id')
     def name_get(self):
+        """When the user is assigned to the multi-company group,
+        all of the multi-company dependent objects will be listed with the
+        company as suffix, in brackets."""
         names = super(Base, self).name_get()
         if 'company_id' not in self._fields:
             return names
@@ -31,6 +37,10 @@ class Base(models.AbstractModel):
         return res
 
     def check_company(self, company_id):
+        """This method will be used in constrains methods
+        to ensure consistency between linked many2one models company-wise.
+        Typically when the method returns false a Validation Error
+        will be raised."""
         if not company_id:
             return True
         if 'company_id' not in self._fields:
@@ -45,6 +55,11 @@ class Base(models.AbstractModel):
         return []
 
     def _check_company_id_base_model(self):
+        """This method is to be used in constrains methods of
+        company-dependent models to ensure consistency between the model
+        other company-dependent linked models, that are either provided
+        as one2many in the first model, or where the other models reference
+        the first model in some field."""
         if not self.env.context.get('bypass_company_validation', False):
             for rec in self.sudo():
                 if not rec.company_id:

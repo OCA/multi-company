@@ -1,3 +1,6 @@
+# Copyright 2018 Creu Blanca
+# Copyright 2018 Eficent Business and IT Consulting Services, S.L.
+# License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl).
 import json
 from odoo import api, models, tools
 
@@ -8,6 +11,7 @@ class IrDefault(models.Model):
     @api.model
     @tools.ormcache('self.env.uid', 'model_name', 'condition')
     def get_model_defaults(self, model_name, condition=False):
+        """Related to  https://github.com/odoo/odoo/pull/23695 """
         super(IrDefault, self).get_model_defaults(
             model_name=model_name, condition=condition)
         cr = self.env.cr
