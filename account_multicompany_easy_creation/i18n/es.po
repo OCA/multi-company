@@ -66,8 +66,8 @@ msgstr "Nombre de la compañía"
 #. module: account_multicompany_easy_creation
 #: model:ir.actions.act_window,name:account_multicompany_easy_creation.wizard_multicompany_easy_creation_action
 #: model:ir.ui.menu,name:account_multicompany_easy_creation.multicompany_easy_creation_menu
-msgid "Company easy creation"
-msgstr "Creación fácil de compañía"
+msgid "Quick Company Creation"
+msgstr "Creación rápida de compañía"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz_create_uid

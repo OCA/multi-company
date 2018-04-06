@@ -1,11 +1,11 @@
 # Copyright 2018 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 {
-    'name': 'Multicompany Easy Creation',
+    'name': 'Quick Company Creation Wizard',
     'summary': 'This module adds a wizard to create companies easily',
     'version': '11.0.1.0.0',
     'category': 'Multicompany',
-    'website': 'https://github.com/OCA/multi-company/tree/11.0/'
+    'website': 'https://github.com/OCA/multi-company'
                'account_multicompany_easy_creation',
     'author': 'Tecnativa, Odoo Community Association (OCA)',
     'license': 'AGPL-3',

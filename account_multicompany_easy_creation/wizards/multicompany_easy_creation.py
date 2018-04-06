@@ -180,8 +180,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.create_sequences()
 
     # TODO: Cache don't work
-    # @ormcache(skiparg=1)
-    # @api.model
     @ormcache('self.id', 'company_id', 'match_tax_ids')
     def taxes_by_company(self, company_id, match_tax_ids):
         AccountTax = self.env['account.tax'].sudo()

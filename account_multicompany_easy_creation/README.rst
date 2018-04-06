@@ -2,18 +2,18 @@
    :target: https://www.gnu.org/licenses/agpl
    :alt: License: AGPL-3
 
-==========================
-Multicompany Easy Creation
-==========================
+=============================
+Quick Company Creation Wizard
+=============================
 
-This module adds a wizard to create companies easily
+This module adds a wizard to easily create companies.
 
 Usage
 =====
 
 To use this module, you need to:
 
-#. Go to Settings > Users and companies > Create multicompany easily
+#. Go to Settings > Users and companies > Quick Company Creation
 #. Fill fields and accept
 
 
