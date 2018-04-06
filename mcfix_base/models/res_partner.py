@@ -88,7 +88,10 @@ class Partner(models.Model):
 
     def _check_company_id_fields(self):
         res = super()._check_company_id_fields()
-        res += [self.child_ids, self.bank_ids, ]
+        # We choose not to include bank_ids because a partner might have
+        # banks in various companies (for historical reasons),
+        # regardless of what company is now assigned to.
+        res += [self.child_ids]
         return res
 
     def _check_company_id_search(self):
