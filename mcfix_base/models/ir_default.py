@@ -28,11 +28,9 @@ class IrDefault(models.Model):
         params = [self.env.uid, model_name]
         if condition:
             query = query.format(id1=company, id2="d.condition=%s")
-            # pylint: disable=E8103
             params.append(condition)
         else:
             query = query.format(id1=company, id2="d.condition IS NULL")
-            # pylint: disable=E8103
         cr.execute(query, params)
         result = {}
         for row in cr.fetchall():

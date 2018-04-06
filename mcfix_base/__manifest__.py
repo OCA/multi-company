@@ -13,7 +13,7 @@
         'security/base_security.xml',
     ],
     'demo': [
-        'data/res_partner_demo.xml',
+        'demo/res_partner_demo.xml',
     ],
     'sequence': 30,
     'installable': True,

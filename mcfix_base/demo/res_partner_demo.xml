@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="base.res_partner_1" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_2" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_3" model="res.partner">
+        <field name="company_id"/>
+    </record>
+
+    <record id="base.res_partner_4" model="res.partner">
+        <field name="company_id"/>
+    </record>
+
+    <record id="base.res_partner_10" model="res.partner">
+        <field name="company_id"/>
+    </record>
+
+    <record id="base.res_partner_12" model="res.partner">
+        <field name="company_id"/>
+    </record>
+
+    <record id="base.res_partner_18" model="res.partner">
+        <field name="company_id"/>
+    </record>
+
+    <record id="base.res_partner_address_1" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_2" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_7" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_12" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_31" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_27" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_26" model="res.partner">
+        <field name="company_id"/>
+    </record>
+    <record id="base.res_partner_address_35" model="res.partner">
+        <field name="company_id"/>
+    </record>
+
+</odoo>
