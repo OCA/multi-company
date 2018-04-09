@@ -34,8 +34,8 @@ class AccountInvoice(models.Model):
                 MAP_JOURNAL_TYPE = {
                     'out_invoice': 'purchase',
                     'in_invoice': 'sale',
-                    'out_refund': 'purchase_refund',
-                    'in_refund': 'sale_refund',
+                    'out_refund': 'purchase',
+                    'in_refund': 'sale',
                 }
                 dest_inv_type = MAP_INVOICE_TYPE.get(src_invoice.type)
                 dest_journal_type = MAP_JOURNAL_TYPE.get(src_invoice.type)
@@ -173,13 +173,20 @@ class AccountInvoice(models.Model):
         }
         dest_partner_data = self.env['account.invoice'].play_onchanges(
             dest_partner_data, ['partner_id'])
+        if not dest_partner_data.get('payment_term_id'):
+            # check access rule for payment term
+            domain = self._get_user_domain(dest_company)
+            dest_user = self.env['res.users'].search(domain, limit=1)
+            if not self.payment_term_id.sudo(
+                    dest_user).check_access_rule('read'):
+                dest_partner_data['payment_term_id'] = self.payment_term_id.id
         return {
             'name': self.name,
             'origin': _('%s - Invoice: %s') % (self.company_id.name,
                                                self.number),
             'type': dest_inv_type,
             'date_invoice': self.date_invoice,
-            'reference': self.reference,
+            'reference': self.number,
             'account_id': dest_partner_data.get('account_id', False),
             'partner_id': self.company_id.partner_id.id,
             'journal_id': dest_journal.id,
@@ -188,6 +195,7 @@ class AccountInvoice(models.Model):
                 'fiscal_position_id', False),
             'payment_term_id': dest_partner_data.get(
                 'payment_term_id', False),
+            'date_due': self.date_due,
             'company_id': dest_company.id,
             'partner_bank_id': dest_partner_data.get(
                 'partner_bank_id', False),
