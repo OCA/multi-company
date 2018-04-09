@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="res_company_form_view">
+        <field name="name">res.company.form (in analytic_inter_company_reinvoicing)</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="account_invoice_inter_company.view_company_inter_change_inherit_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//page[@string='Inter-Company']" position="inside">
+                <group string="Reinvoicing" name="reinvoicing">
+                    <field name="reinvoice_waiting_account_id"/>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</data>
+</openerp>

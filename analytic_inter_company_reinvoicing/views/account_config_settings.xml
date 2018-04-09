@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="account_config_settings_form_view">
+        <field name="name">account.config.settings.form (in analytic_inter_company_reinvoicing)</field>
+        <field name="model">account.config.settings</field>
+        <field name="inherit_id" ref="account.view_account_config_settings"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//div[@name='other_cofing']/parent::group" position="after">
+                <separator string="Reinvoicing" name="reinvoicing_sep"/>
+                <group>
+                    <label for="id" string="Configuration"/>
+                    <div name="reinvoice_block">
+                        <div>
+                            <label for="reinvoice_waiting_account_id"/>
+                            <field name="reinvoice_waiting_account_id" class="oe_inline"/>
+                        </div>
+                    </div>
+                </group>
+            </xpath>
+
+        </field>
+    </record>
+
+</data>
+</openerp>

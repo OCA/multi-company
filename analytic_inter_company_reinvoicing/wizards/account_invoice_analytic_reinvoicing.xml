@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="account_invoice_analytic_reinvoicing_form_view">
+        <field name="name">account.invoice.analytic.reinvoicing.form (in analytic_inter_company_reinvoicing)</field>
+        <field name="model">account.invoice.analytic.reinvoicing</field>
+        <field name="arch" type="xml">
+            <form string="Process Reinvoicing">
+                <p class="oe_help">
+                    This process will search for all opened invoice lines which are to
+                    reinvoice. An invoice will be created per company.
+                </p>
+                <group>
+                    <field name="company_id" invisible="1"/>
+                </group>
+                <footer>
+                    <button name="execute" type="object"
+                            string="Execute" class="oe_highlight"/>
+                            or
+                    <button string="Cancel"
+                            class="oe_link"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="account_invoice_analytic_reinvoicing_act_window">
+        <field name="name">Account Invoice Analytic Reinvoicing</field>
+        <field name="res_model">account.invoice.analytic.reinvoicing</field>
+        <field name="view_mode">form</field>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+
+    <record model="ir.ui.menu" id="account_invoice_analytic_reinvoicing_menu">
+        <field name="name">Analytic Reinvoicing</field>
+        <field name="parent_id" ref="account.menu_finance_periodical_processing"/>
+        <field name="action" ref="account_invoice_analytic_reinvoicing_act_window"/>
+        <field name="sequence" eval="50"/>
+    </record>
+
+</data>
+</openerp>

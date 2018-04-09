@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2018 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<openerp>
+<data>
+
+    <record model="ir.ui.view" id="account_invoice_line_form_view">
+        <field name="name">account.invoice.line.form (in analytic_inter_company_reinvoicing)</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account.view_invoice_line_form"/>
+        <field name="arch" type="xml">
+
+            <field name="account_id" position="after">
+                <field name="reinvoice_analytic_account_id" string="Reinvoice to"
+                       domain="[('company_id', '!=', parent.company_id)]"/>
+            </field>
+
+        </field>
+    </record>
+
+</data>
+</openerp>
