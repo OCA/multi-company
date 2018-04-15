@@ -18,7 +18,7 @@
     </record>
 
     <record id="warehouse_company_a" model="stock.warehouse">
-        <field name="name">purchase warehouse - A</field>
+        <field name="name">warehouse - A</field>
         <field name="code">CMPA</field>
         <field name="wh_input_stock_loc_id" ref="location_stock_company_a"/>
         <field name="lot_stock_id" ref="location_stock_company_a"/>
@@ -39,7 +39,7 @@
     </record>
 
     <record id="warehouse_company_b" model="stock.warehouse">
-        <field name="name">purchase warehouse - B</field>
+        <field name="name">warehouse - B</field>
         <field name="code">CMPB</field>
         <field name="wh_input_stock_loc_id" ref="location_stock_company_b"/>
         <field name="lot_stock_id" ref="location_stock_company_b"/>

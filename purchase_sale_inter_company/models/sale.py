@@ -1,6 +1,5 @@
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-
-from openerp import fields, models, api
+# -*- coding: utf-8 -*-
+from odoo import fields, models, api
 
 
 class SaleOrder(models.Model):
