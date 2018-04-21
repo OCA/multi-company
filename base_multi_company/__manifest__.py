@@ -5,7 +5,7 @@
 {
     'name': 'Multi Company Base',
     'summary': 'Provides a base for adding multi-company support to models.',
-    'version': '10.0.1.0.1',
+    'version': '10.0.2.0.0',
     'author': "LasLabs, Tecnativa, Odoo Community Association (OCA)",
     'category': 'base',
     'website': 'https://laslabs.com',
