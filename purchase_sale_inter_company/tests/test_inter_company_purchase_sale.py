@@ -12,6 +12,14 @@ class TestPurchaseSaleInterCompany(TransactionCase):
         self.purchase_company_a = self.env.ref(
             'purchase_sale_inter_company.purchase_company_a')
 
+        # Fix default value of company_id set by the company_ids field
+        # of base_multi_company module
+        if self.purchase_company_a.partner_id.company_ids:
+            self.purchase_company_a.partner_id.company_ids = [(6, 0, [])]
+        for line in self.purchase_company_a.order_line:
+            if line.product_id.company_ids:
+                line.product_id.company_ids = [(6, 0, [])]
+
     def test_purchase_sale_inter_company(self):
         # Confirm the purchase of company A
         self.purchase_company_a.sudo(self.env.ref(
