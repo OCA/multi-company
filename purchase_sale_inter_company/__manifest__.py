@@ -1,15 +1,18 @@
-# -*- coding: utf-8 -*-
-# © 2013-Today Odoo SA
-# © 2016 Chafique DELLI @ Akretion
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2013-Today Odoo SA
+# Copyright 2016 Chafique DELLI @ Akretion
+# Copyright 2018 Tecnativa - Carlos Dauden
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
     'name': 'Inter Company Module for Purchase to Sale Order',
     'summary': 'Intercompany PO/SO rules',
-    'version': '8.0.1.0.0',
+    'version': '11.0.1.0.0',
     'category': 'Purchase Management',
     'website': 'http://www.odoo.com',
-    'author': 'Odoo SA, Akretion, Odoo Community Association (OCA)',
+    'author': 'Odoo SA, '
+              'Akretion, '
+              'Tecnativa, '
+              'Odoo Community Association (OCA)',
     'license': 'AGPL-3',
     'installable': True,
     'depends': [
