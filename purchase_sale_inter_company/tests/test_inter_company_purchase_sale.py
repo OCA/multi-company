@@ -1,32 +1,47 @@
-# -*- coding: utf-8 -*-
-# © 2013-Today Odoo SA
-# © 2016 Chafique DELLI @ Akretion
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2013-Today Odoo SA
+# Copyright 2016 Chafique DELLI @ Akretion
+# Copyright 2018 Tecnativa - Carlos Dauden
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from openerp.tests.common import TransactionCase
+from odoo.tests.common import SavepointCase
+from odoo.exceptions import AccessError, UserError
 
 
-class TestPurchaseSaleInterCompany(TransactionCase):
-    def setUp(self):
-        super(TestPurchaseSaleInterCompany, self).setUp()
-        self.purchase_company_a = self.env.ref(
+class TestPurchaseSaleInterCompany(SavepointCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.purchase_company_a = cls.env.ref(
             'purchase_sale_inter_company.purchase_company_a')
+        cls.company_a = cls.env.ref(
+            'account_invoice_inter_company.company_a')
+        cls.company_b = cls.env.ref(
+            'account_invoice_inter_company.company_b')
+        cls.company_b.so_from_po = True
+        cls.user_a = cls.env.ref(
+            'account_invoice_inter_company.user_company_a')
+        cls.user_b = cls.env.ref(
+            'account_invoice_inter_company.user_company_b')
+        cls.account_sale_b = cls.env.ref(
+            'account_invoice_inter_company.a_sale_company_b')
+        cls.product_consultant = cls.env.ref(
+            'account_invoice_inter_company.product_consultant_multi_company')
+        cls.product_consultant.sudo(
+            cls.user_b.id).property_account_income_id = cls.account_sale_b
 
     def test_purchase_sale_inter_company(self):
+        self.purchase_company_a.notes = 'Test note'
         # Confirm the purchase of company A
-        self.purchase_company_a.sudo(self.env.ref(
-            'account_invoice_inter_company.user_company_a')).signal_workflow(
-                'purchase_confirm')
-
+        self.purchase_company_a.sudo(self.user_a).button_approve()
         # Check sale order created in company B
-        sales = self.env['sale.order'].sudo(self.env.ref(
-            'account_invoice_inter_company.user_company_b')).search([
-                ('auto_purchase_order_id', '=', self.purchase_company_a.id)
-            ])
+        sales = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id)
+        ])
         self.assertNotEquals(sales, False)
         self.assertEquals(len(sales), 1)
         if sales.company_id.sale_auto_validation:
-            self.assertEquals(sales.state, 'manual')
+            self.assertEquals(sales.state, 'sale')
         else:
             self.assertEquals(sales.state, 'draft')
         self.assertEquals(sales.partner_id,
@@ -37,3 +52,53 @@ class TestPurchaseSaleInterCompany(TransactionCase):
                           len(self.purchase_company_a.order_line))
         self.assertEquals(sales.order_line.product_id,
                           self.purchase_company_a.order_line.product_id)
+        self.assertEquals(sales.note, 'Test note')
+
+    def xxtest_date_planned(self):
+        # Install sale_order_dates module
+        module = self.env['ir.module.module'].search(
+            [('name', '=', 'sale_order_dates')])
+        if not module:
+            return False
+        module.button_install()
+        self.purchase_company_a.date_planned = '2070-12-31'
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        sales = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id),
+        ])
+        self.assertEquals(sales.requested_date, '2070-12-31')
+
+    def test_raise_product_access(self):
+        product_rule = self.env.ref('product.product_comp_rule')
+        product_rule.active = True
+        self.product_consultant.company_id = self.company_b
+        with self.assertRaises(AccessError):
+            self.purchase_company_a.sudo(self.user_a).button_approve()
+
+    def test_raise_currency(self):
+        currency = self.env.ref('base.EUR')
+        self.purchase_company_a.currency_id = currency
+        with self.assertRaises(UserError):
+            self.purchase_company_a.sudo(self.user_a).button_approve()
+
+    def test_purchase_invoice_relation(self):
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        sales = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id),
+        ])
+        sale_invoice_id = sales.action_invoice_create()[0]
+        sale_invoice = self.env['account.invoice'].browse(sale_invoice_id)
+        sale_invoice.action_invoice_open()
+        self.assertEquals(sale_invoice.auto_invoice_id,
+                          self.purchase_company_a.invoice_ids)
+        self.assertEquals(sale_invoice.auto_invoice_id.invoice_line_ids,
+                          self.purchase_company_a.order_line.invoice_lines)
+
+    def test_cancel(self):
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        sales = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id)
+        ])
+        self.assertEquals(self.purchase_company_a.partner_ref, sales.name)
+        self.purchase_company_a.sudo(self.user_a).button_cancel()
+        self.assertFalse(self.purchase_company_a.partner_ref)
