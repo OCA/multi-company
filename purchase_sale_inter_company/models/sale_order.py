@@ -1,34 +1,36 @@
-# -*- coding: utf-8 -*-
-# © 2013-Today Odoo SA
-# © 2016 Chafique DELLI @ Akretion
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2013-Today Odoo SA
+# Copyright 2016 Chafique DELLI @ Akretion
+# Copyright 2018 Tecnativa - Carlos Dauden
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from openerp import fields, models, api
+from odoo import api, fields, models
 
 
 class SaleOrder(models.Model):
+    _inherit = 'sale.order'
 
-    _inherit = "sale.order"
-
-    auto_purchase_order_id = fields.Many2one('purchase.order',
-                                             string='Source Purchase Order',
-                                             readonly=True, copy=False)
+    auto_purchase_order_id = fields.Many2one(
+        comodel_name='purchase.order',
+        string='Source Purchase Order',
+        readonly=True,
+        copy=False,
+    )
 
     @api.multi
-    def signal_workflow(self, signal):
-        for order in self:
-            if signal == 'order_confirm' and order.auto_purchase_order_id:
-                for line in order.order_line:
-                    if line.auto_purchase_line_id:
-                        line.auto_purchase_line_id.sudo().write({
-                            'price_unit': line.price_unit})
-        return super(SaleOrder, self).signal_workflow(signal=signal)
+    def action_confirm(self):
+        for order in self.filtered('auto_purchase_order_id'):
+            for line in order.order_line.sudo():
+                if line.auto_purchase_line_id:
+                    line.auto_purchase_line_id.price_unit = line.price_unit
+        return super(SaleOrder, self).action_confirm()
 
 
 class SaleOrderLine(models.Model):
-
     _inherit = "sale.order.line"
 
     auto_purchase_line_id = fields.Many2one(
-        'purchase.order.line', string='Source Purchase Order Line',
-        readonly=True, copy=False)
+        comodel_name='purchase.order.line',
+        string='Source Purchase Order Line',
+        readonly=True,
+        copy=False,
+    )

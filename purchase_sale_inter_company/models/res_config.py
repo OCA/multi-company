@@ -1,35 +1,30 @@
-# -*- coding: utf-8 -*-
-# © 2013-Today Odoo SA
-# © 2016 Chafique DELLI @ Akretion
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2013-Today Odoo SA
+# Copyright 2016 Chafique DELLI @ Akretion
+# Copyright 2018 Tecnativa - Carlos Dauden
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields, api
+from odoo import fields, models
 
 
 class InterCompanyRulesConfig(models.TransientModel):
 
-    _inherit = 'base.config.settings'
+    _inherit = 'res.config.settings'
 
+    so_from_po = fields.Boolean(
+        related='company_id.so_from_po',
+        string="Create Sale Orders when buying to this company",
+        help='Generate a Sale Order when a Purchase Order with this company '
+        'as supplier is created.\n The intercompany user must at least be '
+        'Sale User.',
+    )
     sale_auto_validation = fields.Boolean(
+        related='company_id.sale_auto_validation',
         string='Sale Orders Auto Validation',
         help='When a Sale Order is created by a multi company rule for '
              'this company, it will automatically validate it.')
     warehouse_id = fields.Many2one(
-        'stock.warehouse', string='Warehouse For Sale Orders',
+        comodel_name='stock.warehouse',
+        related='company_id.warehouse_id',
+        string='Warehouse For Sale Orders',
         help='Default value to set on Sale Orders that will be created '
         'based on Purchase Orders made to this company.')
-
-    @api.onchange('company_id')
-    def onchange_po_so_company_id(self):
-        if self.company_id:
-            self.sale_auto_validation = self.company_id.sale_auto_validation
-            self.warehouse_id = self.company_id.warehouse_id.id
-
-    @api.multi
-    def set_po_so_inter_company_configuration(self):
-        if self.company_id:
-            vals = {
-                'sale_auto_validation': self.sale_auto_validation,
-                'warehouse_id': self.warehouse_id.id
-            }
-            self.company_id.write(vals)
