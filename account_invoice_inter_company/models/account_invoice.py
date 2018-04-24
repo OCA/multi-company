@@ -3,6 +3,8 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, AccessError
 from odoo.tools import float_compare
 
+import base64
+
 
 class AccountInvoice(models.Model):
 
@@ -71,6 +73,26 @@ class AccountInvoice(models.Model):
                         % (dest_company.name, line.product_id.name))
 
     @api.multi
+    def _generate_pdf(self, dest_invoice):
+        file_content = self.env['report'].with_context(
+            default_type='binary', type='binary').get_pdf(
+                dest_invoice.ids, 'account.report_invoice')
+        if (file_content and
+                dest_invoice.type in ['out_invoice', 'out_refund']):
+                filename = '%s - %s.pdf' % (dest_invoice.company_id.name,
+                                            dest_invoice.number)
+                self.env['ir.attachment'].create({
+                    'name': filename,
+                    'datas_fname': filename,
+                    'type': 'binary',
+                    'datas': base64.encodestring(file_content),
+                    'res_model': 'account.invoice',
+                    'res_id': self.id,
+                    'mimetype': 'application/pdf'
+                })
+        return
+
+    @api.multi
     def _inter_company_create_invoice(
             self, dest_company, dest_inv_type, dest_journal_type):
         """ create an invoice for the given company : it will copy "
@@ -129,6 +151,7 @@ class AccountInvoice(models.Model):
                                   dest_invoice.amount_total,
                                   precision_digits=precision)):
             dest_invoice.action_invoice_open()
+            self._generate_pdf(dest_invoice)
         else:
             # Add warning in chatter if the total amounts are different
             if float_compare(self.amount_total, dest_invoice.amount_total,

@@ -15,6 +15,7 @@
     'depends': [
         'account_accountant',
         'onchange_helper',
+        'document'
     ],
     'data': [
         'views/res_company_view.xml',
