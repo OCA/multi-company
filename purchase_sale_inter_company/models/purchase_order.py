@@ -1,32 +1,27 @@
-# -*- coding: utf-8 -*-
-# © 2013-Today Odoo SA
-# © 2016 Chafique DELLI @ Akretion
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+# Copyright 2013-Today Odoo SA
+# Copyright 2016 Chafique DELLI @ Akretion
+# Copyright 2018 Tecnativa - Carlos Dauden
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from openerp import api, models, _, fields
-from openerp.exceptions import Warning as UserError
+from odoo import _, api, models
+from odoo.exceptions import Warning as UserError
 
 
 class PurchaseOrder(models.Model):
-
     _inherit = 'purchase.order'
 
-    invoice_method = fields.Selection(
-        selection_add=[('intercompany', 'Based on intercompany invoice')])
-
     @api.multi
-    def wkf_confirm_order(self):
+    def button_approve(self, force=False):
         """ Generate inter company sale order base on conditions."""
-        res = super(PurchaseOrder, self).wkf_confirm_order()
-        for purchase_order in self:
+        res = super(PurchaseOrder, self).button_approve(force)
+        for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
-            dest_company = self.env['res.company']._find_company_from_partner(
-                purchase_order.partner_id.id)
-            if dest_company:
-                purchase_order.sudo().\
-                    with_context(force_company=dest_company.id).\
-                    _inter_company_create_sale_order(dest_company.id)
+            dest_company = purchase_order.partner_id.ref_company_ids
+            if dest_company and dest_company.so_from_po:
+                purchase_order.with_context(
+                    force_company=dest_company.id
+                )._inter_company_create_sale_order(dest_company)
         return res
 
     @api.multi
@@ -54,31 +49,31 @@ class PurchaseOrder(models.Model):
                         "is not intercompany") % purchase_line.product_id.name)
 
     @api.multi
-    def _inter_company_create_sale_order(self, dest_company_id):
+    def _inter_company_create_sale_order(self, dest_company):
         """ Create a Sale Order from the current PO (self)
-            Note : In this method, should be call in sudo with the propert
-            destination company in the context
-            :param company : the company of the created PO
-            :rtype company : res.company record
+            Note : In this method, reading the current PO is done as sudo,
+            and the creation of the derived
+            SO as intercompany_user, minimizing the access right required
+            for the trigger user.
+            :param dest_company : the company of the created PO
+            :rtype dest_company : res.company record
         """
         self.ensure_one()
-        dest_company = self.env['res.company'].browse(dest_company_id)
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
         company_partner = self.company_id.partner_id
         # check pricelist currency should be same with PO/SO document
-        if self.pricelist_id.currency_id.id != (
+        if self.currency_id.id != (
                 company_partner.property_product_pricelist.currency_id.id):
             raise UserError(_(
                 'You cannot create SO from PO because '
-                'sale price list currency is different from '
+                'sale price list currency is different than '
                 'purchase price list currency.'))
         # create the SO and generate its lines from the PO lines
         sale_order_data = self._prepare_sale_order_data(
-            self.name, company_partner, dest_company,
-            self.dest_address_id and self.dest_address_id.id or False)
+            self.name, company_partner, dest_company, self.dest_address_id)
         sale_order = self.env['sale.order'].create(sale_order_data)
         for purchase_line in self.order_line:
             sale_line_data = self._prepare_sale_order_line_data(
@@ -87,12 +82,9 @@ class PurchaseOrder(models.Model):
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
-        # write invoice method field on PO
-        if self.invoice_method != 'intercompany':
-            self.invoice_method = 'intercompany'
         # Validation of sale order
         if dest_company.sale_auto_validation:
-            sale_order.signal_workflow('order_confirm')
+            sale_order.action_confirm()
 
     @api.multi
     def _prepare_sale_order_data(self, name, partner, dest_company,
@@ -102,112 +94,64 @@ class PurchaseOrder(models.Model):
             :rtype name : string
             :param partner : the partner reprenseting the company
             :rtype partner : res.partner record
-            :param company : the company of the created SO
-            :rtype company : res.company record
+            :param dest_company : the company of the created SO
+            :rtype dest_company : res.company record
             :param direct_delivery_address : the address of the SO
             :rtype direct_delivery_address : res.partner record
         """
         self.ensure_one()
-        partner_addr = partner.address_get(['default',
-                                            'invoice',
-                                            'delivery',
-                                            'contact'])
-        # find location and warehouse, pick warehouse from company object
-        warehouse = (
-            dest_company.warehouse_id and
-            dest_company.warehouse_id.company_id.id == dest_company.id and
-            dest_company.warehouse_id or False)
-        if not warehouse:
-            raise UserError(_(
-                'Configure correct warehouse for company (%s) in '
-                'Menu: Settings/companies/companies' % (dest_company.name)))
-        partner_shipping_id = (
-            self.picking_type_id.warehouse_id and
-            self.picking_type_id.warehouse_id.partner_id and
-            self.picking_type_id.warehouse_id.partner_id.id or False)
-        return {
-            'name': (
-                self.env['ir.sequence'].next_by_code('sale.order') or '/'
-            ),
+        delivery_address = (
+            direct_delivery_address or
+            self.picking_type_id.warehouse_id.partner_id or False)
+        new_order = self.env['sale.order'].new({
             'company_id': dest_company.id,
             'client_order_ref': name,
             'partner_id': partner.id,
-            'warehouse_id': warehouse.id,
-            'pricelist_id': partner.property_product_pricelist.id,
-            'partner_invoice_id': partner_addr['invoice'],
             'date_order': self.date_order,
-            'fiscal_position': (partner.property_account_position and
-                                partner.property_account_position.id or False),
-            'user_id': False,
             'auto_purchase_order_id': self.id,
-            'partner_shipping_id': (direct_delivery_address or
-                                    partner_shipping_id or
-                                    partner_addr['delivery']),
-            'note': self.notes
-        }
+        })
+        for onchange_method in new_order._onchange_methods['partner_id']:
+            onchange_method(new_order)
+        new_order.user_id = False
+        if delivery_address:
+            new_order.partner_shipping_id = delivery_address
+        if self.notes:
+            new_order.note = self.notes
+        if 'warehouse_id' in new_order:
+            new_order.warehouse_id = (
+                dest_company.warehouse_id.company_id == dest_company and
+                dest_company.warehouse_id or False)
+        if 'requested_date' in new_order:
+            new_order.requested_date = self.date_planned
+        return new_order._convert_to_write(new_order._cache)
 
     @api.model
     def _prepare_sale_order_line_data(
             self, purchase_line, dest_company, sale_order):
         """ Generate the Sale Order Line values from the PO line
-            :param line : the origin Purchase Order Line
-            :rtype line : purchase.order.line record
-            :param company : the company of the created SO
-            :rtype company : res.company record
+            :param purchase_line : the origin Purchase Order Line
+            :rtype purchase_line : purchase.order.line record
+            :param dest_company : the company of the created SO
+            :rtype dest_company : res.company record
             :param sale_order : the Sale Order
         """
-        context = self._context.copy()
-        context['company_id'] = dest_company.id
-        # get sale line data from product onchange
-        sale_line_obj = self.env['sale.order.line'].browse(False)
-        sale_line_data = sale_line_obj.with_context(
-            context).product_id_change_with_wh(
-                pricelist=sale_order.pricelist_id.id,
-                product=(purchase_line.product_id and
-                         purchase_line.product_id.id or False),
-                qty=purchase_line.product_qty,
-                uom=(purchase_line.product_id and
-                     purchase_line.product_id.uom_id.id or False),
-                qty_uos=0,
-                uos=False,
-                name='',
-                partner_id=sale_order.partner_id.id,
-                lang=False,
-                update_tax=True,
-                date_order=sale_order.date_order,
-                packaging=False,
-                fiscal_position=sale_order.fiscal_position.id,
-                flag=False,
-                warehouse_id=sale_order.warehouse_id.id)
-        sale_line_data['value']['product_id'] = (
-            purchase_line.product_id and purchase_line.product_id.id or
-            False)
-        sale_line_data['value']['order_id'] = sale_order.id
-        sale_line_data['value']['delay'] = (purchase_line.product_id and
-                                            purchase_line.product_id.
-                                            sale_delay or 0.0)
-        sale_line_data['value']['company_id'] = dest_company.id
-        sale_line_data['value']['product_uom_qty'] = (purchase_line.
-                                                      product_qty)
-        sale_line_data['value']['product_uom'] = (
-            purchase_line.product_id and
-            purchase_line.product_id.uom_id.id or
-            purchase_line.product_uom.id)
-        if sale_line_data['value'].get('tax_id'):
-            sale_line_data['value']['tax_id'] = ([
-                [6, 0, sale_line_data['value']['tax_id']]])
-        sale_line_data['value']['auto_purchase_line_id'] = purchase_line.id
-        return sale_line_data['value']
+        new_line = self.env['sale.order.line'].new({
+            'order_id': sale_order.id,
+            'product_id': purchase_line.product_id.id,
+            'product_uom': purchase_line.product_id.uom_id.id,
+            'product_uom_qty': purchase_line.product_qty,
+            'auto_purchase_line_id': purchase_line.id,
+        })
+        for onchange_method in new_line._onchange_methods['product_id']:
+            onchange_method(new_line)
+        return new_line._convert_to_write(new_line._cache)
 
     @api.multi
-    def action_cancel(self):
-        for purchase in self:
-            for sale_order in self.env['sale.order'].sudo().search([
-                    ('auto_purchase_order_id', '=', purchase.id)]):
-                sale_order.action_cancel()
-            res = super(PurchaseOrder, purchase).action_cancel()
-            if purchase.invoice_method == 'intercompany':
-                purchase.invoice_method = 'order'
-            if purchase.partner_ref:
-                purchase.partner_ref = ''
-        return res
+    def button_cancel(self):
+        sale_orders = self.env['sale.order'].sudo().search([
+            ('auto_purchase_order_id', 'in', self.ids)])
+        sale_orders.action_cancel()
+        self.write({
+            'partner_ref': False,
+        })
+        return super().button_cancel()
