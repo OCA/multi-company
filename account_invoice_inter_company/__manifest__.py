@@ -6,7 +6,7 @@
 {
     'name': 'Inter Company Module for Invoices',
     'summary': 'Intercompany invoice rules',
-    'version': '10.0.1.1.0',
+    'version': '10.0.1.2.0',
     'category': 'Accounting & Finance',
     'website': 'http://www.odoo.com',
     'author': 'Odoo SA, Akretion, Odoo Community Association (OCA)',
