@@ -1,7 +1,7 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # * product_tax_multicompany_default
-# 
+#
 # Translators:
 # Rudolf Schnapka <rs@techno-flex.de>, 2017
 msgid ""
@@ -12,31 +12,11 @@ msgstr ""
 "PO-Revision-Date: 2017-08-17 03:16+0000\n"
 "Last-Translator: Rudolf Schnapka <rs@techno-flex.de>, 2017\n"
 "Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_company_ids
-msgid "Companies"
-msgstr "Unternehmen"
-
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_taxes_id
-msgid "Customer Taxes"
-msgstr ""
-
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_property_account_expense_id
-msgid "Expense Account"
-msgstr ""
-
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_property_account_income_id
-msgid "Income Account"
-msgstr ""
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_product
@@ -45,7 +25,8 @@ msgstr ""
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_template
-msgid "Product Template"
+#, fuzzy
+msgid "Product Template (Multi-Company)"
 msgstr "Produktvorlage"
 
 #. module: product_tax_multicompany_default
@@ -53,21 +34,5 @@ msgstr "Produktvorlage"
 msgid "Propagate Taxes"
 msgstr ""
 
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product_property_account_expense_id
-msgid ""
-"This account will be used for invoices instead of the default one to value "
-"expenses for the current product."
-msgstr ""
-
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product_property_account_income_id
-msgid ""
-"This account will be used for invoices instead of the default one to value "
-"sales for the current product."
-msgstr ""
-
-#. module: product_tax_multicompany_default
-#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_supplier_taxes_id
-msgid "Vendor Taxes"
-msgstr ""
+#~ msgid "Companies"
+#~ msgstr "Unternehmen"
