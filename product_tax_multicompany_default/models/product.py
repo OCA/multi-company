@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
+# Copyright 2018 Vicent Cubells - Tecnativa <vicent.cubells@tecnativa.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import api, models
+from odoo import api, models
 
 
 class ProductTemplate(models.Model):
@@ -11,7 +11,7 @@ class ProductTemplate(models.Model):
     def taxes_by_company(self, field, company_id, match_tax_ids=None):
         taxes_ids = []
         if match_tax_ids is None:
-            taxes_ids = self.env['ir.values'].get_default(
+            taxes_ids = self.env['ir.default'].get(
                 'product.template', field, company_id=company_id)
         # If None: return default taxes if []: return empty list
         if not match_tax_ids:
