@@ -15,9 +15,9 @@ class PurchaseOrder(models.Model):
         selection_add=[('intercompany', 'Based on intercompany invoice')])
 
     @api.multi
-    def wkf_confirm_order(self):
+    def wkf_approve_order(self):
         """ Generate inter company sale order base on conditions."""
-        res = super(PurchaseOrder, self).wkf_confirm_order()
+        res = super(PurchaseOrder, self).wkf_approve_order()
         for purchase_order in self:
             # get the company from partner then trigger action of
             # intercompany relation
