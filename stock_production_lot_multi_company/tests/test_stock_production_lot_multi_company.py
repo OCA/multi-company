@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-# (c) 2015 Ainara Galdona - AvanzOSC
+# Copyright 2015 Ainara Galdona - AvanzOSC
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 from odoo.exceptions import AccessError
@@ -22,7 +21,8 @@ class TestStockProductionLotMultiCompany(TransactionCase):
         # companies
         self.main_comp = self.env.ref('base.main_company')
         self.secondary_company = self.company_model.create({'name':
-                                                            'SecondComp'})
+                                                            'SecondComp',
+                                                            })
 
         # user groups
         self.lot_group = self.env.ref('stock.group_production_lot')
@@ -69,13 +69,13 @@ class TestStockProductionLotMultiCompany(TransactionCase):
             {'name': 'Main company product',
              'default_code': '[MCP]',
              'company_id': self.main_comp.id,
-             'track_all': True,
+             'tracking': 'serial',
              'uom_id': self.unit_uom.id})
         self.second_comp_product = self.product_model.create(
             {'name': 'Secondary company product',
              'default_code': '[SCP]',
              'company_id': self.secondary_company.id,
-             'track_all': True,
+             'tracking': 'serial',
              'uom_id': self.unit_uom.id})
 
     def test_lot_main_creation(self):

@@ -1,10 +1,10 @@
+.. image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+   :target: https://www.gnu.org/licenses/agpl
+   :alt: License: AGPL-3
+
 ==================================
 Stock Production Lot Multi Company
 ==================================
-
-.. image:: https://img.shields.io/badge/licence-AGPL--3-blue.svg
-    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
-    :alt: License: AGPL-3
 
 This module was written to extend the functionality of serial numbers and make them multi company aware.
 
@@ -23,12 +23,12 @@ Usage
 
 To use this module, you need to:
 
- * go to Wharehouse > Traceability > Serial Numbers to see the company_id in the tree and form views.
+ * go to Inventory > Master Data > Lots / Serial Numbers to see the company_id in the tree and form views.
  * the usual multi company record rule is installed automatically.
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/10.0
+   :target: https://runbot.odoo-community.org/runbot/133/11.0
 
 For further information, please visit:
 
@@ -50,9 +50,15 @@ help us smash it by providing detailed and welcomed feedback.
 Credits
 =======
 
+Images
+------
+
+* Odoo Community Association: `Icon <https://odoo-community.org/logo.png>`_.
+
 Contributors
 ------------
 
+* Marçal Isern <marsal.isern@qubiq.es>
 * Ainara Galdona <ainaragaldona@avanzosc.es>
 * Pedro M. Baeza <pedro.baeza@serviciosbaeza.com>
 * Ana Juaristi <anajuarist@avanzosc.es>
