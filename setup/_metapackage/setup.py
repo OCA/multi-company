@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo11-addon-account_invoice_inter_company',
+        'odoo11-addon-account_multicompany_easy_creation',
     ],
     classifiers=[
         'Programming Language :: Python',
