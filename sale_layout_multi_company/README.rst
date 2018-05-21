@@ -6,7 +6,7 @@
 Sale Layout - Multi company
 ===========================
 
-This module extends the functionality of sale's layout_category model adding support for multi company
+This module extends the functionality of sale's layout_category model adding support for multi company.
 
 Usage
 =====
