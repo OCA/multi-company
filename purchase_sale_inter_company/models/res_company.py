@@ -19,3 +19,10 @@ class ResCompany(models.Model):
         'stock.warehouse', string='Warehouse For Sale Orders',
         help="Default value to set on Sale Orders that "
         "will be created based on Purchase Orders made to this company")
+    update_intercompany_purchase_price = fields.Boolean(
+        help=("If an intercompany sale order item has a different price than "
+              "the originating purchase item, update the purchase item "
+              "automatically. If disabled, just log the price differences on "
+              "the purchase order (and don't allow to confirm the sales "
+              "order)."),
+        default=True)

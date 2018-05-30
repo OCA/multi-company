@@ -25,6 +25,7 @@ Configuration
 * Go to the tab *Inter-Company* then the group *Purchase To Sale*.
 * Select the *Warehouse For Sale Orders*, it is the warehouse that will be used to automatically generate the sale order in the other company.
 * If you check the option *Sale Auto Validation* in the configuration of company B, then when you validate a *Purchase Order* in company A with company B as supplier, then the *Sale Order* will be automatically validated in company B with company A as customer.
+* If you check the option *Update Intercompany Purchase Price* in the configuration of company B, then when you validate a *Purchase Order* in company A with company B as supplier, the prices on the *Purchase Order* will automatically be updated with the prices of the sales order in company B. Price updates will be logged when the sale order is created. If this option is not checked, then the sale order cannot be validated if there are price differences. The option is checked by default.
 
 Usage
 =====

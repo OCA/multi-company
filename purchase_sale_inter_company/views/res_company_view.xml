@@ -9,6 +9,7 @@
                     <group string="Purchase to Sale">
                         <field name="warehouse_id" attrs="{'required': True}" domain="[('company_id', '=', active_id)]"/>
                         <field name="sale_auto_validation"/>
+                        <field name="update_intercompany_purchase_price"/>
                     </group>
                 </xpath>
             </field>

@@ -93,6 +93,18 @@ class PurchaseOrder(models.Model):
         # Validation of sale order
         if dest_company.sale_auto_validation:
             sale_order.signal_workflow('order_confirm')
+        else:
+            diffs = sale_order.multi_company_check_prices()
+            if diffs:
+                prices = '\n'.join(
+                    _('%s: %s vs %s') % diff for diff in diffs)
+                self.message_post(_(
+                    'Sale order %s was created with price differences: %s)' % (
+                        sale_order.name, prices)))
+                sale_order.message_post(_(
+                    'Created from purchase order %s with price differences: '
+                    '%s)' % (
+                        self.name, prices)))
 
     @api.multi
     def _prepare_sale_order_data(self, name, partner, dest_company,
