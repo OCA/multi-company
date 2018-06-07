@@ -19,11 +19,6 @@ To use this module, you need to:
    :alt: Try me on Runbot
    :target: https://runbot.odoo-community.org/runbot/133/8.0
 
-Known issues / Roadmap
-======================
-
-* ...
-
 Bug Tracker
 ===========
 
