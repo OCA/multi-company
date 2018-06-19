@@ -191,24 +191,27 @@ class ChildInvoicing(models.TransientModel):
 
     @api.model
     def _prepare_invoice_line(self, data_line):
-        val_line = super(ChildInvoicing, self).\
-            _prepare_invoice_line(data_line)
-        if data_line.get('__domain'):
-            order_ids = self.env['sale.order'].search(
-                data_line['__domain']).ids
-            line_ids = self.env['sale.order.line'].search([
-                ('order_id', 'in', order_ids)]).ids
-            val_line['sale_line_ids'] = [(6, 0, line_ids)]
         # TODO the code is too complicated
         # we should simplify the _get_invoice_line_data
         # and _prepare_invoice_line to avoid this kind of hack
         if data_line.get('name') == 'royalty':
             section = self.env['crm.case.section'].browse(
                 data_line['section_id'][0])
-            val_line.update(self._get_accounting_value_from_product(
-                data_line,
-                section.holding_royalty_product_id))
-            val_line['name'] = section.holding_royalty_product_id.name
+            val_line = self._get_accounting_value_from_product(
+                data_line, section.holding_royalty_product_id)
+            val_line.update({
+                'price_unit': data_line['amount_untaxed'],
+                'quantity': data_line.get('quantity', 1),
+            })
+        else:
+            val_line = super(ChildInvoicing, self).\
+                _prepare_invoice_line(data_line)
+        if data_line.get('__domain'):
+            order_ids = self.env['sale.order'].search(
+                data_line['__domain']).ids
+            line_ids = self.env['sale.order.line'].search([
+                ('order_id', 'in', order_ids)]).ids
+            val_line['sale_line_ids'] = [(6, 0, line_ids)]
         return val_line
 
     @api.model
