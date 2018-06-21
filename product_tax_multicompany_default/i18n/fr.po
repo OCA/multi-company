@@ -1,0 +1,78 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * product_tax_multicompany_default
+# 
+# Translators:
+# OCA Transbot <transbot@odoo-community.org>, 2017
+# Quentin THEURET <odoo@kerpeo.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-08-19 05:30+0000\n"
+"PO-Revision-Date: 2017-08-19 05:30+0000\n"
+"Last-Translator: Quentin THEURET <odoo@kerpeo.com>, 2017\n"
+"Language-Team: French (https://www.transifex.com/oca/teams/23907/fr/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_company_ids
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_taxes_id
+msgid "Customer Taxes"
+msgstr "Taxes client"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_property_account_expense_id
+msgid "Expense Account"
+msgstr "Compte de dépense"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_property_account_income_id
+msgid "Income Account"
+msgstr "Compte de revenu"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model,name:product_tax_multicompany_default.model_product_product
+msgid "Product"
+msgstr "Produit"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model,name:product_tax_multicompany_default.model_product_template
+msgid "Product Template"
+msgstr "Template de produit"
+
+#. module: product_tax_multicompany_default
+#: model:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
+msgid "Propagate Taxes"
+msgstr "Propager les taxes"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product_property_account_expense_id
+msgid ""
+"This account will be used for invoices instead of the default one to value "
+"expenses for the current product."
+msgstr ""
+"Ce compte sera utilisé pour les factures à la place de celui par défaut pour"
+" évaluer les dépenses pour le produit courant."
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product_property_account_income_id
+msgid ""
+"This account will be used for invoices instead of the default one to value "
+"sales for the current product."
+msgstr ""
+"Ce compte sera utilisé pour les factures à la place de celui par défaut pour"
+" évaluer les ventes du produit courant."
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product_supplier_taxes_id
+msgid "Vendor Taxes"
+msgstr "Taxes sur la vente"
