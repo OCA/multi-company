@@ -1,7 +1,7 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
 # * account_invoice_inter_company
-# 
+#
 # Translators:
 # OCA Transbot <transbot@odoo-community.org>, 2017
 # Matjaž Mozetič <m.mozetic@matmoz.si>, 2017
@@ -13,11 +13,12 @@ msgstr ""
 "PO-Revision-Date: 2017-11-18 05:37+0000\n"
 "Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>, 2017\n"
 "Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
+"Language: sl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Language: sl\n"
-"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
 
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_invoice.py:294
@@ -53,8 +54,10 @@ msgstr "Ni najdene valute '%s' za družbo '%s'"
 msgid ""
 "Dear Sir/Madam,\n"
 "\n"
-"Our records indicate that some payments on your account are still due. Please find details below.\n"
-"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
+"Our records indicate that some payments on your account are still due. "
+"Please find details below.\n"
+"If the amount has already been paid, please disregard this notice. "
+"Otherwise, please forward us the total amount stated below.\n"
 "If you have any queries regarding your account, Please contact us.\n"
 "\n"
 "Thank you in advance for your cooperation.\n"
@@ -62,7 +65,9 @@ msgid ""
 msgstr ""
 "Spoštovani.\n"
 "\n"
-"Iz naših poslovnih knjig je razvidno, da imate zapadle obveznosti do našega podjetja. Prosimo, da svoj dolg takoj poravnate na naš račun. Če ste svoj dolg medtem že poravnali, lahko ta opomin štejete za brezpredmeten.\n"
+"Iz naših poslovnih knjig je razvidno, da imate zapadle obveznosti do našega "
+"podjetja. Prosimo, da svoj dolg takoj poravnate na naš račun. Če ste svoj "
+"dolg medtem že poravnali, lahko ta opomin štejete za brezpredmeten.\n"
 "\n"
 "Za sodelovanje se vam v naprej zahvaljujemo.\n"
 "Lep pozdrav,"
@@ -145,8 +150,8 @@ msgstr ""
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
-"total amount of this invoice is %s but the total amount in the company %s is"
-" %s"
+"total amount of this invoice is %s but the total amount in the company %s is "
+"%s"
 msgstr ""
 "POZOR!!!!! Napaka pri procesu ustvarjanja računa v konsolidiranem okolju: "
 "skupni znesek tega računa znaša %s , a skupni znesek za družbo %s znaša %s"
@@ -154,8 +159,8 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: help:res.company,invoice_auto_validation:0
 msgid ""
-"When an invoice is created by a multi company rule for this company, it will"
-" automatically validate it"
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it"
 msgstr ""
 "Ko se ustvari račun iz pravila konsolidiranja za to družbo, se le-ta "
 "samodejno overi"
@@ -163,8 +168,8 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: help:base.config.settings,invoice_auto_validation:0
 msgid ""
-"When an invoice is created by a multi company rule for this company, it will"
-" automatically validate it."
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it."
 msgstr ""
 "Ko se ustvari račun iz pravila konsolidiranja za to družbo, se le-ta "
 "samodejno overi."
