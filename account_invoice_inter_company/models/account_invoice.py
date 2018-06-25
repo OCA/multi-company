@@ -76,18 +76,18 @@ class AccountInvoice(models.Model):
     def _generate_pdf(self, dest_invoice):
         file_content = self.env['report'].with_context(
             default_type='binary', type='binary').get_pdf(
-                dest_invoice.ids, 'account.report_invoice')
+                self.ids, 'account.report_invoice')
         if (file_content and
-                dest_invoice.type in ['out_invoice', 'out_refund']):
-                filename = '%s - %s.pdf' % (dest_invoice.company_id.name,
-                                            dest_invoice.number)
+                self.type in ['out_invoice', 'out_refund']):
+                filename = '%s - %s.pdf' % (self.company_id.name,
+                                            self.number)
                 self.env['ir.attachment'].create({
                     'name': filename,
                     'datas_fname': filename,
                     'type': 'binary',
                     'datas': base64.encodestring(file_content),
                     'res_model': 'account.invoice',
-                    'res_id': self.id,
+                    'res_id': dest_invoice.id,
                     'mimetype': 'application/pdf'
                 })
         return
@@ -151,7 +151,9 @@ class AccountInvoice(models.Model):
                                   dest_invoice.amount_total,
                                   precision_digits=precision)):
             dest_invoice.action_invoice_open()
-            self._generate_pdf(dest_invoice)
+            # Attach the customer invoice report to the supplier invoice
+            if dest_invoice.type in ['in_invoice', 'in_refund']:
+                self._generate_pdf(dest_invoice)
         else:
             # Add warning in chatter if the total amounts are different
             if float_compare(self.amount_total, dest_invoice.amount_total,
