@@ -8,12 +8,14 @@
         <field name="name">Company A</field>
         <field name="customer" eval="False"/>
         <field name="supplier" eval="True"/>
+        <field name="company_id" eval="False"/>
     </record>
 
     <record id="partner_company_b" model="res.partner">
         <field name="name">Company B</field>
         <field name="customer" eval="True"/>
         <field name="supplier" eval="False"/>
+        <field name="company_id" eval="False"/>
     </record>
 
     <!--
@@ -34,7 +36,7 @@
         <field name="partner_id" ref="partner_company_b"/>
         <field name="parent_id" ref="base.main_company"/>
         <field name="country_id" ref="base.fr"/>
-        <field name="vat">FR32123456789</field>
+        <field name="vat">FR83404833048</field>
         <field name="currency_id" ref="base.EUR"/>
         <field name="invoice_auto_validation">1</field>
     </record>
