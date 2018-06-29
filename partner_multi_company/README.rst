@@ -53,6 +53,7 @@ Contributors
 * Oihane Crucelaegui <oihanecruce@gmail.com>
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
 * Dave Lasley <dave@laslabs.com>
+* Isaac Gallart <igallart@puntsistemes.es>
 
 Maintainer
 ----------
