@@ -57,12 +57,17 @@ def post_init_hook(cr, rule_ref, model_name):
         table_name = model._fields['company_ids'].relation
         column1 = model._fields['company_ids'].column1
         column2 = model._fields['company_ids'].column2
-        SQL = """
+        sql = """
             INSERT INTO %s
             (%s, %s)
-            SELECT id, company_id FROM %s WHERE company_id IS NOT NULL
-        """ % (table_name, column1, column2, model._table)
-        env.cr.execute(SQL)
+            SELECT id, company_id FROM %s AS tb1
+            WHERE company_id IS NOT NULL
+            AND NOT EXISTS (SELECT 1 FROM %s AS tb2 where tb2.%s = tb1.id
+            AND tb2.%s = tb1.company_id)
+            """ % \
+              (table_name, column1, column2, model._table, table_name, column1,
+               column2)
+        env.cr.execute(sql)
 
 
 def uninstall_hook(cr, rule_ref):

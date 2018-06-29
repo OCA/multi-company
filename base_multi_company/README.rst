@@ -109,6 +109,7 @@ Contributors
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
 * Laurent Mignon <laurent.mignon@acsone.eu>
 * Cédric Pigeon <cedric.pigeon@acsone.eu>
+* Isaac Gallart <igallart@puntsistemes.es>
 
 Maintainer
 ----------
