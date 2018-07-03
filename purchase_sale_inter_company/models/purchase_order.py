@@ -190,9 +190,9 @@ class PurchaseOrder(models.Model):
         sale_line_data['value']['product_uom_qty'] = (purchase_line.
                                                       product_qty)
         sale_line_data['value']['product_uom'] = (
+            purchase_line.product_uom.id or
             purchase_line.product_id and
-            purchase_line.product_id.uom_id.id or
-            purchase_line.product_uom.id)
+            purchase_line.product_id.uom_id.id)
         if sale_line_data['value'].get('tax_id'):
             sale_line_data['value']['tax_id'] = ([
                 [6, 0, sale_line_data['value']['tax_id']]])
