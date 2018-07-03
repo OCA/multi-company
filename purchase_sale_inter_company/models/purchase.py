@@ -157,7 +157,8 @@ class PurchaseOrder(models.Model):
             'order_id': sale_order.id,
             'product_id': purchase_line.product_id.id,
             'product_uom_qty': purchase_line.product_qty,
-            'product_uom': (purchase_line.product_id and
+            'product_uom': (purchase_line.product_uom.id or
+                            purchase_line.product_id and
                             purchase_line.product_id.uom_id.id or False),
             'delay': (purchase_line.product_id and
                       purchase_line.product_id.sale_delay or 0.0),
