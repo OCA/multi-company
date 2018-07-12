@@ -59,6 +59,10 @@ class PurchaseOrder(models.Model):
             :rtype dest_company : res.company record
         """
         self.ensure_one()
+        # Check intercompany user
+        intercompany_user = dest_company.intercompany_user_id
+        if intercompany_user.company_id != dest_company:
+            intercompany_user.company_id = dest_company
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # Accessing to selling partner with selling user, so data like
@@ -74,17 +78,19 @@ class PurchaseOrder(models.Model):
         # create the SO and generate its lines from the PO lines
         sale_order_data = self._prepare_sale_order_data(
             self.name, company_partner, dest_company, self.dest_address_id)
-        sale_order = self.env['sale.order'].create(sale_order_data)
+        sale_order = self.env['sale.order'].sudo(
+            intercompany_user.id).create(sale_order_data)
         for purchase_line in self.order_line:
             sale_line_data = self._prepare_sale_order_line_data(
                 purchase_line, dest_company, sale_order)
-            self.env['sale.order.line'].create(sale_line_data)
+            self.env['sale.order.line'].sudo(
+                intercompany_user.id).create(sale_line_data)
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
         # Validation of sale order
         if dest_company.sale_auto_validation:
-            sale_order.action_confirm()
+            sale_order.sudo(intercompany_user.id).action_confirm()
 
     @api.multi
     def _prepare_sale_order_data(self, name, partner, dest_company,
