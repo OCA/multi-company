@@ -28,3 +28,8 @@ class InterCompanyRulesConfig(models.TransientModel):
         string='Warehouse For Sale Orders',
         help='Default value to set on Sale Orders that will be created '
         'based on Purchase Orders made to this company.')
+    intercompany_user_id = fields.Many2one(
+        comodel_name='res.users',
+        related='company_id.intercompany_user_id',
+        string='Intercompany User',
+    )
