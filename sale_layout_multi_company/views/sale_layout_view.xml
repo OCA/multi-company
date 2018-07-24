@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_configuration_form_view_company" model="ir.ui.view">
+        <field name="name">report_configuration_form_view_company</field>
+        <field name="model">sale.layout_category</field>
+        <field name="inherit_id" ref="sale.report_configuration_form_view"/>
+        <field name="arch" type="xml">
+            <field name="sequence" position="after">
+                <field name="company_id" groups="base.group_multi_company" widget="selection" invisible="True"/>
+                <field name="company_ids" groups="base.group_multi_company" widget="many2many_tags"
+                       options="{'no_create': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="report_configuration_tree_view_company" model="ir.ui.view">
+        <field name="name">report_configuration_tree_view_company</field>
+        <field name="model">sale.layout_category</field>
+        <field name="inherit_id" ref="sale.report_configuration_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="sequence" position="after">
+                <field name="company_id" groups="base.group_multi_company" invisible="True"/>
+                <field name="company_ids" groups="base.group_multi_company" widget="many2many_tags"/>
+            </field>
+        </field>
+    </record>
+</odoo>
