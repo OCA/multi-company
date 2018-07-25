@@ -33,6 +33,10 @@ class TestPurchaseSaleInterCompany(TransactionCase):
         # of base_multi_company module
         if self.purchase_a.partner_id.company_ids:
             self.purchase_a.partner_id.company_ids = [(6, 0, [])]
+        if self.company_a.partner_id.company_ids:
+            self.company_a.partner_id.company_ids = [(6, 0, [])]
+        if self.company_b.partner_id.company_ids:
+            self.company_b.partner_id.company_ids = [(6, 0, [])]
         for line in self.purchase_a.order_line:
             if line.product_id.company_ids:
                 line.product_id.company_ids = [(6, 0, [])]
@@ -83,9 +87,10 @@ class TestPurchaseSaleInterCompany(TransactionCase):
         sales = self.env['sale.order'].sudo(self.user_b).search([
             ('auto_purchase_order_id', '=', self.purchase_a.id),
         ])
-        sale_invoice_id = sales.sudo(self.user_b).action_invoice_create()[0]
+        sales.partner_shipping_id = sales.partner_id.id
+        sale_invoice_id = sales.action_invoice_create()[0]
         sale_invoice = self.env['account.invoice'].browse(sale_invoice_id)
-        sale_invoice.sudo(self.user_b).action_invoice_open()
+        sale_invoice.action_invoice_open()
         self.assertEquals(sale_invoice,
                           self.purchase_a.invoice_ids.auto_invoice_id)
         self.assertEquals(
