@@ -48,6 +48,31 @@
     </record>
 
     <!--
+        Create account journal for each company (A and B)
+        -->
+    <record id="sales_journal_company_b" model="account.journal">
+        <field name="name">Sales Journal - (Company B)</field>
+        <field name="code">SAJ-B</field>
+        <field name="type">sale</field>
+        <field name="sequence_id" ref="account_invoice_inter_company.sequence_sale_journal_company_b"/>
+        <field name="default_credit_account_id" ref="account_invoice_inter_company.a_sale_company_b"/>
+        <field name="default_debit_account_id" ref="account_invoice_inter_company.a_sale_company_b"/>
+        <field name="update_posted" eval="True"/>
+        <field name="company_id" ref="account_invoice_inter_company.company_b"/>
+    </record>
+
+    <record id="purchases_journal_company_a" model="account.journal">
+        <field name="name">Purchases Journal - (Company A)</field>
+        <field name="code">EXJ-A</field>
+        <field name="type">purchase</field>
+        <field name="sequence_id" ref="account_invoice_inter_company.sequence_purchase_journal_company_a"/>
+        <field name="default_credit_account_id" ref="account_invoice_inter_company.a_expense_company_a"/>
+        <field name="default_debit_account_id" ref="account_invoice_inter_company.a_expense_company_a"/>
+        <field name="update_posted" eval="True"/>
+        <field name="company_id" ref="account_invoice_inter_company.company_a"/>
+    </record>
+
+    <!--
         Apply warehouse in Company A and Company B
         -->
     <record id="account_invoice_inter_company.company_a" model="res.company">

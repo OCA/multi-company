@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models, _, fields
-from odoo.exceptions import Warning as UserError
+from odoo.exceptions import AccessError, UserError
 
 
 class PurchaseOrder(models.Model):
@@ -45,7 +45,7 @@ class PurchaseOrder(models.Model):
                     purchase_line.product_id.sudo(dest_user).read(
                         ['default_code'])
                 except:
-                    raise UserError(_(
+                    raise AccessError(_(
                         "You cannot create SO from PO because product '%s' "
                         "is not intercompany") % purchase_line.product_id.name)
 
@@ -170,14 +170,13 @@ class PurchaseOrder(models.Model):
         return line_values
 
     @api.multi
-    def action_cancel(self):
-        for purchase in self:
-            for sale_order in self.env['sale.order'].sudo().search([
-                    ('auto_purchase_order_id', '=', purchase.id)]):
-                sale_order.action_cancel()
-            res = super(PurchaseOrder, purchase).action_cancel()
-            if purchase.invoice_status == 'intercompany':
-                purchase.invoice_status = 'no'
-            if purchase.partner_ref:
-                purchase.partner_ref = ''
-        return res
+    def button_cancel(self):
+        sale_orders = self.env['sale.order'].sudo().search([
+            ('auto_purchase_order_id', 'in', self.ids)])
+        sale_orders.action_cancel()
+        self.write({
+            'invoice_status': 'no',
+            'partner_ref': False,
+        })
+        return super(PurchaseOrder, self).button_cancel()
+
