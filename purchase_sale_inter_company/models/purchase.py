@@ -179,4 +179,3 @@ class PurchaseOrder(models.Model):
             'partner_ref': False,
         })
         return super(PurchaseOrder, self).button_cancel()
-
