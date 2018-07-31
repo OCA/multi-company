@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2017 LasLabs Inc.
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
 
@@ -15,6 +14,9 @@ class MultiCompanyAbstractTester(models.TransientModel):
 
 class TestMultiCompanyAbstract(common.SavepointCase):
 
+    post_install = True
+    at_install = False
+
     @classmethod
     def _init_test_model(cls, model_cls):
         """ It builds a model from model_cls in order to test abstract models.
@@ -30,12 +32,11 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         inst = model_cls._build_model(registry, cr)
         model = cls.env[model_cls._name].with_context(todo=[])
         model._prepare_setup()
-        model._setup_base(partial=False)
-        model._setup_fields(partial=False)
+        model._setup_base()
+        model._setup_fields()
         model._setup_complete()
         model._auto_init()
         model.init()
-        model._auto_end()
         cls.test_model_record = cls.env['ir.model'].search([
             ('name', '=', model._name),
         ])
@@ -58,7 +59,6 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.Model = self.env['multi.company.abstract.tester']
         self.record = self.Model.create({
             'name': 'test',
-            'active': True,
         })
         Companies = self.env['res.company']
         self.company_1 = Companies._company_default_get()
