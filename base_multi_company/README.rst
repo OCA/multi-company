@@ -1,5 +1,5 @@
-.. image:: https://img.shields.io/badge/licence-lgpl--3-blue.svg
-   :target: http://www.gnu.org/licenses/LGPL-3.0-standalone.html
+.. image:: https://img.shields.io/badge/licence-lgpl--3-blue.png
+   :target: https://www.gnu.org/licenses/lgpl-3.0-standalone.html
    :alt: License: LGPL-3
 
 ==================
@@ -83,7 +83,7 @@ for the record (`product.product_comp_rule` in the above example).
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/10.0
+   :target: https://runbot.odoo-community.org/runbot/133/11.0
 
 Bug Tracker
 ===========
@@ -109,6 +109,7 @@ Contributors
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
 * Laurent Mignon <laurent.mignon@acsone.eu>
 * Cédric Pigeon <cedric.pigeon@acsone.eu>
+* Rodrigo Ferreira <rodrigosferreira91@gmail.com>
 
 Maintainer
 ----------
