@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo11-addon-account_invoice_inter_company',
         'odoo11-addon-account_multicompany_easy_creation',
+        'odoo11-addon-base_multi_company',
         'odoo11-addon-product_tax_multicompany_default',
         'odoo11-addon-stock_production_lot_multi_company',
     ],
