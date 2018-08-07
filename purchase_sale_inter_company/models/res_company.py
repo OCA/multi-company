@@ -17,10 +17,11 @@ class ResCompany(models.Model):
         'Sale User.',
     )
     sale_auto_validation = fields.Boolean(
-        string='Sale Auto Validation',
-        help='When a Sale Order is created by a multi company rule '
-             'for this company, it will automatically validate it',
-        default=True)
+        string='Sale Orders Auto Validation',
+        default=True,
+        help='When a Sale Order is created by a multi company rule for '
+             'this company, it will automatically validate it.',
+    )
     warehouse_id = fields.Many2one(
         'stock.warehouse', string='Warehouse For Sale Orders',
         help='Default value to set on Sale Orders that '
