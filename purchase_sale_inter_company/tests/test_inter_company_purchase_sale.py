@@ -5,30 +5,49 @@
 
 from odoo.tests.common import SavepointCase
 from odoo.exceptions import AccessError, UserError
+from odoo.modules.module import get_resource_path
+from odoo.tools import convert_file
 
 
 class TestPurchaseSaleInterCompany(SavepointCase):
-
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls._load(
+            "account_invoice_inter_company",
+            "tests",
+            "inter_company_invoice.xml",
+        )
+        cls._load(
+            "purchase_sale_inter_company",
+            "tests",
+            "inter_company_purchase_sale.xml",
+        )
         cls.purchase_company_a = cls.env.ref(
             'purchase_sale_inter_company.purchase_company_a')
         cls.company_a = cls.env.ref(
-            'account_invoice_inter_company.company_a')
+            'purchase_sale_inter_company.company_a')
         cls.company_b = cls.env.ref(
-            'account_invoice_inter_company.company_b')
+            'purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
         cls.user_a = cls.env.ref(
-            'account_invoice_inter_company.user_company_a')
+            'purchase_sale_inter_company.user_company_a')
         cls.user_b = cls.env.ref(
-            'account_invoice_inter_company.user_company_b')
+            'purchase_sale_inter_company.user_company_b')
         cls.account_sale_b = cls.env.ref(
-            'account_invoice_inter_company.a_sale_company_b')
+            'purchase_sale_inter_company.a_sale_company_b')
         cls.product_consultant = cls.env.ref(
-            'account_invoice_inter_company.product_consultant_multi_company')
+            'purchase_sale_inter_company.product_consultant_multi_company')
         cls.product_consultant.sudo(
             cls.user_b.id).property_account_income_id = cls.account_sale_b
+
+    @classmethod
+    def _load(cls, module, *args):
+        convert_file(
+            cls.cr, "purchase_sale_inter_company",
+            get_resource_path(module, *args),
+            None, 'init', False, 'test', cls.registry._assertion_report,
+        )
 
     def test_purchase_sale_inter_company(self):
         self.purchase_company_a.notes = 'Test note'
