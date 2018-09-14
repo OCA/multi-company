@@ -25,7 +25,4 @@
         'views/res_config_view.xml',
         'views/purchase_order_view.xml',
     ],
-    'demo': [
-        'demo/inter_company_purchase_sale.xml',
-    ],
 }

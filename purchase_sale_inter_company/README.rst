@@ -55,6 +55,7 @@ Contributors
 * `Tecnativa <https://www.tecnativa.com>`_:
 
   * Carlos Dauden
+  * Jairo Llopis
 
 Maintainer
 ----------
