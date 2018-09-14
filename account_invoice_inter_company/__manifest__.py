@@ -5,7 +5,7 @@
 {
     'name': 'Inter Company Module for Invoices',
     'summary': 'Intercompany invoice rules',
-    'version': '11.0.1.0.1',
+    'version': '11.0.1.0.2',
     'category': 'Accounting & Finance',
     'website': 'https://github.com/OCA/multi-company',
     'author': 'Odoo SA, Akretion, Odoo Community Association (OCA)',
@@ -16,9 +16,6 @@
     ],
     'data': [
         'views/res_config_settings_view.xml',
-    ],
-    'demo': [
-        'demo/inter_company_invoice.xml',
     ],
     'installable': True,
 }
