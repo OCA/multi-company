@@ -4,11 +4,19 @@
 from odoo import _
 from odoo.tests.common import TransactionCase
 from odoo.exceptions import ValidationError
+from odoo.modules.module import get_resource_path
+from odoo.tools import convert_file
 
 
 class TestAccountInvoiceInterCompany(TransactionCase):
     def setUp(self):
         super(TestAccountInvoiceInterCompany, self).setUp()
+        module = "account_invoice_inter_company"
+        convert_file(
+            self.cr, module,
+            get_resource_path(module, "tests", "inter_company_invoice.xml"),
+            None, 'init', False, 'test', self.registry._assertion_report,
+        )
         self.wizard_obj = self.env['wizard.multi.charts.accounts']
         self.account_obj = self.env['account.account']
         self.invoice_obj = self.env['account.invoice']
@@ -24,14 +32,6 @@ class TestAccountInvoiceInterCompany(TransactionCase):
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !"))
-
-        # Fix default value of company_id set by the company_ids field
-        # of base_multi_company module
-        # if self.invoice_company_a.partner_id.company_ids:
-        #     self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
-        # for line in self.invoice_company_a.invoice_line_ids:
-        #     if line.product_id.company_ids:
-        #         line.product_id.company_ids = [(6, 0, [])]
 
     def test01_user(self):
         # Check user of company B (company of destination)
