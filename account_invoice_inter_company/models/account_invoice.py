@@ -252,11 +252,9 @@ class AccountInvoiceLine(models.Model):
                     % (self.env.ref('account.data_account_type_revenue').name,
                        dest_company.name, dest_company.id))
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
-
         product_id = False
         if dest_company.use_inter_company_products:
             product_id = self.product_id.id or False
-
         vals = {
             'name': self.name,
             # TODO: it's wrong to just copy the price_unit
