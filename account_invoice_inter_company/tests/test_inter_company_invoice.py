@@ -2,36 +2,37 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import SavepointCase
 from odoo.exceptions import ValidationError
+from odoo.modules.module import get_resource_path
+from odoo.tools import convert_file
 
 
-class TestAccountInvoiceInterCompany(TransactionCase):
-    def setUp(self):
-        super(TestAccountInvoiceInterCompany, self).setUp()
-        self.wizard_obj = self.env['wizard.multi.charts.accounts']
-        self.account_obj = self.env['account.account']
-        self.invoice_obj = self.env['account.invoice']
-        self.invoice_company_a = self.env.ref(
+class TestAccountInvoiceInterCompany(SavepointCase):
+    @classmethod
+    def setUpClass(cls):
+        super(TestAccountInvoiceInterCompany, cls).setUpClass()
+        module = "account_invoice_inter_company"
+        convert_file(
+            cls.cr, module,
+            get_resource_path(module, "tests", "inter_company_invoice.xml"),
+            None, 'init', False, 'test', cls.registry._assertion_report,
+        )
+        cls.wizard_obj = cls.env['wizard.multi.charts.accounts']
+        cls.account_obj = cls.env['account.account']
+        cls.invoice_obj = cls.env['account.invoice']
+        cls.invoice_company_a = cls.env.ref(
             'account_invoice_inter_company.customer_invoice_company_a')
-        self.user_company_a = self.env.ref(
+        cls.user_company_a = cls.env.ref(
             'account_invoice_inter_company.user_company_a')
-        self.user_company_b = self.env.ref(
+        cls.user_company_b = cls.env.ref(
             'account_invoice_inter_company.user_company_b')
 
-        self.chart = self.env['account.chart.template'].search([], limit=1)
-        if not self.chart:
+        cls.chart = cls.env['account.chart.template'].search([], limit=1)
+        if not cls.chart:
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !"))
-
-        # Fix default value of company_id set by the company_ids field
-        # of base_multi_company module
-        # if self.invoice_company_a.partner_id.company_ids:
-        #     self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
-        # for line in self.invoice_company_a.invoice_line_ids:
-        #     if line.product_id.company_ids:
-        #         line.product_id.company_ids = [(6, 0, [])]
 
     def test01_user(self):
         # Check user of company B (company of destination)
