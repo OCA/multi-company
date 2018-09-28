@@ -85,7 +85,8 @@ class AccountInvoice(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         for src_line in self.invoice_line_ids:
-            if not src_line.product_id:
+            if dest_company.use_inter_company_products and \
+                    not src_line.product_id:
                 raise UserError(_(
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
