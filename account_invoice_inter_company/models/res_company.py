@@ -11,6 +11,10 @@ class ResCompany(models.Model):
         help="When an invoice is created by a multi company rule "
              "for this company, it will automatically validate it",
         default=True)
+    use_inter_company_products = fields.Boolean(
+        help="Use the same products when an invoice is created by "
+             "a multi company rule.",
+        default=True)
 
     @api.multi
     def _get_user_domain(self):
