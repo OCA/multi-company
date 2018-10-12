@@ -19,13 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:201
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:204
 #, python-format
 msgid "%s - Canceled Invoice: %s"
 msgstr "%s Stornierte Rechnung: %s"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:171
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:174
 #, python-format
 msgid "%s - Invoice: %s"
 msgstr "%s - Rechnung: %s"
@@ -56,44 +56,6 @@ msgstr ""
 "Unternehmens verkauft / kauft."
 
 #. module: account_invoice_inter_company
-#: model:res.company,overdue_msg:account_invoice_inter_company.company_a
-#: model:res.company,overdue_msg:account_invoice_inter_company.company_b
-msgid ""
-"Dear Sir/Madam,\n"
-"\n"
-"Our records indicate that some payments on your account are still due. "
-"Please find details below.\n"
-"If the amount has already been paid, please disregard this notice. "
-"Otherwise, please forward us the total amount stated below.\n"
-"If you have any queries regarding your account, Please contact us.\n"
-"\n"
-"Thank you in advance for your cooperation.\n"
-"Best Regards,"
-msgstr ""
-"Sehr geehrte Damen und Herren, Unsere Unterlagen weisen darauf hin, dass "
-"einige Zahlungen auf Ihrem Konto noch fällig sind. Einzelheiten dazu finden "
-"Sie unten aufgeführt. Wenn der Betrag bereits bezahlt wurde, ignorieren Sie "
-"bitte diesen Hinweis. Andernfalls senden Sie uns bitte den unten angegebenen "
-"Gesamtbetrag. Wenn Sie Fragen zu Ihrem Konto haben, kontaktieren Sie uns "
-"bitte. Vielen Dank im Voraus für Ihre Mitarbeit."
-
-#. module: account_invoice_inter_company
-#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_import_export_company_a
-#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_import_export_company_b
-msgid "French VAT exemption according to articles 262 I of \"CGI\""
-msgstr "Französische Mehrwertsteuerbefreiung gemäß Artikel 262 I von \"CGI\""
-
-#. module: account_invoice_inter_company
-#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_intraeub2b_company_a
-#: model:account.fiscal.position,note:account_invoice_inter_company.1_fiscal_position_template_intraeub2b_company_b
-msgid ""
-"French VAT exemption according to articles 262 ter I (for products) and/or "
-"283-2 (for services) of \"CGI\""
-msgstr ""
-"Französische Mehrwertsteuerbefreiung gemäß Artikel 262 I (für Produkte) "
-"und / oder 283-2 (für Dienstleistungen) von \"CGI\""
-
-#. module: account_invoice_inter_company
 #: model:ir.ui.view,arch_db:account_invoice_inter_company.view_general_configuration_account_invoice_inter_company
 msgid "Inter-Company Invoicing"
 msgstr "Rechnungsstellung zwischen Unternehmen"
@@ -119,28 +81,22 @@ msgid "Invoices Auto Validation"
 msgstr "automatische Rechnungsprüfung"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:26
+#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:35
 #, python-format
 msgid "No Chart of Account Template has been defined !"
 msgstr "Es wurde keine Kontenplanvorlage definiert!"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:248
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:251
 #, python-format
 msgid "Please define %s account for this company: \"%s\" (id:%d)."
 msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:158
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:161
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
-
-#. module: account_invoice_inter_company
-#: model:product.product,name:account_invoice_inter_company.product_consultant_multi_company
-#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
-msgid "Service Multi Company"
-msgstr "Service mehrere Unternehmen"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice_auto_invoice_id
@@ -153,7 +109,7 @@ msgid "Source Invoice Line"
 msgstr "Quellrechnungszeile"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:87
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:90
 #, python-format
 msgid ""
 "The invoice line '%s' doesn't have a product. All invoice lines should have "
@@ -163,7 +119,21 @@ msgstr ""
 "Produkt für zwischenbetriebliche Rechnungen haben."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:111
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company_use_inter_company_products
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings_use_inter_company_products
+#, fuzzy
+msgid "Use Inter Company Products"
+msgstr "Rechnungsstellung zwischen Unternehmen"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company_use_inter_company_products
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings_use_inter_company_products
+msgid ""
+"Use the same products when an invoice is created by a multi company rule."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:114
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
@@ -194,7 +164,7 @@ msgstr ""
 "erstellt wird, wird sie automatisch validiert."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:53
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:55
 #, python-format
 msgid ""
 "You cannot create invoice in company '%s' with product '%s' because it is "
@@ -205,3 +175,36 @@ msgstr ""
 #: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
 msgid "res.config.settings"
 msgstr ""
+
+#~ msgid ""
+#~ "Dear Sir/Madam,\n"
+#~ "\n"
+#~ "Our records indicate that some payments on your account are still due. "
+#~ "Please find details below.\n"
+#~ "If the amount has already been paid, please disregard this notice. "
+#~ "Otherwise, please forward us the total amount stated below.\n"
+#~ "If you have any queries regarding your account, Please contact us.\n"
+#~ "\n"
+#~ "Thank you in advance for your cooperation.\n"
+#~ "Best Regards,"
+#~ msgstr ""
+#~ "Sehr geehrte Damen und Herren, Unsere Unterlagen weisen darauf hin, dass "
+#~ "einige Zahlungen auf Ihrem Konto noch fällig sind. Einzelheiten dazu "
+#~ "finden Sie unten aufgeführt. Wenn der Betrag bereits bezahlt wurde, "
+#~ "ignorieren Sie bitte diesen Hinweis. Andernfalls senden Sie uns bitte den "
+#~ "unten angegebenen Gesamtbetrag. Wenn Sie Fragen zu Ihrem Konto haben, "
+#~ "kontaktieren Sie uns bitte. Vielen Dank im Voraus für Ihre Mitarbeit."
+
+#~ msgid "French VAT exemption according to articles 262 I of \"CGI\""
+#~ msgstr ""
+#~ "Französische Mehrwertsteuerbefreiung gemäß Artikel 262 I von \"CGI\""
+
+#~ msgid ""
+#~ "French VAT exemption according to articles 262 ter I (for products) and/"
+#~ "or 283-2 (for services) of \"CGI\""
+#~ msgstr ""
+#~ "Französische Mehrwertsteuerbefreiung gemäß Artikel 262 I (für Produkte) "
+#~ "und / oder 283-2 (für Dienstleistungen) von \"CGI\""
+
+#~ msgid "Service Multi Company"
+#~ msgstr "Service mehrere Unternehmen"

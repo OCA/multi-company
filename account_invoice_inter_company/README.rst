@@ -30,6 +30,12 @@ If you choose the option *Invoice Auto Validation* in the configuration of compa
    :target: https://runbot.odoo-community.org/runbot/133/11.0
 
 
+Known issues / Roadmap
+======================
+
+ * Product mapping: would be nice to have a matrix with the products on the left side and on the top row the companies.
+
+
 Bug Tracker
 ===========
 
