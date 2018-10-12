@@ -43,6 +43,8 @@ class AccountInvoice(models.Model):
     @api.multi
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
+        if not dest_company.use_inter_company_products:
+            return
         domain = dest_company._get_user_domain()
         dest_user = self.env['res.users'].search(domain, limit=1)
         if dest_user:
@@ -83,7 +85,8 @@ class AccountInvoice(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         for src_line in self.invoice_line_ids:
-            if not src_line.product_id:
+            if dest_company.use_inter_company_products and \
+                    not src_line.product_id:
                 raise UserError(_(
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
@@ -250,6 +253,9 @@ class AccountInvoiceLine(models.Model):
                     % (self.env.ref('account.data_account_type_revenue').name,
                        dest_company.name, dest_company.id))
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
+        product_id = False
+        if dest_company.use_inter_company_products:
+            product_id = self.product_id.id or False
         vals = {
             'name': self.name,
             # TODO: it's wrong to just copy the price_unit
@@ -258,7 +264,7 @@ class AccountInvoiceLine(models.Model):
             'price_unit': self.price_unit,
             'quantity': self.quantity,
             'discount': self.discount,
-            'product_id': self.product_id.id or False,
+            'product_id': product_id,
             'sequence': self.sequence,
             'invoice_line_tax_ids': tax_ids or [],
             # Analytic accounts are per company

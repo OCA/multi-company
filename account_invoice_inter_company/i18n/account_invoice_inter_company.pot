@@ -14,13 +14,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:201
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:204
 #, python-format
 msgid "%s - Canceled Invoice: %s"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:171
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:174
 #, python-format
 msgid "%s - Invoice: %s"
 msgstr ""
@@ -77,13 +77,13 @@ msgid "No Chart of Account Template has been defined !"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:248
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:251
 #, python-format
 msgid "Please define %s account for this company: \"%s\" (id:%d)."
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:158
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:161
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr ""
@@ -99,13 +99,25 @@ msgid "Source Invoice Line"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:87
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:90
 #, python-format
 msgid "The invoice line '%s' doesn't have a product. All invoice lines should have a product for inter-company invoices."
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:111
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company_use_inter_company_products
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings_use_inter_company_products
+msgid "Use Inter Company Products"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company_use_inter_company_products
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings_use_inter_company_products
+msgid "Use the same products when an invoice is created by a multi company rule."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:114
 #, python-format
 msgid "WARNING!!!!! Failure in the inter-company invoice creation process: the total amount of this invoice is %s but the total amount of the invoice %s in the company %s is %s"
 msgstr ""
@@ -121,7 +133,7 @@ msgid "When an invoice is created by a multi company rule for this company, it w
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:53
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:55
 #, python-format
 msgid "You cannot create invoice in company '%s' with product '%s' because it is not multicompany"
 msgstr ""
