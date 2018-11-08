@@ -206,7 +206,7 @@ class AccountInvoice(models.Model):
                     dest_user).check_access_rule('read'):
                 dest_partner_data['payment_term_id'] = self.payment_term_id.id
         # check partner bank
-        if dest_partner_data.get('partner_bank_id') != self.partner_bank_id:
+        if self.partner_bank_id and dest_partner_data.get('partner_bank_id') != self.partner_bank_id:
             dest_partner_data['partner_bank_id'] = self.partner_bank_id.id
         return {
             'name': self.name,
