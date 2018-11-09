@@ -3,13 +3,14 @@
 # Copyright 2018 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import SavepointCase
+from odoo.tests import common
 from odoo.exceptions import AccessError, UserError
 from odoo.modules.module import get_resource_path
 from odoo.tools import convert_file
 
 
-class TestPurchaseSaleInterCompany(SavepointCase):
+class TestPurchaseSaleInterCompany(common.SavepointCase):
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -25,15 +26,14 @@ class TestPurchaseSaleInterCompany(SavepointCase):
         )
         cls.purchase_company_a = cls.env.ref(
             'purchase_sale_inter_company.purchase_company_a')
-        cls.company_a = cls.env.ref(
-            'purchase_sale_inter_company.company_a')
-        cls.company_b = cls.env.ref(
-            'purchase_sale_inter_company.company_b')
+        cls.company_a = cls.env.ref('purchase_sale_inter_company.company_a')
+        cls.company_b = cls.env.ref('purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
-        cls.user_a = cls.env.ref(
-            'purchase_sale_inter_company.user_company_a')
-        cls.user_b = cls.env.ref(
-            'purchase_sale_inter_company.user_company_b')
+        cls.user_a = cls.env.ref('purchase_sale_inter_company.user_company_a')
+        cls.user_b = cls.env.ref('purchase_sale_inter_company.user_company_b')
+        cls.intercompany_user = cls.user_b.copy()
+        cls.intercompany_user.company_ids |= cls.company_a
+        cls.company_b.intercompany_user_id = cls.intercompany_user
         cls.account_sale_b = cls.env.ref(
             'purchase_sale_inter_company.a_sale_company_b')
         cls.product_consultant = cls.env.ref(
@@ -46,7 +46,7 @@ class TestPurchaseSaleInterCompany(SavepointCase):
         convert_file(
             cls.cr, "purchase_sale_inter_company",
             get_resource_path(module, *args),
-            None, 'init', False, 'test', cls.registry._assertion_report,
+            {}, 'init', False, 'test', cls.registry._assertion_report,
         )
 
     def test_purchase_sale_inter_company(self):
@@ -114,6 +114,7 @@ class TestPurchaseSaleInterCompany(SavepointCase):
                           self.purchase_company_a.order_line.invoice_lines)
 
     def test_cancel(self):
+        self.company_b.sale_auto_validation = False
         self.purchase_company_a.sudo(self.user_a).button_approve()
         sales = self.env['sale.order'].sudo(self.user_b).search([
             ('auto_purchase_order_id', '=', self.purchase_company_a.id)
@@ -121,3 +122,12 @@ class TestPurchaseSaleInterCompany(SavepointCase):
         self.assertEquals(self.purchase_company_a.partner_ref, sales.name)
         self.purchase_company_a.sudo(self.user_a).button_cancel()
         self.assertFalse(self.purchase_company_a.partner_ref)
+
+    def test_cancel_confirmed_po_so(self):
+        self.company_b.sale_auto_validation = True
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id)
+        ])
+        with self.assertRaises(UserError):
+            self.purchase_company_a.sudo(self.user_a).button_cancel()
