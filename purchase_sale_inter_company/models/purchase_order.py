@@ -43,7 +43,7 @@ class PurchaseOrder(models.Model):
                 try:
                     purchase_line.product_id.sudo(dest_user).read(
                         ['default_code'])
-                except:
+                except Exception:
                     raise UserError(_(
                         "You cannot create SO from PO because product '%s' "
                         "is not intercompany") % purchase_line.product_id.name)
@@ -144,7 +144,7 @@ class PurchaseOrder(models.Model):
         new_line = self.env['sale.order.line'].new({
             'order_id': sale_order.id,
             'product_id': purchase_line.product_id.id,
-            'product_uom': purchase_line.product_id.uom_id.id,
+            'product_uom': purchase_line.product_uom.id,
             'product_uom_qty': purchase_line.product_qty,
             'auto_purchase_line_id': purchase_line.id,
         })
@@ -156,6 +156,10 @@ class PurchaseOrder(models.Model):
     def button_cancel(self):
         sale_orders = self.env['sale.order'].sudo().search([
             ('auto_purchase_order_id', 'in', self.ids)])
+        for so in sale_orders:
+            if so.state not in ['draft', 'sent', 'cancel']:
+                raise UserError(_("You can't cancel an order that is %s")
+                                % so.state)
         sale_orders.action_cancel()
         self.write({
             'partner_ref': False,
