@@ -135,7 +135,6 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         """
         user_obj = self.env['res.users']
         company_obj = self.env['res.company']
-        tester_obj = self.env['multi.company.abstract.tester']
         company1 = self.env.ref("base.main_company")
         # Create companies
         company2 = company_obj.create({
@@ -147,9 +146,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         company4 = company_obj.create({
             'name': 'No salaries',
         })
-        companies = company1
-        companies |= company2
-        companies |= company3
+        companies = company1 + company2 + company3
         # Create a "normal" user (not the admin)
         user = user_obj.create({
             'name': 'Best employee',
@@ -157,11 +154,11 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             'company_id': company1.id,
             'company_ids': [(6, False, companies.ids)],
         })
+        tester_obj = self.env['multi.company.abstract.tester'].sudo(user)
         tester = tester_obj.create({
             'name': 'My tester',
             'company_ids': [(6, False, companies.ids)],
         })
-        tester = tester.sudo(user)
         # Current company_id should be updated with current company of the user
         for company in user.company_ids:
             user.write({
@@ -170,8 +167,8 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             # Force recompute
             tester.invalidate_cache()
             # Ensure that the current user is on the right company
-            self.assertEqual(user.company_id.id, company.id)
-            self.assertEqual(tester.company_id.id, company.id)
+            self.assertEqual(user.company_id, company)
+            self.assertEqual(tester.company_id, company)
             # So can read company fields without Access error
             self.assertTrue(bool(tester.company_id.name))
         # Switch to a company not in tester.company_ids
