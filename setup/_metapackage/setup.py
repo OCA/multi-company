@@ -13,6 +13,7 @@ setuptools.setup(
         'odoo10-addon-base_multi_company',
         'odoo10-addon-partner_multi_company',
         'odoo10-addon-product_multi_company',
+        'odoo10-addon-purchase_sale_inter_company',
         'odoo10-addon-sale_layout_multi_company',
         'odoo10-addon-stock_production_lot_multi_company',
     ],
