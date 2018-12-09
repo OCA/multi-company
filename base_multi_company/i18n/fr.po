@@ -20,15 +20,11 @@ msgstr ""
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_company_ids
-#: model:ir.model.fields,field_description:base_multi_company.field_product_template_company_ids
-#: model:ir.model.fields,field_description:base_multi_company.field_res_partner_company_ids
-#: model:ir.model.fields,field_description:base_multi_company.field_sale_layout_category_company_ids
 msgid "Companies"
 msgstr "Sociétés"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_company_id
-#: model:ir.model.fields,field_description:base_multi_company.field_sale_layout_category_company_id
 msgid "Company"
 msgstr ""
 
@@ -62,7 +58,7 @@ msgstr ""
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment_parent_id
-msgid "Parent id"
+msgid "Parent"
 msgstr ""
 
 #. module: base_multi_company
