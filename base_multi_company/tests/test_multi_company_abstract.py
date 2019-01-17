@@ -69,7 +69,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
 
     def add_company(self, company):
         """ Add company to the test record. """
-        self.record.company_ids = [4, company.id]
+        self.record.company_ids = [(4, company.id)]
 
     def switch_user_company(self, user, company):
         """ Add a company to the user's allowed & set to current. """
@@ -78,19 +78,12 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             'company_id': company.id,
         })
 
-    def test_default_company_ids(self):
-        """ It should set company_ids to the default company. """
-        self.assertEqual(
-            self.record.company_ids.ids,
-            self.company_1.ids,
-        )
-
     def test_compute_company_id(self):
         """ It should set company_id to the top of the company_ids stack. """
         self.add_company(self.company_2)
         self.assertEqual(
             self.record.company_id.id,
-            self.record.company_ids[0].id,
+            self.company_2.id,
         )
 
     def test_inverse_company_id(self):
@@ -107,17 +100,17 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         ])
         self.assertEqual(record, self.record)
         record = self.env['multi.company.abstract.tester'].search([
-            ('company_id', '=', self.company_1.id),
+            ('company_id', '=', self.company_2.id),
             ('id', '=', self.record.id),
         ])
         self.assertEqual(record, self.record)
         record = self.env['multi.company.abstract.tester'].search([
-            ('company_ids', 'child_of', self.company_1.id),
+            ('company_ids', 'child_of', self.company_2.id),
             ('id', '=', self.record.id),
         ])
         self.assertEqual(record, self.record)
         record = self.env['multi.company.abstract.tester'].search([
-            ('company_ids', 'parent_of', self.company_1.id),
+            ('company_ids', 'parent_of', self.company_2.id),
             ('id', '=', self.record.id),
         ])
         self.assertEqual(record, self.record)
