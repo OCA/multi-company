@@ -26,7 +26,8 @@ msgstr "Produit"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_template
-msgid "Product Template"
+#, fuzzy
+msgid "Product Template (Multi-Company)"
 msgstr "Template de produit"
 
 #. module: product_tax_multicompany_default
