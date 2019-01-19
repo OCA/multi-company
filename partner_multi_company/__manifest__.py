@@ -1,5 +1,5 @@
 # Copyright 2015 Oihane Crucelaegui
-# Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
+# Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 {
@@ -9,7 +9,6 @@
     "license": "AGPL-3",
     "depends": [
         "base_multi_company",
-        "base_suspend_security",
     ],
     "author": "Tecnativa, "
               "Odoo Community Association (OCA)",
