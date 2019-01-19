@@ -81,6 +81,8 @@ class TestMultiCompanyAbstract(common.SavepointCase):
     def test_compute_company_id(self):
         """ It should set company_id to the top of the company_ids stack. """
         self.add_company(self.company_2)
+        self.env.user.company_ids = [(4, self.company_2.id)]
+        self.env.user.company_id = self.company_2.id
         self.assertEqual(
             self.record.company_id.id,
             self.company_2.id,
