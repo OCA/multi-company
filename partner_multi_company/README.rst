@@ -41,9 +41,6 @@ template security rule. This only means that updating the module will not
 restore the security rule this module changes. Only a complete removal and
 reinstallation will serve.
 
-It uses a module from https://github.com/OCA/server-tools called
-*base_suspend_security* that you must have available in your Odoo installation.
-
 Usage
 =====
 
@@ -78,10 +75,10 @@ Contributors
 ~~~~~~~~~~~~
 
 * Oihane Crucelaegui <oihanecruce@gmail.com>
-* Pedro M. Baeza <pedro.baeza@tecnativa.com>
 * Dave Lasley <dave@laslabs.com>
 * `Tecnativa <https://www.tecnativa.com>`_:
 
+  * Pedro M. Baeza <pedro.baeza@tecnativa.com>
   * Vicent Cubells <vicent.cubells@tecnativa.com>
 
 Maintainers
