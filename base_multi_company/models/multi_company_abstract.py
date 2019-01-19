@@ -20,7 +20,13 @@ class MultiCompanyAbstract(models.AbstractModel):
         string='Companies',
         comodel_name='res.company.assignment',
         auto_join=True,
+        default=lambda self: self._default_company_ids(),
     )
+
+    def _default_company_ids(self):
+        return self.browse(
+            self.env['res.company']._company_default_get(self._name).ids
+        )
 
     @api.depends('company_ids')
     def _compute_company_id(self):
