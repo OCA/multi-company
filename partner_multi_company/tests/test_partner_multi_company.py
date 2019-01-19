@@ -1,9 +1,9 @@
 # Copyright 2015 Oihane Crucelaegui
-# Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
+# Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
-from openerp.tests import common
-from openerp.exceptions import AccessError
+from odoo.tests import common
+from odoo.exceptions import AccessError
 
 
 @common.at_install(False)
@@ -12,8 +12,6 @@ class TestPartnerMultiCompany(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestPartnerMultiCompany, cls).setUpClass()
-        # This is for being sure that the suspend_security method is hooked
-        cls.env['ir.rule']._register_hook()
         # Avoid possible spam
         cls.partner_model = cls.env['res.partner'].with_context(
             mail_create_nosubscribe=True,
@@ -34,22 +32,28 @@ class TestPartnerMultiCompany(common.SavepointCase):
         cls.partner_company_both = cls.partner_model.create(
             {'name': 'partner for both companies',
              'company_ids': [(6, 0, (cls.company_1 + cls.company_2).ids)]})
-        cls.user_company_1 = cls.env['res.users'].create(
-            {'name': 'User company 1',
-             'login': 'user_company_1',
-             'email': 'somebody@somewhere.com',
-             'groups_id': [
-                 (6, 0, cls.env.ref('base.group_partner_manager').ids)],
-             'company_id': cls.company_1.id,
-             'company_ids': [(6, 0, cls.company_1.ids)]})
-        cls.user_company_2 = cls.env['res.users'].create(
-            {'name': 'User company 2',
-             'login': 'user_company_2',
-             'email': 'somebody@somewhere.com',
-             'groups_id': [
-                 (6, 0, cls.env.ref('base.group_partner_manager').ids)],
-             'company_id': cls.company_2.id,
-             'company_ids': [(6, 0, cls.company_2.ids)]})
+        cls.user_company_1 = cls.env['res.users'].create({
+            'name': 'User company 1',
+            'login': 'user_company_1',
+            'email': 'somebody@somewhere.com',
+            'groups_id': [
+                (4, cls.env.ref('base.group_partner_manager').id),
+                (4, cls.env.ref('base.group_user').id),
+            ],
+            'company_id': cls.company_1.id,
+            'company_ids': [(6, 0, cls.company_1.ids)],
+        })
+        cls.user_company_2 = cls.env['res.users'].create({
+            'name': 'User company 2',
+            'login': 'user_company_2',
+            'email': 'somebody@somewhere.com',
+            'groups_id': [
+                (4, cls.env.ref('base.group_partner_manager').id),
+                (4, cls.env.ref('base.group_user').id),
+            ],
+            'company_id': cls.company_2.id,
+            'company_ids': [(6, 0, cls.company_2.ids)],
+        })
         cls.partner_company_1 = cls.partner_company_1.sudo(cls.user_company_1)
         cls.partner_company_2 = cls.partner_company_2.sudo(cls.user_company_2)
 
@@ -87,8 +91,10 @@ class TestPartnerMultiCompany(common.SavepointCase):
             self.partner_company_2.sudo(self.user_company_1).name = "Test"
 
     def test_create_company_1(self):
-        partner = self.partner_model.sudo(self.user_company_1).create(
-            {'name': 'Test from user company 1'})
+        partner = self.partner_model.sudo(self.user_company_1).create({
+            'name': 'Test from user company 1',
+            'company_ids': [(6, 0, self.company_1.ids)],
+        })
         self.assertEqual(partner.company_id, self.company_1)
 
     def test_create_company_2(self):
