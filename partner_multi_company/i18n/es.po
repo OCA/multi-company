@@ -20,7 +20,7 @@ msgstr ""
 
 #. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_partner
-msgid "Partner"
+msgid "Contact"
 msgstr ""
 
 #. module: partner_multi_company
