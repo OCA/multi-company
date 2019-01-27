@@ -20,13 +20,16 @@ msgstr ""
 
 #. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_partner
-msgid "Partner"
-msgstr "Partner"
+msgid "Contact"
+msgstr ""
 
 #. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_users
 msgid "Users"
 msgstr "Anwender"
+
+#~ msgid "Partner"
+#~ msgstr "Partner"
 
 #~ msgid "Companies"
 #~ msgstr "Unternehmen"
