@@ -1,0 +1,2 @@
+id,name,model_id:id,groups:id,perm_read,perm_write,perm_create,perm_unlink,domain_force
+product_supplierinfo_intercomp_rule,product supplierinfo intercompany rule,product.model_product_supplierinfo,,True,False,False,False,"[('intercompany_pricelist_id', '!=', False), ('company_id', '!=', user.company_id.id)]"

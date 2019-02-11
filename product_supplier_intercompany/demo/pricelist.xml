@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+<data>
+    <record id="pricelist_intercompany" model="product.pricelist">
+        <field name="name">Pricelist Intercompany</field>
+        <field name="type">sale</field>
+    </record>
+    <record id="pricelist_intercompany_v1" model="product.pricelist.version">
+        <field name="name">Pricelist Intercompany V1</field>
+        <field name="pricelist_id" ref="pricelist_intercompany"/>
+    </record>
+    <record id="pricelistitem1" model="product.pricelist.item">
+        <field name="price_version_id" ref="pricelist_intercompany_v1"/>
+        <field name="product_tmpl_id" ref="product.product_product_4_product_template"/>
+    </record>
+</data>
+</openerp>
