@@ -6,11 +6,9 @@
             <field name="inherit_id" ref="product.product_pricelist_view"/>
             <field name="arch" type="xml">
                 <field name="company_id" position="after">
-                    <group col="2">
-                        <field name="is_intercompany_supplier" attrs="{'readonly': True, 'invisible': [('company_id', '=', False)]}" groups="base.group_multi_company"/>
-                        <button name="set_as_intercompany_supplier" type="object" string="Set as intercompany supplier" attrs="{'invisible': ['|', ('company_id', '=', False), ('is_intercompany_supplier', '=', True)]}" groups="base.group_multi_company"/>
-                        <button name="unset_as_intercompany_supplier" type="object" string="Unset as intercompany supplier" attrs="{'invisible': ['|', ('company_id', '=', False), ('is_intercompany_supplier', '=', False)]}" groups="base.group_multi_company"/>
-                    </group>
+                    <field name="is_intercompany_supplier"
+                        attrs="{'invisible': [('company_id', '=', False)]}"
+                        groups="base.group_multi_company"/>
                 </field>
             </field>
         </record>
