@@ -11,7 +11,7 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
     def _synchronise_supplier_info(self, pricelists=None):
         if not pricelists:
             pricelists = self.env['product.pricelist'].search(
-                    [('is_intercompany_supplier', '=', True)])
+                [('is_intercompany_supplier', '=', True)])
 
         for pricelist in pricelists:
             # chaque pricelist est mise dans le context pour avoir
@@ -60,7 +60,7 @@ class ProductProduct(models.Model):
     def _prepare_intercompany_supplier_info(self):
         for record in self:
             vals = super(
-                    ProductProduct, self)._prepare_intercompany_supplier_info()
+                ProductProduct, self)._prepare_intercompany_supplier_info()
             vals.update({
                 'product_id': record.id,
                 'product_tmpl_id': record.product_tmpl_id.id,
@@ -109,8 +109,8 @@ class ProductSupplierinfo(models.Model):
     _inherit = 'product.supplierinfo'
 
     intercompany_pricelist_id = fields.Many2one(
-            comodel_name='product.pricelist',
-            inverse_name='generated_supplier_info_ids')
+        comodel_name='product.pricelist',
+        inverse_name='generated_supplier_info_ids')
 
     def _check_intercompany_supplier(self):
         self.ensure_one()

@@ -10,9 +10,9 @@ class TestPricelist(TransactionCase):
     def setUp(self):
         super(TestPricelist, self).setUp()
         self.pricelist = self.env.ref(
-                'product_supplier_intercompany.pricelist_intercompany')
+            'product_supplier_intercompany.pricelist_intercompany')
         self.item = self.env.ref(
-                'product_supplier_intercompany.pricelistitem1')
+            'product_supplier_intercompany.pricelistitem1')
         # will be needed in version 10 (if global still not supported)
         # self.env['product.pricelist.item'].search([
         #    ('pricelist_id', '=', self.pricelist_id.id),

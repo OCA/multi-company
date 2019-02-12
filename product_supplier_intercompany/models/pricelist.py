@@ -25,7 +25,7 @@ class ProductPricelist(models.Model):
     def unset_as_intercompany_supplier(self):
         for record in self:
             record.with_context(automatic_intercompany_sync=True).mapped(
-                    'generated_supplierinfo_ids').unlink()
+                'generated_supplierinfo_ids').unlink()
             record.write({'is_intercompany_supplier': False})
 
     @api.multi
@@ -61,7 +61,7 @@ class ProductPricelistItem(models.Model):
                         self.env['product.product'].browse())
             else:
                 raise Exception(
-                        'This pricelist item type is not supported yet.')
+                    'This pricelist item type is not supported yet.')
 
     @api.multi
     def write(self, vals):
