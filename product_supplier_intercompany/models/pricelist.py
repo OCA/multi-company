@@ -8,25 +8,35 @@ from openerp import api, models, fields
 class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
 
-    is_intercompany_supplier = fields.Boolean()
+    is_intercompany_supplier = fields.Boolean(
+        inverse='_inverse_intercompany_supplier')
 
     generated_supplierinfo_ids = fields.One2many(
         comodel_name='product.supplierinfo',
         inverse_name='intercompany_pricelist_id',
         )
 
-    @api.multi
-    def set_as_intercompany_supplier(self):
+    def _inverse_intercompany_supplier(self):
         for record in self:
-            record.write({'is_intercompany_supplier': True})
-            record.version_id.items_id._init_supplier_info()
+            if record.is_intercompany_supplier:
+                record._active_intercompany()
+            else:
+                record._unactive_intercompany()
 
-    @api.multi
-    def unset_as_intercompany_supplier(self):
-        for record in self:
-            record.with_context(automatic_intercompany_sync=True).mapped(
-                'generated_supplierinfo_ids').unlink()
-            record.write({'is_intercompany_supplier': False})
+    def _active_intercompany(self):
+        self.ensure_one()
+        if self.is_intercompany_supplier:
+            if len(self.version_id) > 1:
+                raise UserError(
+                    _('Only one version is supported for'
+                      'intercompany pricelist'))
+            self.version_id.items_id._init_supplier_info()
+
+    def _unactive_intercompany(self):
+        self.ensure_one()
+        self.sudo().with_context(
+            automatic_intercompany_sync=True).mapped(
+            'generated_supplierinfo_ids').unlink()
 
     @api.multi
     def _sync_all_supplierinfo(self, templates, variants):
