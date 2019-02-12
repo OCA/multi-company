@@ -3,45 +3,170 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from openerp.tests.common import TransactionCase
+from openerp.exceptions import Warning as UserError
 
 
 class TestPricelist(TransactionCase):
 
     def setUp(self):
         super(TestPricelist, self).setUp()
-        self.pricelist = self.env.ref(
+        self.user = self.env.ref('base.user_demo')
+        self.user.write({'groups_id': [
+            (4, self.env.ref('base.group_sale_manager').id)]})
+        self.env = self.env(user=self.user)
+        ref = self.env.ref
+        self.pricelist = ref(
             'product_supplier_intercompany.pricelist_intercompany')
-        self.item = self.env.ref(
-            'product_supplier_intercompany.pricelistitem1')
-        # will be needed in version 10 (if global still not supported)
-        # self.env['product.pricelist.item'].search([
-        #    ('pricelist_id', '=', self.pricelist_id.id),
-        #    ('applied_on', '=', '3_global')]).unlink()
+        self.partner = ref('base.main_partner')
 
-    def test_pricelist_set_unset_supplier(self):
-        self.pricelist.set_as_intercompany_supplier()
-        supplierinfo = self.env['product.supplierinfo'].search(
-            ['|',
-                ('product_tmpl_id', '=',
-                    self.item.product_id.product_tmpl_id.id),
-                ('product_id.id', '=', self.item.product_id.id)])
-        print('RES', supplierinfo)
-        self.pricelist.unset_as_intercompany_supplier()
-        supplierinfo = self.env['product.supplierinfo'].search(
-            ['|',
-                ('product_tmpl_id', '=',
-                    self.item.product_id.product_tmpl_id.id),
-                ('product_id.id', '=', self.item.product_id.id)])
-        print('RES', supplierinfo)
+        self.product_template_4 = ref(
+            'product.product_product_4_product_template')
+        self.product_product_4b = ref(
+            'product.product_product_4b')
+        self.product_template_1 = ref(
+            'product.product_product_1_product_template')
+        self.product_product_2 = ref(
+            'product.product_product_2')
 
-    def test_supplier_add_pricelistitem(self):
+        self.price_item_4 = ref(
+            'product_supplier_intercompany.pricelist_item_product_template_4')
+        self.price_item_4b = ref(
+            'product_supplier_intercompany.pricelist_item_product_product_4b')
+
+        self.sale_company = ref('base.main_company')
+        self.purchase_company = ref('stock.res_company_1')
         self.pricelist.set_as_intercompany_supplier()
-        new = self.env['product.pricelist.item'].create({
-            'price_version_id': self.item.price_version_id.id,
-            'product_id': self.env.ref('product.product_product_4b').id,
+        self.supplier_info = self._get_supplier_info(self.product_template_1)
+
+    def _get_supplier_info(self, record=None, sudo=True):
+        domain = [
+            ('name', '=', self.partner.id),
+            ('intercompany_pricelist_id', '=', self.pricelist.id),
+            ('company_id', '=', self.sale_company.id),
+            ]
+        if record:
+            self.assertIn(
+                record._name, ['product.product', 'product.template'])
+            if record._name == 'product.product':
+                domain += [
+                    ('product_tmpl_id', '=', record.product_tmpl_id.id),
+                    ('product_id', '=', record.id),
+                ]
+            else:
+                domain.append(('product_tmpl_id', '=', record.id))
+        supplierinfo_obj = self.env['product.supplierinfo']
+        if sudo:
+            supplierinfo_obj = supplierinfo_obj.sudo()
+        return supplierinfo_obj.search(domain)
+
+    def _check_no_supplier_info_for(self, record):
+        supplierinfo = self._get_supplier_info(record)
+        self.assertEqual(len(supplierinfo), 0)
+
+    def _check_supplier_info_for(self, record, price):
+        supplierinfo = self._get_supplier_info(record)
+        self.assertEqual(len(supplierinfo), 1)
+        self.assertEqual(len(supplierinfo.pricelist_ids), 1)
+        self.assertEqual(supplierinfo.pricelist_ids.price, price)
+
+    def _add_item(self, record, price):
+        self.assertIn(record._name, ['product.product', 'product.template'])
+        ref = self.env.ref
+        vals = {
+            'price_version_id': ref(
+                'product_supplier_intercompany.pricelist_intercompany_v1').id,
+            'base': ref('product.list_price').id,
+            'price_discount': 1,
+            'price_surcharge': price,
+            }
+        if record._name == 'product.product':
+            vals.update({
+                'product_id': record.id,
+                'product_tmpl_id': record.product_tmpl_id.id,
+                })
+        else:
+            vals['product_tmpl_id'] = record.id
+        self.env['product.pricelist.item'].create(vals)
+
+    def _switch_user_to_purchase_company(self):
+        self.user.write({
+            'company_id': self.purchase_company.id,
+            'company_ids': [(6, 0, [
+                self.purchase_company.id,
+                self.sale_company.id,
+               ])],
             })
-        supplierinfo = self.env['product.supplierinfo'].search(
-            ['|',
-                ('product_tmpl_id', '=', new.product_id.product_tmpl_id.id),
-                ('product_id.id', '=', new.product_id.id)])
-        print('RES', supplierinfo)
+
+    def test_set_pricelist_as_intercompany(self):
+        supplierinfo = self._get_supplier_info()
+        self.assertEqual(len(supplierinfo), 4)
+        self._check_supplier_info_for(self.product_template_4, 10)
+        self._check_supplier_info_for(self.product_product_4b, 15)
+        self._check_supplier_info_for(self.product_template_1, 5)
+        self._check_supplier_info_for(self.product_product_2, 20)
+
+    def test_unset_pricelist_intercompany(self):
+        self.pricelist.unset_as_intercompany_supplier()
+        supplierinfo = self._get_supplier_info()
+        self.assertEqual(len(supplierinfo), 0)
+
+    def test_intercompany_access_rule(self):
+        # Check that supplier this supplier info are not visible
+        # with the current user "demo"
+        supplierinfo = self._get_supplier_info(sudo=False)
+        self.assertEqual(len(supplierinfo), 0)
+        # Switch the company and check that the user can now see the supplier
+        self._switch_user_to_purchase_company()
+        supplierinfo = self._get_supplier_info(sudo=False)
+        self.assertEqual(len(supplierinfo), 4)
+
+    def test_add_product_item(self):
+        product = self.env.ref('product.product_product_2')
+        self._add_item(product, 30)
+        self._check_supplier_info_for(product, 30)
+
+    def test_add_template_item(self):
+        template = self.env.ref('product.product_product_2_product_template')
+        self._add_item(template, 30)
+        self._check_supplier_info_for(template, 30)
+
+    def test_update_product_item(self):
+        self.price_item_4b.price = 40
+        self._check_supplier_info_for(self.product_product_4b, 40)
+
+    def test_update_template_item(self):
+        self.price_item_4.price = 40
+        self._check_supplier_info_for(self.product_template_4, 40)
+
+    def test_remove_product_item(self):
+        self.price_item_4b.unlink()
+        self._check_no_supplier_info_for(self.product_product_4b)
+
+    def test_remove_template_item(self):
+        self.price_item_4b.unlink()
+        self._check_no_supplier_info_for(self.product_template_4)
+
+    def test_raise_error_unlink_supplierinfo(self):
+        with self.assertRaises(UserError):
+            self.supplier_info.unlink()
+
+    def test_raise_error_unlink_supplierinfo_items(self):
+        with self.assertRaises(UserError):
+            self.supplier_info.pricelist_ids.unlink()
+
+    def test_raise_error_write_supplierinfo(self):
+        with self.assertRaises(UserError):
+            self.supplier_info.write({'product_code': 'TEST'})
+
+    def test_raise_error_write_supplierinfo_items(self):
+        with self.assertRaises(UserError):
+            self.supplier_info.pricelist_ids.write({'price': 100})
+
+    def test_raise_error_create_supplierinfo(self):
+        with self.assertRaises(UserError):
+            self.env['product.supplierinfo'].create({
+                'company_id': self.sale_company.id,
+                'name': self.partner.id,
+                'product_tmpl_id': self.product_template_1.id,
+                'intercompany_pricelist_id': self.pricelist.id,
+                })
