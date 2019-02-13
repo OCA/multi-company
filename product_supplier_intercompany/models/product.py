@@ -2,7 +2,7 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import _, models, fields
+from openerp import _, api, models, fields
 from openerp.exceptions import Warning as UserError
 
 
@@ -114,22 +114,46 @@ class ProductSupplierinfo(models.Model):
         inverse_name='generated_supplier_info_ids')
 
     def _check_intercompany_supplier(self):
-        if (not self._context.get('automatic_intercompany_sync') and
-                self.mapped('intercompany_pricelist_id')):
-            raise UserError(_(
-                "This supplier info can not be edited as it's linked "
-                "to an intercompany 'sale' pricelist.\n"
-                "Please modify the information on the 'sale' pricelist"))
+        if not self._context.get('automatic_intercompany_sync'):
+            for record in self:
+                if record.mapped('intercompany_pricelist_id'):
+                    raise UserError(_(
+                        "This supplier info can not be edited as it's linked "
+                        "to an intercompany 'sale' pricelist.\n Please "
+                        "modify the information on the 'sale' pricelist"))
 
+    @api.multi
     def write(self, vals):
         self._check_intercompany_supplier()
         return super(ProductSupplierinfo, self).write(vals)
 
+    @api.model
     def create(self, vals):
         record = super(ProductSupplierinfo, self).create(vals)
         record._check_intercompany_supplier()
         return record
 
+    @api.multi
     def unlink(self):
         self._check_intercompany_supplier()
         return super(ProductSupplierinfo, self).unlink()
+
+
+class PricelistPartnerinfo(models.Model):
+    _inherit = 'pricelist.partnerinfo'
+
+    @api.multi
+    def write(self, vals):
+        self.suppinfo_id._check_intercompany_supplier()
+        return super(PricelistPartnerinfo, self).write(vals)
+
+    @api.model
+    def create(self, vals):
+        record = super(PricelistPartnerinfo, self).create(vals)
+        record.suppinfo_id._check_intercompany_supplier()
+        return record
+
+    @api.multi
+    def unlink(self):
+        self.suppinfo_id._check_intercompany_supplier()
+        return super(PricelistPartnerinfo, self).unlink()
