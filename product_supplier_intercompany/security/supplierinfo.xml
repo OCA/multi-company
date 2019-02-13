@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    <record model="ir.rule" id="product.product_supplierinfo_comp_rule">
+        <field name="perm_read" eval="False"/>
+    </record>
+
+    <record model="ir.rule" id="product_supplierinfo_intercomp_rule">
+        <field name="name">product supplierinfo intercompany rule</field> 
+        <field name="model_id" ref="model_product_supplierinfo"/>
+        <field name="global" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="domain_force">['|', ('intercompany_pricelist_id', '=', False), ('company_id', '!=', user.company_id.id), '|', ('company_id','=',False), ('company_id','=',user.company_id.id)]</field>
+    </record>
+</data>
+</openerp>
