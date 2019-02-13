@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
-    'name': 'Inter Company Module for Invoices',
+    'name': 'Inter Company Invoices',
     'summary': 'Intercompany invoice rules',
     'version': '11.0.1.1.0',
     'category': 'Accounting & Finance',

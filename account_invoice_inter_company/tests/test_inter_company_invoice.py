@@ -18,7 +18,6 @@ class TestAccountInvoiceInterCompany(SavepointCase):
             get_resource_path(module, "tests", "inter_company_invoice.xml"),
             None, 'init', False, 'test', cls.registry._assertion_report,
         )
-        cls.wizard_obj = cls.env['wizard.multi.charts.accounts']
         cls.account_obj = cls.env['account.account']
         cls.invoice_obj = cls.env['account.invoice']
         cls.invoice_company_a = cls.env.ref(
