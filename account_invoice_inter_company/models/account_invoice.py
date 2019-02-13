@@ -43,7 +43,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
-        if not dest_company.use_inter_company_products:
+        if not dest_company.company_share_product:
             return
         domain = dest_company._get_user_domain()
         dest_user = self.env['res.users'].search(domain, limit=1)
@@ -85,7 +85,7 @@ class AccountInvoice(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         for src_line in self.invoice_line_ids:
-            if dest_company.use_inter_company_products and \
+            if dest_company.company_share_product and \
                     not src_line.product_id:
                 raise UserError(_(
                     "The invoice line '%s' doesn't have a product. "
@@ -254,7 +254,7 @@ class AccountInvoiceLine(models.Model):
                        dest_company.name, dest_company.id))
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
         product_id = False
-        if dest_company.use_inter_company_products:
+        if dest_company.company_share_product:
             product_id = self.product_id.id or False
         vals = {
             'name': self.name,
