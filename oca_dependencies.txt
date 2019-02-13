@@ -1,0 +1,1 @@
+server-tools https://github.com/acsone/server-tools 12.0-mig-onchange_helper
