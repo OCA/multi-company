@@ -175,7 +175,7 @@ class AccountInvoice(models.Model):
                                                self.number),
             'type': dest_inv_type,
             'date_invoice': self.date_invoice,
-            'reference': self.reference,
+            'reference': self.number,
             'account_id': dest_partner_data.get('account_id', False),
             'partner_id': self.company_id.partner_id.id,
             'journal_id': dest_journal.id,
