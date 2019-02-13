@@ -21,12 +21,12 @@ class TestPricelist(TransactionCase):
 
         self.product_template_4 = ref(
             'product.product_product_4_product_template')
-        self.product_product_4b = ref(
-            'product.product_product_4b')
+        self.product_product_4b = ref('product.product_product_4b')
+        self.product_product_4c = ref('product.product_product_4c')
+
         self.product_template_1 = ref(
             'product.product_product_1_product_template')
-        self.product_product_2 = ref(
-            'product.product_product_2')
+        self.product_product_2 = ref('product.product_product_2')
 
         self.price_item_4 = ref(
             'product_supplier_intercompany.pricelist_item_product_template_4')
@@ -35,7 +35,7 @@ class TestPricelist(TransactionCase):
 
         self.sale_company = ref('base.main_company')
         self.purchase_company = ref('stock.res_company_1')
-        self.pricelist.set_as_intercompany_supplier()
+        self.pricelist.is_intercompany_supplier = True
         self.supplier_info = self._get_supplier_info(self.product_template_1)
 
     def _get_supplier_info(self, record=None, sudo=True):
@@ -53,7 +53,10 @@ class TestPricelist(TransactionCase):
                     ('product_id', '=', record.id),
                 ]
             else:
-                domain.append(('product_tmpl_id', '=', record.id))
+                domain += [
+                    ('product_tmpl_id', '=', record.id),
+                    ('product_id', '=', False),
+                ]
         supplierinfo_obj = self.env['product.supplierinfo']
         if sudo:
             supplierinfo_obj = supplierinfo_obj.sudo()
@@ -76,7 +79,7 @@ class TestPricelist(TransactionCase):
             'price_version_id': ref(
                 'product_supplier_intercompany.pricelist_intercompany_v1').id,
             'base': ref('product.list_price').id,
-            'price_discount': 1,
+            'price_discount': -1,
             'price_surcharge': price,
             }
         if record._name == 'product.product':
@@ -106,7 +109,7 @@ class TestPricelist(TransactionCase):
         self._check_supplier_info_for(self.product_product_2, 20)
 
     def test_unset_pricelist_intercompany(self):
-        self.pricelist.unset_as_intercompany_supplier()
+        self.pricelist.is_intercompany_supplier = False
         supplierinfo = self._get_supplier_info()
         self.assertEqual(len(supplierinfo), 0)
 
@@ -121,7 +124,7 @@ class TestPricelist(TransactionCase):
         self.assertEqual(len(supplierinfo), 4)
 
     def test_add_product_item(self):
-        product = self.env.ref('product.product_product_2')
+        product = self.env.ref('product.product_product_3')
         self._add_item(product, 30)
         self._check_supplier_info_for(product, 30)
 
@@ -131,11 +134,16 @@ class TestPricelist(TransactionCase):
         self._check_supplier_info_for(template, 30)
 
     def test_update_product_item(self):
-        self.price_item_4b.price = 40
+        self.price_item_4b.price_surcharge = 40
         self._check_supplier_info_for(self.product_product_4b, 40)
 
+    def test_change_product_item(self):
+        self.price_item_4b.product_id = self.product_product_4c
+        self._check_no_supplier_info_for(self.product_product_4b)
+        self._check_supplier_info_for(self.product_product_4c, 15)
+
     def test_update_template_item(self):
-        self.price_item_4.price = 40
+        self.price_item_4.price_surcharge = 40
         self._check_supplier_info_for(self.product_template_4, 40)
 
     def test_remove_product_item(self):
@@ -143,7 +151,7 @@ class TestPricelist(TransactionCase):
         self._check_no_supplier_info_for(self.product_product_4b)
 
     def test_remove_template_item(self):
-        self.price_item_4b.unlink()
+        self.price_item_4.unlink()
         self._check_no_supplier_info_for(self.product_template_4)
 
     def test_raise_error_unlink_supplierinfo(self):
