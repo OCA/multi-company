@@ -12,6 +12,7 @@
     'website': 'https://akretion.com',
     'depends': [
         'product_variant_supplierinfo',
+        'sale',
     ],
     'data': [
         'views/pricelist_views.xml',
