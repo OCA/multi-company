@@ -16,7 +16,7 @@
     ],
     'data': [
         'views/pricelist_views.xml',
-        'security/ir.rule.csv',
+        'security/supplierinfo.xml',
     ],
     'demo': [
         'demo/pricelist.xml',
