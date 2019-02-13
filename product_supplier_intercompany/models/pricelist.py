@@ -38,58 +38,61 @@ class ProductPricelist(models.Model):
             automatic_intercompany_sync=True).mapped(
             'generated_supplierinfo_ids').unlink()
 
-    @api.multi
-    def _sync_all_supplierinfo(self, templates, variants):
-        for record in self:
-            if templates:
-                templates._synchronise_supplier_info(pricelists=record)
-            if variants:
-                variants._synchronise_supplier_info(pricelists=record)
-
 
 class ProductPricelistItem(models.Model):
 
     _inherit = 'product.pricelist.item'
 
     @api.multi
-    def _init_supplier_info(self):
+    def _add_product_to_synchronize(self, todo):
         for record in self:
             pricelist = record.price_version_id.pricelist_id
-            templates, variants = record._get_products_to_synchronise()
-            pricelist._sync_all_supplierinfo(templates, variants)
-
-    @api.multi
-    def _get_products_to_synchronise(self):
-        '''
-        returns (templates, products) always as recordset (can be empty)
-        '''
-        for record in self:
-            if self.product_id:
-                return self.env['product.template'].browse(), self.product_id
-            elif self.product_tmpl_id:
-                return (self.product_tmpl_id,
-                        self.env['product.product'].browse())
+            if not pricelist in todo:
+                todo[pricelist] = {
+                    'products': self.env['product.product'].browse(False),
+                    'templates': self.env['product.template'].browse(False),
+                    }
+            if record.product_id:
+                todo[pricelist]['products'] |= record.product_id
+            elif record.product_tmpl_id:
+                todo[pricelist]['templates'] |= record.product_tmpl_id
             else:
-                raise Exception(
+                raise UserError(
                     'This pricelist item type is not supported yet.')
+
+    def _process_product_to_synchronize(self, todo):
+        for pricelist, vals in todo.items():
+            vals['templates']._synchronise_supplier_info(
+                pricelists=pricelist)
+            vals['products']._synchronise_supplier_info(
+                pricelists=pricelist)
+
+    def _init_supplier_info(self):
+        todo = {}
+        self._add_product_to_synchronize(todo)
+        self._process_product_to_synchronize(todo)
+
+    @api.model
+    def create(self, vals):
+        record = super(ProductPricelistItem, self).create(vals)
+        record._init_supplier_info()
+        return record
 
     @api.multi
     def write(self, vals):
-        for record in self:
-            pricelist = record.price_version_id.pricelist_id
-            if pricelist.is_intercompany_supplier:
-                templates, variants = record._get_products_to_synchronise()
-                super(ProductPricelistItem, self).write(vals)
-                new_to_sync = record._get_products_to_synchronise()
-                templates |= new_to_sync[0]
-                variants |= new_to_sync[1]
-                pricelist._sync_all_supplierinfo(templates, variants)
+        todo = {}
+        # we complete the todo before and after the write
+        # as some product can be remove from the pricelist item
+        self._add_product_to_synchronize(todo)
+        super(ProductPricelistItem, self).write(vals)
+        self._add_product_to_synchronize(todo)
+        self._process_product_to_synchronize(todo)
+        return True
 
     @api.multi
     def unlink(self):
-        for record in self:
-            pricelist = record.price_version_id.pricelist_id
-            if pricelist.is_intercompany_supplier:
-                templates, variants = record._get_products_to_synchronise()
-                super(ProductPricelistItem, self).unlink()
-                pricelist._sync_all_supplierinfo(templates, variants)
+        todo = {}
+        self._add_product_to_synchronize(todo)
+        super(ProductPricelistItem, self).unlink()
+        self._process_product_to_synchronize(todo)
+        return True
