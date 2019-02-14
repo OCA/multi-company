@@ -101,7 +101,7 @@ class TestPricelist(TransactionCase):
             'company_ids': [(6, 0, [
                 self.purchase_company.id,
                 self.sale_company.id,
-               ])],
+                ])],
             })
 
     def test_set_pricelist_as_intercompany(self):
