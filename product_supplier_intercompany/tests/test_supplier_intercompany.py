@@ -10,6 +10,10 @@ class TestPricelist(TransactionCase):
 
     def setUp(self):
         super(TestPricelist, self).setUp()
+
+        # configure multi company environment
+        self.env['product.template'].search([]).write({'company_id': False})
+
         self.user = self.env.ref('base.user_demo')
         self.user.write({'groups_id': [
             (4, self.env.ref('base.group_sale_manager').id)]})
@@ -42,7 +46,7 @@ class TestPricelist(TransactionCase):
         domain = [
             ('name', '=', self.partner.id),
             ('intercompany_pricelist_id', '=', self.pricelist.id),
-            ('company_id', '=', self.sale_company.id),
+            ('company_id', '=', False),
             ]
         if record:
             self.assertIn(
@@ -172,8 +176,8 @@ class TestPricelist(TransactionCase):
 
     def test_raise_error_create_supplierinfo(self):
         with self.assertRaises(UserError):
-            self.env['product.supplierinfo'].create({
-                'company_id': self.sale_company.id,
+            self.env['product.supplierinfo'].sudo().create({
+                'company_id': False,
                 'name': self.partner.id,
                 'product_tmpl_id': self.product_template_1.id,
                 'intercompany_pricelist_id': self.pricelist.id,

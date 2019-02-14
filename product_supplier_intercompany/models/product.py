@@ -20,7 +20,7 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
         return {
             'intercompany_pricelist_id': pricelist.id,
             'name': pricelist.company_id.partner_id.id,
-            'company_id': pricelist.company_id.id,
+            'company_id': False,
             'pricelist_ids': [
                 (0, 0, {'min_quantity': 1, 'price': self.price})]
         }
@@ -144,7 +144,7 @@ class PricelistPartnerinfo(models.Model):
 
     @api.multi
     def write(self, vals):
-        self.suppinfo_id._check_intercompany_supplier()
+        self.mapped('suppinfo_id')._check_intercompany_supplier()
         return super(PricelistPartnerinfo, self).write(vals)
 
     @api.model
@@ -155,5 +155,5 @@ class PricelistPartnerinfo(models.Model):
 
     @api.multi
     def unlink(self):
-        self.suppinfo_id._check_intercompany_supplier()
+        self.mapped('suppinfo_id')._check_intercompany_supplier()
         return super(PricelistPartnerinfo, self).unlink()
