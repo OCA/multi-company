@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from openerp.tests.common import TransactionCase
-from openerp.exceptions import Warning as UserError
+from openerp.exceptions import Warning as UserError, ValidationError
 
 
 class TestPricelist(TransactionCase):
@@ -190,7 +190,7 @@ class TestPricelist(TransactionCase):
     def test_add_product_item_no_intercompany(self):
         product = self.env.ref('product.product_product_3')
         nbr_supplier = self.env['product.supplierinfo'].sudo().search_count([])
-        item = self._add_item(
+        self._add_item(
             product, 30,
             price_version_id=self.not_intercompany_price_version.id)
         self.assertEqual(
@@ -200,7 +200,7 @@ class TestPricelist(TransactionCase):
     def test_raise_error_forcing_recompute_with_not_intercompany(self):
         with self.assertRaises(UserError):
             product = self.env.ref('product.product_product_3')
-            item = self._add_item(
+            self._add_item(
                 product, 30,
                 price_version_id=self.not_intercompany_price_version.id)
             product._synchronise_supplier_info(
@@ -214,3 +214,7 @@ class TestPricelist(TransactionCase):
         todo = {}
         item._add_product_to_synchronize(todo)
         self.assertEqual(todo, {})
+
+    def test_raise_error_required_company(self):
+        with self.assertRaises(ValidationError):
+            self.pricelist.company_id = False

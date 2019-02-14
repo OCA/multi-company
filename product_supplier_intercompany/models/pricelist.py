@@ -18,6 +18,13 @@ class ProductPricelist(models.Model):
         inverse_name='intercompany_pricelist_id',
         )
 
+    @api.constrains('company_id', 'is_intercompany_supplier')
+    def _check_required_company_for_intercompany(self):
+        for record in self:
+            if record.is_intercompany_supplier and not record.company_id:
+                raise UserError(
+                    'The company is required for intercompany pricelist')
+
     def _inverse_intercompany_supplier(self):
         for record in self:
             if record.is_intercompany_supplier:
@@ -32,6 +39,9 @@ class ProductPricelist(models.Model):
                 raise UserError(
                     _('Only one version is supported for'
                       'intercompany pricelist'))
+            if not self.company_id:
+                raise UserError(
+                    _('Intercompany pricelist must belong to a company'))
             self.version_id.items_id._init_supplier_info()
 
     def _unactive_intercompany(self):
