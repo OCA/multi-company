@@ -4,6 +4,7 @@
     <record id="pricelist_intercompany" model="product.pricelist">
         <field name="name">Pricelist Intercompany</field>
         <field name="type">sale</field>
+        <field name="company_id" ref="base.main_company"/>
     </record>
 
     <record id="pricelist_intercompany_v1" model="product.pricelist.version">
