@@ -49,6 +49,8 @@ class ProductPricelistItem(models.Model):
     def _add_product_to_synchronize(self, todo):
         for record in self:
             pricelist = record.price_version_id.pricelist_id
+            if not pricelist.is_intercompany_supplier:
+                continue
             if pricelist not in todo:
                 todo[pricelist] = {
                     'products': self.env['product.product'].browse(False),
