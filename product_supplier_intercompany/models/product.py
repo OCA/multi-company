@@ -29,8 +29,11 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
         if not pricelists:
             pricelists = self.env['product.pricelist'].search(
                 [('is_intercompany_supplier', '=', True)])
-
         for pricelist in pricelists:
+            if not pricelist.is_intercompany_supplier:
+                raise UserError(
+                    _('The pricelist %s is not intercompany')
+                    % pricelist.name)
             # We pass the pricelist in the context in order to get the right
             # sale price on record.price (compatible v8 to v12)
             for record in self.with_context(
