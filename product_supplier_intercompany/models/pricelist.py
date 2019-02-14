@@ -2,14 +2,16 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import api, models, fields
+from openerp import _, api, models, fields
+from openerp.exceptions import Warning as UserError
 
 
 class ProductPricelist(models.Model):
     _inherit = 'product.pricelist'
 
     is_intercompany_supplier = fields.Boolean(
-        inverse='_inverse_intercompany_supplier')
+        inverse='_inverse_intercompany_supplier',
+        default=False)
 
     generated_supplierinfo_ids = fields.One2many(
         comodel_name='product.supplierinfo',
@@ -47,7 +49,7 @@ class ProductPricelistItem(models.Model):
     def _add_product_to_synchronize(self, todo):
         for record in self:
             pricelist = record.price_version_id.pricelist_id
-            if not pricelist in todo:
+            if pricelist not in todo:
                 todo[pricelist] = {
                     'products': self.env['product.product'].browse(False),
                     'templates': self.env['product.template'].browse(False),
