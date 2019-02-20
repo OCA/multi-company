@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <odoo>
 
-<record id="view_general_configuration_purchase_sale_inter_company" model="ir.ui.view">
+<record id="res_config_settings_view_form" model="ir.ui.view">
     <field name="model">res.config.settings</field>
-    <field name="inherit_id" ref="account_invoice_inter_company.view_general_configuration_account_invoice_inter_company"/>
+    <field name="inherit_id" ref="account_invoice_inter_company.res_config_settings_view_form"/>
     <field name="arch" type="xml">
-        <xpath expr="//div[@name='module_account_invoice_inter_company_set_invoice_auto_validation']" position='before'>
+        <xpath expr="//div[@id='invoice_validation']" position='before'>
             <div name="module_purchase_sale_inter_company_so_from_po" attrs="{'invisible':[('company_id', '=', False)]}">
                 <label for="so_from_po"/>
                 <field name="so_from_po" class="oe_inline" domain="[('company_id', '=', company_id)]"/>
@@ -15,7 +15,7 @@
                 <field name="warehouse_id" class="oe_inline" domain="[('company_id', '=', company_id)]"/>
             </div>
          </xpath>
-        <xpath expr="//div[@name='module_account_invoice_inter_company_set_invoice_auto_validation']" position='after'>
+        <xpath expr="//div[@id='invoice_validation']" position='after'>
             <div name="module_purchase_sale_inter_company_set_sale_auto_validation" attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">
                 <field name="intercompany_user_id"/>
                 <label for="intercompany_user_id"/>

@@ -18,6 +18,7 @@
     'depends': [
         'sale',
         'purchase',
+        'stock',
         'account_invoice_inter_company',
     ],
     'data': [
