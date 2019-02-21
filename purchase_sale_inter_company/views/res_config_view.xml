@@ -6,17 +6,24 @@
     <field name="inherit_id" ref="account_invoice_inter_company.res_config_settings_view_form"/>
     <field name="arch" type="xml">
         <xpath expr="//div[@id='invoice_validation']" position='before'>
-            <div name="module_purchase_sale_inter_company_so_from_po" attrs="{'invisible':[('company_id', '=', False)]}">
+            <div name="module_purchase_sale_inter_company_so_from_po"
+                    attrs="{'invisible':[('company_id', '=', False)]}">
                 <label for="so_from_po"/>
-                <field name="so_from_po" class="oe_inline" domain="[('company_id', '=', company_id)]"/>
+                <field name="so_from_po"
+                    class="oe_inline"
+                    domain="[('company_id', '=', company_id)]"/>
             </div>
-            <div name="module_purchase_sale_inter_company_warehouse_id" attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">
+            <div name="module_purchase_sale_inter_company_warehouse_id"
+                    attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">
                 <label for="warehouse_id"/>
-                <field name="warehouse_id" class="oe_inline" domain="[('company_id', '=', company_id)]"/>
+                <field name="warehouse_id"
+                    class="oe_inline"
+                    domain="[('company_id', '=', company_id)]"/>
             </div>
          </xpath>
         <xpath expr="//div[@id='invoice_validation']" position='after'>
-            <div name="module_purchase_sale_inter_company_set_sale_auto_validation" attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">
+            <div name="module_purchase_sale_inter_company_set_sale_auto_validation"
+                    attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">
                 <field name="intercompany_user_id"/>
                 <label for="intercompany_user_id"/>
                 <field name="sale_auto_validation"/>
