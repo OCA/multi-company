@@ -1,54 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<openerp>
-<data>
+<odoo>
+
+    <record id="res_partner_company_purchase" model="res.partner">
+        <field name="name">My Company, Villeurbanne</field>
+        <field eval="1" name="customer"/>
+        <field eval="1" name="supplier"/>
+        <field name="is_company">1</field>
+        <field eval="1" name="active"/>
+        <field name="street">90 Streets Avenue</field>
+        <field model="res.country" name="country_id" search="[('code','ilike','us')]"/>
+        <field model="res.country.state" name="state_id" search="[('code','ilike','il')]"/>
+        <field name="zip">60610</field>
+        <field name="city">Villeurbanne</field>
+        <field name="email">villeurbanne@yourcompany.com</field>
+        <field name="phone">+1 312 349 4040</field>
+        <field name="website">www.yourcompany.com</field>
+    </record>
+
+    <record id="res_company_purchase" model="res.company">
+        <field name="currency_id" ref="base.USD"/> 
+        <field name="partner_id" ref="res_partner_company_purchase"/> 
+        <field name="parent_id" ref="base.main_company"/>
+        <field name="name">My Company, Villeurbanne</field>
+    </record>
+
     <record id="pricelist_intercompany" model="product.pricelist">
         <field name="name">Pricelist Intercompany</field>
-        <field name="type">sale</field>
         <field name="company_id" ref="base.main_company"/>
     </record>
 
-    <record id="pricelist_intercompany_v1" model="product.pricelist.version">
-        <field name="name">Pricelist Intercompany V1</field>
-        <field name="pricelist_id" ref="pricelist_intercompany"/>
-    </record>
-
     <record id="pricelist_item_product_template_4" model="product.pricelist.item">
-        <field name="price_version_id" ref="pricelist_intercompany_v1"/>
+        <field name="pricelist_id" ref="pricelist_intercompany"/>
+        <field name="applied_on">1_product</field>
         <field name="product_tmpl_id" ref="product.product_product_4_product_template"/>
-        <field name="base" ref="product.list_price"/>
-        <field name="price_discount">-1</field>
+        <field name="compute_price">formula</field>
+        <field name="base">list_price</field>
+        <field name="price_discount">0</field>
         <field name="price_surcharge">10</field>
         <field name="sequence">10</field>
     </record>
 
     <record id="pricelist_item_product_product_4b" model="product.pricelist.item">
-        <field name="price_version_id" ref="pricelist_intercompany_v1"/>
+        <field name="pricelist_id" ref="pricelist_intercompany"/>
+        <field name="applied_on">0_product_variant</field>
         <field name="product_tmpl_id" ref="product.product_product_4_product_template"/>
         <field name="product_id" ref="product.product_product_4b"/>
-        <field name="base" ref="product.list_price"/>
-        <field name="price_discount">-1</field>
+        <field name="compute_price">formula</field>
+        <field name="base">list_price</field>
+        <field name="price_discount">0</field>
         <field name="price_surcharge">15</field>
         <field name="sequence">5</field>
     </record>
 
     <record id="pricelist_item_product_template_1" model="product.pricelist.item">
-        <field name="price_version_id" ref="pricelist_intercompany_v1"/>
+        <field name="pricelist_id" ref="pricelist_intercompany"/>
+        <field name="applied_on">1_product</field>
         <field name="product_tmpl_id" ref="product.product_product_1_product_template"/>
-        <field name="base" ref="product.list_price"/>
-        <field name="price_discount">-1</field>
-        <field name="price_surcharge">5</field>
+        <field name="compute_price">fixed</field>
+        <field name="fixed_price">5</field>
         <field name="sequence">15</field>
     </record>
 
     <record id="pricelist_item_product_product_2" model="product.pricelist.item">
-        <field name="price_version_id" ref="pricelist_intercompany_v1"/>
+        <field name="pricelist_id" ref="pricelist_intercompany"/>
+        <field name="applied_on">0_product_variant</field>
         <field name="product_tmpl_id" ref="product.product_product_2_product_template"/>
         <field name="product_id" ref="product.product_product_2"/>
-        <field name="base" ref="product.list_price"/>
-        <field name="price_discount">-1</field>
-        <field name="price_surcharge">20</field>
+        <field name="compute_price">percentage</field>
+        <field name="percent_price">10</field>
         <field name="sequence">20</field>
     </record>
 
-</data>
-</openerp>
+</odoo>

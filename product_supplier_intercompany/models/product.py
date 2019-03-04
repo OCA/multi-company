@@ -2,8 +2,8 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import _, api, models, fields
-from openerp.exceptions import Warning as UserError
+from odoo import _, api, models, fields
+from odoo.exceptions import Warning as UserError
 
 
 class ProductIntercompanySupplierMixin(models.AbstractModel):
@@ -17,13 +17,15 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
 
     def _prepare_intercompany_supplier_info(self, pricelist):
         self.ensure_one()
-        return {
+        res = {
             'intercompany_pricelist_id': pricelist.id,
             'name': pricelist.company_id.partner_id.id,
             'company_id': False,
-            'pricelist_ids': [
-                (0, 0, {'min_quantity': 1, 'price': self.price})]
+            'price': self.price,
+            'min_qty': 1,
         }
+        print(self.id, res)
+        return res
 
     def _synchronise_supplier_info(self, pricelists=None):
         if not pricelists:
@@ -47,7 +49,6 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
                     vals = record._prepare_intercompany_supplier_info(
                         pricelist)
                     if supplier:
-                        supplier.pricelist_ids.unlink()
                         supplier.write(vals)
                     else:
                         supplier.create(vals)
@@ -78,7 +79,7 @@ class ProductProduct(models.Model):
     def _has_intercompany_price(self, pricelist):
         self.ensure_one()
         if self.env['product.pricelist.item'].search([
-                ('price_version_id.pricelist_id', '=', pricelist.id),
+                ('pricelist_id', '=', pricelist.id),
                 ('product_id', '=', self.id)]):
             return True
 
@@ -103,7 +104,7 @@ class ProductTemplate(models.Model):
     def _has_intercompany_price(self, pricelist):
         self.ensure_one()
         if self.env['product.pricelist.item'].search([
-                ('price_version_id.pricelist_id', '=', pricelist.id),
+                ('pricelist_id', '=', pricelist.id),
                 ('product_tmpl_id', '=', self.id),
                 ('product_id', '=', False)]):
             return True
@@ -140,23 +141,3 @@ class ProductSupplierinfo(models.Model):
     def unlink(self):
         self._check_intercompany_supplier()
         return super(ProductSupplierinfo, self).unlink()
-
-
-class PricelistPartnerinfo(models.Model):
-    _inherit = 'pricelist.partnerinfo'
-
-    @api.multi
-    def write(self, vals):
-        self.mapped('suppinfo_id')._check_intercompany_supplier()
-        return super(PricelistPartnerinfo, self).write(vals)
-
-    @api.model
-    def create(self, vals):
-        record = super(PricelistPartnerinfo, self).create(vals)
-        record.suppinfo_id._check_intercompany_supplier()
-        return record
-
-    @api.multi
-    def unlink(self):
-        self.mapped('suppinfo_id')._check_intercompany_supplier()
-        return super(PricelistPartnerinfo, self).unlink()

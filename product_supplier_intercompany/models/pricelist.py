@@ -2,8 +2,8 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import _, api, models, fields
-from openerp.exceptions import Warning as UserError
+from odoo import _, api, models, fields
+from odoo.exceptions import Warning as UserError
 
 
 class ProductPricelist(models.Model):
@@ -35,14 +35,10 @@ class ProductPricelist(models.Model):
     def _active_intercompany(self):
         self.ensure_one()
         if self.is_intercompany_supplier:
-            if len(self.version_id) > 1:
-                raise UserError(
-                    _('Only one version is supported for'
-                      'intercompany pricelist'))
             if not self.company_id:
                 raise UserError(
                     _('Intercompany pricelist must belong to a company'))
-            self.version_id.items_id._init_supplier_info()
+            self.item_ids._init_supplier_info()
 
     def _unactive_intercompany(self):
         self.ensure_one()
@@ -58,7 +54,7 @@ class ProductPricelistItem(models.Model):
     @api.multi
     def _add_product_to_synchronize(self, todo):
         for record in self:
-            pricelist = record.price_version_id.pricelist_id
+            pricelist = record.pricelist_id
             if not pricelist.is_intercompany_supplier:
                 continue
             if pricelist not in todo:

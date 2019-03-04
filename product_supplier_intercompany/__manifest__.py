@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
 # Copyright 2019 Akretion (http://www.akretion.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
 {
     'name': 'Product Supplier Intercompany',
-    'version': '8.0.0.0.1',
+    'version': '0.10.0.0.0.',
     'category': 'Generic Modules/Others',
     'license': 'AGPL-3',
     'author': "Akretion",
-    'website': 'https://akretion.com',
+    'website': 'https://github.com/OCA/multi-company',
     'depends': [
-        'product_variant_supplierinfo',
         'sale',
     ],
     'data': [

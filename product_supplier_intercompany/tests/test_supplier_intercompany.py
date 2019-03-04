@@ -2,8 +2,8 @@
 # Copyright 2019 Akretion (http://www.akretion.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp.tests.common import TransactionCase
-from openerp.exceptions import Warning as UserError, ValidationError
+from odoo.tests.common import TransactionCase
+from odoo.exceptions import Warning as UserError, ValidationError
 
 
 class TestPricelist(TransactionCase):
@@ -16,7 +16,7 @@ class TestPricelist(TransactionCase):
 
         self.user = self.env.ref('base.user_demo')
         self.user.write({'groups_id': [
-            (4, self.env.ref('base.group_sale_manager').id)]})
+            (4, self.env.ref('sales_team.group_sale_manager').id)]})
         self.env = self.env(user=self.user)
         ref = self.env.ref
         self.pricelist = ref(
@@ -38,11 +38,20 @@ class TestPricelist(TransactionCase):
             'product_supplier_intercompany.pricelist_item_product_product_4b')
 
         self.sale_company = ref('base.main_company')
-        self.purchase_company = ref('stock.res_company_1')
+        self.purchase_company = ref(
+                'product_supplier_intercompany.res_company_purchase')
+
+        # This is needed because global pricelist items aren't supported and
+        # in version 10.0 a global item is created on pricelist creation
+        self.env['product.pricelist.item'].search([
+            ('pricelist_id', '=', self.pricelist.id),
+            ('applied_on', '=', '3_global')]).unlink()
+
         self.pricelist.is_intercompany_supplier = True
         self.supplier_info = self._get_supplier_info(self.product_template_1)
 
-        self.not_intercompany_price_version = ref('product.ver0')
+        self.not_intercompany_pricelist = ref(
+                'product.list0')
 
     def _get_supplier_info(self, record=None, sudo=True):
         domain = [
@@ -75,28 +84,37 @@ class TestPricelist(TransactionCase):
     def _check_supplier_info_for(self, record, price):
         supplierinfo = self._get_supplier_info(record)
         self.assertEqual(len(supplierinfo), 1)
-        self.assertEqual(len(supplierinfo.pricelist_ids), 1)
-        self.assertEqual(supplierinfo.pricelist_ids.price, price)
+        self.assertEqual(supplierinfo.price, price)
 
-    def _add_item(self, record, price, price_version_id=None):
-        if not price_version_id:
-            price_version_id = self.env.ref(
-                'product_supplier_intercompany.pricelist_intercompany_v1').id
+    def _add_item(self, record, price_surcharge, pricelist_id=None):
+        '''
+        All tests are done with list_price as base, cost and pricelist are not
+        supported for now.
+        This method does everything as formula but fixed and percent are tested
+        as well.
+        '''
+        if not pricelist_id:
+            pricelist_id = self.env.ref(
+                'product_supplier_intercompany.pricelist_intercompany').id
         self.assertIn(record._name, ['product.product', 'product.template'])
-        ref = self.env.ref
         vals = {
-            'price_version_id': price_version_id,
-            'base': ref('product.list_price').id,
-            'price_discount': -1,
-            'price_surcharge': price,
+            'pricelist_id': pricelist_id,
+            'compute_price': 'formula',
+            'base': 'list_price',
+            'price_discount': 0.0,
+            'price_surcharge': price_surcharge,
             }
         if record._name == 'product.product':
             vals.update({
+                'applied_on': '0_product_variant',
                 'product_id': record.id,
                 'product_tmpl_id': record.product_tmpl_id.id,
                 })
         else:
-            vals['product_tmpl_id'] = record.id
+            vals.update({
+                'applied_on': '1_product',
+                'product_tmpl_id': record.id,
+                })
         return self.env['product.pricelist.item'].create(vals)
 
     def _switch_user_to_purchase_company(self):
@@ -111,10 +129,10 @@ class TestPricelist(TransactionCase):
     def test_set_pricelist_as_intercompany(self):
         supplierinfo = self._get_supplier_info()
         self.assertEqual(len(supplierinfo), 4)
-        self._check_supplier_info_for(self.product_template_4, 10)
-        self._check_supplier_info_for(self.product_product_4b, 15)
-        self._check_supplier_info_for(self.product_template_1, 5)
-        self._check_supplier_info_for(self.product_product_2, 20)
+        self._check_supplier_info_for(self.product_template_4, 760)
+        self._check_supplier_info_for(self.product_product_4b, 765)
+        self._check_supplier_info_for(self.product_template_1, 5)  # fixed
+        self._check_supplier_info_for(self.product_product_2, 34.43)  # - 10%
 
     def test_unset_pricelist_intercompany(self):
         self.pricelist.is_intercompany_supplier = False
@@ -134,25 +152,25 @@ class TestPricelist(TransactionCase):
     def test_add_product_item(self):
         product = self.env.ref('product.product_product_3')
         self._add_item(product, 30)
-        self._check_supplier_info_for(product, 30)
+        self._check_supplier_info_for(product, 480)
 
     def test_add_template_item(self):
         template = self.env.ref('product.product_product_2_product_template')
         self._add_item(template, 30)
-        self._check_supplier_info_for(template, 30)
+        self._check_supplier_info_for(template, 68.25)
 
     def test_update_product_item(self):
         self.price_item_4b.price_surcharge = 40
-        self._check_supplier_info_for(self.product_product_4b, 40)
+        self._check_supplier_info_for(self.product_product_4b, 790)
 
     def test_change_product_item(self):
         self.price_item_4b.product_id = self.product_product_4c
         self._check_no_supplier_info_for(self.product_product_4b)
-        self._check_supplier_info_for(self.product_product_4c, 15)
+        self._check_supplier_info_for(self.product_product_4c, 815.4)
 
     def test_update_template_item(self):
         self.price_item_4.price_surcharge = 40
-        self._check_supplier_info_for(self.product_template_4, 40)
+        self._check_supplier_info_for(self.product_template_4, 790)
 
     def test_remove_product_item(self):
         self.price_item_4b.unlink()
@@ -166,17 +184,9 @@ class TestPricelist(TransactionCase):
         with self.assertRaises(UserError):
             self.supplier_info.unlink()
 
-    def test_raise_error_unlink_supplierinfo_items(self):
-        with self.assertRaises(UserError):
-            self.supplier_info.pricelist_ids.unlink()
-
     def test_raise_error_write_supplierinfo(self):
         with self.assertRaises(UserError):
             self.supplier_info.write({'product_code': 'TEST'})
-
-    def test_raise_error_write_supplierinfo_items(self):
-        with self.assertRaises(UserError):
-            self.supplier_info.pricelist_ids.write({'price': 100})
 
     def test_raise_error_create_supplierinfo(self):
         with self.assertRaises(UserError):
@@ -192,7 +202,7 @@ class TestPricelist(TransactionCase):
         nbr_supplier = self.env['product.supplierinfo'].sudo().search_count([])
         self._add_item(
             product, 30,
-            price_version_id=self.not_intercompany_price_version.id)
+            pricelist_id=self.not_intercompany_pricelist.id)
         self.assertEqual(
             nbr_supplier,
             self.env['product.supplierinfo'].sudo().search_count([]))
@@ -202,15 +212,15 @@ class TestPricelist(TransactionCase):
             product = self.env.ref('product.product_product_3')
             self._add_item(
                 product, 30,
-                price_version_id=self.not_intercompany_price_version.id)
+                pricelist_id=self.not_intercompany_pricelist.id)
             product._synchronise_supplier_info(
-                pricelists=self.not_intercompany_price_version.pricelist_id)
+                pricelists=self.not_intercompany_pricelist)
 
     def test_add_product_item_no_intercompany_empty_todo(self):
         product = self.env.ref('product.product_product_3')
         item = self._add_item(
             product, 30,
-            price_version_id=self.not_intercompany_price_version.id)
+            pricelist_id=self.not_intercompany_pricelist.id)
         todo = {}
         item._add_product_to_synchronize(todo)
         self.assertEqual(todo, {})
