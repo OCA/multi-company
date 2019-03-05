@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, models
-from odoo.exceptions import Warning as UserError
+from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
