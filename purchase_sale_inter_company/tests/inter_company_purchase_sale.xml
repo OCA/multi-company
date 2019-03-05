@@ -86,7 +86,7 @@
     <record id="purchase_line_company_a" model="purchase.order.line">
         <field name="order_id" ref="purchase_company_a"/>
         <field name="product_id" ref="product_consultant_multi_company"/>
-        <field name="product_uom" ref="product.product_uom_unit"/>
+        <field name="product_uom" ref="uom.product_uom_unit"/>
         <field name="name">Service Multi Company</field>
         <field name="date_planned" eval="time.strftime('%Y%m%d')"/>
         <field name="price_unit" eval="450.0"/>
