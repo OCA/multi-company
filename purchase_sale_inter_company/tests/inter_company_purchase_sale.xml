@@ -102,7 +102,7 @@
         <field name="name">Service Multi Company</field>
         <field name="date_planned" eval="time.strftime('%Y%m%d')"/>
         <field name="price_unit" eval="450.0"/>
-        <field name="product_uom_qty" eval="3.0"/>
+        <field name="product_qty" eval="3.0"/>
         <field name="company_id" ref="company_a"/>
     </record>
 
