@@ -75,6 +75,18 @@
     </record>
 
     <!--
+        Create inter company product
+        -->
+    <record id="product_consultant_multi_company" model="product.product">
+        <field name="name">Service Multi Company</field>
+        <field name="uom_id" ref="uom.product_uom_hour"/>
+        <field name="uom_po_id" ref="uom.product_uom_hour"/>
+        <field name="categ_id" ref="product.product_category_3"/>
+        <field name="type">service</field>
+        <field name="company_id" ref=""/>
+    </record>
+
+    <!--
         Create draft purchase in Company A
         -->
     <record id="purchase_company_a" model="purchase.order">
@@ -85,7 +97,7 @@
 
     <record id="purchase_line_company_a" model="purchase.order.line">
         <field name="order_id" ref="purchase_company_a"/>
-        <field name="product_id" ref="account_invoice_inter_company.product_consultant_multi_company"/>
+        <field name="product_id" ref="product_consultant_multi_company"/>
         <field name="product_uom" ref="uom.product_uom_hour"/>
         <field name="name">Service Multi Company</field>
         <field name="date_planned" eval="time.strftime('%Y%m%d')"/>
