@@ -14,6 +14,7 @@ setuptools.setup(
         'odoo11-addon-partner_multi_company',
         'odoo11-addon-product_multi_company',
         'odoo11-addon-product_tax_multicompany_default',
+        'odoo11-addon-stock_move_line_multi_company_security',
         'odoo11-addon-stock_production_lot_multi_company',
     ],
     classifiers=[
