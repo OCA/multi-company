@@ -29,11 +29,13 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         cls.company_a = cls.env.ref('purchase_sale_inter_company.company_a')
         cls.company_b = cls.env.ref('purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
-        cls.purchase_manager_gr = cls.env.ref('purchase.group_purchase_manager')
+        cls.purchase_manager_gr = cls.env.ref(
+            'purchase.group_purchase_manager')
         cls.sale_manager_gr = cls.env.ref('sales_team.group_sale_manager')
         cls.user_a = cls.env.ref('purchase_sale_inter_company.user_company_a')
         cls.user_b = cls.env.ref('purchase_sale_inter_company.user_company_b')
-        cls.purchase_manager_gr.users = [(4, cls.user_a.id), (4, cls.user_b.id)]
+        cls.purchase_manager_gr.users = [
+            (4, cls.user_a.id), (4, cls.user_b.id)]
         cls.sale_manager_gr.users = [(4, cls.user_a.id), (4, cls.user_b.id)]
         cls.intercompany_user = cls.user_b.copy()
         cls.intercompany_user.company_ids |= cls.company_a
@@ -52,7 +54,6 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         # set all price list to EUR
         for pl in pricelists:
             pl.currency_id = currency_eur
-
 
     @classmethod
     def _load(cls, module, *args):
