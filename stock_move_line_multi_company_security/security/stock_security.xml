@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+     <record model="ir.rule" id="stock_move_line_rule">
+         <field name="name">stock_move_line multi-company</field>
+        <field name="model_id" search="[('model','=','stock.move.line')]" model="ir.model"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('company_id','child_of',[user.company_id.id])]</field>
+     </record>
+
+</odoo>
