@@ -224,24 +224,28 @@
         <field name="fields_id" search="[('model','=','product.category'),('name','=','property_account_expense_categ')]"/>
         <field eval="'account.account,'+str(ref('a_expense_company_a'))" name="value"/>
         <field name="company_id" ref="company_a"/>
+        <field name="res_id" eval="'product.category,%s' % ref('product.product_category_all')"/>
     </record>
     <record id="property_account_income_categ_company_a" model="ir.property">
         <field name="name">property_account_income_categ_company_a</field>
         <field name="fields_id" search="[('model','=','product.category'),('name','=','property_account_income_categ')]"/>
         <field eval="'account.account,'+str(ref('a_sale_company_a'))" model="account.account" name="value"/>
         <field name="company_id" ref="company_a"/>
+        <field name="res_id" eval="'product.category,%s' % ref('product.product_category_all')"/>
     </record>
     <record id="property_account_expense_categ_company_b" model="ir.property">
         <field name="name">property_account_expense_categ_company_b</field>
         <field name="fields_id" search="[('model','=','product.category'),('name','=','property_account_expense_categ')]"/>
         <field eval="'account.account,'+str(ref('a_expense_company_b'))" name="value"/>
         <field name="company_id" ref="company_b"/>
+        <field name="res_id" eval="'product.category,%s' % ref('product.product_category_all')"/>
     </record>
     <record id="property_account_income_categ_company_b" model="ir.property">
         <field name="name">property_account_income_categ_company_b</field>
         <field name="fields_id" search="[('model','=','product.category'),('name','=','property_account_income_categ')]"/>
         <field eval="'account.account,'+str(ref('a_sale_company_b'))" model="account.account" name="value"/>
         <field name="company_id" ref="company_b"/>
+        <field name="res_id" eval="'product.category,%s' % ref('product.product_category_all')"/>
     </record>
 
     <!--
