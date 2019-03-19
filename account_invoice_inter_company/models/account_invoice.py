@@ -275,7 +275,7 @@ class AccountInvoiceLine(models.Model):
                 'account_analytic_id', False),
             'account_id': account.id or False,
             'auto_invoice_line_id': self.id,
-            'invoice_id':  dest_line_data.get('invoice_id', False),
+            'invoice_id': dest_line_data.get('invoice_id', False),
             'partner_id': src_company_partner.id,
             'company_id': dest_company.id,
         }
