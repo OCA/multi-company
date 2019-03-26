@@ -10,7 +10,7 @@
             <xpath expr="//div[@id='multi_company']//field[@name='module_inter_company_rules']/../../div[2]" position="inside">
                 <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
                 <div id="inter_company_invoice_validation">
-                    <field name="invoice_auto_validation" class="oe_inline" domain="[('company_id', '=', company_id)]"/>
+                    <field name="invoice_auto_validation" class="oe_inline"/>
                     <label string="Invoice Auto Validation" class="o_light_label" for="invoice_auto_validation"/>
                 </div>
             </xpath>

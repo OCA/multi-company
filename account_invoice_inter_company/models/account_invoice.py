@@ -67,7 +67,7 @@ class AccountInvoice(models.Model):
         self.ensure_one()
         # check intercompany product
         self._check_intercompany_product(dest_company)
-        # if an invoice has already been genereted
+        # if an invoice has already been generated
         # delete it and force the same number
         inter_invoice = self.search([
             ('auto_invoice_id', '=', self.id),
@@ -255,7 +255,7 @@ class AccountInvoiceLine(models.Model):
         tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
         product_id = False
         if dest_company.company_share_product:
-            product_id = self.product_id.id or False
+            product_id = self.product_id.id
         vals = {
             'name': self.name,
             # TODO: it's wrong to just copy the price_unit
