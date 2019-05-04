@@ -22,6 +22,18 @@ class MultiCompanyAbstract(models.AbstractModel):
         auto_join=True,
         default=lambda self: self._default_company_ids(),
     )
+    visible_for_all_companies = fields.Boolean(
+        compute='_get_visible_for_all_companies',
+        store=True,
+        index=True,
+        default=True)
+
+    @api.depends('company_ids')
+    @api.multi
+    def _get_visible_for_all_companies(self):
+        for rec in self:
+            if not rec.company_ids:
+                rec.visible_for_all_companies = True
 
     def _default_company_ids(self):
         return self.browse(
