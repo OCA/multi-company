@@ -83,7 +83,7 @@ for the record (`product.product_comp_rule` in the above example).
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
    :alt: Try me on Runbot
-   :target: https://runbot.odoo-community.org/runbot/133/11.0
+   :target: https://runbot.odoo-community.org/runbot/133/12.0
 
 Bug Tracker
 ===========
@@ -110,6 +110,7 @@ Contributors
 * Laurent Mignon <laurent.mignon@acsone.eu>
 * Cédric Pigeon <cedric.pigeon@acsone.eu>
 * Rodrigo Ferreira <rodrigosferreira91@gmail.com>
+* Florian da Costa <florian.dacosta@akretion.com>
 
 Maintainer
 ----------
