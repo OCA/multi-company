@@ -16,6 +16,7 @@ class ResCompanyAssignment(models.Model):
 
     _name = 'res.company.assignment'
     _auto = False
+    _description = "Res Company Assignment"
 
     name = fields.Char()
 
