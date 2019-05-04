@@ -45,7 +45,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super(TestMultiCompanyAbstract, cls).setUpClass()
-        cls.env.registry.enter_test_mode()
+        cls.env.registry.enter_test_mode(cls.cr)
         cls._init_test_model(MultiCompanyAbstractTester)
         cls.test_model = cls.env[MultiCompanyAbstractTester._name]
 
