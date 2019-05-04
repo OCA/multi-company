@@ -33,7 +33,7 @@ def set_security_rule(env, rule_ref):
         'active': True,
         'domain_force': (
             "['|', ('company_ids', 'in', user.company_id.ids),"
-            " ('company_ids', '=', False)]"
+            " ('visible_for_all_companies', '=', True)]"
         ),
     })
 
