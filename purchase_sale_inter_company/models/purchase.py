@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from odoo import api, models, _, fields
 from odoo.exceptions import AccessError, UserError
+from datetime import datetime
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class PurchaseOrder(models.Model):
@@ -131,7 +133,8 @@ class PurchaseOrder(models.Model):
             'warehouse_id': warehouse.id,
             'pricelist_id': partner.property_product_pricelist.id,
             'partner_invoice_id': partner_addr['invoice'],
-            'date_order': self.date_order,
+            'date_order': datetime.now().strftime(
+                DEFAULT_SERVER_DATETIME_FORMAT),
             'fiscal_position_id': (partner.property_account_position_id and
                                    partner.property_account_position_id.id or
                                    False),
