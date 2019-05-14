@@ -6,7 +6,7 @@
 from openerp import api, models, _, fields
 from openerp.exceptions import Warning as UserError
 from datetime import datetime
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class PurchaseOrder(models.Model):
@@ -137,7 +137,8 @@ class PurchaseOrder(models.Model):
             'warehouse_id': warehouse.id,
             'pricelist_id': partner.property_product_pricelist.id,
             'partner_invoice_id': partner_addr['invoice'],
-            'date_order': datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT),
+            'date_order': datetime.now().strftime(
+                DEFAULT_SERVER_DATETIME_FORMAT),
             'fiscal_position': (partner.property_account_position and
                                 partner.property_account_position.id or False),
             'user_id': False,
