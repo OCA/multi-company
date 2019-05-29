@@ -23,7 +23,7 @@ class TestCrmStageMultiCompany(TransactionCase):
                 "name": "test user",
                 "login": "test",
                 "company_id": self.company.id,
-                "company_ids": (6, 0, [self.company.id]),
+                "company_ids": [(6, 0, [self.company.id])],
             }
         )
 
