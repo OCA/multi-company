@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="utm_medium_form_view">
+        <field name="name">utm.medium.form (in utm_medium_multi_company)</field>
+        <field name="model">utm.medium</field>
+        <field name="inherit_id" ref="utm.utm_medium_view_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="company_id" groups="base.group_multi_company"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="utm_medium_tree_view">
+        <field name="name">utm.medium.tree (in utm_medium_multi_company)</field>
+        <field name="model">utm.medium</field>
+        <field name="inherit_id" ref="utm.utm_medium_view_tree"/>
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
