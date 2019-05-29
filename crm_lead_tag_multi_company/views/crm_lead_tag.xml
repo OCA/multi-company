@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright 2019 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+    <record model="ir.ui.view" id="crm_lead_tag_form_view">
+        <field name="name">crm.lead.tag.form (in crm_lead_tag_multi_company)</field>
+        <field name="model">crm.lead.tag</field>
+        <field name="inherit_id" ref="crm.crm_lead_tag_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="company_id" groups="base.group_multi_company"/>
+            </field>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="crm_lead_tag_tree_view">
+        <field name="name">crm.lead.tag.tree (in crm_lead_tag_multi_company)</field>
+        <field name="model">crm.lead.tag</field>
+        <field name="inherit_id" ref="crm.crm_lead_tag_tree"/>
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
