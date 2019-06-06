@@ -13,7 +13,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-@job
+@job(default_channel='root.heavyjob.childinvoice')
 def generate_child_invoice_job(session, model_name, args):
     invoice = session.env['account.invoice'].browse(args.get('invoice_id'))
     domain = [
