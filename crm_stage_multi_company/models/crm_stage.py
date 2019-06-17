@@ -8,14 +8,12 @@ class CrmStage(models.Model):
 
     _inherit = "crm.stage"
 
-    def _company_default_get(self):
-        return self.env.user.company_id.id
-
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         index=True,
         help="Specific company that uses this stage. "
         "Other companies will not be able to see or use this stage.",
-        default=lambda self: self.env['res.company']._company_default_get('crm.stage'),
+        default=lambda self:
+            self.env["res.company"]._company_default_get("crm.stage"),
     )
