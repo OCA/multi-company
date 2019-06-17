@@ -48,4 +48,4 @@ class TestCrmStageMultiCompany(TransactionCase):
 
     def test_unlink_other_company_stage(self):
         with self.assertRaises(AccessError):
-            self.env.ref("crm.stage_lead1").sudo(self.user).unlink()          
+            self.env.ref("crm.stage_lead1").sudo(self.user).unlink()
