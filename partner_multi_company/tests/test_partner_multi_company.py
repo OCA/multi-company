@@ -148,3 +148,17 @@ class TestPartnerMultiCompany(common.SavepointCase):
             partner.company_ids,
             self.partner_company_both.company_ids,
         )
+
+    def test_avoid_updating_company_ids_in_global_partners(self):
+        self.user_company_1.write({
+            'company_ids': [(4, self.company_2.id)],
+        })
+        user_partner = self.user_company_1.partner_id
+        user_partner.write({
+            'company_id': False,
+            'company_ids': [(5, False)],
+        })
+        self.user_company_1.write({
+            'company_id': self.company_2.id,
+        })
+        self.assertEquals(user_partner.company_ids.ids, [])
