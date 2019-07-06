@@ -12,10 +12,8 @@ class MultiCompanyAbstractTester(models.TransientModel):
     name = fields.Char()
 
 
+@common.tagged('post_install', '-at_install')
 class TestMultiCompanyAbstract(common.SavepointCase):
-
-    post_install = True
-    at_install = False
 
     @classmethod
     def _init_test_model(cls, model_cls):
