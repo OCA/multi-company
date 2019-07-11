@@ -63,7 +63,7 @@ class TestStockProductionLotMultiCompany(TransactionCase):
                                    self.group_multi_company.id])],
              })
 
-        self.unit_uom = self.env.ref('product.product_uom_unit')
+        self.unit_uom = self.env.ref('uom.product_uom_unit')
         # product creation
         self.main_comp_product = self.product_model.create(
             {'name': 'Main company product',
