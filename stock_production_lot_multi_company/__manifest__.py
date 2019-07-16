@@ -4,7 +4,7 @@
 {
     "name": "Stock Production Lot Multi Company",
     "summary": "Make serial numbers multi-company aware",
-    "version": "11.0.1.0.0",
+    "version": "11.0.1.1.0",
     "category": "Stock",
     "website": 'https://github.com/OCA/multi-company',
     "license": "AGPL-3",

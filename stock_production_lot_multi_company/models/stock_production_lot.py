@@ -15,3 +15,10 @@ class StockProductionLot(models.Model):
     company_id = fields.Many2one(
         comodel_name='res.company', string='Company', change_default=True,
         default=_default_company_id)
+
+    _sql_constraints = [
+        ('name_ref_uniq',
+         'unique (name, product_id, company_id)',
+         'The combination of serial number, product and company '
+         'must be unique!'),
+    ]
