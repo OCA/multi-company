@@ -25,8 +25,8 @@ Product multi-company
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-This modules allows to select in which of the companies you want to use each of the product templates.
-
+This modules allows to select in which of the companies you want to use each
+of the product templates.
 
 **Table of contents**
 
