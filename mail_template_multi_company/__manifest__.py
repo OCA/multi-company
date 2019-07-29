@@ -11,5 +11,6 @@
               'Odoo Community Association (OCA)',
     'website': 'https://github.com/OCA/multi-company',
     'depends': ['mail'],
+    'post_init_hook': 'post_init_hook',
     'data': ['security/mail_template.xml', 'views/mail_template.xml'],
 }
