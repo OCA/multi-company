@@ -14,5 +14,5 @@ class MailTemplate(models.Model):
         default=lambda self: self.env['res.company']._company_default_get(
             'mail.template'
         ),
-        ondelete='cascade',
+        ondelete="set null",
     )
