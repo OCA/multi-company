@@ -25,9 +25,8 @@ Product multi-company
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-This module sets the default company taxes for all the existing companies when
-a product is created. It also adds a button to set all the taxes from other
-companies matching them by tax code.
+This modules allows to select in which of the companies you want to use each
+of the product templates.
 
 **Table of contents**
 
