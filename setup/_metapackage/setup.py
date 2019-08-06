@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo11-addon-account_invoice_inter_company',
         'odoo11-addon-account_multicompany_easy_creation',
         'odoo11-addon-base_multi_company',
+        'odoo11-addon-ir_actions_report_multi_company',
         'odoo11-addon-partner_multi_company',
         'odoo11-addon-product_multi_company',
         'odoo11-addon-product_tax_multicompany_default',
