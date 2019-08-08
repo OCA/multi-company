@@ -28,6 +28,10 @@ class MultiCompanyAbstract(models.AbstractModel):
             self.env['res.company']._company_default_get(self._name).ids
         )
 
+    def _update_record_company(self, company_id):
+        """ hook to customize """
+        self.company_id = company_id
+
     @api.depends('company_ids')
     def _compute_company_id(self):
         user_company = self.env.user.company_id
@@ -35,7 +39,7 @@ class MultiCompanyAbstract(models.AbstractModel):
             # Give the priority of the current company of the user to avoid
             # access right error
             if user_company.id in record.company_ids.ids:
-                record.company_id = user_company.id
+                record._update_record_company(user_company.id)
             else:
                 record.company_id = record.company_ids[:1].id
 
