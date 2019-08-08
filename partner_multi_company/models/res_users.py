@@ -21,5 +21,7 @@ class ResUsers(models.Model):
         res = super(ResUsers, self).write(vals)
         if 'company_id' in vals:
             for user in self.sudo():
-                user.partner_id.company_ids = [(6, 0, [vals['company_id']])]
+                if user.partner_id.company_ids:
+                    user.partner_id.company_ids = \
+                        [(6, 0, [vals['company_id']])]
         return res
