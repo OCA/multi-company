@@ -4,7 +4,7 @@ Copyright (C) 2019 - Today: GRAP (http://www.grap.coop)
 @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
 License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 -->
-<openerp><data>
+<odoo>
 
 
     <record id="view_res_company_category_tree" model="ir.ui.view">
@@ -53,7 +53,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
     <menuitem id="menu_company_category"
-        parent="base.menu_res_company_global" sequence="20"
+        parent="base.menu_users" sequence="20"
         action="action_company_category"/>
 
-</data></openerp>
+</odoo>
