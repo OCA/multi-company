@@ -7,8 +7,8 @@
     'summary': "Add the 'active' feature on company model",
     'version': '12.0.1.0.0',
     'category': 'Tools',
-    'author': 'GRAP',
-    'website': 'http://www.grap.coop',
+    'author': 'GRAP, Odoo Community Association (OCA)',
+    'website': 'https://github.com/OCA/multi-company',
     'license': 'AGPL-3',
     'depends': [
         'base',
