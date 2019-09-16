@@ -1,13 +1,13 @@
-# coding: utf-8
 # Copyright (C) 2019 - Today: GRAP (http://www.grap.coop)
 # @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import api, fields, models
+from odoo import api, fields, models
 
 
 class ResCompanyCategory(models.Model):
     _name = 'res.company.category'
+    _description = 'Company Categories'
     _order = 'complete_name'
 
     _TYPE_SELECTION = [
@@ -42,7 +42,6 @@ class ResCompanyCategory(models.Model):
         string='Complete Name', compute='_compute_complete_name', store=True)
 
     # Compute Section
-    @api.multi
     @api.depends('parent_id.complete_name', 'name')
     def _compute_complete_name(self):
         for category in self:
@@ -52,7 +51,6 @@ class ResCompanyCategory(models.Model):
             else:
                 category.complete_name = category.name
 
-    @api.multi
     @api.depends('company_ids.category_id', 'child_ids.company_qty')
     def _compute_company_qty(self):
         for category in self:
