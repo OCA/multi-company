@@ -1,0 +1,111 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * res_company_category
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-18 17:20+0000\n"
+"PO-Revision-Date: 2019-01-18 17:20+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: res_company_category
+#: field:res.company,category_id:0
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: res_company_category
+#: field:res.company.category,child_ids:0
+msgid "Category Childs"
+msgstr "Catégories enfants"
+
+#. module: res_company_category
+#: model:ir.model,name:res_company_category.model_res_company
+#: field:res.company.category,company_ids:0
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: res_company_category
+#: model:ir.actions.act_window,name:res_company_category.action_company_category
+#: model:ir.ui.menu,name:res_company_category.menu_company_category
+msgid "Company Categories"
+msgstr "Catégories de société"
+
+#. module: res_company_category
+#: field:res.company.category,company_qty:0
+msgid "Companies Quantity"
+msgstr "Quantité de sociétés"
+
+#. module: res_company_category
+#: field:res.company.category,complete_name:0
+msgid "Complete Name"
+msgstr "Nom complet"
+
+#. module: res_company_category
+#: field:res.company.category,create_uid:0
+msgid "Created by"
+msgstr "Created by"
+
+#. module: res_company_category
+#: field:res.company.category,create_date:0
+msgid "Created on"
+msgstr "Created on"
+
+#. module: res_company_category
+#: field:res.company.category,display_name:0
+msgid "Display Name"
+msgstr "Nom afffiché"
+
+#. module: res_company_category
+#: field:res.company.category,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: res_company_category
+#: field:res.company.category,__last_update:0
+msgid "Last Modified on"
+msgstr "Last Modified on"
+
+#. module: res_company_category
+#: field:res.company.category,write_uid:0
+msgid "Last Updated by"
+msgstr "Last Updated by"
+
+#. module: res_company_category
+#: field:res.company.category,write_date:0
+msgid "Last Updated on"
+msgstr "Last Updated on"
+
+#. module: res_company_category
+#: view:res.company.category:res_company_category.view_res_company_category_form
+#: field:res.company.category,name:0
+msgid "Name"
+msgstr "Nom"
+
+#. module: res_company_category
+#: selection:res.company.category,type:0
+msgid "Normal"
+msgstr "Normal"
+
+#. module: res_company_category
+#: view:res.company.category:res_company_category.view_res_company_category_form
+#: field:res.company.category,parent_id:0
+msgid "Parent Category"
+msgstr "Catégorie parent"
+
+#. module: res_company_category
+#: field:res.company.category,type:0
+msgid "Type"
+msgstr "Type"
+
+#. module: res_company_category
+#: selection:res.company.category,type:0
+msgid "View"
+msgstr "Vue"
+
