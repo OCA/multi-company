@@ -27,7 +27,7 @@ class ResCompany(models.Model):
                         "You can not disable the company %s because it is the"
                         " current company for the following active users:\n\n"
                         " - %s\n\n"
-                        " Please change the company of there users, or disable"
+                        " Please change the company of these users, or disable"
                         " them") % (
                             company.name,
                             '\n - '.join(users.mapped('name'))))

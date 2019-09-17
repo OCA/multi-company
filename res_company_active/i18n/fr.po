@@ -33,7 +33,7 @@ msgid "You can not disable the company %s because it is the current company for 
 "\n"
 " - %s\n"
 "\n"
-" Please change the company of there users, or disable them"
+" Please change the company of these users, or disable them"
 msgstr "Vous ne pouvez pas désactiver la société %s car il s'agit de la société courante pour les utilisateurs actifs suivants:\n"
 "\n"
 " - %s\n"
