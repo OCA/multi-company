@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo12-addon-account_invoice_inter_company',
+        'odoo12-addon-base_multi_company',
         'odoo12-addon-stock_move_line_multi_company_security',
     ],
     classifiers=[
