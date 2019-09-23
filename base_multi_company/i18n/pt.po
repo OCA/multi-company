@@ -20,32 +20,30 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_company_ids
-#: model:ir.model.fields,field_description:base_multi_company.field_product_template_company_ids
-#: model:ir.model.fields,field_description:base_multi_company.field_res_partner_company_ids
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
 msgid "Companies"
 msgstr "Empresas"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_company_id
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_id
 msgid "Company"
 msgstr "Empresa"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_display_name
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment_display_name
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__display_name
 msgid "Display Name"
 msgstr "Nome a Exibir"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract_id
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment_id
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__id
 msgid "ID"
 msgstr "ID"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract___last_update
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment___last_update
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment____last_update
 msgid "Last Modified on"
 msgstr "Última Modificação Em"
 
@@ -55,17 +53,22 @@ msgid "Multi-Company Abstract"
 msgstr "Abstração Multi-Empresa"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment_name
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__name
 msgid "Name"
 msgstr "Nome"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment_parent_id
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
 #, fuzzy
 msgid "Parent"
 msgstr "Id do Ascendente"
 
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_res_company_assignment
-msgid "res.company.assignment"
+msgid "Res Company Assignment"
+msgstr ""
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
+msgid "Visible For All Companies"
 msgstr ""
