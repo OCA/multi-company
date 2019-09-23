@@ -13,11 +13,17 @@ Company Categories
 .. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
-.. |badge3| image:: https://img.shields.io/badge/github-grap%2Fgrap--odoo--incubator-lightgray.png?logo=github
-    :target: https://github.com/grap/grap-odoo-incubator/tree/8.0/res_company_category
-    :alt: grap/grap-odoo-incubator
+.. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
+    :target: https://github.com/OCA/multi-company/tree/12.0/res_company_category
+    :alt: OCA/multi-company
+.. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
+    :target: https://translation.odoo-community.org/projects/multi-company-12-0/multi-company-12-0-res_company_category
+    :alt: Translate me on Weblate
+.. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
+    :target: https://runbot.odoo-community.org/runbot/133/12.0
+    :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| 
+|badge1| |badge2| |badge3| |badge4| |badge5| 
 
 This module adds company categories concept.
 
@@ -35,26 +41,26 @@ Configuration
 
 * go to 'Configuration' / 'Companies' / 'Company Categories'
 
-.. figure:: https://raw.githubusercontent.com/grap/grap-odoo-incubator/8.0/res_company_category/static/description/res_company_category_tree.png
+.. figure:: https://raw.githubusercontent.com/OCA/multi-company/12.0/res_company_category/static/description/res_company_category_tree.png
 
 * Create new company categories.
 
 For each category, you can define a type 'view' or 'normal' (as for product
 categories).
 
-.. figure:: https://raw.githubusercontent.com/grap/grap-odoo-incubator/8.0/res_company_category/static/description/res_company_category_form.png
+.. figure:: https://raw.githubusercontent.com/OCA/multi-company/12.0/res_company_category/static/description/res_company_category_form.png
 
 * Go to your companies, and set for each a category in the 'Configuration' tab.
 
-.. figure:: https://raw.githubusercontent.com/grap/grap-odoo-incubator/8.0/res_company_category/static/description/res_company_form.png
+.. figure:: https://raw.githubusercontent.com/OCA/multi-company/12.0/res_company_category/static/description/res_company_form.png
 
 Bug Tracker
 ===========
 
-Bugs are tracked on `GitHub Issues <https://github.com/grap/grap-odoo-incubator/issues>`_.
+Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/grap/grap-odoo-incubator/issues/new?body=module:%20res_company_category%0Aversion:%208.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20res_company_category%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -74,9 +80,16 @@ Contributors
 Maintainers
 ~~~~~~~~~~~
 
+This module is maintained by the OCA.
 
+.. image:: https://odoo-community.org/logo.png
+   :alt: Odoo Community Association
+   :target: https://odoo-community.org
 
-This module is part of the `grap/grap-odoo-incubator <https://github.com/grap/grap-odoo-incubator/tree/8.0/res_company_category>`_ project on GitHub.
+OCA, or the Odoo Community Association, is a nonprofit organization whose
+mission is to support the collaborative development of Odoo features and
+promote its widespread use.
 
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/12.0/res_company_category>`_ project on GitHub.
 
-You are welcome to contribute.
+You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
