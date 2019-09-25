@@ -24,8 +24,14 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
             "tests",
             "inter_company_purchase_sale.xml",
         )
+        cls.warehouse_company_a = cls.env.ref(
+            'purchase_sale_inter_company.warehouse_company_a')
         cls.purchase_company_a = cls.env.ref(
             'purchase_sale_inter_company.purchase_company_a')
+        # Test demo data is create by admin, thus the purchase order default
+        # picking type has to be fixed.
+        cls.purchase_company_a.picking_type_id = (
+            cls.warehouse_company_a.in_type_id)
         cls.company_a = cls.env.ref('purchase_sale_inter_company.company_a')
         cls.company_b = cls.env.ref('purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
