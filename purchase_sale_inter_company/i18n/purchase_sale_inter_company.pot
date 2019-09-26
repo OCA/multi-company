@@ -6,8 +6,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 11.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-07 12:19+0000\n"
-"PO-Revision-Date: 2018-08-07 12:19+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -21,8 +19,14 @@ msgid "Companies"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company_so_from_po
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings_so_from_po
 msgid "Create Sale Orders when buying to this company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company_warehouse_id
+msgid "Default value to set on Sale Orders that will be created based on Purchase Orders made to this company"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -31,12 +35,19 @@ msgid "Default value to set on Sale Orders that will be created based on Purchas
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company_so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings_so_from_po
 msgid "Generate a Sale Order when a Purchase Order with this company as supplier is created.\n"
 " The intercompany user must at least be Sale User."
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking_intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company_intercompany_user_id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings_intercompany_user_id
 msgid "Intercompany User"
 msgstr ""
@@ -68,6 +79,11 @@ msgid "Sales Order Line"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_auto_purchase_order_id
+msgid "Source Purchase Order"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line_auto_purchase_line_id
 msgid "Source Purchase Order Line"
 msgstr ""
@@ -90,6 +106,7 @@ msgid "Transfer"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company_warehouse_id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings_warehouse_id
 msgid "Warehouse For Sale Orders"
 msgstr ""
@@ -98,6 +115,12 @@ msgstr ""
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company_sale_auto_validation
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings_sale_auto_validation
 msgid "When a Sale Order is created by a multi company rule for this company, it will automatically validate it."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:161
+#, python-format
+msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
