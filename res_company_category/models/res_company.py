@@ -6,8 +6,10 @@ from odoo import fields, models
 
 
 class ResCompany(models.Model):
-    _inherit = 'res.company'
+    _inherit = "res.company"
 
     category_id = fields.Many2one(
-        string='Category', comodel_name='res.company.category',
-        domain=[('type', '=', 'normal')])
+        string="Category",
+        comodel_name="res.company.category",
+        domain=[("type", "=", "normal")],
+    )
