@@ -50,6 +50,8 @@ class TestAccountInvoiceInterCompany(SavepointCase):
             self.assertFalse(line.product_id.company_id)
 
     def test03_confirm_invoice(self):
+        # ensure the catalog is shared
+        self.env.ref('product.product_comp_rule').write({'active': False})
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(
             self.user_company_a.id).action_invoice_open()
