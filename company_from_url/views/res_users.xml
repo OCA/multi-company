@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="view_users_form">
+        <field name="name">res.users.form.company_from_url</field>
+    		<field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="priority" eval="20"/>
+        <field name="arch" type="xml">
+            <field name="company_id" position="attributes">
+                <attribute name="string">Company (from URL)</attribute>
+            </field>
+            <field name="company_id" position="after">
+                <field name="stored_company_id"/>
+            </field>
+        </field>
+    </record>
+
+</odoo>
