@@ -11,4 +11,8 @@ _logger = logging.getLogger(__name__)
 class ResCompany(models.Model):
     _inherit = 'res.company'
 
-    access_url = fields.Char(string="Direct access URL")
+    access_url = fields.Char(
+        string="Access domain name",
+        help="If filled, accessing Odoo through this "
+             "domain name will select this company as the "
+             "current one for that session.")

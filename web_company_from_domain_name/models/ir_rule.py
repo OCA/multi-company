@@ -24,6 +24,5 @@ class IrRule(models.Model):
         _super = super(IrRule, self)._compute_domain
         model = self.env[model_name]
         if 'company_id' in model._fields:
-            print model_name
             _super.clear_cache(self)
         return _super(model_name, mode=mode)

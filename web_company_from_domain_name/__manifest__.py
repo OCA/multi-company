@@ -5,7 +5,7 @@
     'name': 'Company from URL',
     'summary': 'Get active company on user from URL',
     'author': 'AppsToGROW',
-    'category': 'Administration',
+    'category': 'Multi-company',
     'data': [
         'views/res_company.xml',
         'views/res_users.xml',
