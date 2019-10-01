@@ -4,7 +4,8 @@
 
 import logging
 
-from odoo import api, exceptions, fields, models, tools
+import odoo
+from odoo import api, exceptions, models, SUPERUSER_ID, tools
 from odoo.http import request
 
 
@@ -17,32 +18,36 @@ class ResUsers(models.Model):
     @classmethod
     @tools.ormcache('uid')
     def get_cached_domain_name(cls, uid, current_domain_name):
+        """ Returns cached domain name per user """
         return current_domain_name
 
-    def _inverse_company_id(self):
-        """ Save selected company id to stored_company_id """
-        for this in self:
-            this.stored_company_id = this.company_id
+    @api.model
+    @tools.ormcache('uid')
+    def get_cached_company_id(self, uid):
+        """ Returns cached company_id per user """
+        company_id = self._get_company_id_from_domain_name(uid)
+        return company_id
 
-    def _compute_company_id(self):
-        """ Change company_id on user to a computed field based on URL """
+    @api.model
+    def _get_company_id_from_domain_name(self, uid):
+        """ Retrieve company_id through domain name """
         company_obj = self.env['res.company']
         company_id = self.env.context.get('force_company', None)
-        company = company_id and company_obj.browse(company_id)
-        if request and not company:
-            url_domain = request.httprequest.host.partition(":")[0]
-            company = company_obj.search([
-                ('access_url', '=', url_domain),
-                ('user_ids', 'in', self.ids)
-            ])[:1]
-        for this in self:
-            this.company_id = \
-                company or this.stored_company_id or this.company_ids[:1]
+        if request and not company_id:
+            domain_name = request.httprequest.host.partition(":")[0]
+            company_id = company_obj.sudo().search([
+                ('access_url', '=', domain_name),
+                ('user_ids', 'in', [uid])
+            ])[:1].id
+        return company_id
 
-    company_id = fields.Many2one(
-        compute='_compute_company_id',
-        inverse='_inverse_company_id',
-        string='Company (from URL)',
-        store=False, index=False, required=False)
-    stored_company_id = fields.Many2one(
-        'res.company', string='Company (stored)', readonly=True)
+    def _read_from_database(self, field_names, inherited_field_names=[]):
+        """ Read with modified company_id """
+        ret = super(ResUsers, self)._read_from_database(
+            field_names, inherited_field_names=inherited_field_names)
+        if 'company_id' in field_names:
+            for this in self.filtered(lambda u: u.id != SUPERUSER_ID):
+                company_id = self.get_cached_company_id(this.id)
+                if company_id:
+                    this._cache.update({'company_id': (company_id,)})
+        return ret

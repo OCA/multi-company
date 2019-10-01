@@ -18,16 +18,17 @@ class IrHttp(models.AbstractModel):
         """ Clear cache when a user switches to another domain name """
         uid = request.session.uid
         domain_name = request.httprequest.host.partition(":")[0]
-        cached_domain_name = request.registry['res.users']. \
-            get_cached_domain_name(uid, domain_name)
+        cached_domain_name = request.registry['res.users']\
+            .get_cached_domain_name(uid, domain_name)
         # Dont trigger on longpolling because this occurs too often
         if domain_name != cached_domain_name and not \
                 'longpolling' in request.httprequest.path:
-            # TODO: only clear cache for this user, not all?
-            request.registry.clear_caches()
-            request.env.invalidate_all()
             _logger.info(
                 "Clearing cache after seeing user %s access Odoo through "
                 "domain name %s instead of %s",
                 uid, cached_domain_name, domain_name)
+            request.registry.clear_caches()
+            # TODO: only invalidate envs for this user, not all
+            request.env.invalidate_all()
+            request.env['res.users'].get_cached_company_id(uid)
         return super(IrHttp, cls)._dispatch()
