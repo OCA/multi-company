@@ -25,6 +25,7 @@ class IrHttp(models.AbstractModel):
                 'longpolling' in request.httprequest.path:
             # TODO: only clear cache for this user, not all?
             request.registry.clear_caches()
+            request.env.invalidate_all()
             _logger.info(
                 "Clearing cache after seeing user %s access Odoo through "
                 "domain name %s instead of %s",

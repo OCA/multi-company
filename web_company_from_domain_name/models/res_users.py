@@ -29,14 +29,12 @@ class ResUsers(models.Model):
         company_obj = self.env['res.company']
         company_id = self.env.context.get('force_company', None)
         company = company_id and company_obj.browse(company_id)
-        if not company:
-            try:
-                url_domain = request.httprequest.host.partition(":")[0]
-                company = company_obj.search([
-                    ('access_url', '=', url_domain)
-                ])[:1] & self.env.user.company_ids
-            except RuntimeError:
-                company = None
+        if request and not company:
+            url_domain = request.httprequest.host.partition(":")[0]
+            company = company_obj.search([
+                ('access_url', '=', url_domain),
+                ('user_ids', 'in', self.ids)
+            ])[:1]
         for this in self:
             this.company_id = \
                 company or this.stored_company_id or this.company_ids[:1]
