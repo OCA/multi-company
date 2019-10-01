@@ -2,9 +2,9 @@
 # Copyright 2019 AppsToGROW - Henrik Norlin
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 {
-    'name': 'Company from URL',
-    'summary': 'Get active company on user from URL',
-    'author': 'AppsToGROW',
+    'name': 'Multi-company by domain name',
+    'summary': 'Get active company on user from domain name',
+    'author': 'AppsToGROW,Sunflower IT,Odoo Community Association (OCA)',
     'category': 'Multi-company',
     'data': [
         'views/res_company.xml',
