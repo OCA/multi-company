@@ -29,7 +29,7 @@ class ResUsers(models.Model):
         if request and not company_id:
             domain_name = request.httprequest.host.partition(":")[0]
             company_id = company_obj.sudo().search([
-                ('access_url', '=', domain_name),
+                ('access_domain_name', '=', domain_name),
                 ('user_ids', 'in', [uid])
             ])[:1].id
         return company_id

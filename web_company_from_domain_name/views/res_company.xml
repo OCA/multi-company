@@ -8,7 +8,7 @@
         <field name="priority" eval="20"/>
         <field name="arch" type="xml">
             <field name="website" position="after">
-                <field name="access_url"/>
+                <field name="access_domain_name"/>
             </field>
         </field>
     </record>
