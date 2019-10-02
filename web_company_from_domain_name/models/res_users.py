@@ -4,8 +4,7 @@
 
 import logging
 
-import odoo
-from odoo import api, exceptions, models, SUPERUSER_ID, tools
+from odoo import api, models, SUPERUSER_ID, tools
 from odoo.http import request
 
 
@@ -23,14 +22,8 @@ class ResUsers(models.Model):
 
     @api.model
     @tools.ormcache('uid')
-    def get_cached_company_id(self, uid):
-        """ Returns cached company_id per user """
-        company_id = self._get_company_id_from_domain_name(uid)
-        return company_id
-
-    @api.model
-    def _get_company_id_from_domain_name(self, uid):
-        """ Retrieve company_id through domain name """
+    def get_company_id_from_domain_name(self, uid):
+        """ Retrieve cached company_id, or determine through domain name """
         company_obj = self.env['res.company']
         company_id = self.env.context.get('force_company', None)
         if request and not company_id:
@@ -47,7 +40,7 @@ class ResUsers(models.Model):
             field_names, inherited_field_names=inherited_field_names)
         if 'company_id' in field_names:
             for this in self.filtered(lambda u: u.id != SUPERUSER_ID):
-                company_id = self.get_cached_company_id(this.id)
+                company_id = self.get_company_id_from_domain_name(this.id)
                 if company_id:
                     this._cache.update({'company_id': (company_id,)})
         return ret
