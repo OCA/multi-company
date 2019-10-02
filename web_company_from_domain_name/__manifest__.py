@@ -8,7 +8,6 @@
     'category': 'Multi-company',
     'data': [
         'views/res_company.xml',
-        'views/res_users.xml',
     ],
     'depends': ['web'],
     'license': 'AGPL-3',
