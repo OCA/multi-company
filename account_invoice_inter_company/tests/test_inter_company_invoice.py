@@ -19,41 +19,19 @@ class TestAccountInvoiceInterCompany(TransactionCase):
         self.user_company_b = self.env.ref(
             'account_invoice_inter_company.user_company_b')
 
-        # Install COA for company A and B
-        wizard_comp_a = self.wizard_obj.create({
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_a').id,
-            'chart_template_id': 1,
-            'code_digits': 6,
-            'transfer_account_id': self.env.ref(
-                'account_invoice_inter_company.pcg_X58').id,
-            'currency_id': self.env.ref('base.EUR').id,
-            'bank_account_code_prefix': False,
-            'cash_account_code_prefix': False,
-        })
-        wizard_comp_a.onchange_chart_template_id()
-        wizard_comp_a.execute()
-        wizard_comp_b = self.wizard_obj.create({
-            'company_id': self.env.ref(
-                'account_invoice_inter_company.company_b').id,
-            'chart_template_id': 1,
-            'code_digits': 6,
-            'transfer_account_id': self.env.ref(
-                'account_invoice_inter_company.pcg_X58').id,
-            'currency_id': self.env.ref('base.EUR').id,
-            'bank_account_code_prefix': False,
-            'cash_account_code_prefix': False,
-        })
-        wizard_comp_b.onchange_chart_template_id()
-        wizard_comp_b.execute()
+        self.chart = self.env['account.chart.template'].search([], limit=1)
+        if not self.chart:
+            raise ValidationError(
+                # translation to avoid pylint warnings
+                _("No Chart of Account Template has been defined !"))
 
         # Fix default value of company_id set by the company_ids field
         # of base_multi_company module
-        if self.invoice_company_a.partner_id.company_ids:
-            self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
-        for line in self.invoice_company_a.invoice_line_ids:
-            if line.product_id.company_ids:
-                line.product_id.company_ids = [(6, 0, [])]
+        # if self.invoice_company_a.partner_id.company_ids:
+        #     self.invoice_company_a.partner_id.company_ids = [(6, 0, [])]
+        # for line in self.invoice_company_a.invoice_line_ids:
+        #     if line.product_id.company_ids:
+        #         line.product_id.company_ids = [(6, 0, [])]
 
     def test01_user(self):
         # Check user of company B (company of destination)
