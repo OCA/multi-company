@@ -58,7 +58,6 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.Model = self.env['multi.company.abstract.tester']
         self.record = self.Model.create({
             'name': 'test',
-            'active': True,
         })
         Companies = self.env['res.company']
         self.company_1 = Companies._company_default_get()
@@ -150,7 +149,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         # Create a "normal" user (not the admin)
         user = user_obj.create({
             'name': 'Best employee',
-            'login': 'best-emplyee@example.com',
+            'login': 'best-employee@example.com',
             'company_id': company1.id,
             'company_ids': [(6, False, companies.ids)],
         })
