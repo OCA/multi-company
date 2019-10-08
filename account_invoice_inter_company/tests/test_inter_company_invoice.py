@@ -70,9 +70,14 @@ class TestAccountInvoiceInterCompany(TransactionCase):
                           self.invoice_company_a.partner_id)
         self.assertEquals(len(invoices[0].invoice_line_ids),
                           len(self.invoice_company_a.invoice_line_ids))
-        self.assertEquals(
-            invoices[0].invoice_line_ids[0].product_id,
-            self.invoice_company_a.invoice_line_ids[0].product_id)
+
+        # Run this test only when product sharing is active
+        product_rule = self.env.ref('product.product_comp_rule')
+        company_share_product = not bool(product_rule.active)
+        if company_share_product:
+            self.assertEquals(
+                invoices[0].invoice_line_ids[0].product_id,
+                self.invoice_company_a.invoice_line_ids[0].product_id)
 
     def test04_cancel_invoice(self):
         # Confirm the invoice of company A
