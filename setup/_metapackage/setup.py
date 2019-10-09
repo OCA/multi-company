@@ -16,6 +16,7 @@ setuptools.setup(
         'odoo12-addon-res_partner_category_multi_company',
         'odoo12-addon-stock_move_line_multi_company_security',
         'odoo12-addon-stock_production_lot_multi_company',
+        'odoo12-addon-utm_medium_multi_company',
         'odoo12-addon-utm_source_multi_company',
     ],
     classifiers=[
