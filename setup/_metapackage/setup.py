@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo12-addon-account_invoice_inter_company',
         'odoo12-addon-base_multi_company',
+        'odoo12-addon-crm_lead_tag_multi_company',
         'odoo12-addon-crm_lost_reason_multi_company',
         'odoo12-addon-res_company_active',
         'odoo12-addon-res_company_category',
