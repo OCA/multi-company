@@ -12,6 +12,7 @@ setuptools.setup(
         'odoo12-addon-base_multi_company',
         'odoo12-addon-res_company_active',
         'odoo12-addon-res_company_category',
+        'odoo12-addon-res_partner_category_multi_company',
         'odoo12-addon-stock_move_line_multi_company_security',
         'odoo12-addon-stock_production_lot_multi_company',
     ],
