@@ -13,6 +13,7 @@ setuptools.setup(
         'odoo12-addon-calendar_event_type_multi_company',
         'odoo12-addon-crm_lead_tag_multi_company',
         'odoo12-addon-crm_lost_reason_multi_company',
+        'odoo12-addon-crm_stage_multi_company',
         'odoo12-addon-res_company_active',
         'odoo12-addon-res_company_category',
         'odoo12-addon-res_partner_category_multi_company',
