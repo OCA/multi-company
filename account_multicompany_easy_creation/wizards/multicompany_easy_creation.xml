@@ -19,7 +19,6 @@
                     </group>
                     <group string="Chart Template">
                         <field name="chart_template_id"/>
-                        <field name="accounts_code_digits"/>
                     </group>
                     <group col="1" string="Accounts">
                         <group string="Smart search to set specific accounts in products, categories, partners, ...">
