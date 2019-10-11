@@ -9,6 +9,7 @@ from odoo.tools.safe_eval import safe_eval
 
 class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     _name = 'account.multicompany.easy.creation.wiz'
+    _description = 'Wizard Account Multi-company Easy Creation'
 
     def _default_sequence_ids(self):
         exclude_seq_list = self.env['ir.config_parameter'].get_param(
@@ -34,10 +35,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     chart_template_id = fields.Many2one(
         comodel_name='account.chart.template',
         string='Chart Template',
-    )
-    accounts_code_digits = fields.Integer(
-        string='Number of digits in an account code',
-        default=lambda s: s.env.user.company_id.accounts_code_digits,
     )
     bank_ids = fields.One2many(
         comodel_name='account.multicompany.bank.wiz',
@@ -121,21 +118,10 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     def install_chart_account(self):
         """ install a chart of accounts for the given company """
-        wizard = self.env['wizard.multi.charts.accounts'].create({
-            'company_id': self.new_company_id.id,
-            'chart_template_id': self.chart_template_id.id,
-            'transfer_account_id':
-                self.chart_template_id.transfer_account_id.id,
-            'code_digits': self.accounts_code_digits or 6,
-            'complete_tax_set': self.chart_template_id.complete_tax_set,
-            'currency_id': self.currency_id.id,
-            'bank_account_code_prefix':
-                self.chart_template_id.bank_account_code_prefix,
-            'cash_account_code_prefix':
-                self.chart_template_id.cash_account_code_prefix,
-        })
-        wizard.onchange_chart_template_id()
-        wizard.sudo().execute()
+        user_company = self.env.user.company_id
+        self.env.user.company_id = self.new_company_id
+        self.sudo().chart_template_id.try_loading_for_current_company()
+        self.env.user.company_id = user_company
 
     def create_bank_journals(self):
         AccountJournal = self.env['account.journal'].sudo()
@@ -173,7 +159,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.new_company_id = self.env['res.company'].create({
             'name': self.name,
             'user_ids': [(6, 0, self.user_ids.ids)],
-            'chart_template_id': self.chart_template_id.id,
         })
         self.install_chart_account()
         self.create_bank_journals()
@@ -183,13 +168,11 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     @ormcache('self.id', 'company_id', 'match_tax_ids')
     def taxes_by_company(self, company_id, match_tax_ids):
         AccountTax = self.env['account.tax'].sudo()
-        taxes_ids = []
-        for tax in AccountTax.browse(match_tax_ids):
-            taxes_ids.extend(AccountTax.search([
-                ('description', '=', tax.description),
-                ('company_id', '=', company_id)
-            ]).ids)
-        return taxes_ids
+        account_taxes = AccountTax.browse(match_tax_ids)
+        return AccountTax.search([
+            ('description', 'in', account_taxes.mapped('description')),
+            ('company_id', '=', company_id),
+        ]).ids
 
     def update_product_taxes(self, product, taxes_field, company_from):
         product_taxes = product[taxes_field].filtered(
@@ -281,11 +264,9 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 })
 
     def match_account(self, account_template):
-        code = '{code:0<{fill}}'.format(
-            code=account_template.code, fill=self.accounts_code_digits)
         return self.sudo().env['account.account'].search([
             ('company_id', '=', self.new_company_id.id),
-            ('code', '=', code),
+            ('code', '=', account_template.code),
         ], limit=1)
 
     def set_global_properties(self):
@@ -355,4 +336,7 @@ class AccountMulticompanyBankWiz(models.TransientModel):
 
     wizard_id = fields.Many2one(
         comodel_name='account.multicompany.easy.creation.wiz',
+    )
+    partner_id = fields.Many2one(
+        required=False,
     )
