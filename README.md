@@ -6,7 +6,3 @@ Multi Company
 
 This repository provides addons for the management of multi company instances
 as well as inter company communication.
-
-
-
-
