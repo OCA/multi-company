@@ -4,7 +4,7 @@
 {
     "name": "Company Dependent Attribute",
     "summary": "Display company dependent attribute on fields",
-    "version": "13.0.1.0.0",
+    "version": "12.0.1.0.0",
     "category": "Tools",
     "author": "Akretion, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
