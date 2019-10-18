@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo12-addon-account_invoice_inter_company',
         'odoo12-addon-base_multi_company',
         'odoo12-addon-calendar_event_type_multi_company',
+        'odoo12-addon-company_dependent_attribute',
         'odoo12-addon-crm_lead_tag_multi_company',
         'odoo12-addon-crm_lost_reason_multi_company',
         'odoo12-addon-crm_stage_multi_company',
