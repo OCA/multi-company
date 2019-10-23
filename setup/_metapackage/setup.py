@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo12-addon-account_invoice_inter_company',
+        'odoo12-addon-account_multicompany_easy_creation',
         'odoo12-addon-base_multi_company',
         'odoo12-addon-calendar_event_type_multi_company',
         'odoo12-addon-company_dependent_attribute',
