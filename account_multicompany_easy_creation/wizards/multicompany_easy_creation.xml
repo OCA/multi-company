@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!-- Copyright 2018 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+
+<odoo>
+
+<record id="wizard_multicompany_easy_creation_view_form" model="ir.ui.view">
+    <field name="name">Quick Company Creation</field>
+    <field name="model">account.multicompany.easy.creation.wiz</field>
+    <field name="arch" type="xml">
+        <form string="Fill company data">
+            <group>
+                <field name="name"/>
+            </group>
+            <notebook>
+                <page string='Account' name="account">
+                    <group string="Currency" groups="base.group_multi_currency">
+                        <field name="currency_id"/>
+                    </group>
+                    <group string="Chart Template">
+                        <field name="chart_template_id"/>
+                    </group>
+                    <group col="1" string="Accounts">
+                        <group string="Smart search to set specific accounts in products, categories, partners, ...">
+                            <field name="smart_search_specific_account"/>
+                        </group>
+                        <group string="Smart search to set specific fiscal position in partners">
+                            <field name="smart_search_fiscal_position"/>
+                        </group>
+                        <group string="Update default accounts">
+                            <field name="update_default_accounts"/>
+                        </group>
+                        <group attrs="{'invisible': [('update_default_accounts','=', False)]}">
+                            <field name="account_receivable_id"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                            <field name="account_payable_id"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                            <field name="account_income_categ_id"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                            <field name="account_expense_categ_id"
+                                   options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                </page>
+                <page string="Taxes">
+                    <group string="Smart search to set product taxes">
+                        <field name="smart_search_product_tax"/>
+                    </group>
+                    <group string="Update default taxes">
+                        <field name="update_default_taxes"/>
+                    </group>
+                    <group attrs="{'invisible': [('update_default_taxes','=', False)]}">
+                        <field name="default_sale_tax_id"
+                               domain="[('type_tax_use', '=', 'sale')]"
+                               attrs="{'required': [('force_sale_tax','=', True)]}"
+                               options="{'no_open': True, 'no_create': True}"/>
+                        <field name="force_sale_tax"/>
+                        <field name="default_purchase_tax_id"
+                               domain="[('type_tax_use', '=', 'purchase')]"
+                               attrs="{'required': [('force_purchase_tax','=', True)]}"
+                               options="{'no_open': True, 'no_create': True}"/>
+                        <field name="force_purchase_tax"/>
+                    </group>
+                </page>
+                <page string="Banks">
+                    <field name="bank_ids">
+                        <tree editable="bottom">
+                            <field name="acc_number"/>
+                            <field name="bank_id"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Users">
+                    <field name="user_ids"/>
+                </page>
+                <page string="Sequences">
+                    <field name="sequence_ids"/>
+                </page>
+            </notebook>
+            <footer>
+                <button name="action_accept"
+                        type="object"
+                        string="Accept"
+                        class="oe_highlight"/>
+                or
+                <button special="cancel"
+                        string="Cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<act_window id="wizard_multicompany_easy_creation_action"
+            name="Company easy creation"
+            res_model="account.multicompany.easy.creation.wiz"
+            view_type="form"
+            view_mode="form"
+            target="new" />
+
+<menuitem id="multicompany_easy_creation_menu"
+          name="Company easy creation"
+          action="wizard_multicompany_easy_creation_action"
+          parent="base.menu_users"
+          sequence="180"
+          groups="base.group_no_one"/>
+
+</odoo>
