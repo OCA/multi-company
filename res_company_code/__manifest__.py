@@ -12,6 +12,7 @@
     'license': 'AGPL-3',
     'depends': [
         'base',
+        'web',
     ],
     'data': [
         'views/view_res_company.xml',
