@@ -11,7 +11,6 @@
     'website': 'https://github.com/OCA/multi-company',
     'license': 'AGPL-3',
     'depends': [
-        'base',
         'web',
     ],
     'data': [
