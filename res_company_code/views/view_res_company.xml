@@ -39,7 +39,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             <field name="name" position="before">
                 <field name="code"/>
             </field>
-            <xpath expr="//i[hasclass('fa', 'fa-building')]" position="before">
+            <xpath expr="//i[hasclass('fa', 'fa-building')]" position="after">
                 <strong><field name="code"/></strong>
             </xpath>
         </field>
