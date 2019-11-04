@@ -1,0 +1,51 @@
+<odoo>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id="account_bill_line_invoice_tree" model="ir.ui.view">
+        <field name="name">account.bill.line.invoice.tree</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account.view_invoice_line_tree"/>
+        <field name="arch" type="xml">
+            <field name="account_id" position="after">
+                <field name="distribution_ids"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_invoice_line_form_distribution" model="ir.ui.view">
+        <field name="name">account.invoice.line.form.distribution</field>
+        <field name="model">account.invoice.line</field>
+        <field name="inherit_id" ref="account.view_invoice_line_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <label for="distribution_ids"/>
+                <field name="distribution_ids">
+                    <tree string="Distribution" editable="bottom">
+                        <field name="company_id"/>
+                        <field name="percent"/>
+                        <field name="amount"/>
+                    </tree>
+                </field>
+            </field>
+        </field>
+    </record>
+
+    <record id="account_bill_line_invoice" model="ir.ui.view">
+        <field name="name">account.bill.line.invoice</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[7]" position="after">
+                <field name="distribution_ids"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
+                <attribute name="editable"/>
+            </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                <attribute name="context">{'type': type, 'journal_id': journal_id,'default_company_id': company_id}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
