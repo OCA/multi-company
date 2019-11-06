@@ -13,23 +13,20 @@ class TestsProductTaxMulticompany(SavepointCase):
             {'name': 'Test company 1'})
         cls.company_2 = cls.env['res.company'].create(
             {'name': 'Test company 2'})
-        group_sale_manager = cls.env.ref('base.group_sale_manager')
         group_account_manager = cls.env.ref('account.group_account_manager')
         ResUsers = cls.env['res.users']
         cls.user_1 = ResUsers.create(
             {'name': 'User not admin',
              'login': 'user_1',
              'email': 'test@test.com',
-             'groups_id': [(6, 0, (
-                 group_sale_manager | group_account_manager).ids)],
+             'groups_id': [(6, 0, group_account_manager.ids)],
              'company_id': cls.company_1.id,
              'company_ids': [(6, 0, cls.company_1.ids)]})
         cls.user_2 = ResUsers.create(
             {'name': 'User not admin',
              'login': 'user_2',
              'email': 'test@test.com',
-             'groups_id': [(6, 0, (
-                 group_sale_manager | group_account_manager).ids)],
+             'groups_id': [(6, 0, group_account_manager.ids)],
              'company_id': cls.company_2.id,
              'company_ids': [(6, 0, cls.company_2.ids)]})
         AccountTax = cls.env['account.tax']

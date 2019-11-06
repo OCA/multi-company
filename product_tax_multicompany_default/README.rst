@@ -53,6 +53,7 @@ Contributors
 
 * Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
 * Pedro M. Baeza <pedro.baeza@tecnativa.com>
+* Dan Kiplangat <dan@sunflowerweb.nl>
 
 Maintainer
 ----------
