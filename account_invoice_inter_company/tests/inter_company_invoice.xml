@@ -59,7 +59,7 @@
     <!--
         Create user for each company (A and B)
         -->
-    <record id="user_company_a" model="res.users">
+    <record id="user_company_a" model="res.users" context="{'no_reset_password': True}">
         <field name="name">User A</field>
         <field name="partner_id" ref="partner_user_a"/>
         <field name="login">usera</field>
@@ -69,7 +69,7 @@
         <field name="groups_id" eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager')])]"/>
     </record>
 
-    <record id="user_company_b" model="res.users">
+    <record id="user_company_b" model="res.users" context="{'no_reset_password': True}">
         <field name="name">User B</field>
         <field name="partner_id" ref="partner_user_b"/>
         <field name="login">userb</field>
