@@ -3,14 +3,17 @@
 
 {
     'name': 'Mail Template Multi Company',
-    'description': """
-        Make email template a multi company model""",
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'license': 'AGPL-3',
     'author': 'ACSONE SA/NV,'
               'Odoo Community Association (OCA)',
     'website': 'https://github.com/OCA/multi-company',
     'depends': ['mail'],
     'post_init_hook': 'post_init_hook',
-    'data': ['security/mail_template.xml', 'views/mail_template.xml'],
+    'data': [
+        'security/mail_template.xml',
+        'views/mail_template.xml'
+    ],
+    'development_status': 'Beta',
+    'maintainers': ['Olivier-LAURENT'],
 }
