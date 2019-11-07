@@ -25,12 +25,29 @@ Mail Template Multi Company
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-This module add multi-company management to mail templates
+This module add multi-company management to mail templates.
 
 **Table of contents**
 
 .. contents::
    :local:
+
+Configuration
+=============
+
+* Go to *Settings > General Settings*
+* Activate the multi-company
+* Go to *Settings > User & Companies > Users*
+* Select your user to edit it and active the multi-company
+
+Usage
+=====
+
+* Go to *Settings*
+* Activate the developer mode
+* Go to *Settings > Technical > Email > Templates*
+* Open a template and set the company field if the template is specific to a
+  company
 
 Bug Tracker
 ===========
@@ -68,6 +85,14 @@ This module is maintained by the OCA.
 OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
+
+.. |maintainer-Olivier-LAURENT| image:: https://github.com/Olivier-LAURENT.png?size=40px
+    :target: https://github.com/Olivier-LAURENT
+    :alt: Olivier-LAURENT
+
+Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
+
+|maintainer-Olivier-LAURENT| 
 
 This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/12.0/mail_template_multi_company>`_ project on GitHub.
 
