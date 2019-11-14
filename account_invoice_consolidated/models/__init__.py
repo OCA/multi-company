@@ -7,5 +7,6 @@ from . import (
     account_payment,
     res_company,
     account_invoice,
-    res_partner
+    res_partner,
+    account_invoice_line
 )

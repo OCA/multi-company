@@ -109,21 +109,21 @@
                             <div class="row mt32">
                                 <div class="col-12">
                                     <table class="table table-sm" style="border: 1px solid #924eb9; border-collapse: collapse;">
-                                        <thead>
-                                            <tr style="color: #fff; background-color: #a6a6a6">
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Number:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Company:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Invoice Date:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Due Date:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Untaxed Amount:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Tax:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Total:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Amount Due:</th>
-                                                <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Status:</th>
-                                            </tr>
-                                        </thead>
                                         <tbody>
-                                            <t t-foreach="o.invoice_ids" t-as="line">
+                                            <thead style="padding-top: 5px">
+                                                <tr style="color: #fff; background-color: #a6a6a6">
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Number:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Company:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Invoice Date:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Due Date:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Untaxed Amount:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Tax:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Total:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Amount Due:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Status:</th>
+                                                </tr>
+                                            </thead>
+                                            <t t-foreach="o.sudo().invoice_ids" t-as="line">
                                                 <tr style="color: #000;">
                                                     <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="line.number"/></td>
                                                     <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="line.company_id.name"/></td>
@@ -135,6 +135,32 @@
                                                     <td class="text-right" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="line.residual"/></td>
                                                     <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="line.state"/></td>
                                                 </tr>
+                                            </t>
+                                            <thead>
+                                                <tr style="color: #fff; background-color: #a6a6a6">
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Description:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Origin:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Account:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Price:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Quantity:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Unit of Measure:</th>
+                                                    <th class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;">Subtotal:</th>
+                                                </tr>
+                                            </thead>
+                                            <t t-foreach="o.sudo().invoice_ids" t-as="line">
+                                                <t t-foreach="line.sudo().invoice_line_ids" t-as="inv_line">
+                                                    <tbody>
+                                                        <tr style="color: #000;">
+                                                            <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.name"/></td>
+                                                            <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.invoice_id"/></td>
+                                                            <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.account_id"/></td>
+                                                            <td class="text-center" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.price_unit"/></td>
+                                                            <td class="text-right" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.quantity"/></td>
+                                                            <td class="text-right" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.uom_id"/></td>
+                                                            <td class="text-right" style="border: 1px solid #b9b9b9; border-collapse: collapse;"><span t-field="inv_line.price_subtotal"/></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </t>
                                             </t>
                                         </tbody>
                                     </table>
