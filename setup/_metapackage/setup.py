@@ -18,6 +18,7 @@ setuptools.setup(
         'odoo12-addon-crm_lost_reason_multi_company',
         'odoo12-addon-crm_stage_multi_company',
         'odoo12-addon-mail_template_multi_company',
+        'odoo12-addon-partner_multi_company',
         'odoo12-addon-res_company_active',
         'odoo12-addon-res_company_category',
         'odoo12-addon-res_company_code',
