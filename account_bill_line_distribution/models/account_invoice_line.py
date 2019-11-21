@@ -45,6 +45,7 @@ class AccountInvoiceLine(models.Model):
                 else:
                     index = i
                 i += 1
-            self.distribution_ids[index].percent = 100.00 - percentage
+            if 'index' in locals():
+                self.distribution_ids[index].percent = 100.00 - percentage
         else:
             self.distribution_ids = [self.get_default_distribution()]
