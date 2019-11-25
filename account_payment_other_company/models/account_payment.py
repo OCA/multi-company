@@ -12,16 +12,18 @@ class AccountPayment(models.Model):
     @api.multi
     def action_validate_invoice_payment(self):
         res = super().action_validate_invoice_payment()
-        aml = self.env['account.move.line'].search([
-            ('account_id', '=', self.company_id.due_to_account_id.id),
-            ('payment_id', '=', self.id)
-        ])
-        aml.partner_id = self.sudo().other_journal_id.company_id.partner_id.id
-        if not self.hide_other_journal:
-            account_move = self.env['account.move']
-            vals = self._prepare_other_payment_values()
-            move = account_move.sudo().create(vals)
-            move.partner_id = self.partner_id
+        if self.other_journal_id:
+            aml = self.env['account.move.line'].search([
+                ('account_id', '=', self.company_id.due_to_account_id.id),
+                ('payment_id', '=', self.id)
+            ])
+            aml.partner_id = \
+                self.sudo().other_journal_id.company_id.partner_id.id
+            if not self.hide_other_journal:
+                account_move = self.env['account.move']
+                vals = self._prepare_other_payment_values()
+                move = account_move.sudo().create(vals)
+                move.partner_id = self.partner_id
             move.sudo().post()
         return res
 
