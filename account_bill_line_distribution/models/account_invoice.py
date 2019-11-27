@@ -87,9 +87,9 @@ class AccountInvoice(models.Model):
                                 account_obj = self.env['account.account']
                                 code = \
                                     account_obj.browse(line['account_id']).code
-                                account = account_obj.sudo().with_context(
-                                    force_company=company.id).search(
-                                    [('code', '=', code)])
+                                account = account_obj.sudo().search(
+                                    [('code', '=', code),
+                                     ('company_id', '=', company.id)])
                                 to_lines.append({
                                     'name': line['name'],
                                     'debit': line['debit'],
