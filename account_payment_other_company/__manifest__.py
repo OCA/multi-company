@@ -8,7 +8,7 @@
     'author': 'Open Source Integrators, '
               'Odoo Community Association (OCA)',
     'category': 'Invoicing Management',
-    'website': 'https://github.com/OCA/account-consolidation',
+    'website': 'https://github.com/OCA/multi-company',
     'license': 'AGPL-3',
     'depends': [
         'account_invoice_consolidated'
