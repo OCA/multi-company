@@ -12,7 +12,10 @@ class AccountInvoiceLine(models.Model):
         string='Distribution', copy=True)
 
     def get_default_distribution(self):
-        return {'percent': 100.00}
+        return {'percent': 100.00,
+                'company_id':
+                    self.env.context.get('company_id') or
+                    self.env.user.company_id.id}
 
     @api.model
     def create(self, vals):
