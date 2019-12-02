@@ -17,12 +17,16 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
 
     def _prepare_intercompany_supplier_info(self, pricelist):
         self.ensure_one()
+        price = self.env['product.uom']._compute_price(
+            self.uom_id.id,
+            self.price,
+            self.uom_po_id.id)
         return {
             'intercompany_pricelist_id': pricelist.id,
             'name': pricelist.company_id.partner_id.id,
             'company_id': False,
             'pricelist_ids': [
-                (0, 0, {'min_quantity': 1, 'price': self.price})]
+                (0, 0, {'min_quantity': 1, 'price': price})]
         }
 
     def _synchronise_supplier_info(self, pricelists=None):

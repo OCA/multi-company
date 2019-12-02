@@ -154,6 +154,13 @@ class TestPricelist(TransactionCase):
         self.price_item_4.price_surcharge = 40
         self._check_supplier_info_for(self.product_template_4, 40)
 
+    def test_add_product_item_different_unit(self):
+        product = self.env.ref('product.product_product_3')
+        uom_dozen = self.env.ref('product.product_uom_dozen')
+        product.uom_po_id = uom_dozen
+        self._add_item(product, 30)
+        self._check_supplier_info_for(product, 360)
+
     def test_remove_product_item(self):
         self.price_item_4b.unlink()
         self._check_no_supplier_info_for(self.product_product_4b)
