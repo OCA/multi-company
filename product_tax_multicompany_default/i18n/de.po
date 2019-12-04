@@ -30,7 +30,7 @@ msgid "Product Template (Multi-Company)"
 msgstr "Produktvorlage"
 
 #. module: product_tax_multicompany_default
-#: model:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
 msgid "Propagate Taxes"
 msgstr ""
 
