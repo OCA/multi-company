@@ -16,7 +16,7 @@ class AccountInvoiceLineDistribution(models.Model):
     percent = fields.Float(string="Percentage", default=0.00)
     invoice_line_id = fields.Many2one('account.invoice.line',
                                       string="Bill Line", readonly=True,
-                                      required=True)
+                                      required=True, ondelete="cascade")
     company_id = fields.Many2one('res.company', string="Company",
                                  required=True, default=_get_default_company_id)
 
