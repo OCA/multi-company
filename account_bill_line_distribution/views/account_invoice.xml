@@ -42,6 +42,9 @@
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
                 <attribute name="editable"/>
             </xpath>
+            <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                <attribute name="context">{'type': type, 'journal_id': journal_id,'default_company_id': company_id}</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
