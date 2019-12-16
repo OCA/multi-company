@@ -8,6 +8,7 @@
 from openerp import models, api, _
 import logging
 _logger = logging.getLogger(__name__)
+from openerp.exceptions import Warning as UserError
 
 
 class BaseHoldingInvoicing(models.AbstractModel):
@@ -37,10 +38,15 @@ class BaseHoldingInvoicing(models.AbstractModel):
         else:
             name = '%s - %s' % (
                 data_line['name'], data_line.get('client_order_ref', ''))
+        taxes = product.taxes_id.filtered(
+            lambda s : s.company_id.id==s._context['force_company'])
+        if not taxes:
+            raise UserError("Taxes configuration is missing on %s", product.name)
         return {
             'name': name,
             'product_id': product.id,
             'account_id': product.property_account_income.id,
+            'invoice_line_tax_id': [(6, 0, taxes.ids)],
         }
 
     @api.model
@@ -189,6 +195,29 @@ class ChildInvoicing(models.TransientModel):
         })
         return data_lines
 
+    def _get_accounting_value_from_royalty_product(self, data_line, product):
+        # We do not have access to the partner here so we can not
+        # play correctly the onchange
+        # We need to refactor the way to generate the line
+        # Refactor will be done in V10
+        # for now we just read the info on the product
+        # you need to set the tax by yourself
+        if self._context.get('section_group_by') == 'none':
+            name = product.name
+        else:
+            name = '%s - %s' % (
+                data_line['name'], data_line.get('client_order_ref', ''))
+        taxes = product.supplier_taxes_id.filtered(
+            lambda s : s.company_id.id==s._context['force_company'])
+        if not taxes:
+            raise UserError("Taxes configuration is missing on %s", product.name)
+        return {
+            'name': name,
+            'product_id': product.id,
+            'account_id': product.property_account_expense.id,
+            'invoice_line_tax_id': [(6, 0, taxes.ids)],
+        }
+
     @api.model
     def _prepare_invoice_line(self, data_line):
         # TODO the code is too complicated
@@ -197,7 +226,7 @@ class ChildInvoicing(models.TransientModel):
         if data_line.get('name') == 'royalty':
             section = self.env['crm.case.section'].browse(
                 data_line['section_id'][0])
-            val_line = self._get_accounting_value_from_product(
+            val_line = self._get_accounting_value_from_royalty_product(
                 data_line, section.holding_royalty_product_id)
             val_line.update({
                 'price_unit': data_line['amount_untaxed'],
