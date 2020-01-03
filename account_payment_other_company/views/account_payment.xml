@@ -27,7 +27,7 @@
             <field name="journal_id" position="after">
                 <field name="company_id" attrs="{'invisible': True}"/>
                 <field name="other_journal_id"
-                       domain=""
+                       domain="[('type', 'in', ['bank', 'cash']), ('company_id','!=', company_id)]"
                        attrs="{'invisible': [('hide_other_journal', '=', True)], 'required': [('hide_other_journal', '=', False)]}"
                        context="{'sudo': True}"/>
                 <field name="hide_other_journal" attrs="{'invisible': True}"/>
