@@ -22,8 +22,8 @@ class TestAccountPayment(SavepointCase):
         cls.account_obj = cls.env['account.account']
         cls.invoice_obj = cls.env.ref(
             'account_payment_other_company.customer_invoice_company_a')
-        cls.invoice_company_a = cls.env.ref(
-            'account_payment_other_company.customer_invoice_company_a')
+        cls.vendor_bill_obj = cls.env.ref(
+            'account_payment_other_company.vendor_bill_company_a')
         cls.company_a = cls.env.ref(
             'account_payment_other_company.company_a')
         cls.company_b = cls.env.ref(
@@ -49,10 +49,10 @@ class TestAccountPayment(SavepointCase):
             )
 
         cls.company_a.due_from_account_id = cls.env.ref(
-            'account_payment_other_company.a_recv_company_a'
+            'account_payment_other_company.a_pay_company_a'
         )
         cls.company_a.due_to_account_id = cls.env.ref(
-            'account_payment_other_company.a_pay_company_a'
+            'account_payment_other_company.a_recv_company_a'
         )
         cls.company_b.due_from_account_id = cls.env.ref(
             'account_payment_other_company.a_recv_company_b'
@@ -61,13 +61,39 @@ class TestAccountPayment(SavepointCase):
             'account_payment_other_company.a_pay_company_b'
         )
 
+        cls.company_a_journal = cls.env.\
+            ref('account_payment_other_company.bank_journal_company_a')
+
+        cls.company_b_journal = cls.env.\
+            ref('account_payment_other_company.bank_journal_company_b')
+
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !"))
+    
+    def test_customer_payment_same_co(self):
+        self.invoice_obj.action_invoice_open()
+        vals = {
+            'amount': self.invoice_obj.amount_total,
+            'journal_id': self.company_a_journal.id,
+            'company_id': self.company_a.id,
+            'payment_type': 'outbound',
+            'currency_id': self.invoice_obj.currency_id.id,
+            'payment_date': self.invoice_obj.date_invoice,
+            'communication': 'findme',
+            # 'other_journal_id': cls.company_b_journal.id,
+            'payment_method_id': 1,
+            'partner_type': 'supplier',
+            'partner_id': self.env.ref('base.res_partner_1').id,
+            'hide_other_journal': False
+        }
+        payment = self.account_payment_obj.create(vals)
+        payment.invoice_ids = [self.invoice_obj.id]
+        payment.action_validate_invoice_payment()
 
-    def test_register_payment(self):
+    def test_vendor_payment_other_co(self):
         self.invoice_obj.action_invoice_open()
         vals = {
             'amount': self.invoice_obj.amount_total,
@@ -77,8 +103,7 @@ class TestAccountPayment(SavepointCase):
             'currency_id': self.invoice_obj.currency_id.id,
             'payment_date': self.invoice_obj.date_invoice,
             'communication': 'findme',
-            'other_journal_id': self.company_b.
-            due_fromto_payment_journal_id.id,
+            'other_journal_id': self.company_b_journal.id,
             'payment_method_id': 1,
             'partner_type': 'supplier',
             'partner_id': self.env.ref('base.res_partner_1').id,
