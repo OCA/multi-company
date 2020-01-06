@@ -29,6 +29,11 @@ msgid "Account Number:"
 msgstr ""
 
 #. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Account:"
+msgstr ""
+
+#. module: account_invoice_consolidated
 #: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice_consolidated__message_needaction
 msgid "Action Needed"
 msgstr ""
@@ -44,7 +49,7 @@ msgid "Activity State"
 msgstr ""
 
 #. module: account_invoice_consolidated
-#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:115
+#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:144
 #, python-format
 msgid "Add some invoices to proceed further."
 msgstr ""
@@ -140,6 +145,11 @@ msgid "Consolidate Invoices"
 msgstr ""
 
 #. module: account_invoice_consolidated
+#: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice_line__consolidated_by_id
+msgid "Consolidated By"
+msgstr ""
+
+#. module: account_invoice_consolidated
 #: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice__consolidated_by_id
 msgid "Consolidated In"
 msgstr ""
@@ -150,7 +160,7 @@ msgid "Consolidated Invoice"
 msgstr ""
 
 #. module: account_invoice_consolidated
-#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:72
+#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:82
 #, python-format
 msgid "Consolidated Invoice Number must be unique!"
 msgstr ""
@@ -211,6 +221,11 @@ msgid "Date To"
 msgstr ""
 
 #. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Description:"
+msgstr ""
+
+#. module: account_invoice_consolidated
 #: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice_consolidated__display_name
 msgid "Display Name"
 msgstr ""
@@ -233,7 +248,7 @@ msgid "Draft"
 msgstr ""
 
 #. module: account_invoice_consolidated
-#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:92
+#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:102
 #, python-format
 msgid "Draft Consolidated Invoice exists for selected Customer/Date Range.\n"
 " Please add the invoice there."
@@ -265,7 +280,7 @@ msgid "Duration"
 msgstr ""
 
 #. module: account_invoice_consolidated
-#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:79
+#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:89
 #, python-format
 msgid "End Date should be greater than Start Date!"
 msgstr ""
@@ -288,6 +303,11 @@ msgstr ""
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
 msgid "Freight"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.account_invoice_consolidated_view_form
+msgid "Get Invoices"
 msgstr ""
 
 #. module: account_invoice_consolidated
@@ -316,12 +336,13 @@ msgid "Intercompany Payment Configuration"
 msgstr ""
 
 #. module: account_invoice_consolidated
-#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:125
+#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:154
 #, python-format
 msgid "Intercompany Payment Configuration is missing for %s."
 msgstr ""
 
 #. module: account_invoice_consolidated
+#: selection:account.invoice.consolidated,state:0
 #: model:ir.model,name:account_invoice_consolidated.model_account_invoice
 #: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice_consolidated__invoice_ids
 msgid "Invoice"
@@ -340,6 +361,17 @@ msgstr ""
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
 msgid "Invoice Date:"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model:ir.model,name:account_invoice_consolidated.model_account_invoice_line
+msgid "Invoice Line"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice_consolidated__invoice_line_ids
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.account_invoice_consolidated_view_form
+msgid "Invoice Line Ids"
 msgstr ""
 
 #. module: account_invoice_consolidated
@@ -423,6 +455,12 @@ msgid "Next Activity Type"
 msgstr ""
 
 #. module: account_invoice_consolidated
+#: code:addons/account_invoice_consolidated/tests/test_consolidated_invoices.py:92
+#, python-format
+msgid "No Chart of Account Template has been defined !"
+msgstr ""
+
+#. module: account_invoice_consolidated
 #: model:ir.model.fields,field_description:account_invoice_consolidated.field_account_invoice_consolidated__message_needaction_counter
 msgid "Number of Actions"
 msgstr ""
@@ -450,6 +488,11 @@ msgstr ""
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
 msgid "Number:"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Origin:"
 msgstr ""
 
 #. module: account_invoice_consolidated
@@ -491,7 +534,17 @@ msgstr ""
 
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Price:"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
 msgid "Prices reflect a 3% cash discount for payment by cash, Wire, ACH, Debit ACH, or Check."
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Quantity:"
 msgstr ""
 
 #. module: account_invoice_consolidated
@@ -534,6 +587,11 @@ msgstr ""
 
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Subtotal:"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
 msgid "Tax:"
 msgstr ""
 
@@ -555,6 +613,11 @@ msgstr ""
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
 msgid "Total:"
+msgstr ""
+
+#. module: account_invoice_consolidated
+#: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
+msgid "Unit of Measure:"
 msgstr ""
 
 #. module: account_invoice_consolidated
@@ -588,8 +651,8 @@ msgid "Website communication history"
 msgstr ""
 
 #. module: account_invoice_consolidated
-#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:185
+#: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:190
 #, python-format
-msgid "You can delete only Draft Consolidated Invoices."
+msgid "You cannot delete a finished consolidated invoice."
 msgstr ""
 
