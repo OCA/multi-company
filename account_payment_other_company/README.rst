@@ -26,10 +26,11 @@ Account Payment Other Company
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
 Odoo Accounting allows each company in a multi-company environment to register payments for their own invoices.
+Some holding companies needs to be able to register a payment to a vendor bill of another company and automatically create due to's and to from's based on these transactions.
+
 This module allows companies to be able to register a payment to a vendor bill of another company and 
 automatically create due to's and to from's based on these transactions.
-This way comapnies can destribute their costs among different companies
-
+This way companies can distribute their costs among different companies.
 
 **Table of contents**
 
@@ -39,8 +40,17 @@ This way comapnies can destribute their costs among different companies
 Configuration
 =============
 
-There is no necessary configuration besides having Multi-Compnay enabled.
-*Settings > General Settings*, go to the tab *Multi-Companies* then check *Multi-companies*
+- Multi-company must be enabled: Settings > General Settings, go to the *Multi-Companies* tab, then check *Multi-companies*
+- On each company, set the Due To/Due From Account and Journal.
+
+Usage
+=====
+
+* Create Vendor Bill and Validate it
+
+  * Select a company's FromTo Journal
+  * Select another journal for payment
+  * Validate the payment
 
 Bug Tracker
 ===========
@@ -48,13 +58,17 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%account_payment_other_company%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20account_payment_other_company%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
 Credits
 =======
-* Open Source Integrators <https://www.opensourceintegrators.com>
+
+Authors
+~~~~~~~
+
+* Open Source Integrators
 
 Contributors
 ~~~~~~~~~~~~
@@ -62,6 +76,10 @@ Contributors
 * Maxime Chambreuil <mchambreuil@opensourceintegrators.com>
 * Steven Campbell <scampbell@opensourceintegrators.com>
 
+Other credits
+~~~~~~~~~~~~~
+
+* Open Source Integrators <https://www.opensourceintegrators.com>
 
 Maintainers
 ~~~~~~~~~~~
@@ -75,6 +93,17 @@ This module is maintained by the OCA.
 OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
+
+.. |maintainer-max3903| image:: https://github.com/max3903.png?size=40px
+    :target: https://github.com/max3903
+    :alt: max3903
+.. |maintainer-osi-scampbell| image:: https://github.com/osi-scampbell.png?size=40px
+    :target: https://github.com/osi-scampbell
+    :alt: osi-scampbell
+
+Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
+
+|maintainer-max3903| |maintainer-osi-scampbell| 
 
 This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/12.0/account_payment_other_company>`_ project on GitHub.
 
