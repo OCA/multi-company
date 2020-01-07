@@ -4,7 +4,7 @@
 
 {
     'name': 'Account Invoice Consolidated',
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.1.0',
     'summary': 'Consolidate your invoices across companies',
     'author': 'Open Source Integrators, '
               'Serpent Consulting Services Pvt. Ltd., '
