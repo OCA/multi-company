@@ -15,6 +15,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'security/ir_rule.xml',
         'views/account_invoice.xml',
     ],
     'development_status': 'Beta',
