@@ -72,7 +72,7 @@ class TestAccountPayment(SavepointCase):
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !"))
-    
+
     def test_customer_payment_same_co(self):
         self.invoice_obj.action_invoice_open()
         vals = {
