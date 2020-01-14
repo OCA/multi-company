@@ -7,23 +7,24 @@ from openerp.exceptions import Warning as UserError
 
 
 class ProductPricelist(models.Model):
-    _inherit = 'product.pricelist'
+    _inherit = "product.pricelist"
 
     is_intercompany_supplier = fields.Boolean(
-        inverse='_inverse_intercompany_supplier',
-        default=False)
+        inverse="_inverse_intercompany_supplier", default=False
+    )
 
     generated_supplierinfo_ids = fields.One2many(
-        comodel_name='product.supplierinfo',
-        inverse_name='intercompany_pricelist_id',
-        )
+        comodel_name="product.supplierinfo",
+        inverse_name="intercompany_pricelist_id",
+    )
 
-    @api.constrains('company_id', 'is_intercompany_supplier')
+    @api.constrains("company_id", "is_intercompany_supplier")
     def _check_required_company_for_intercompany(self):
         for record in self:
             if record.is_intercompany_supplier and not record.company_id:
                 raise UserError(
-                    'The company is required for intercompany pricelist')
+                    "The company is required for intercompany pricelist"
+                )
 
     def _inverse_intercompany_supplier(self):
         for record in self:
@@ -37,23 +38,27 @@ class ProductPricelist(models.Model):
         if self.is_intercompany_supplier:
             if len(self.version_id) > 1:
                 raise UserError(
-                    _('Only one version is supported for'
-                      'intercompany pricelist'))
+                    _(
+                        "Only one version is supported for"
+                        "intercompany pricelist"
+                    )
+                )
             if not self.company_id:
                 raise UserError(
-                    _('Intercompany pricelist must belong to a company'))
+                    _("Intercompany pricelist must belong to a company")
+                )
             self.version_id.items_id._init_supplier_info()
 
     def _unactive_intercompany(self):
         self.ensure_one()
-        self.sudo().with_context(
-            automatic_intercompany_sync=True).mapped(
-            'generated_supplierinfo_ids').unlink()
+        self.sudo().with_context(automatic_intercompany_sync=True).mapped(
+            "generated_supplierinfo_ids"
+        ).unlink()
 
 
 class ProductPricelistItem(models.Model):
 
-    _inherit = 'product.pricelist.item'
+    _inherit = "product.pricelist.item"
 
     @api.multi
     def _add_product_to_synchronize(self, todo):
@@ -63,23 +68,22 @@ class ProductPricelistItem(models.Model):
                 continue
             if pricelist not in todo:
                 todo[pricelist] = {
-                    'products': self.env['product.product'].browse(False),
-                    'templates': self.env['product.template'].browse(False),
-                    }
+                    "products": self.env["product.product"].browse(False),
+                    "templates": self.env["product.template"].browse(False),
+                }
             if record.product_id:
-                todo[pricelist]['products'] |= record.product_id
+                todo[pricelist]["products"] |= record.product_id
             elif record.product_tmpl_id:
-                todo[pricelist]['templates'] |= record.product_tmpl_id
+                todo[pricelist]["templates"] |= record.product_tmpl_id
             else:
                 raise UserError(
-                    'This pricelist item type is not supported yet.')
+                    "This pricelist item type is not supported yet."
+                )
 
     def _process_product_to_synchronize(self, todo):
         for pricelist, vals in todo.items():
-            vals['templates']._synchronise_supplier_info(
-                pricelists=pricelist)
-            vals['products']._synchronise_supplier_info(
-                pricelists=pricelist)
+            vals["templates"]._synchronise_supplier_info(pricelists=pricelist)
+            vals["products"]._synchronise_supplier_info(pricelists=pricelist)
 
     def _init_supplier_info(self):
         todo = {}
