@@ -4,22 +4,14 @@
 
 
 {
-    'name': 'Product Supplier Intercompany',
-    'version': '8.0.0.0.1',
-    'category': 'Generic Modules/Others',
-    'license': 'AGPL-3',
-    'author': "Akretion",
-    'website': 'https://akretion.com',
-    'depends': [
-        'product_variant_supplierinfo',
-        'sale',
-    ],
-    'data': [
-        'views/pricelist_views.xml',
-        'security/supplierinfo.xml',
-    ],
-    'demo': [
-        'demo/pricelist.xml',
-    ],
-    'installable': True,
+    "name": "Product Supplier Intercompany",
+    "version": "8.0.0.0.1",
+    "category": "Generic Modules/Others",
+    "license": "AGPL-3",
+    "author": "Akretion",
+    "website": "https://akretion.com",
+    "depends": ["product_variant_supplierinfo", "sale",],
+    "data": ["views/pricelist_views.xml", "security/supplierinfo.xml",],
+    "demo": ["demo/pricelist.xml",],
+    "installable": True,
 }
