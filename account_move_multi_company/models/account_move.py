@@ -98,7 +98,7 @@ class AccountMove(models.Model):
                 transfer_lines = journal_entry_transfer.line_ids.\
                     filtered("credit").sorted(key=lambda r: r.id)
 
-                # Post the entries
+                # Reconcile the entries
                 for (line, rec_line) in \
                         zip(transfer_lines, lines_to_reconcile):
                     (line + rec_line).reconcile()
