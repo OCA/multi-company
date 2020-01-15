@@ -229,7 +229,7 @@ class TestAccountMove(common.TransactionCase):
         self.payroll_move.post()
 
         # Main company Due To/Due From Move After Payroll Journal Entry Post
-        main_company_due_tofrom_moves__after =\
+        main_company_due_tofrom_moves_after =\
             self.env['account.move'].search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_main_company.id)])
@@ -252,7 +252,7 @@ class TestAccountMove(common.TransactionCase):
                  ('company_id', '=', self.company_two.id)])
 
         # Check for Company One
-        self.assertEqual(main_company_due_tofrom_moves__after,
+        self.assertEqual(main_company_due_tofrom_moves_after,
                          main_company_due_tofrom_moves_before + 1)
 
         # Check moves for dedicated companies
