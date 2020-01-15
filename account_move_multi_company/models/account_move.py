@@ -23,63 +23,67 @@ class AccountMove(models.Model):
                         'account_id': line.account_id.id,
                         'partner_id': line.partner_id.id,
                         'debit': line.credit,
-                        'credit': line.debit,}))
+                        'credit': line.debit}))
                     transfer_lines.append((0, 0, {
                         'account_id':
                             self.env.user.company_id.due_from_account_id.id,
                         'partner_id':
                             line.transfer_to_company_id.partner_id.id,
                         'debit': line.debit,
-                        'credit': line.credit,}))
+                        'credit': line.credit}))
 
                     if line.transfer_to_company_id not in\
                             dedicated_companies_vals:
                         account_id = \
                             self.env['account.account'].sudo().with_context(
                                 force_company=company_id).search([
-                                ('code', '=', line.account_id.code),
-                                ('company_id', '=', company_id)],limit=1).id
+                                    ('code', '=', line.account_id.code),
+                                    ('company_id', '=', company_id)],
+                                limit=1).id
                         # Add the lines for the other company journal entry
                         dedicated_companies_vals[line.transfer_to_company_id]\
-                            = {'journal_id': line.transfer_to_company_id.
+                            = {
+                            'journal_id':
+                                line.transfer_to_company_id.
                                 due_fromto_payment_journal_id.id,
-                                'company_id': company_id,
-                                'line_ids': [(0, 0, {
-                                    'account_id':
-                                        line.transfer_to_company_id.
-                                              due_to_account_id.id,
-                                    'partner_id':
-                                        line.company_id.partner_id.id,
-                                    'debit': line.credit,
-                                    'credit': line.debit}),
-                                             (0, 0, {
-                                    'account_id': account_id,
-                                    'partner_id': line.partner_id.id,
-                                    'debit': line.debit,
-                                    'credit': line.credit})]}
+                            'company_id': company_id,
+                            'line_ids': [(0, 0, {
+                                'account_id':
+                                    line.transfer_to_company_id.
+                                    due_to_account_id.id,
+                                'partner_id': line.company_id.partner_id.id,
+                                'debit': line.credit,
+                                'credit': line.debit
+                            }), (0, 0, {
+                                'account_id': account_id,
+                                'partner_id': line.partner_id.id,
+                                'debit': line.debit,
+                                'credit': line.credit})]}
                     else:
                         # Update the lines for the other company journal entry
-                        dedicated_companies_vals[line.transfer_to_company_id]\
-                        ['line_ids'].append((0, 0, {
-                            'account_id':
-                                line.transfer_to_company_id.
-                                             due_to_account_id.id,
-                            'partner_id': line.company_id.partner_id.id,
-                            'debit': line.credit,
-                            'credit': line.debit}))
+                        dedicated_companies_vals
+                        [line.transfer_to_company_id]['line_ids'].append(
+                            (0, 0, {
+                                'account_id':
+                                    line.transfer_to_company_id.
+                                    due_to_account_id.id,
+                                'partner_id': line.company_id.partner_id.id,
+                                'debit': line.credit,
+                                'credit': line.debit}))
                         account_id = \
                             self.env['account.account'].sudo().with_context(
                                 force_company=company_id).search([
-                                ('code', '=', line.account_id.code),
-                                ('company_id', '=', company_id)],
+                                    ('code', '=', line.account_id.code),
+                                    ('company_id', '=', company_id)],
                                 limit=1).id
-                        dedicated_companies_vals[line.transfer_to_company_id]\
-                        ['line_ids'].append((0, 0, {
-                            'account_id': account_id,
-                            'partner_id': line.partner_id.id,
-                            'credit': line.credit,
-                            'debit': line.debit}))
-                    lines_to_reconcile.append(line)
+                        dedicated_companies_vals
+                        [line.transfer_to_company_id]['line_ids'].append(
+                            (0, 0, {
+                                'account_id': account_id,
+                                'partner_id': line.partner_id.id,
+                                'debit': line.debit,
+                                'credit': line.credit}))
+                        lines_to_reconcile.append(line)
 
             # Create, post and reconcile the entries in the current company
             if self.env.user.company_id.due_fromto_payment_journal_id \
