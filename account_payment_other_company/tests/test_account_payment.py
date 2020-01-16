@@ -20,8 +20,6 @@ class TestAccountPayment(SavepointCase):
             None, 'init', False, 'test', cls.registry._assertion_report,
         )
         cls.account_obj = cls.env['account.account']
-        cls.invoice_obj = cls.env.ref(
-            'account_payment_other_company.customer_invoice_company_a')
         cls.vendor_bill_obj = cls.env.ref(
             'account_payment_other_company.vendor_bill_company_a')
         cls.company_a = cls.env.ref(
@@ -72,6 +70,18 @@ class TestAccountPayment(SavepointCase):
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !"))
+
+        cls.env.user.company_id.due_fromto_payment_journal_id = cls.\
+            company_a.due_fromto_payment_journal_id
+        cls.env.user.company_id.due_to_account_id = cls.\
+            company_a.due_to_account_id
+        cls.due_from_account_id = cls.\
+            company_a.due_from_account_id
+        cls.env.user.company_id = cls.company_a
+        cls.invoice_obj = cls.env.ref(
+            'account_payment_other_company.customer_invoice_company_a')
+        cls.invoice_obj.invoice_line_ids.distribution_ids.company_id = \
+            cls.company_a
 
     def test_customer_payment_same_co(self):
         self.invoice_obj.action_invoice_open()
