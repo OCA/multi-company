@@ -83,15 +83,17 @@ class AccountInvoice(models.Model):
                                     'account_id': company.due_to_account_id.id,
                                     'partner_id':
                                         inv.company_id.partner_id.id})
-                                # Debit Product Expense Accounts
-                                prod = invoice_line_id.product_id.sudo().\
-                                    with_context(force_company=company.id)
+                                # Debit Account of invoice line
+                                account_obj = self.env['account.account']
+                                code = \
+                                    account_obj.browse(line['account_id']).code
+                                account = account_obj.sudo().with_context(
+                                    force_company=company.id).search(
+                                    [('code', '=', code)])
                                 to_lines.append({
                                     'name': line['name'],
                                     'debit': line['debit'],
-                                    'account_id':
-                                        prod.property_account_expense_id.id or
-                                        prod.categ_id.property_account_expense_categ_id.id, # noqa
+                                    'account_id': account.id,
                                     'partner_id': inv.partner_id.id})
                         # Create Journal Entries in the other companies
                         if to_lines:
