@@ -20,6 +20,8 @@ class TestAccountPayment(SavepointCase):
             None, 'init', False, 'test', cls.registry._assertion_report,
         )
         cls.account_obj = cls.env['account.account']
+        cls.invoice_obj = cls.env.ref(
+            'account_payment_other_company.customer_invoice_company_a')
         cls.vendor_bill_obj = cls.env.ref(
             'account_payment_other_company.vendor_bill_company_a')
         cls.company_a = cls.env.ref(
