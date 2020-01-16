@@ -68,6 +68,11 @@ class TestAccountPayment(SavepointCase):
             ref('account_payment_other_company.bank_journal_company_b')
 
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
+        cls.env.user.company_id = cls.company_a
+        if 'distribution_ids' in cls.env['account.invoice.line']._fields:
+            cls.invoice_obj.invoice_line_ids.distribution_ids.company_id = \
+                cls.company_a
+
         if not cls.chart:
             raise ValidationError(
                 # translation to avoid pylint warnings
