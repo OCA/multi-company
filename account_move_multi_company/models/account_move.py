@@ -61,12 +61,12 @@ class AccountMove(models.Model):
                                 'credit': line.credit})]}
                     else:
                         # Update the lines for the other company journal entry
-                        dedicated_companies_vals
-                        [line.transfer_to_company_id]['line_ids'].append(
+                        dedicated_companies_vals[
+                            line.transfer_to_company_id]['line_ids'].append(
                             (0, 0, {
                                 'account_id':
-                                    line.transfer_to_company_id.
-                                    due_to_account_id.id,
+                                line.transfer_to_company_id.
+                                due_to_account_id.id,
                                 'partner_id': line.company_id.partner_id.id,
                                 'debit': line.credit,
                                 'credit': line.debit}))
@@ -76,14 +76,14 @@ class AccountMove(models.Model):
                                     ('code', '=', line.account_id.code),
                                     ('company_id', '=', company_id)],
                                 limit=1).id
-                        dedicated_companies_vals
-                        [line.transfer_to_company_id]['line_ids'].append(
+                        dedicated_companies_vals[
+                            line.transfer_to_company_id]['line_ids'].append(
                             (0, 0, {
                                 'account_id': account_id,
                                 'partner_id': line.partner_id.id,
                                 'debit': line.debit,
                                 'credit': line.credit}))
-                        lines_to_reconcile.append(line)
+                    lines_to_reconcile.append(line)
 
             # Create, post and reconcile the entries in the current company
             if self.env.user.company_id.due_fromto_payment_journal_id \
@@ -108,7 +108,7 @@ class AccountMove(models.Model):
                 for company in dedicated_companies_vals:
                     dedicated_company_move += \
                         self.env['account.move'].sudo().with_context(
-                                force_company=company).create(
+                            force_company=company).create(
                             dedicated_companies_vals[company])
                 dedicated_company_move.post()
         return res
