@@ -20,11 +20,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: product_multi_company
-#: model:ir.model.fields,field_description:product_multi_company.field_product_product_company_ids
-msgid "Companies"
-msgstr "Bedrijven"
-
-#. module: product_multi_company
 #: model:ir.model,name:product_multi_company.model_product_template
 msgid "Product Template (Multi-Company)"
 msgstr "Productsjabloon (Meerdere Bedrijven)"
+
+#~ msgid "Companies"
+#~ msgstr "Bedrijven"
