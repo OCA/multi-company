@@ -170,51 +170,55 @@ class TestAccountMove(common.TransactionCase):
         employee_group = self.env.ref('base.group_user')
         employee_invoice_group = self.env.ref('account.group_account_invoice')
 
-        self.account_user = self.env["res.users"].with_context({'no_reset_password': True}).create(dict(
-            name="Adviser",
-            company_id=self.company.id,
-            login="fm",
-            email="accountmanager@yourcompany.com",
-            groups_id=[(6, 0, [employee_group.id, employee_invoice_group.id])]
-        ))
+        self.account_user = self.env["res.users"].\
+            with_context({'no_reset_password': True}).create(dict(
+                name="Adviser",
+                company_id=self.company.id,
+                login="fm",
+                email="accountmanager@yourcompany.com",
+                groups_id=[
+                    (6, 0, [employee_group.id, employee_invoice_group.id])]
+            ))
 
     def test_post(self):
 
         self.journalrec = self.env['account.journal'].sudo(
             self.account_user.id).search([('type', '=', 'general')])[0]
 
-        payroll_move = self.env["account.move"].sudo(self.account_user.id).create({
-            'journal_id': self.journalrec.id,
-            'company_id': self.company.id,
-            'line_ids': [(0, 0, {
-                'account_id': self.account_salary_expense_main_company.id,
-                'partner_id': self.employee_B.id,
-                'debit': 1000
-            }), (0, 0, {
-                'account_id': self.account_salary_expense_main_company.id,
-                'partner_id': self.employee_A.id,
-                'debit': 500
-            }), (0, 0, {
-                'account_id': self.account_salary_expense_main_company.id,
-                'partner_id': self.employee_C.id,
-                'debit': 500,
-                'transfer_to_company_id': self.company_two.id
-            }), (0, 0, {
-                'account_id': self.account_salary_expense_main_company.id,
-                'partner_id': self.employee_B.id,
-                'debit': 600,
-                'transfer_to_company_id': self.company_one.id
-            }), (0, 0, {
-                'account_id': self.account_salary_expense_main_company.id,
-                'partner_id': self.employee_A.id,
-                'debit': 400,
-                'transfer_to_company_id': self.company_one.id
-            }), (0, 0, {
-                'account_id': self.account_payroll_clearing_main_company.id,
-                'credit': 3000,
+        payroll_move = self.env["account.move"].\
+            sudo(self.account_user.id).create({
+                'journal_id': self.journalrec.id,
+                'company_id': self.company.id,
+                'line_ids': [(0, 0, {
+                    'account_id': self.account_salary_expense_main_company.id,
+                    'partner_id': self.employee_B.id,
+                    'debit': 1000
+                }), (0, 0, {
+                    'account_id': self.account_salary_expense_main_company.id,
+                    'partner_id': self.employee_A.id,
+                    'debit': 500
+                }), (0, 0, {
+                    'account_id': self.account_salary_expense_main_company.id,
+                    'partner_id': self.employee_C.id,
+                    'debit': 500,
+                    'transfer_to_company_id': self.company_two.id
+                }), (0, 0, {
+                    'account_id': self.account_salary_expense_main_company.id,
+                    'partner_id': self.employee_B.id,
+                    'debit': 600,
+                    'transfer_to_company_id': self.company_one.id
+                }), (0, 0, {
+                    'account_id': self.account_salary_expense_main_company.id,
+                    'partner_id': self.employee_A.id,
+                    'debit': 400,
+                    'transfer_to_company_id': self.company_one.id
+                }), (0, 0, {
+                    'account_id':
+                    self.account_payroll_clearing_main_company.id,
+                    'credit': 3000,
+                })
+                ]
             })
-            ]
-        })
 
         # Main company Due To/Due From Move Before Payroll Journal Entry Post
         main_company_due_tofrom_moves_before =\
