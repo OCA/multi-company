@@ -62,10 +62,10 @@ class TestAccountMove(common.TransactionCase):
         self.company.due_to_account_id = self.account_due_to_main_company
 
         self.partner_company_one = self.env["res.partner"].sudo().create({
-            "name": "Company One"
+            "name": "Test Company One"
         })
         self.company_one = self.env["res.company"].sudo().create({
-            "name": "Company One",
+            "name": "Test Company One",
             "partner_id": self.partner_company_one.id,
             "parent_id": self.company.id
         })
@@ -109,10 +109,10 @@ class TestAccountMove(common.TransactionCase):
             })
 
         self.partner_company_two = self.env["res.partner"].sudo().create({
-            "name": "Company Two"
+            "name": "Test Company Two"
         })
         self.company_two = self.env["res.company"].sudo().create({
-            "name": "Company Two",
+            "name": "Test Company Two",
             "partner_id": self.partner_company_two.id,
             "parent_id": self.company.id
         })
@@ -167,11 +167,23 @@ class TestAccountMove(common.TransactionCase):
             'name': 'Employee C'
         })
 
-    def test_post(self):
-        self.journalrec = self.env['account.journal'].search(
-            [('type', '=', 'general')])[0]
+        employee_group = self.env.ref('base.group_user')
+        employee_invoice_group = self.env.ref('account.group_account_invoice')
 
-        self.payroll_move = self.env["account.move"].create({
+        self.account_user = self.env["res.users"].with_context({'no_reset_password': True}).create(dict(
+            name="Adviser",
+            company_id=self.company.id,
+            login="fm",
+            email="accountmanager@yourcompany.com",
+            groups_id=[(6, 0, [employee_group.id, employee_invoice_group.id])]
+        ))
+
+    def test_post(self):
+
+        self.journalrec = self.env['account.journal'].sudo(
+            self.account_user.id).search([('type', '=', 'general')])[0]
+
+        payroll_move = self.env["account.move"].sudo(self.account_user.id).create({
             'journal_id': self.journalrec.id,
             'company_id': self.company.id,
             'line_ids': [(0, 0, {
@@ -206,14 +218,14 @@ class TestAccountMove(common.TransactionCase):
 
         # Main company Due To/Due From Move Before Payroll Journal Entry Post
         main_company_due_tofrom_moves_before =\
-            self.env['account.move'].search_count(
+            self.env['account.move'].sudo(self.account_user.id).search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_main_company.id)])
 
         # Test Company One Due To/Due From Move Before Payroll Journal Entry
         # Post
         company_one_due_tofrom_moves_before =\
-            self.env['account.move'].sudo().search_count(
+            self.env['account.move'].sudo(self.account_user.id).search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_company_one.id),
                  ('company_id', '=', self.company_one.id)])
@@ -221,23 +233,23 @@ class TestAccountMove(common.TransactionCase):
         # Test Company Two Due To/Due From Move Before Payroll Journal Entry
         # Post
         company_two_due_tofrom_moves_before =\
-            self.env['account.move'].sudo().search_count(
+            self.env['account.move'].sudo(self.account_user.id).search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_company_two.id),
                  ('company_id', '=', self.company_two.id)])
 
-        self.payroll_move.post()
+        payroll_move.post()
 
         # Main company Due To/Due From Move After Payroll Journal Entry Post
         main_company_due_tofrom_moves_after =\
-            self.env['account.move'].search_count(
+            self.env['account.move'].sudo(self.account_user.id).search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_main_company.id)])
 
         # Test Company One Due To/Due From Move After Payroll Journal Entry
         # Post
         company_one_due_tofrom_moves_after =\
-            self.env['account.move'].sudo().search_count(
+            self.env['account.move'].sudo(self.account_user.id).search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_company_one.id),
                  ('company_id', '=', self.company_one.id)])
@@ -246,7 +258,7 @@ class TestAccountMove(common.TransactionCase):
         # Post
 
         company_two_due_tofrom_moves_after =\
-            self.env['account.move'].sudo().search_count(
+            self.env['account.move'].sudo(self.account_user.id).search_count(
                 [('journal_id', '=',
                     self.due_to_due_from_journal_company_two.id),
                  ('company_id', '=', self.company_two.id)])
