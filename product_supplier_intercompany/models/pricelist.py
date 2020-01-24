@@ -1,4 +1,3 @@
-# coding: utf-8
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -10,7 +9,7 @@ class ProductPricelist(models.Model):
     _inherit = "product.pricelist"
 
     is_intercompany_supplier = fields.Boolean(
-        inverse="_inverse_intercompany_supplier", default=False
+        default=False, inverse="_inverse_intercompany_supplier"
     )
 
     generated_supplierinfo_ids = fields.One2many(
@@ -23,34 +22,26 @@ class ProductPricelist(models.Model):
         for record in self:
             if record.is_intercompany_supplier and not record.company_id:
                 raise UserError(
-                    "The company is required for intercompany pricelist"
+                    _("The company is required for intercompany pricelist")
                 )
 
     def _inverse_intercompany_supplier(self):
-        for record in self:
-            if record.is_intercompany_supplier:
-                record._active_intercompany()
+        for rec in self:
+            if rec.is_intercompany_supplier:
+                rec._active_intercompany()
             else:
-                record._unactive_intercompany()
+                rec._unactive_intercompany()
 
     def _active_intercompany(self):
-        self.ensure_one()
-        if self.is_intercompany_supplier:
-            if len(self.version_id) > 1:
-                raise UserError(
-                    _(
-                        "Only one version is supported for"
-                        "intercompany pricelist"
+        for rec in self:
+            if rec.is_intercompany_supplier:
+                if not rec.company_id:
+                    raise UserError(
+                        _("Intercompany pricelist must belong to a company")
                     )
-                )
-            if not self.company_id:
-                raise UserError(
-                    _("Intercompany pricelist must belong to a company")
-                )
-            self.version_id.items_id._init_supplier_info()
+                self.item_ids._init_supplier_info()
 
     def _unactive_intercompany(self):
-        self.ensure_one()
         self.sudo().with_context(automatic_intercompany_sync=True).mapped(
             "generated_supplierinfo_ids"
         ).unlink()
@@ -60,10 +51,12 @@ class ProductPricelistItem(models.Model):
 
     _inherit = "product.pricelist.item"
 
-    @api.multi
     def _add_product_to_synchronize(self, todo):
+        """ formats the supplied arg:
+        todo[record.pricelist]["products"|"templates"]
+        """
         for record in self:
-            pricelist = record.price_version_id.pricelist_id
+            pricelist = record.pricelist_id
             if not pricelist.is_intercompany_supplier:
                 continue
             if pricelist not in todo:
@@ -75,10 +68,14 @@ class ProductPricelistItem(models.Model):
                 todo[pricelist]["products"] |= record.product_id
             elif record.product_tmpl_id:
                 todo[pricelist]["templates"] |= record.product_tmpl_id
-            else:
+            # there is another item type
+            elif len(todo[pricelist].items()) > 2:
                 raise UserError(
-                    "This pricelist item type is not supported yet."
+                    _("This pricelist item type is not supported yet.")
                 )
+            else:
+                # no product_id or product_tmpl_id: ignore
+                pass
 
     def _process_product_to_synchronize(self, todo):
         for pricelist, vals in todo.items():
@@ -96,7 +93,6 @@ class ProductPricelistItem(models.Model):
         record._init_supplier_info()
         return record
 
-    @api.multi
     def write(self, vals):
         todo = {}
         # we complete the todo before and after the write
@@ -107,7 +103,6 @@ class ProductPricelistItem(models.Model):
         self._process_product_to_synchronize(todo)
         return True
 
-    @api.multi
     def unlink(self):
         todo = {}
         self._add_product_to_synchronize(todo)

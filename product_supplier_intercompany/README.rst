@@ -14,7 +14,7 @@ Product Supplier Intercompany
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-akretion%2Fak--odoo--incubator-lightgray.png?logo=github
-    :target: https://github.com/akretion/ak-odoo-incubator/tree/8.0/product_supplier_intercompany
+    :target: https://github.com/akretion/ak-odoo-incubator/tree/12.0/product_supplier_intercompany
     :alt: akretion/ak-odoo-incubator
 
 |badge1| |badge2| |badge3| 
@@ -22,8 +22,7 @@ Product Supplier Intercompany
 This module allows to manage intercompany pricelist, to sell products
 between companies in a multi-company environnement.
 
-It synchronises product supplier infos for buyers from the pricelist managed
-by the seller company.
+Choose any company as the seller company, and for it, define a pricelist and flag it as intercompany. For a product P and its cost C, whenever you add a price on that intercompany pricelist, all other companies will get a new supplierinfo for P at price C.
 
 **Table of contents**
 
@@ -42,7 +41,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/akretion/ak-odoo-incubator/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/akretion/ak-odoo-incubator/issues/new?body=module:%20product_supplier_intercompany%0Aversion:%208.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/akretion/ak-odoo-incubator/issues/new?body=module:%20product_supplier_intercompany%0Aversion:%2012.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -59,10 +58,25 @@ Contributors
 
 * Pierrick Brun <pierrick.brun@akretion.com>
 * Sebastien Beau <sebastien.beau@akretion.com>
+* Kevin Khao <kevin.khao@akretion.com>
 
 Maintainers
 ~~~~~~~~~~~
 
-This module is part of the `akretion/ak-odoo-incubator <https://github.com/akretion/ak-odoo-incubator/tree/8.0/product_supplier_intercompany>`_ project on GitHub.
+.. |maintainer-PierrickBrun| image:: https://github.com/PierrickBrun.png?size=40px
+    :target: https://github.com/PierrickBrun
+    :alt: PierrickBrun
+.. |maintainer-sebastienbeau| image:: https://github.com/sebastienbeau.png?size=40px
+    :target: https://github.com/sebastienbeau
+    :alt: sebastienbeau
+.. |maintainer-kevinkhao| image:: https://github.com/kevinkhao.png?size=40px
+    :target: https://github.com/kevinkhao
+    :alt: kevinkhao
+
+Current maintainers:
+
+|maintainer-PierrickBrun| |maintainer-sebastienbeau| |maintainer-kevinkhao| 
+
+This module is part of the `akretion/ak-odoo-incubator <https://github.com/akretion/ak-odoo-incubator/tree/12.0/product_supplier_intercompany>`_ project on GitHub.
 
 You are welcome to contribute.
