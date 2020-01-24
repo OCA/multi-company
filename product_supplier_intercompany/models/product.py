@@ -1,4 +1,3 @@
-# coding: utf-8
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
@@ -8,6 +7,7 @@ from openerp.exceptions import Warning as UserError
 
 class ProductIntercompanySupplierMixin(models.AbstractModel):
     _name = "product.intercompany.supplier.mixin"
+    _description = "Intercompany product mixin"
 
     def _has_intercompany_price(self, pricelist):
         raise NotImplementedError
@@ -17,15 +17,14 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
 
     def _prepare_intercompany_supplier_info(self, pricelist):
         self.ensure_one()
-        price = self.env["product.uom"]._compute_price(
-            self.uom_id.id, self.price, self.uom_po_id.id
-        )
-        return {
+        price = self.uom_id._compute_price(self.price, self.uom_po_id)
+        res = {
             "intercompany_pricelist_id": pricelist.id,
             "name": pricelist.company_id.partner_id.id,
             "company_id": False,
-            "pricelist_ids": [(0, 0, {"min_quantity": 1, "price": price})],
+            "price": price,
         }
+        return res
 
     def _synchronise_supplier_info(self, pricelists=None):
         if not pricelists:
@@ -45,20 +44,19 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
                 domain = record._get_intercompany_supplier_info_domain(
                     pricelist
                 )
-                supplier = (
+                supplierinfo = (
                     record.env["product.supplierinfo"].sudo().search(domain)
                 )
                 if record._has_intercompany_price(pricelist):
                     vals = record._prepare_intercompany_supplier_info(
                         pricelist
                     )
-                    if supplier:
-                        supplier.pricelist_ids.unlink()
-                        supplier.write(vals)
+                    if supplierinfo:
+                        supplierinfo.write(vals)
                     else:
-                        supplier.create(vals)
-                elif supplier:
-                    supplier.sudo().unlink()
+                        supplierinfo.create(vals)
+                elif supplierinfo:
+                    supplierinfo.sudo().unlink()
 
 
 class ProductProduct(models.Model):
@@ -86,13 +84,23 @@ class ProductProduct(models.Model):
 
     def _has_intercompany_price(self, pricelist):
         self.ensure_one()
-        if self.env["product.pricelist.item"].search(
-            [
-                ("price_version_id.pricelist_id", "=", pricelist.id),
-                ("product_id", "=", self.id),
-            ]
+        if (
+            self.env["product.pricelist.item"].search(
+                [
+                    ("pricelist_id", "=", pricelist.id),
+                    ("product_id", "=", self.id),
+                ]
+            )
+            and pricelist.is_intercompany_supplier
         ):
             return True
+
+    @api.depends("product_tmpl_id.item_ids.fixed_price")
+    def _compute_product_price(self):
+        """We need the 'depends' in ordder to get the correct, updated price
+        calculations when a pricelist item is added"""
+        res = super(ProductProduct, self)._compute_product_price()
+        return res
 
 
 class ProductTemplate(models.Model):
@@ -117,12 +125,19 @@ class ProductTemplate(models.Model):
         self.ensure_one()
         if self.env["product.pricelist.item"].search(
             [
-                ("price_version_id.pricelist_id", "=", pricelist.id),
+                ("pricelist_id", "=", pricelist.id),
                 ("product_tmpl_id", "=", self.id),
                 ("product_id", "=", False),
             ]
         ):
             return True
+
+    @api.depends("item_ids.fixed_price")
+    def _compute_template_price(self):
+        """We need the 'depends' in ordder to get the correct, updated price
+        calculations when a pricelist item is added"""
+        res = super(ProductTemplate, self)._compute_template_price()
+        return res
 
 
 class ProductSupplierinfo(models.Model):
@@ -133,19 +148,21 @@ class ProductSupplierinfo(models.Model):
         inverse_name="generated_supplier_info_ids",
     )
 
+    pricelist_item_id = fields.Many2one(comodel_name="product.pricelist.item")
+
     def _check_intercompany_supplier(self):
         if not self._context.get("automatic_intercompany_sync"):
             for record in self:
                 if record.mapped("intercompany_pricelist_id"):
                     raise UserError(
                         _(
-                            "This supplier info can not be edited as it's linked "
-                            "to an intercompany 'sale' pricelist.\n Please "
-                            "modify the information on the 'sale' pricelist"
+                            "This supplier info can not be edited as it's "
+                            "linked to an intercompany 'sale' pricelist.\n "
+                            "Please modify the information on the 'sale' "
+                            "pricelist"
                         )
                     )
 
-    @api.multi
     def write(self, vals):
         self._check_intercompany_supplier()
         return super(ProductSupplierinfo, self).write(vals)
@@ -156,27 +173,6 @@ class ProductSupplierinfo(models.Model):
         record._check_intercompany_supplier()
         return record
 
-    @api.multi
     def unlink(self):
         self._check_intercompany_supplier()
         return super(ProductSupplierinfo, self).unlink()
-
-
-class PricelistPartnerinfo(models.Model):
-    _inherit = "pricelist.partnerinfo"
-
-    @api.multi
-    def write(self, vals):
-        self.mapped("suppinfo_id")._check_intercompany_supplier()
-        return super(PricelistPartnerinfo, self).write(vals)
-
-    @api.model
-    def create(self, vals):
-        record = super(PricelistPartnerinfo, self).create(vals)
-        record.suppinfo_id._check_intercompany_supplier()
-        return record
-
-    @api.multi
-    def unlink(self):
-        self.mapped("suppinfo_id")._check_intercompany_supplier()
-        return super(PricelistPartnerinfo, self).unlink()
