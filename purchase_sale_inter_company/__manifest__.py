@@ -20,6 +20,7 @@
         'purchase',
         'stock',
         'account_invoice_inter_company',
+        'base_suspend_security',
     ],
     'data': [
         'views/res_config_view.xml',

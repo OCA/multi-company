@@ -78,8 +78,12 @@ class PurchaseOrder(models.Model):
         # create the SO and generate its lines from the PO lines
         sale_order_data = self._prepare_sale_order_data(
             self.name, company_partner, dest_company, self.dest_address_id)
-        sale_order = self.env['sale.order'].sudo(
-            intercompany_user.id).create(sale_order_data)
+        # There are data from mixed companies in sale_order_data then
+        # we need to use superuser rights with original user traceability.
+        # sudo(myuser) breaks when we don't use parent_id in companies
+        # implied in these transaction
+        sale_order = self.env['sale.order'].suspend_security().create(
+            sale_order_data)
         for purchase_line in self.order_line:
             sale_line_data = self._prepare_sale_order_line_data(
                 purchase_line, dest_company, sale_order)
