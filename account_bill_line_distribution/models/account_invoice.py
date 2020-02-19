@@ -1,7 +1,8 @@
 # Copyright (C) 2019 Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo import api, models
+from odoo import api, models, _
+from odoo.exceptions import UserError
 
 
 class AccountInvoice(models.Model):
@@ -53,56 +54,69 @@ class AccountInvoice(models.Model):
                                 'partner_id':
                                     inv.company_id.partner_id.id})
 
-                # Create Journal Entry in the current company
-                if from_lines:
-                    from_move = account_move.sudo().create(from_move_value)
-                    for line in from_lines:
-                        line.update({'move_id': from_move.id})
-                    self.env['account.move.line'].create(from_lines)
-                    from_move.post()
-
-                # Due To's
-                for company in companies:
-                    to_lines = []
-                    # Skip the current company because that has been taken
-                    # care of already
-                    if company.id != inv.company_id.id:
-                        to_move_vals = {
-                            'journal_id':
-                                company.due_fromto_payment_journal_id.id,
-                            'state': 'draft',
-                            'ref': inv.company_id.name + ': ' + inv.number,
-                            'company_id': company.id}
-                        # Credit company "Due_To" Account with debit
-                        # amount from its previous "Due from" Account entry
+                    # Create Journal Entry in the current company
+                    if from_lines:
+                        from_move = account_move.sudo().create(from_move_value)
                         for line in from_lines:
-                            if line['partner_id'] == company.partner_id.id:
-                                to_lines.append({
-                                    'name': line['name'],
-                                    'credit': line['debit'],
-                                    'account_id': company.due_to_account_id.id,
-                                    'partner_id':
-                                        inv.company_id.partner_id.id})
-                                # Debit Account of invoice line
-                                comps = self.env['res.company'].sudo().\
-                                    search([('due_from_account_id', '!=', False)])
-                                due_from_accounts = [comp.due_from_account_id.id for comp in comps]
-                                for a_line in from_lines:
-                                    if a_line['account_id'] not in due_from_accounts:
-                                        account_id = a_line['account_id']
-                                to_lines.append({
-                                    'name': line['name'],
-                                    'debit': line['debit'],
-                                    'account_id': account_id,
-                                    'partner_id': inv.partner_id.id})
-                        # Create Journal Entries in the other companies
-                        if to_lines:
-                            to_move = account_move.sudo().with_context(
-                                force_company=company.id).create(to_move_vals)
-                            for line in to_lines:
-                                line.update({'move_id': to_move.id})
-                                line.update({'company_id': to_move.company_id.id})
-                            self.env['account.move.line'].sudo().with_context(
-                                force_company=company.id).create(to_lines)
-                            to_move.post()
+                            line.update({'move_id': from_move.id})
+                        self.env['account.move.line'].create(from_lines)
+                        from_move.post()
+
+                    # Due To's
+                    for company in companies:
+                        to_lines = []
+                        # Skip the current company because that has been taken
+                        # care of already
+                        if company.id != inv.company_id.id:
+                            to_move_vals = {
+                                'journal_id':
+                                    company.due_fromto_payment_journal_id.id,
+                                'state': 'draft',
+                                'ref': inv.company_id.name + ': ' + inv.number,
+                                'company_id': company.id}
+                            # Credit company "Due_To" Account with debit
+                            # amount from its previous "Due from" Account entry
+                            for line in from_lines:
+                                if line['partner_id'] == company.partner_id.id:
+                                    to_lines.append({
+                                        'name': line['name'],
+                                        'credit': line['debit'],
+                                        'account_id': company.\
+                                        due_to_account_id.id,
+                                        'partner_id': inv.\
+                                        company_id.partner_id.id
+                                    })
+                                    # Debit Account of invoice line
+                                    prod = self.env['product.product'].\
+                                        sudo().with_context(
+                                            force_company=company.id).\
+                                        browse(invoice_line_id.product_id.id)
+                                    if not prod:
+                                        raise UserError(_("The product %s is \
+                                                          not a shared \
+                                                          product between \
+                                                          all of \
+                                                          these companies") % 
+                                                          invoice_line_id.\
+                                                          product_id.name)
+                                    to_lines.append({
+                                        'name': line['name'],
+                                        'debit': line['debit'],
+                                        'account_id': prod.property_account\
+                                        _expense_id.id or prod.categ_id.\
+                                        property_account_expense_categ_id.id,
+                                        'partner_id': inv.partner_id.id
+                                    })
+                            # Create Journal Entries in the other companies
+                            if to_lines:
+                                to_move = account_move.sudo().with_context(
+                                    force_company=company.id).create(to_move_vals)
+                                for line in to_lines:
+                                    line.update({
+                                        'move_id': to_move.id,
+                                        'company_id': company.id
+                                    })
+                                self.env['account.move.line'].sudo().with_context(
+                                    force_company=company.id).create(to_lines)
+                                to_move.post()
         return res
