@@ -84,16 +84,16 @@ class AccountInvoice(models.Model):
                                     'partner_id':
                                         inv.company_id.partner_id.id})
                                 # Debit Account of invoice line
-                                account_obj = self.env['account.account']
-                                code = \
-                                    account_obj.browse(line['account_id']).code
-                                account = account_obj.sudo().search(
-                                    [('code', '=', code),
-                                     ('company_id', '=', company.id)])
+                                comps = self.env['res.company'].sudo().\
+                                    search([('due_from_account_id', '!=', False)])
+                                due_from_accounts = [comp.due_from_account_id.id for comp in comps]
+                                for a_line in from_lines:
+                                    if a_line['account_id'] not in due_from_accounts:
+                                        account_id = a_line['account_id']
                                 to_lines.append({
                                     'name': line['name'],
                                     'debit': line['debit'],
-                                    'account_id': account.id,
+                                    'account_id': account_id,
                                     'partner_id': inv.partner_id.id})
                         # Create Journal Entries in the other companies
                         if to_lines:
@@ -101,6 +101,7 @@ class AccountInvoice(models.Model):
                                 force_company=company.id).create(to_move_vals)
                             for line in to_lines:
                                 line.update({'move_id': to_move.id})
+                                line.update({'company_id': to_move.company_id.id})
                             self.env['account.move.line'].sudo().with_context(
                                 force_company=company.id).create(to_lines)
                             to_move.post()
