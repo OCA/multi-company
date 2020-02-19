@@ -18,7 +18,8 @@ class AccountInvoiceLineDistribution(models.Model):
                                       string="Bill Line", readonly=True,
                                       required=True, ondelete="cascade")
     company_id = fields.Many2one('res.company', string="Company",
-                                 required=True, default=_get_default_company_id)
+                                 required=True,
+                                 default=_get_default_company_id)
 
     _sql_constraints = \
         [('line_company_uniq', 'UNIQUE (invoice_line_id, company_id)',

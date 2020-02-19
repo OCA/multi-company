@@ -81,9 +81,9 @@ class AccountInvoice(models.Model):
                                     to_lines.append({
                                         'name': line['name'],
                                         'credit': line['debit'],
-                                        'account_id': company.\
+                                        'account_id': company.
                                         due_to_account_id.id,
-                                        'partner_id': inv.\
+                                        'partner_id': inv.
                                         company_id.partner_id.id
                                     })
                                     # Debit Account of invoice line
@@ -96,27 +96,30 @@ class AccountInvoice(models.Model):
                                                           not a shared \
                                                           product between \
                                                           all of \
-                                                          these companies") % 
-                                                          invoice_line_id.\
-                                                          product_id.name)
+                                                          these companies") %
+                                                        invoice_line_id.
+                                                        product_id.name)
                                     to_lines.append({
                                         'name': line['name'],
                                         'debit': line['debit'],
-                                        'account_id': prod.property_account\
-                                        _expense_id.id or prod.categ_id.\
+                                        'account_id': prod.
+                                        property_account_expense_id.id or
+                                        prod.categ_id.
                                         property_account_expense_categ_id.id,
                                         'partner_id': inv.partner_id.id
                                     })
                             # Create Journal Entries in the other companies
                             if to_lines:
-                                to_move = account_move.sudo().with_context(
-                                    force_company=company.id).create(to_move_vals)
+                                to_move = account_move.sudo().\
+                                    with_context(force_company=company.id)\
+                                    .create(to_move_vals)
                                 for line in to_lines:
                                     line.update({
                                         'move_id': to_move.id,
                                         'company_id': company.id
                                     })
-                                self.env['account.move.line'].sudo().with_context(
-                                    force_company=company.id).create(to_lines)
+                                self.env['account.move.line'].sudo().\
+                                    with_context(force_company=company.id).\
+                                    create(to_lines)
                                 to_move.post()
         return res
