@@ -86,26 +86,24 @@ class AccountInvoice(models.Model):
                                         'partner_id': inv.
                                         company_id.partner_id.id
                                     })
+                                    line_account = invoice_line_id.account_id
                                     # Debit Account of invoice line
-                                    prod = self.env['product.product'].\
-                                        sudo().with_context(
-                                            force_company=company.id).\
-                                        browse(invoice_line_id.product_id.id)
-                                    if not prod:
-                                        raise UserError(_("The product %s is \
-                                                          not a shared \
-                                                          product between \
-                                                          all of \
-                                                          these companies") %
-                                                        invoice_line_id.
-                                                        product_id.name)
+                                    new_account = self.\
+                                        env['account.account'].\
+                                        sudo().search([('code', '=',
+                                                        line_account.code),
+                                                       ('company_id', '=',
+                                                        company.id)], limit=1)
+                                    if not new_account:
+                                        raise UserError(_("No corresponding \
+                                                          Account for code %s \
+                                                          in Company %s") %
+                                                        (line_account.code,
+                                                         company.name))
                                     to_lines.append({
                                         'name': line['name'],
                                         'debit': line['debit'],
-                                        'account_id': prod.
-                                        property_account_expense_id.id or
-                                        prod.categ_id.
-                                        property_account_expense_categ_id.id,
+                                        'account_id': new_account.id,
                                         'partner_id': inv.partner_id.id
                                     })
                             # Create Journal Entries in the other companies
