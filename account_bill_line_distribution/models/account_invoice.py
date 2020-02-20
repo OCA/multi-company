@@ -94,12 +94,12 @@ class AccountInvoice(models.Model):
                                                         line_account.code),
                                                        ('company_id', '=',
                                                         company.id)], limit=1)
-                                    if not new_account:
-                                        raise UserError(_("No corresponding \
-                                                          Account for code %s \
-                                                          in Company %s") %
-                                                        (line_account.code,
-                                                         company.name))
+                # if not new_account:
+                #     raise UserError(_("No corresponding \
+                #                       Account for code %s \
+                #                       in Company %s") %
+                #                     (line_account.code,
+                #                      company.name))
                                     to_lines.append({
                                         'name': line['name'],
                                         'debit': line['debit'],
