@@ -80,7 +80,7 @@ class TestAccountPayment(SavepointCase):
 
     def test_customer_payment_same_co(self):
         self.env.user.company_id = self.company_a
-        self.env.user.company_id.company_id.due_fromto_payment_journal_id = \
+        self.env.user.company_id.due_fromto_payment_journal_id = \
             self.company_a.due_fromto_payment_journal_id
         self.invoice_obj.action_invoice_open()
         vals = {
