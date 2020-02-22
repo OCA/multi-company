@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-16 07:23+0000\n"
-"PO-Revision-Date: 2018-07-27 16:32+0000\n"
-"Last-Translator: Pedro Castro Silva <pedrocs@exo.pt>\n"
+"PO-Revision-Date: 2020-02-22 19:13+0000\n"
+"Last-Translator: alvarorib <alvaro.ribeiro@exo.pt>\n"
 "Language-Team: Portuguese (https://www.transifex.com/oca/teams/23907/pt/)\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 3.0.1\n"
+"X-Generator: Weblate 3.10\n"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
@@ -59,9 +59,8 @@ msgstr "Nome"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
-#, fuzzy
 msgid "Parent"
-msgstr "Id do Ascendente"
+msgstr "Ascendente"
 
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_res_company_assignment
@@ -71,4 +70,4 @@ msgstr ""
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
 msgid "Visible For All Companies"
-msgstr ""
+msgstr "Visível para todas as Empresas"
