@@ -58,7 +58,6 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.Model = self.env['multi.company.abstract.tester']
         self.record = self.Model.create({
             'name': 'test',
-            'active': True,
         })
         Companies = self.env['res.company']
         self.company_1 = Companies._company_default_get()
