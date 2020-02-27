@@ -126,6 +126,10 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         current user and not on allowed companies (company_ids).
         :return: bool
         """
+        ir_rule = self.env.ref('account_bill_line_distribution.\
+                                res_company_accounting_billing_rule')
+        ir_rule.active = False
+
         user_obj = self.env['res.users']
         company_obj = self.env['res.company']
         company1 = self.env.ref("base.main_company")
