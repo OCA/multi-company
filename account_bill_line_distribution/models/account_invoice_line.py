@@ -15,13 +15,22 @@ class AccountInvoiceLine(models.Model):
         return {'percent': 100.00,
                 'company_id':
                     self.env.context.get('company_id') or
+                    self.company_id.id or
+                    self.invoice_id.company_id.id or
                     self.env.user.company_id.id}
 
     @api.model
     def create(self, vals):
         if 'distribution_ids' not in vals or not vals['distribution_ids']:
-            vals.update({
-                'distribution_ids': [(0, 0, self.get_default_distribution())]})
+            if vals.get('company_id', False):
+                vals.update({
+                    'distribution_ids': [(0, 0, self.
+                            with_context({'company_id': vals['company_id']}).
+                            get_default_distribution())]})
+            else:
+                vals.update({
+                            'distribution_ids':
+                            [(0, 0, self.get_default_distribution())]})
         return super().create(vals)
 
     @api.constrains('distribution_ids')

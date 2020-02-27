@@ -25,6 +25,7 @@
                     <tree string="Distribution" editable="bottom">
                         <field name="company_id"/>
                         <field name="percent"/>
+                        <field name="amount"/>
                     </tree>
                 </field>
             </field>
