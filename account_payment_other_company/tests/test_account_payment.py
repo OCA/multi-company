@@ -68,10 +68,6 @@ class TestAccountPayment(SavepointCase):
             ref('account_payment_other_company.bank_journal_company_b')
 
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
-        cls.env.user.company_id = cls.company_a
-        if 'distribution_ids' in cls.env['account.invoice.line']._fields:
-            cls.invoice_obj.invoice_line_ids.distribution_ids.company_id = \
-                cls.company_a
 
         if not cls.chart:
             raise ValidationError(
@@ -79,10 +75,6 @@ class TestAccountPayment(SavepointCase):
                 _("No Chart of Account Template has been defined !"))
 
     def test_customer_payment_same_co(self):
-        self.env.user.company_id = self.company_a
-        self.env.user.company_id.due_fromto_payment_journal_id = \
-            self.company_a.due_fromto_payment_journal_id
-        self.invoice_obj.auto_generated = True
         self.invoice_obj.action_invoice_open()
         vals = {
             'amount': self.invoice_obj.amount_total,
@@ -103,7 +95,6 @@ class TestAccountPayment(SavepointCase):
         payment.action_validate_invoice_payment()
 
     def test_vendor_payment_other_co(self):
-        self.invoice_obj.auto_generated = True
         self.invoice_obj.action_invoice_open()
         vals = {
             'amount': self.invoice_obj.amount_total,
