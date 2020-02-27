@@ -11,9 +11,13 @@ class AccountInvoiceLineDistribution(models.Model):
     @api.model
     def _get_default_company_id(self):
         company_id = self.env.context.get('company_id')
-        return company_id or self.env.user.company_id.id
+        return (company_id or
+                self.invoice_line_id.company_id.id or
+                self.invoice_line_id.invoice_id.company_id.id or
+                self.env.user.company_id.id)
 
     percent = fields.Float(string="Percentage", default=0.00)
+    amount = fields.Float(string="Amount", compute='_compute_amout')
     invoice_line_id = fields.Many2one('account.invoice.line',
                                       string="Bill Line", readonly=True,
                                       required=True, ondelete="cascade")
@@ -24,3 +28,7 @@ class AccountInvoiceLineDistribution(models.Model):
     _sql_constraints = \
         [('line_company_uniq', 'UNIQUE (invoice_line_id, company_id)',
           'You cannot have the same company twice in a distribution!')]
+
+    def _compute_amout(self):
+        for dist in self:
+            dist.amount = dist.invoice_line_id.price_subtotal*dist.percent/100
