@@ -29,6 +29,7 @@ class AccountInvoiceLineDistribution(models.Model):
         [('line_company_uniq', 'UNIQUE (invoice_line_id, company_id)',
           'You cannot have the same company twice in a distribution!')]
 
+    @api.depends('percent', 'invoice_line_id.price_subtotal')
     def _compute_amount(self):
-        for dist in self:
-            dist.amount = dist.invoice_line_id.price_subtotal*dist.percent/100
+        for dist_id in self:
+            dist_id.amount = dist_id.invoice_line_id.price_subtotal*dist_id.percent/100
