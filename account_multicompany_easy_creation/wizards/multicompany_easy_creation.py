@@ -135,6 +135,9 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 self.chart_template_id.cash_account_code_prefix,
         })
         wizard.onchange_chart_template_id()
+        if self.accounts_code_digits:
+            wizard.code_digits = self.accounts_code_digits
+        wizard.currency_id = self.currency_id
         wizard.sudo().execute()
 
     def create_bank_journals(self):

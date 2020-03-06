@@ -42,6 +42,7 @@ Contributors
 
 * `Tecnativa <https://www.tecnativa.com>`_:
   * Carlos Dauden
+* Eric Antones - NuoBiT Solutions, S.L. <eantones@nuobit.com>
 
 Do not contact contributors directly about support or help with technical issues.
 
