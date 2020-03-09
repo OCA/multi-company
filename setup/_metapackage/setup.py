@@ -20,6 +20,7 @@ setuptools.setup(
         'odoo12-addon-crm_stage_multi_company',
         'odoo12-addon-mail_template_multi_company',
         'odoo12-addon-partner_multi_company',
+        'odoo12-addon-product_multi_company',
         'odoo12-addon-product_tax_multicompany_default',
         'odoo12-addon-purchase_sale_inter_company',
         'odoo12-addon-res_company_active',
