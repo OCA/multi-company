@@ -156,15 +156,15 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             'company_id': company1.id,
             'company_ids': [(6, False, companies.ids)],
         })
-        tester = tester_obj.create({
-            'name': 'My tester',
-            'company_ids': [(6, False, companies.ids)],
-        })
-        tester = tester.sudo(user)
         # Current company_id should be updated with current company of the user
         for company in user.company_ids:
-            user.write({
+            user.update({
                 'company_id': company.id,
+            })
+            # Transient model can only be read from its creator
+            tester = tester_obj.sudo(user).create({
+                'name': 'My tester',
+                'company_ids': [(6, False, companies.ids)],
             })
             # Force recompute
             tester.invalidate_cache()
@@ -173,10 +173,15 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             self.assertEqual(tester.company_id.id, company.id)
             # So can read company fields without Access error
             self.assertTrue(bool(tester.company_id.name))
+
         # Switch to a company not in tester.company_ids
-        user.write({
+        user.update({
             'company_ids': [(4, company4.id, False)],
             'company_id': company4.id,
+        })
+        tester = tester_obj.sudo(user).create({
+            'name': 'My tester',
+            'company_ids': [(6, False, companies.ids)],
         })
         # Force recompute
         tester.invalidate_cache()
