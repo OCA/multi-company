@@ -66,3 +66,13 @@ class AccountJournal(models.Model):
         index = {vals['id']: vals for vals in result}
         return [index[record.id] for
                 record in records if record.id in index]
+
+    @api.multi
+    def name_get(self):
+        res = []
+        journals = self.sudo()
+        for journal in journals:
+            currency = journal.currency_id or journal.company_id.currency_id
+            name = "%s (%s)" % (journal.name, currency.name)
+            res += [(journal.id, name)]
+        return res
