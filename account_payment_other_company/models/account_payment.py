@@ -42,6 +42,7 @@ class AccountPayment(models.Model):
             'journal_id': self.other_journal_id.id,
             'state': 'draft',
             'company_id': other_journal.company_id.id,
+            'date': self.payment_date,
             'ref': self.id,
             'line_ids': [(0, 0, {
                 'account_id': other_journal.company_id.
