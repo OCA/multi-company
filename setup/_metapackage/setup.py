@@ -8,6 +8,7 @@ setuptools.setup(
     description="Meta package for oca-multi-company Odoo addons",
     version=version,
     install_requires=[
+        'odoo12-addon-account_bill_line_distribution',
         'odoo12-addon-account_invoice_consolidated',
         'odoo12-addon-account_invoice_inter_company',
         'odoo12-addon-account_multicompany_easy_creation',
