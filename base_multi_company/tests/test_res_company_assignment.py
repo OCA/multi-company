@@ -5,11 +5,10 @@ from odoo.tests import common
 
 
 class TestResCompanyAssignment(common.TransactionCase):
-
     def setUp(self):
         super(TestResCompanyAssignment, self).setUp()
-        self.View = self.env['res.company.assignment']
-        self.Model = self.env['res.company']
+        self.View = self.env["res.company.assignment"]
+        self.Model = self.env["res.company"]
         self.views = self.View.search([])
 
     def test_equality_len(self):
