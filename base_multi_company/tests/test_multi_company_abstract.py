@@ -6,15 +6,14 @@ from odoo.tests import common
 
 
 class MultiCompanyAbstractTester(models.TransientModel):
-    _name = 'multi.company.abstract.tester'
-    _inherit = 'multi.company.abstract'
+    _name = "multi.company.abstract.tester"
+    _inherit = "multi.company.abstract"
 
     name = fields.Char()
 
 
-@common.tagged('post_install', '-at_install')
+@common.tagged("post_install", "-at_install")
 class TestMultiCompanyAbstract(common.SavepointCase):
-
     @classmethod
     def _init_test_model(cls, model_cls):
         """ It builds a model from model_cls in order to test abstract models.
@@ -35,9 +34,9 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         model._setup_complete()
         model._auto_init()
         model.init()
-        cls.test_model_record = cls.env['ir.model'].search([
-            ('name', '=', model._name),
-        ])
+        cls.test_model_record = cls.env["ir.model"].search(
+            [("name", "=", model._name),]
+        )
         return inst
 
     @classmethod
@@ -54,16 +53,11 @@ class TestMultiCompanyAbstract(common.SavepointCase):
 
     def setUp(self):
         super(TestMultiCompanyAbstract, self).setUp()
-        self.Model = self.env['multi.company.abstract.tester']
-        self.record = self.Model.create({
-            'name': 'test',
-        })
-        Companies = self.env['res.company']
+        self.Model = self.env["multi.company.abstract.tester"]
+        self.record = self.Model.create({"name": "test",})
+        Companies = self.env["res.company"]
         self.company_1 = Companies._company_default_get()
-        self.company_2 = Companies.create({
-            'name': 'Test Co 2',
-            'account_no': '123456'
-        })
+        self.company_2 = Companies.create({"name": "Test Co 2", "account_no": "123456"})
 
     def add_company(self, company):
         """ Add company to the test record. """
@@ -71,10 +65,12 @@ class TestMultiCompanyAbstract(common.SavepointCase):
 
     def switch_user_company(self, user, company):
         """ Add a company to the user's allowed & set to current. """
-        user.write({
-            'company_ids': [(6, 0, (company + user.company_ids).ids)],
-            'company_id': company.id,
-        })
+        user.write(
+            {
+                "company_ids": [(6, 0, (company + user.company_ids).ids)],
+                "company_id": company.id,
+            }
+        )
 
     def test_compute_company_id(self):
         """ It should set company_id to the top of the company_ids stack. """
@@ -82,8 +78,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.env.user.company_ids = [(4, self.company_2.id)]
         self.env.user.company_id = self.company_2.id
         self.assertEqual(
-            self.record.company_id.id,
-            self.company_2.id,
+            self.record.company_id.id, self.company_2.id,
         )
 
     def test_inverse_company_id(self):
@@ -94,25 +89,30 @@ class TestMultiCompanyAbstract(common.SavepointCase):
     def test_search_company_id(self):
         """ It should return correct record by searching company_id. """
         self.add_company(self.company_2)
-        record = self.env['multi.company.abstract.tester'].search([
-            ('company_id.account_no', '=', self.company_2.account_no),
-            ('id', '=', self.record.id),
-        ])
+        record = self.env["multi.company.abstract.tester"].search(
+            [
+                ("company_id.account_no", "=", self.company_2.account_no),
+                ("id", "=", self.record.id),
+            ]
+        )
         self.assertEqual(record, self.record)
-        record = self.env['multi.company.abstract.tester'].search([
-            ('company_id', '=', self.company_2.id),
-            ('id', '=', self.record.id),
-        ])
+        record = self.env["multi.company.abstract.tester"].search(
+            [("company_id", "=", self.company_2.id), ("id", "=", self.record.id),]
+        )
         self.assertEqual(record, self.record)
-        record = self.env['multi.company.abstract.tester'].search([
-            ('company_ids', 'child_of', self.company_2.id),
-            ('id', '=', self.record.id),
-        ])
+        record = self.env["multi.company.abstract.tester"].search(
+            [
+                ("company_ids", "child_of", self.company_2.id),
+                ("id", "=", self.record.id),
+            ]
+        )
         self.assertEqual(record, self.record)
-        record = self.env['multi.company.abstract.tester'].search([
-            ('company_ids', 'parent_of', self.company_2.id),
-            ('id', '=', self.record.id),
-        ])
+        record = self.env["multi.company.abstract.tester"].search(
+            [
+                ("company_ids", "parent_of", self.company_2.id),
+                ("id", "=", self.record.id),
+            ]
+        )
         self.assertEqual(record, self.record)
 
     def test_compute_company_id2(self):
@@ -126,41 +126,37 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         current user and not on allowed companies (company_ids).
         :return: bool
         """
-        ir_rule = self.env.ref('account_bill_line_distribution.' +
-                               'res_company_accounting_billing_rule')
+        ir_rule = self.env.ref(
+            "account_bill_line_distribution." + "res_company_accounting_billing_rule"
+        )
         ir_rule.active = False
 
-        user_obj = self.env['res.users']
-        company_obj = self.env['res.company']
+        user_obj = self.env["res.users"]
+        company_obj = self.env["res.company"]
         company1 = self.env.ref("base.main_company")
         # Create companies
-        company2 = company_obj.create({
-            'name': 'High salaries',
-        })
-        company3 = company_obj.create({
-            'name': 'High salaries, twice more!',
-        })
-        company4 = company_obj.create({
-            'name': 'No salaries',
-        })
+        company2 = company_obj.create({"name": "High salaries",})
+        company3 = company_obj.create({"name": "High salaries, twice more!",})
+        company4 = company_obj.create({"name": "No salaries",})
         companies = company1 + company2 + company3
         # Create a "normal" user (not the admin)
-        user = user_obj.create({
-            'name': 'Best employee',
-            'login': 'best-emplyee@example.com',
-            'company_id': company1.id,
-            'company_ids': [(6, False, companies.ids)],
-        })
-        tester_obj = self.env['multi.company.abstract.tester'].sudo(user)
-        tester = tester_obj.create({
-            'name': 'My tester',
-            'company_ids': [(6, False, companies.ids)],
-        })
+        user = user_obj.create(
+            {
+                "name": "Best employee",
+                "login": "best-emplyee@example.com",
+                "company_id": company1.id,
+                "company_ids": [(6, False, companies.ids)],
+            }
+        )
+        tester_obj = self.env["multi.company.abstract.tester"].sudo(user)
+        tester = tester_obj.create(
+            {"name": "My tester", "company_ids": [(6, False, companies.ids)],}
+        )
         # Current company_id should be updated with current company of the user
         for company in user.company_ids:
-            user.write({
-                'company_id': company.id,
-            })
+            user.write(
+                {"company_id": company.id,}
+            )
             # Force recompute
             tester.invalidate_cache()
             # Ensure that the current user is on the right company
@@ -169,10 +165,9 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             # So can read company fields without Access error
             self.assertTrue(bool(tester.company_id.name))
         # Switch to a company not in tester.company_ids
-        user.write({
-            'company_ids': [(4, company4.id, False)],
-            'company_id': company4.id,
-        })
+        user.write(
+            {"company_ids": [(4, company4.id, False)], "company_id": company4.id,}
+        )
         # Force recompute
         tester.invalidate_cache()
         self.assertNotEqual(user.company_id.id, tester.company_ids.ids)
