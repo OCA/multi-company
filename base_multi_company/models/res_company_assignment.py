@@ -14,7 +14,7 @@ class ResCompanyAssignment(models.Model):
     that company.
     """
 
-    _name = 'res.company.assignment'
+    _name = "res.company.assignment"
     _auto = False
     _description = "Res Company Assignment"
 
@@ -23,4 +23,4 @@ class ResCompanyAssignment(models.Model):
     # This field must never be exposed into the UI. The purpose of this
     # field is to be able to use the hierarchy operators (
     # child_of/parent_of) into search domains on company_id / company_ids
-    parent_id = fields.Many2one('res.company')
+    parent_id = fields.Many2one("res.company")
