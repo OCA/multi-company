@@ -1,12 +1,12 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* base_multi_company
+# 	* base_multi_company
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 12.0\n"
+"Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: <>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,19 +25,16 @@ msgstr ""
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__id
 msgid "ID"
 msgstr ""
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment____last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -45,24 +42,3 @@ msgstr ""
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
 msgstr ""
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__name
-msgid "Name"
-msgstr ""
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
-msgid "Parent"
-msgstr ""
-
-#. module: base_multi_company
-#: model:ir.model,name:base_multi_company.model_res_company_assignment
-msgid "Res Company Assignment"
-msgstr ""
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
-msgid "Visible For All Companies"
-msgstr ""
-
