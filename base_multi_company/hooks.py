@@ -5,20 +5,9 @@
 from odoo import SUPERUSER_ID, api
 
 __all__ = [
-    "create_company_assignment_view",
     "post_init_hook",
     "uninstall_hook",
 ]
-
-
-def create_company_assignment_view(cr):
-    cr.execute(
-        """
-        CREATE OR REPLACE VIEW res_company_assignment
-            AS SELECT id, name, parent_id
-            FROM res_company;
-    """
-    )
 
 
 def set_security_rule(env, rule_ref):
@@ -34,8 +23,8 @@ def set_security_rule(env, rule_ref):
         {
             "active": True,
             "domain_force": (
-                "['|', ('company_ids', 'in', user.company_id.ids),"
-                " ('visible_for_all_companies', '=', True)]"
+                "['|', ('company_ids', '=', False), ('company_ids', "
+                "'in', company_ids)]"
             ),
         }
     )
