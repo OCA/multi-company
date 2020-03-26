@@ -20,7 +20,7 @@ class ResPartner(models.Model):
         removed in the inheritance, and that will activate the inverse method,
         overwriting our company_ids field desired value.
         """
-        self._amend_company_id(vals)
+        vals = self._amend_company_id(vals)
         return super().create(vals)
 
     @api.model
@@ -35,7 +35,7 @@ class ResPartner(models.Model):
         fields += ["company_ids"]
         return fields
 
-    @api.model_cr_context
+    @api.model
     def _amend_company_id(self, vals):
         if "company_ids" in vals:
             if not vals["company_ids"]:
