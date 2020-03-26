@@ -68,14 +68,13 @@ class ProductPricelistItem(models.Model):
                 todo[pricelist]["products"] |= record.product_id
             elif record.product_tmpl_id:
                 todo[pricelist]["templates"] |= record.product_tmpl_id
-            # there is another item type
-            elif len(todo[pricelist].items()) > 2:
-                raise UserError(
-                    _("This pricelist item type is not supported yet.")
-                )
             else:
-                # no product_id or product_tmpl_id: ignore
-                pass
+                raise UserError(
+                    _("At least one pricelist item type is not supported yet."
+                      " Please ensure all intercompany pricelist items are "
+                      "linked to either a product template or a product "
+                      "variant.")
+                )
 
     def _process_product_to_synchronize(self, todo):
         for pricelist, vals in todo.items():
