@@ -65,41 +65,43 @@ class TestPartnerMultiCompany(common.SavepointCase):
                 "company_ids": [(6, 0, cls.company_2.ids)],
             }
         )
-        cls.partner_company_1 = cls.partner_company_1.sudo(cls.user_company_1)
-        cls.partner_company_2 = cls.partner_company_2.sudo(cls.user_company_2)
+        cls.partner_company_1 = cls.partner_company_1.with_user(cls.user_company_1)
+        cls.partner_company_2 = cls.partner_company_2.with_user(cls.user_company_2)
 
     def test_create_partner(self):
-        partner = self.env["res.partner"].create({"name": "Test"})
-        company = self.env["res.company"]._company_default_get("res.partner")
+        partner = self.env["res.partner"].create(
+            {"name": "Test", "company_ids": [(4, self.env.company.id)]}
+        )
+        company = self.env.company
         self.assertIn(company.id, partner.company_ids.ids)
         partner = self.env["res.partner"].create(
-            {"name": "Test 2", "company_ids": [(4, self.company_1.id)],}
+            {"name": "Test 2", "company_ids": [(4, self.company_1.id)]}
         )
         self.assertEqual(
-            partner.sudo(self.user_company_1).company_id.id, self.company_1.id,
+            partner.with_user(self.user_company_1).company_id.id, self.company_1.id,
         )
         partner = self.env["res.partner"].create(
-            {"name": "Test 2", "company_ids": [(5, False)],}
+            {"name": "Test 2", "company_ids": [(5, False)]}
         )
         self.assertFalse(partner.company_id)
 
     def test_company_none(self):
         self.assertFalse(self.partner_company_none.company_id)
         # All of this should be allowed
-        self.partner_company_none.sudo(self.user_company_1.id).name = "Test"
-        self.partner_company_none.sudo(self.user_company_2.id).name = "Test"
+        self.partner_company_none.with_user(self.user_company_1.id).name = "Test"
+        self.partner_company_none.with_user(self.user_company_2.id).name = "Test"
 
     def test_company_1(self):
         self.assertEqual(self.partner_company_1.company_id, self.company_1)
         # All of this should be allowed
-        self.partner_company_1.sudo(self.user_company_1).name = "Test"
-        self.partner_company_both.sudo(self.user_company_1).name = "Test"
+        self.partner_company_1.with_user(self.user_company_1).name = "Test"
+        self.partner_company_both.with_user(self.user_company_1).name = "Test"
         # And this one not
         with self.assertRaises(AccessError):
-            self.partner_company_2.sudo(self.user_company_1).name = "Test"
+            self.partner_company_2.with_user(self.user_company_1).name = "Test"
 
     def test_create_company_1(self):
-        partner = self.partner_model.sudo(self.user_company_1).create(
+        partner = self.partner_model.with_user(self.user_company_1).create(
             {
                 "name": "Test from user company 1",
                 "company_ids": [(6, 0, self.company_1.ids)],
@@ -108,19 +110,22 @@ class TestPartnerMultiCompany(common.SavepointCase):
         self.assertEqual(partner.company_id, self.company_1)
 
     def test_create_company_2(self):
-        partner = self.partner_model.sudo(self.user_company_2).create(
-            {"name": "Test from user company 2"}
+        partner = self.partner_model.with_user(self.user_company_2).create(
+            {
+                "name": "Test from user company 2",
+                "company_ids": [(6, 0, self.company_2.ids)],
+            }
         )
         self.assertEqual(partner.company_id, self.company_2)
 
     def test_company_2(self):
         self.assertEqual(self.partner_company_2.company_id, self.company_2)
         # All of this should be allowed
-        self.partner_company_2.sudo(self.user_company_2).name = "Test"
-        self.partner_company_both.sudo(self.user_company_2).name = "Test"
+        self.partner_company_2.with_user(self.user_company_2).name = "Test"
+        self.partner_company_both.with_user(self.user_company_2).name = "Test"
         # And this one not
         with self.assertRaises(AccessError):
-            self.partner_company_1.sudo(self.user_company_2).name = "Test"
+            self.partner_company_1.with_user(self.user_company_2).name = "Test"
 
     def test_uninstall(self):
         from ..hooks import uninstall_hook
@@ -139,7 +144,7 @@ class TestPartnerMultiCompany(common.SavepointCase):
     def test_switch_user_company(self):
         self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
         self.user_company_1.company_id = self.company_2.id
-        self.user_company_1 = self.user_company_1.sudo(self.user_company_2)
+        self.user_company_1 = self.user_company_1.with_user(self.user_company_2)
         self.assertEqual(
             self.user_company_1.partner_id.company_id, self.company_2,
         )
@@ -153,21 +158,15 @@ class TestPartnerMultiCompany(common.SavepointCase):
     def test_commercial_fields_result(self):
         """It should add company_ids to children partners."""
         partner = self.env["res.partner"].create(
-            {"name": "Child test", "parent_id": self.partner_company_both.id,}
+            {"name": "Child test", "parent_id": self.partner_company_both.id}
         )
         self.assertEqual(
             partner.company_ids, self.partner_company_both.company_ids,
         )
 
     def test_avoid_updating_company_ids_in_global_partners(self):
-        self.user_company_1.write(
-            {"company_ids": [(4, self.company_2.id)],}
-        )
+        self.user_company_1.write({"company_ids": [(4, self.company_2.id)]})
         user_partner = self.user_company_1.partner_id
-        user_partner.write(
-            {"company_id": False, "company_ids": [(5, False)],}
-        )
-        self.user_company_1.write(
-            {"company_id": self.company_2.id,}
-        )
+        user_partner.write({"company_id": False, "company_ids": [(5, False)]})
+        self.user_company_1.write({"company_id": self.company_2.id})
         self.assertEquals(user_partner.company_ids.ids, [])
