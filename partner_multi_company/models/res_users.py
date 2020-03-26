@@ -16,7 +16,6 @@ class ResUsers(models.Model):
             res.partner_id.company_id = vals["company_id"]
         return res
 
-    @api.multi
     def write(self, vals):
         res = super(ResUsers, self).write(vals)
         if "company_ids" in vals:

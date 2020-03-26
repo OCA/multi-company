@@ -5,17 +5,36 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
         <field name="arch" type="xml">
-            <field name="company_id" position="attributes">
-                <attribute name="invisible">1</attribute>
-            </field>
-            <field name="company_id" position="after">
+            <xpath
+                expr="//field[@name='child_ids']//field[@name='company_id']"
+                position="after"
+            >
                 <field
                     name="company_ids"
                     groups="base.group_multi_company"
                     widget="many2many_tags"
                     options="{'no_create': True}"
+                    attrs="{'readonly': [('parent_id', '!=', False)]}"
                 />
-            </field>
+            </xpath>
+            <xpath
+                expr="//page[@name='sales_purchases']//field[@name='company_id']"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath
+                expr="//page[@name='sales_purchases']//field[@name='company_id']"
+                position="after"
+            >
+                <field
+                    name="company_ids"
+                    groups="base.group_multi_company"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                    attrs="{'readonly': [('parent_id', '!=', False)]}"
+                />
+            </xpath>
         </field>
     </record>
 </odoo>
