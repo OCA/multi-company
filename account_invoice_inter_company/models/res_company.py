@@ -1,6 +1,6 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ResCompany(models.Model):
@@ -23,7 +23,6 @@ class ResCompany(models.Model):
         for company in self:
             company.company_share_product = not bool(product_rule.active)
 
-    @api.multi
     def _get_user_domain(self):
         self.ensure_one()
         group_account_invoice = self.env.ref("account.group_account_invoice")

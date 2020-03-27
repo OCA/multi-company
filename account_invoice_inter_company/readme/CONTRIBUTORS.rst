@@ -4,3 +4,4 @@
 * Andrea Stirpe <a.stirpe@onestein.nl>
 * Jairo Llopis <jairo.llopis@tecnativa.com>
 * David Beal <david.beal@akretion.com>
+* Adria Gil Sorribes <adria.gil@forgeflow.com>
