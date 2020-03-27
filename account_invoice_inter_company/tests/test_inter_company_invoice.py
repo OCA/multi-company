@@ -24,7 +24,7 @@ class TestAccountInvoiceInterCompany(SavepointCase):
             cls.registry._assertion_report,
         )
         cls.account_obj = cls.env["account.account"]
-        cls.invoice_obj = cls.env["account.invoice"]
+        cls.account_move_obj = cls.env["account.move"]
         cls.invoice_company_a = cls.env.ref(
             "account_invoice_inter_company.customer_invoice_company_a"
         )
@@ -59,15 +59,15 @@ class TestAccountInvoiceInterCompany(SavepointCase):
         # ensure the catalog is shared
         self.env.ref("product.product_comp_rule").write({"active": False})
         # Confirm the invoice of company A
-        self.invoice_company_a.sudo(self.user_company_a.id).action_invoice_open()
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
-        invoices = self.invoice_obj.sudo(self.user_company_b.id).search(
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertNotEquals(invoices, False)
         self.assertEquals(len(invoices), 1)
         if invoices.company_id.invoice_auto_validation:
-            self.assertEquals(invoices[0].state, "open")
+            self.assertEquals(invoices[0].state, "posted")
         else:
             self.assertEquals(invoices[0].state, "draft")
         self.assertEquals(
@@ -87,20 +87,21 @@ class TestAccountInvoiceInterCompany(SavepointCase):
 
     def test04_cancel_invoice(self):
         # Confirm the invoice of company A
-        self.invoice_company_a.sudo(self.user_company_a.id).action_invoice_open()
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check state of invoices before to cancel invoice of company A
-        self.assertEquals(self.invoice_company_a.state, "open")
-        invoices = self.invoice_obj.sudo(self.user_company_b.id).search(
+        self.assertEquals(self.invoice_company_a.state, "posted")
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertNotEquals(invoices[0].state, "cancel")
         # Cancel the invoice of company A
-        origin = ("%s - Canceled Invoice: %s") % (
+        invoice_origin = ("%s - Canceled Invoice: %s") % (
             self.invoice_company_a.company_id.name,
-            self.invoice_company_a.number,
+            self.invoice_company_a.name,
         )
-        self.invoice_company_a.sudo(self.user_company_a.id).action_invoice_cancel()
+        self.invoice_company_a.with_user(self.user_company_a.id).button_draft()
+        self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()
         # Check invoices after to cancel invoice of company A
         self.assertEquals(self.invoice_company_a.state, "cancel")
         self.assertEquals(invoices[0].state, "cancel")
-        self.assertEquals(invoices[0].origin, origin)
+        self.assertEquals(invoices[0].invoice_origin, invoice_origin)
