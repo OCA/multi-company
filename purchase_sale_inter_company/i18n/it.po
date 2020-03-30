@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* purchase_sale_inter_company
+# 	* purchase_sale_inter_company
 #
 msgid ""
 msgstr ""
@@ -34,14 +34,18 @@ msgstr "Creare ordini di vendita quando si acquista da questa azienda"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid "Default value to set on Sale Orders that will be created based on Purchase Orders made to this company"
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
 msgstr ""
 "Valore predefinito da impostare sugli ordini di vendita che verranno creati "
 "sulla base degli ordini di acquisto fatti a questa azienda"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid "Default value to set on Sale Orders that will be created based on Purchase Orders made to this company."
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
 msgstr ""
 "Valore predefinito da impostare sugli ordini di vendita che verranno creati "
 "sulla base degli ordini di acquisto fatti a questa azienda."
@@ -49,7 +53,9 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
-msgid "Generate a Sale Order when a Purchase Order with this company as supplier is created.\n"
+msgid ""
+"Generate a Sale Order when a Purchase Order with this company as supplier is "
+"created.\n"
 " The intercompany user must at least be Sale User."
 msgstr ""
 "Generare un ordine di vendita quando un ordine d'acquisto viene creato con "
@@ -62,15 +68,17 @@ msgid "Intercompany Picking"
 msgstr "Prelievo interaziendale"
 
 #. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_user_id
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_user_id
-msgid "Intercompany User"
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
+#, fuzzy
+#| msgid "Intercompany User"
+msgid "Intercompany Sale User"
 msgstr "Utente interaziendale"
 
 #. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_account_invoice
-msgid "Invoice"
-msgstr "Fattura"
+#: model:ir.model,name:purchase_sale_inter_company.model_account_move
+msgid "Journal Entries"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
@@ -78,9 +86,11 @@ msgid "Purchase Order"
 msgstr "Ordine d'acquisto"
 
 #. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_sale_order
-msgid "Sale Order"
-msgstr "Ordine di vendita"
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+#, fuzzy
+#| msgid "Purchase Order"
+msgid "Purchase/Sale"
+msgstr "Ordine d'acquisto"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sale_auto_validation
@@ -92,6 +102,13 @@ msgstr "Validazione automatica ordini di vendita"
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 msgid "Sale from purchase"
 msgstr "Vendita da acquisto"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_sale_order
+#, fuzzy
+#| msgid "Sale Order"
+msgid "Sales Order"
+msgstr "Ordine di vendita"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_sale_order_line
@@ -109,15 +126,17 @@ msgid "Source Purchase Order Line"
 msgstr "Riga ordine d'acquisto di origine"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:39
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
-msgid "There's no corresponding line in PO %s for assigning qty from %s for product %s"
+msgid ""
+"There's no corresponding line in PO %s for assigning qty from %s for product "
+"%s"
 msgstr ""
 "Non c'è una riga corrisponde nell'ordine d'acquisto %s per assegnare la "
 "quantità da %s per il prodotto %s"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/account_invoice.py:39
+#: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
 msgstr "Questa fattura fornitore è relativa a: {}"
@@ -126,6 +145,13 @@ msgstr "Questa fattura fornitore è relativa a: {}"
 #: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
 msgid "Transfer"
 msgstr "Trasferire"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
+msgid ""
+"User used to create the sales order arising from a purchase order in another "
+"company."
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__warehouse_id
@@ -140,19 +166,21 @@ msgstr "Magazzino per gli ordini di vendita"
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sale_auto_validation
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__sale_auto_validation
-msgid "When a Sale Order is created by a multi company rule for this company, it will automatically validate it."
+msgid ""
+"When a Sale Order is created by a multi company rule for this company, it "
+"will automatically validate it."
 msgstr ""
 "Quando un ordine di vendita viene creato da una regola multi azienda per "
 "questa azienda, verrà automaticamente validato."
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:161
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr "Impossibile annullare un ordine che è %s"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:47
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
 msgstr ""
@@ -160,9 +188,14 @@ msgstr ""
 "prodotto '%s' non è interaziendale"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:74
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
-msgid "You cannot create SO from PO because sale price list currency is different than purchase price list currency."
+msgid ""
+"You cannot create SO from PO because sale price list currency is different "
+"than purchase price list currency."
 msgstr ""
 "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
 "valuta del listino di vendita è diversa dalla valuta del listino d'acquisto."
+
+#~ msgid "Invoice"
+#~ msgstr "Fattura"
