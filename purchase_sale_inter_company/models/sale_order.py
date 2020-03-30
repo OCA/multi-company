@@ -7,18 +7,18 @@ from odoo import api, fields, models
 
 
 class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+    _inherit = "sale.order"
 
     auto_purchase_order_id = fields.Many2one(
-        comodel_name='purchase.order',
-        string='Source Purchase Order',
+        comodel_name="purchase.order",
+        string="Source Purchase Order",
         readonly=True,
         copy=False,
     )
 
     @api.multi
     def action_confirm(self):
-        for order in self.filtered('auto_purchase_order_id'):
+        for order in self.filtered("auto_purchase_order_id"):
             for line in order.order_line.sudo():
                 if line.auto_purchase_line_id:
                     line.auto_purchase_line_id.price_unit = line.price_unit
@@ -29,8 +29,8 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     auto_purchase_line_id = fields.Many2one(
-        comodel_name='purchase.order.line',
-        string='Source Purchase Order Line',
+        comodel_name="purchase.order.line",
+        string="Source Purchase Order Line",
         readonly=True,
         copy=False,
     )
