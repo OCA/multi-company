@@ -68,15 +68,15 @@ msgid "Intercompany Picking"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_user_id
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_user_id
-msgid "Intercompany User"
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
+msgid "Intercompany Sale User"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_account_invoice
-msgid "Invoice"
-msgstr "Facture"
+#: model:ir.model,name:purchase_sale_inter_company.model_account_move
+msgid "Journal Entries"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
@@ -84,11 +84,11 @@ msgid "Purchase Order"
 msgstr "Commande d'achat"
 
 #. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_sale_order
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Sales Order"
-msgid "Sale Order"
-msgstr "Commandes de vente"
+#| msgid "Purchase to Sale"
+msgid "Purchase/Sale"
+msgstr "Achat vers Vente"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sale_auto_validation
@@ -100,6 +100,13 @@ msgstr "Auto Validation des commandes de vente"
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 msgid "Sale from purchase"
 msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_sale_order
+#, fuzzy
+#| msgid "Sales Order"
+msgid "Sales Order"
+msgstr "Commandes de vente"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_sale_order_line
@@ -117,7 +124,7 @@ msgid "Source Purchase Order Line"
 msgstr "Ligne de commande d'achat source"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:39
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
 msgid ""
 "There's no corresponding line in PO %s for assigning qty from %s for product "
@@ -125,7 +132,7 @@ msgid ""
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/account_invoice.py:39
+#: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
 msgstr ""
@@ -133,6 +140,13 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
 msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
+msgid ""
+"User used to create the sales order arising from a purchase order in another "
+"company."
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -158,13 +172,13 @@ msgstr ""
 "société, elle sera automatiquement validé."
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:161
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:47
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
 msgstr ""
@@ -172,7 +186,7 @@ msgstr ""
 "pas multi-société"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:74
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, fuzzy, python-format
 #| msgid ""
 #| "You cannot create SO from PO because sale price list currency is "
@@ -183,6 +197,9 @@ msgid ""
 msgstr ""
 "Vous ne pouvez pas créer la SO à partir de la PO car la devise sur la liste "
 "de prix de vente est différente de la devise sur la liste de prix d'achat."
+
+#~ msgid "Invoice"
+#~ msgstr "Facture"
 
 #~ msgid ""
 #~ "Configure correct warehouse for company (%s) in Menu: Settings/companies/"
@@ -196,9 +213,6 @@ msgstr ""
 
 #~ msgid "Output - B"
 #~ msgstr "Output - B"
-
-#~ msgid "Purchase to Sale"
-#~ msgstr "Achat vers Vente"
 
 #~ msgid "Sale Auto Validation"
 #~ msgstr "Auto Validation de la commande de vente"

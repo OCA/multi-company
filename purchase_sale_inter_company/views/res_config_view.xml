@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <record id="res_config_settings_view_form" model="ir.ui.view">
         <field name="model">res.config.settings</field>
@@ -11,6 +11,7 @@
                 expr="//div[@id='inter_company_invoice_validation']"
                 position='after'
             >
+                <div class="o_form_label mt8">Purchase/Sale</div>
                 <div id="inter_company_so_from_po">
                     <field
                         name="so_from_po"
@@ -34,9 +35,9 @@
                         class="oe_inline"
                         domain="[('company_id', '=', company_id)]"
                     />
-                    <label for="intercompany_user_id" class="o_light_label" />
+                    <label for="intercompany_sale_user_id" class="o_light_label" />
                     <field
-                        name="intercompany_user_id"
+                        name="intercompany_sale_user_id"
                         attrs="{'required': [('so_from_po', '=', True)]}"
                         class="oe_inline"
                     />

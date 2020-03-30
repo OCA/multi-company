@@ -3,7 +3,7 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class SaleOrder(models.Model):
@@ -16,7 +16,6 @@ class SaleOrder(models.Model):
         copy=False,
     )
 
-    @api.multi
     def action_confirm(self):
         for order in self.filtered("auto_purchase_order_id"):
             for line in order.order_line.sudo():

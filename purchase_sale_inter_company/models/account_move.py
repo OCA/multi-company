@@ -3,18 +3,16 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, models
+from odoo import _, models
 
 
-class AccountInvoice(models.Model):
+class AccountMove(models.Model):
+    _inherit = "account.move"
 
-    _inherit = "account.invoice"
-
-    @api.multi
     def inter_company_create_invoice(
         self, dest_company, dest_inv_type, dest_journal_type
     ):
-        res = super(AccountInvoice, self).inter_company_create_invoice(
+        res = super().inter_company_create_invoice(
             dest_company, dest_inv_type, dest_journal_type
         )
         if dest_inv_type == "in_invoice":
@@ -22,7 +20,6 @@ class AccountInvoice(models.Model):
             self._link_invoice_purchase(res["dest_invoice"])
         return res
 
-    @api.multi
     def _link_invoice_purchase(self, dest_invoice):
         self.ensure_one()
         orders = self.env["purchase.order"]
