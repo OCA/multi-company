@@ -8,33 +8,39 @@ from odoo import _, api, models
 
 class AccountInvoice(models.Model):
 
-    _inherit = 'account.invoice'
+    _inherit = "account.invoice"
 
     @api.multi
     def inter_company_create_invoice(
-            self, dest_company, dest_inv_type, dest_journal_type):
+        self, dest_company, dest_inv_type, dest_journal_type
+    ):
         res = super(AccountInvoice, self).inter_company_create_invoice(
-            dest_company, dest_inv_type, dest_journal_type)
-        if dest_inv_type == 'in_invoice':
+            dest_company, dest_inv_type, dest_journal_type
+        )
+        if dest_inv_type == "in_invoice":
             # Link intercompany purchase order with intercompany invoice
-            self._link_invoice_purchase(res['dest_invoice'])
+            self._link_invoice_purchase(res["dest_invoice"])
         return res
 
     @api.multi
     def _link_invoice_purchase(self, dest_invoice):
         self.ensure_one()
-        orders = self.env['purchase.order']
+        orders = self.env["purchase.order"]
         vals = {}
-        if dest_invoice.state not in ['draft', 'cancel']:
-            vals['invoiced'] = True
+        if dest_invoice.state not in ["draft", "cancel"]:
+            vals["invoiced"] = True
         for line in dest_invoice.invoice_line_ids:
-            vals['invoice_lines'] = [(4, line.id)]
+            vals["invoice_lines"] = [(4, line.id)]
             purchase_lines = line.auto_invoice_line_id.sale_line_ids.mapped(
-                'auto_purchase_line_id')
+                "auto_purchase_line_id"
+            )
             purchase_lines.update(vals)
-            orders |= purchase_lines.mapped('order_id')
+            orders |= purchase_lines.mapped("order_id")
         if orders:
-            ref = '<a href=# data-oe-model=purchase.order data-oe-id={}>{}</a>'
-            message = _('This vendor bill is related with: {}'.format(
-                ','.join([ref.format(o.id, o.name) for o in orders])))
+            ref = "<a href=# data-oe-model=purchase.order data-oe-id={}>{}</a>"
+            message = _(
+                "This vendor bill is related with: {}".format(
+                    ",".join([ref.format(o.id, o.name) for o in orders])
+                )
+            )
             dest_invoice.message_post(body=message)
