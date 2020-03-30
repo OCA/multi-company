@@ -3,17 +3,16 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, models
+from odoo import _, models
 from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
-    @api.multi
     def button_approve(self, force=False):
         """ Generate inter company sale order base on conditions."""
-        res = super(PurchaseOrder, self).button_approve(force)
+        res = super().button_approve(force)
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
@@ -24,7 +23,6 @@ class PurchaseOrder(models.Model):
                 )._inter_company_create_sale_order(dest_company)
         return res
 
-    @api.multi
     def _get_user_domain(self, dest_company):
         self.ensure_one()
         group_purchase_user = self.env.ref("purchase.group_purchase_user")
@@ -34,15 +32,15 @@ class PurchaseOrder(models.Model):
             ("id", "in", group_purchase_user.users.ids),
         ]
 
-    @api.multi
     def _check_intercompany_product(self, dest_company):
         domain = self._get_user_domain(dest_company)
         dest_user = self.env["res.users"].search(domain, limit=1)
         if dest_user:
             for purchase_line in self.order_line:
-                try:
-                    purchase_line.product_id.sudo(dest_user).read(["default_code"])
-                except Exception:
+                if (
+                    purchase_line.product_id.company_id
+                    and purchase_line.product_id.company_id not in dest_user.company_ids
+                ):
                     raise UserError(
                         _(
                             "You cannot create SO from PO because product '%s' "
@@ -51,7 +49,6 @@ class PurchaseOrder(models.Model):
                         % purchase_line.product_id.name
                     )
 
-    @api.multi
     def _inter_company_create_sale_order(self, dest_company):
         """ Create a Sale Order from the current PO (self)
             Note : In this method, reading the current PO is done as sudo,
@@ -63,9 +60,9 @@ class PurchaseOrder(models.Model):
         """
         self.ensure_one()
         # Check intercompany user
-        intercompany_user = dest_company.intercompany_user_id
-        if intercompany_user.company_id != dest_company:
-            intercompany_user.company_id = dest_company
+        intercompany_user = dest_company.intercompany_sale_user_id
+        if not intercompany_user:
+            intercompany_user = self.env.user
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # Accessing to selling partner with selling user, so data like
@@ -87,13 +84,16 @@ class PurchaseOrder(models.Model):
             self.name, company_partner, dest_company, self.dest_address_id
         )
         sale_order = (
-            self.env["sale.order"].sudo(intercompany_user.id).create(sale_order_data)
+            self.env["sale.order"]
+            .with_user(intercompany_user.id)
+            .sudo()
+            .create(sale_order_data)
         )
         for purchase_line in self.order_line:
             sale_line_data = self._prepare_sale_order_line_data(
                 purchase_line, dest_company, sale_order
             )
-            self.env["sale.order.line"].sudo(intercompany_user.id).create(
+            self.env["sale.order.line"].with_user(intercompany_user.id).sudo().create(
                 sale_line_data
             )
         # write supplier reference field on PO
@@ -101,9 +101,8 @@ class PurchaseOrder(models.Model):
             self.partner_ref = sale_order.name
         # Validation of sale order
         if dest_company.sale_auto_validation:
-            sale_order.sudo(intercompany_user.id).action_confirm()
+            sale_order.with_user(intercompany_user.id).sudo().action_confirm()
 
-    @api.multi
     def _prepare_sale_order_data(
         self, name, partner, dest_company, direct_delivery_address
     ):
@@ -149,7 +148,6 @@ class PurchaseOrder(models.Model):
             new_order.requested_date = self.date_planned
         return new_order._convert_to_write(new_order._cache)
 
-    @api.model
     def _prepare_sale_order_line_data(self, purchase_line, dest_company, sale_order):
         """ Generate the Sale Order Line values from the PO line
             :param purchase_line : the origin Purchase Order Line
@@ -171,7 +169,6 @@ class PurchaseOrder(models.Model):
             onchange_method(new_line)
         return new_line._convert_to_write(new_line._cache)
 
-    @api.multi
     def button_cancel(self):
         sale_orders = (
             self.env["sale.order"]
@@ -182,7 +179,5 @@ class PurchaseOrder(models.Model):
             if so.state not in ["draft", "sent", "cancel"]:
                 raise UserError(_("You can't cancel an order that is %s") % so.state)
         sale_orders.action_cancel()
-        self.write(
-            {"partner_ref": False,}
-        )
+        self.write({"partner_ref": False})
         return super().button_cancel()

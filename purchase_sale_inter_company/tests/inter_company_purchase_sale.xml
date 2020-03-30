@@ -1,13 +1,13 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <!--
-  © 2016-2018 Akretion France (www.akretion.com)
-  © 2016-2018 Tecnativa
-  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
--->
+      © 2016-2018 Akretion France (www.akretion.com)
+      © 2016-2018 Tecnativa
+      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+    -->
     <!--
         Create warehouse in Company A and Company B
-        -->
+    -->
     <record id="location_stock_company_a" model="stock.location">
         <field name="name">Stock - A</field>
         <field name="usage">internal</field>
@@ -24,6 +24,7 @@
         <field name="wh_input_stock_loc_id" ref="location_stock_company_a" />
         <field name="lot_stock_id" ref="location_stock_company_a" />
         <field name="wh_output_stock_loc_id" ref="location_output_company_a" />
+        <field name="partner_id" ref="partner_company_a" />
         <field name="company_id" ref="company_a" />
     </record>
     <record id="location_stock_company_b" model="stock.location">
@@ -42,6 +43,7 @@
         <field name="wh_input_stock_loc_id" ref="location_stock_company_b" />
         <field name="lot_stock_id" ref="location_stock_company_b" />
         <field name="wh_output_stock_loc_id" ref="location_output_company_b" />
+        <field name="partner_id" ref="partner_company_b" />
         <field name="company_id" ref="company_b" />
     </record>
     <!--
@@ -94,7 +96,10 @@
         <field name="product_id" ref="product_consultant_multi_company" />
         <field name="product_uom" ref="uom.product_uom_hour" />
         <field name="name">Service Multi Company</field>
-        <field name="date_planned" eval="time.strftime('%Y%m%d')" />
+        <field
+            name="date_planned"
+            eval="(datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"
+        />
         <field name="price_unit" eval="450.0" />
         <field name="product_qty" eval="3.0" />
         <field name="company_id" ref="company_a" />
@@ -118,7 +123,6 @@
         <field name="sequence_id" ref="sequence_sale_journal_company_b" />
         <field name="default_credit_account_id" ref="a_sale_company_b" />
         <field name="default_debit_account_id" ref="a_sale_company_b" />
-        <field name="update_posted" eval="True" />
         <field name="company_id" ref="company_b" />
     </record>
     <record id="purchases_journal_company_a" model="account.journal">
@@ -128,7 +132,6 @@
         <field name="sequence_id" ref="sequence_purchase_journal_company_a" />
         <field name="default_credit_account_id" ref="a_expense_company_a" />
         <field name="default_debit_account_id" ref="a_expense_company_a" />
-        <field name="update_posted" eval="True" />
         <field name="company_id" ref="company_a" />
     </record>
 </odoo>

@@ -28,6 +28,8 @@ class ResCompany(models.Model):
         help="Default value to set on Sale Orders that "
         "will be created based on Purchase Orders made to this company",
     )
-    intercompany_user_id = fields.Many2one(
-        comodel_name="res.users", string="Intercompany User",
+    intercompany_sale_user_id = fields.Many2one(
+        comodel_name="res.users",
+        string="Intercompany Sale User",
+        old_name="intercompany_user_id",
     )
