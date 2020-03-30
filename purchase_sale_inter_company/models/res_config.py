@@ -33,9 +33,11 @@ class InterCompanyRulesConfig(models.TransientModel):
         "based on Purchase Orders made to this company.",
         readonly=False,
     )
-    intercompany_user_id = fields.Many2one(
+    intercompany_sale_user_id = fields.Many2one(
         comodel_name="res.users",
-        related="company_id.intercompany_user_id",
-        string="Intercompany User",
+        related="company_id.intercompany_sale_user_id",
+        string="Intercompany Sale User",
+        help="User used to create the sales order arising from a purchase "
+        "order in another company.",
         readonly=False,
     )
