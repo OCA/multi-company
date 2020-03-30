@@ -75,36 +75,38 @@ class TestProductMultiCompany(common.TransactionCase):
 
     def test_create_product(self):
         product = self.env["product.product"].create({"name": "Test"})
-        company = self.env["res.company"]._company_default_get("product.template")
+        company = self.env.company
         self.assertTrue(company.id in product.company_ids.ids)
 
     def test_company_none(self):
         self.assertFalse(self.product_company_none.company_id)
         # All of this should be allowed
-        self.product_company_none.sudo(self.user_company_1.id).name = "Test"
-        self.product_company_none.sudo(self.user_company_2.id).name = "Test"
+        self.product_company_none.with_user(self.user_company_1.id).name = "Test"
+        self.product_company_none.with_user(self.user_company_2.id).name = "Test"
 
     def test_company_1(self):
         self.assertEqual(
-            self.product_company_1.sudo(self.user_company_1).company_id, self.company_1,
+            self.product_company_1.with_user(self.user_company_1).company_id,
+            self.company_1,
         )
         # All of this should be allowed
-        self.product_company_1.sudo(self.user_company_1).name = "Test"
-        self.product_company_both.sudo(self.user_company_1).name = "Test"
+        self.product_company_1.with_user(self.user_company_1).name = "Test"
+        self.product_company_both.with_user(self.user_company_1).name = "Test"
         # And this one not
         with self.assertRaises(AccessError):
-            self.product_company_2.sudo(self.user_company_1).name = "Test"
+            self.product_company_2.with_user(self.user_company_1).name = "Test"
 
     def test_company_2(self):
         self.assertEqual(
-            self.product_company_2.sudo(self.user_company_2).company_id, self.company_2,
+            self.product_company_2.with_user(self.user_company_2).company_id,
+            self.company_2,
         )
         # All of this should be allowed
-        self.product_company_2.sudo(self.user_company_2).name = "Test"
-        self.product_company_both.sudo(self.user_company_2).name = "Test"
+        self.product_company_2.with_user(self.user_company_2).name = "Test"
+        self.product_company_both.with_user(self.user_company_2).name = "Test"
         # And this one not
         with self.assertRaises(AccessError):
-            self.product_company_1.sudo(self.user_company_2).name = "Test"
+            self.product_company_1.with_user(self.user_company_2).name = "Test"
 
     def test_uninstall(self):
         from ..hooks import uninstall_hook
