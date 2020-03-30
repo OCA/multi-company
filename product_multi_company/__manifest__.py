@@ -7,10 +7,10 @@
     "author": "Tecnativa," "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "category": "Product Management",
-    "version": "12.0.1.0.0",
+    "version": "13.0.1.0.0",
     "license": "AGPL-3",
-    "depends": ["base_multi_company", "product",],
-    "data": ["views/product_template_view.xml",],
+    "depends": ["base_multi_company", "product"],
+    "data": ["views/product_template_view.xml"],
     "post_init_hook": "post_init_hook",
     "uninstall_hook": "uninstall_hook",
 }
