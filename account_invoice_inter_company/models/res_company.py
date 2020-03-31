@@ -17,6 +17,12 @@ class ResCompany(models.Model):
         "for this company, it will automatically validate it",
         default=True,
     )
+    intercompany_invoice_user_id = fields.Many2one(
+        "res.users",
+        string="Inter Company Invoice User",
+        help="Responsible user for creation of invoices triggered by "
+        "intercompany rules.",
+    )
 
     def _compute_share_product(self):
         product_rule = self.env.ref("product.product_comp_rule")
