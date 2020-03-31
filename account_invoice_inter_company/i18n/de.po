@@ -19,29 +19,26 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:204
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid "%s - Canceled Invoice: %s"
 msgstr "%s Stornierte Rechnung: %s"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:174
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid "%s - Invoice: %s"
 msgstr "%s - Rechnung: %s"
 
 #. module: account_invoice_inter_company
-#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-msgid ""
-"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
-"specific.\" aria-label=\"Values set here are company-specific.\" groups="
-"\"base.group_multi_company\" role=\"img\"/>"
-msgstr ""
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice__auto_generated
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_generated
 msgid "Auto Generated Document"
 msgstr "Automatisch erstelltes Dokument"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Common Product Catalog"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model,name:account_invoice_inter_company.model_res_company
@@ -54,15 +51,28 @@ msgid "Config Settings"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
 #, fuzzy
-msgid "Inter Company OCA features"
+#| msgid "Inter-Company Invoicing"
+msgid "Inter Company Invoice User"
 msgstr "Rechnungsstellung zwischen Unternehmen"
 
 #. module: account_invoice_inter_company
-#: model:ir.model,name:account_invoice_inter_company.model_account_invoice
-msgid "Invoice"
-msgstr "Rechnung"
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid ""
+"Inter Company OCA features\n"
+"                    <span class=\"fa fa-lg fa-building-o\" title=\"Values "
+"set here are company-specific.\" aria-label=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+#, fuzzy
+#| msgid "Inter-Company Invoicing"
+msgid "Intercompany user for invoices"
+msgstr "Rechnungsstellung zwischen Unternehmen"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__invoice_auto_validation
@@ -71,50 +81,86 @@ msgid "Invoice Auto Validation"
 msgstr "Automatische Rechnungsprüfung"
 
 #. module: account_invoice_inter_company
-#: model:ir.model,name:account_invoice_inter_company.model_account_invoice_line
-msgid "Invoice Line"
-msgstr "Rechnungszeile"
-
-#. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
 msgid "Invoices Auto Validation"
 msgstr "automatische Rechnungsprüfung"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:34
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+#, fuzzy
+#| msgid "Invoice Line"
+msgid "Invoicing"
+msgstr "Rechnungszeile"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move
+msgid "Journal Entries"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:0
 #, python-format
 msgid "No Chart of Account Template has been defined !"
 msgstr "Es wurde keine Kontenplanvorlage definiert!"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:251
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid "Please define %s account for this company: \"%s\" (id:%d)."
 msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:161
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
 
 #. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules. "
+"If not set the user initiating thetransaction will be used"
+msgstr ""
+
+#. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__company_share_product
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__company_share_product
 msgid "Share product to all companies"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice__auto_invoice_id
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__company_share_product
+msgid ""
+"Share your product to all companies defined in your instance.\n"
+" * Checked : Product are visible for every company, even if a company is "
+"defined on the partner.\n"
+" * Unchecked : Each company can see only its product (product where company "
+"is defined). Product not related to a company are visible for all companies."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_invoice_id
 msgid "Source Invoice"
 msgstr "Quellrechnung"
 
 #. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice_line__auto_invoice_line_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__auto_invoice_line_id
 msgid "Source Invoice Line"
 msgstr "Quellrechnungszeile"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:90
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
 "The invoice line '%s' doesn't have a product. All invoice lines should have "
@@ -124,7 +170,7 @@ msgstr ""
 "Produkt für zwischenbetriebliche Rechnungen haben."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:114
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
@@ -155,12 +201,19 @@ msgstr ""
 "erstellt wird, wird sie automatisch validiert."
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:55
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
 "You cannot create invoice in company '%s' with product '%s' because it is "
 "not multicompany"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Inter Company OCA features"
+#~ msgstr "Rechnungsstellung zwischen Unternehmen"
+
+#~ msgid "Invoice"
+#~ msgstr "Rechnung"
 
 #~ msgid "Automate inter-company invoicing"
 #~ msgstr "Automatisierung der zwischenbetrieblichen Rechnungsstellung"
@@ -172,9 +225,6 @@ msgstr ""
 #~ "Konfigurieren Sie Unternehmensregeln so, dass Rechnungen automatisch "
 #~ "erstellt werden, wenn eines Ihrer Unternehmen ein anderes Unternehmen "
 #~ "Ihres Unternehmens verkauft / kauft."
-
-#~ msgid "Inter-Company Invoicing"
-#~ msgstr "Rechnungsstellung zwischen Unternehmen"
 
 #~ msgid ""
 #~ "Dear Sir/Madam,\n"
