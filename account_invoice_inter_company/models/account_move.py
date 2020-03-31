@@ -1,7 +1,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
-from odoo.exceptions import AccessError, UserError
+from odoo.exceptions import UserError
 from odoo.tools import float_compare
 
 
@@ -38,7 +38,12 @@ class AccountMove(models.Model):
             dest_company = src_invoice._find_company_from_invoice_partner()
             if not dest_company or src_invoice.auto_generated:
                 continue
-            src_invoice.sudo().with_context(
+            intercompany_user = dest_company.intercompany_invoice_user_id
+            if intercompany_user:
+                src_invoice = src_invoice.with_user(intercompany_user).sudo()
+            else:
+                src_invoice = src_invoice.sudo()
+            src_invoice.with_context(
                 force_company=dest_company.id
             )._inter_company_create_invoice(dest_company)
         return res
@@ -51,9 +56,7 @@ class AccountMove(models.Model):
         dest_user = self.env["res.users"].search(domain, limit=1)
         if dest_user:
             for line in self.invoice_line_ids:
-                try:
-                    line.product_id.with_user(dest_user).read(["default_code"])
-                except AccessError:
+                if not line.product_id.with_user(dest_user).check_access_rights("read"):
                     raise UserError(
                         _(
                             "You cannot create invoice in company '%s' with "
