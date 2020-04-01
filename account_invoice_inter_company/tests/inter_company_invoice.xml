@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <!--
+        Create partner for each company (A and B)
+        -->
+    <record id="partner_company_a" model="res.partner">
+        <field name="name">Company A</field>
+        <field name="company_id" eval="False" />
+    </record>
+    <record id="partner_company_b" model="res.partner">
+        <field name="name">Company B</field>
+        <field name="company_id" eval="False" />
+    </record>
+    <!--
+        Create company A and B
+        -->
+    <record id="company_a" model="res.company">
+        <field name="name">Company A</field>
+        <field name="partner_id" ref="partner_company_a" />
+        <field name="parent_id" ref="base.main_company" />
+        <field name="country_id" ref="base.fr" />
+        <field name="vat">FR86792377731</field>
+        <field name="currency_id" ref="base.EUR" />
+        <field name="invoice_auto_validation">1</field>
+    </record>
+    <record id="company_b" model="res.company">
+        <field name="name">Company B</field>
+        <field name="partner_id" ref="partner_company_b" />
+        <field name="parent_id" ref="base.main_company" />
+        <field name="country_id" ref="base.fr" />
+        <field name="vat">FR83404833048</field>
+        <field name="currency_id" ref="base.EUR" />
+        <field name="invoice_auto_validation">1</field>
+    </record>
+    <!--
+        Create partner for each user (userA and userB)
+        -->
+    <record id="partner_user_a" model="res.partner">
+        <field name="name">User A</field>
+        <field name="company_type">person</field>
+        <field name="email">usera@companya.com</field>
+    </record>
+    <record id="partner_user_b" model="res.partner">
+        <field name="name">User B</field>
+        <field name="company_type">person</field>
+        <field name="email">userb@companyb.com</field>
+    </record>
+    <!--
+        Create user for each company (A and B)
+        -->
+    <record id="user_company_a" model="res.users" context="{'no_reset_password': True}">
+        <field name="name">User A</field>
+        <field name="partner_id" ref="partner_user_a" />
+        <field name="login">usera</field>
+        <field name="password">usera_p4S$word</field>
+        <field name="company_id" ref="company_a" />
+        <field name="company_ids" eval="[(6, 0, [ref('company_a')])]" />
+        <field
+            name="groups_id"
+            eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager')])]"
+        />
+    </record>
+    <record id="user_company_b" model="res.users" context="{'no_reset_password': True}">
+        <field name="name">User B</field>
+        <field name="partner_id" ref="partner_user_b" />
+        <field name="login">userb</field>
+        <field name="password">userb_p4S$word</field>
+        <field name="company_id" ref="company_b" />
+        <field name="company_ids" eval="[(6, 0, [ref('company_b')])]" />
+        <field
+            name="groups_id"
+            eval="[(6, 0, [ref('account.group_account_manager'), ref('base.group_partner_manager')])]"
+        />
+    </record>
+    <!--
+        Create transfer account template
+        -->
+    <record id="pcg_X58" model="account.account.template">
+        <field name="name">Internal Transfers</field>
+        <field name="code">X58</field>
+        <field name="user_type_id" ref="account.data_account_type_current_assets" />
+        <field name="reconcile" eval="True" />
+    </record>
+    <!--
+        Create account account for each company (A and B)
+        -->
+    <record id="a_recv_company_a" model="account.account">
+        <field name="code">X11002-A</field>
+        <field name="name">Debtors - (company A)</field>
+        <field name="internal_type">receivable</field>
+        <field name="reconcile" eval="True" />
+        <field name="user_type_id" ref="account.data_account_type_receivable" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="a_pay_company_a" model="account.account">
+        <field name="code">X1111-A</field>
+        <field name="name">Creditors - (company A)</field>
+        <field name="internal_type">payable</field>
+        <field name="reconcile" eval="True" />
+        <field name="user_type_id" ref="account.data_account_type_payable" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="a_sale_company_a" model="account.account">
+        <field name="code">X2001-A</field>
+        <field name="name">Product Sales - (company A)</field>
+        <field name="internal_type">other</field>
+        <field name="user_type_id" ref="account.data_account_type_revenue" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="a_expense_company_a" model="account.account">
+        <field name="code">X2110-A</field>
+        <field name="name">Expenses - (company A)</field>
+        <field name="internal_type">other</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="a_bank_company_a" model="account.account">
+        <field name="code">512001-A</field>
+        <field name="name">Bank - (company A)</field>
+        <field name="user_type_id" ref="account.data_account_type_liquidity" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="a_recv_company_b" model="account.account">
+        <field name="code">X11002-B</field>
+        <field name="name">Debtors - (company B)</field>
+        <field name="internal_type">receivable</field>
+        <field name="reconcile" eval="True" />
+        <field name="user_type_id" ref="account.data_account_type_receivable" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="a_pay_company_b" model="account.account">
+        <field name="code">X1111-B</field>
+        <field name="name">Creditors - (company B)</field>
+        <field name="internal_type">payable</field>
+        <field name="reconcile" eval="True" />
+        <field name="user_type_id" ref="account.data_account_type_payable" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="a_sale_company_b" model="account.account">
+        <field name="code">X2001-B</field>
+        <field name="name">Product Sales - (company B)</field>
+        <field name="internal_type">other</field>
+        <field name="user_type_id" ref="account.data_account_type_revenue" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="a_expense_company_b" model="account.account">
+        <field name="code">X2110-B</field>
+        <field name="name">Expenses - (company B)</field>
+        <field name="internal_type">other</field>
+        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="a_bank_company_b" model="account.account">
+        <field name="code">512001-B</field>
+        <field name="name">Bank - (company B)</field>
+        <field name="user_type_id" ref="account.data_account_type_liquidity" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <!--
+        Account Journal Sequences for each company (A and B)
+        -->
+    <record id="sequence_sale_journal_company_a" model="ir.sequence">
+        <field name="name">Account Sales Journal Company A</field>
+        <field eval="3" name="padding" />
+        <field name="prefix">SAJ-A/%(year)s/</field>
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="sequence_misc_journal_company_a" model="ir.sequence">
+        <field name="name">Miscellaneous Journal Company A</field>
+        <field eval="3" name="padding" />
+        <field name="prefix">MISC-A/%(year)s/</field>
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="sequence_purchase_journal_company_a" model="ir.sequence">
+        <field name="name">Account Expenses Journal Company A</field>
+        <field eval="3" name="padding" />
+        <field name="prefix">EXJ-A/%(year)s/</field>
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="sequence_sale_journal_company_b" model="ir.sequence">
+        <field name="name">Account Sales Journal Company B</field>
+        <field eval="3" name="padding" />
+        <field name="prefix">SAJ-B/%(year)s/</field>
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="sequence_misc_journal_company_b" model="ir.sequence">
+        <field name="name">Miscellaneous Journal Company B</field>
+        <field eval="3" name="padding" />
+        <field name="prefix">MISC-B/%(year)s/</field>
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="sequence_purchase_journal_company_b" model="ir.sequence">
+        <field name="name">Account Expenses Journal Company B</field>
+        <field eval="3" name="padding" />
+        <field name="prefix">EXJ-B/%(year)s/</field>
+        <field name="company_id" ref="company_b" />
+    </record>
+    <!--
+        Create account journal for each company (A and B)
+        -->
+    <record id="sales_journal_company_a" model="account.journal">
+        <field name="name">Sales Journal - (Company A)</field>
+        <field name="code">SAJ-A</field>
+        <field name="type">sale</field>
+        <field name="sequence_id" ref="sequence_sale_journal_company_a" />
+        <field name="default_credit_account_id" ref="a_sale_company_a" />
+        <field name="default_debit_account_id" ref="a_sale_company_a" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="bank_journal_company_a" model="account.journal">
+        <field name="name">Bank Journal - (Company A)</field>
+        <field name="code">BNK-A</field>
+        <field name="type">bank</field>
+        <field name="default_credit_account_id" ref="a_sale_company_a" />
+        <field name="default_debit_account_id" ref="a_sale_company_a" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="misc_journal_company_a" model="account.journal">
+        <field name="name">Miscellaneous Operations - (Company A)</field>
+        <field name="code">MISC-A</field>
+        <field name="type">general</field>
+        <field name="sequence_id" ref="sequence_misc_journal_company_a" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record id="purchases_journal_company_b" model="account.journal">
+        <field name="name">Purchases Journal - (Company B)</field>
+        <field name="code">EXJ-B</field>
+        <field name="type">purchase</field>
+        <field name="sequence_id" ref="sequence_purchase_journal_company_b" />
+        <field name="default_credit_account_id" ref="a_expense_company_b" />
+        <field name="default_debit_account_id" ref="a_expense_company_b" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="bank_journal_company_b" model="account.journal">
+        <field name="name">Bank Journal - (Company B)</field>
+        <field name="code">BNK-B</field>
+        <field name="type">bank</field>
+        <field name="default_credit_account_id" ref="a_sale_company_b" />
+        <field name="default_debit_account_id" ref="a_sale_company_b" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record id="misc_journal_company_b" model="account.journal">
+        <field name="name">Miscellaneous Operations - (Company B)</field>
+        <field name="code">MISC-B</field>
+        <field name="type">general</field>
+        <field name="sequence_id" ref="sequence_misc_journal_company_b" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <!--
+        Properties for each company (A and B)
+        -->
+    <record
+        forcecreate="True"
+        id="property_account_receivable_company_a"
+        model="ir.property"
+    >
+        <field name="name">property_account_receivable_company_a</field>
+        <field
+            name="fields_id"
+            search="[('model','=','res.partner'),('name','=','property_account_receivable_id')]"
+        />
+        <field eval="'account.account,'+str(a_recv_company_a)" name="value" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record
+        forcecreate="True"
+        id="property_account_payable_company_a"
+        model="ir.property"
+    >
+        <field name="name">property_account_payable_company_a</field>
+        <field
+            name="fields_id"
+            search="[('model','=','res.partner'),('name','=','property_account_payable_id')]"
+        />
+        <field eval="'account.account,'+str(a_pay_company_a)" name="value" />
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record
+        forcecreate="True"
+        id="property_account_receivable_company_b"
+        model="ir.property"
+    >
+        <field name="name">property_account_receivable_company_b</field>
+        <field
+            name="fields_id"
+            search="[('model','=','res.partner'),('name','=','property_account_receivable_id')]"
+        />
+        <field eval="'account.account,'+str(a_recv_company_b)" name="value" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record
+        forcecreate="True"
+        id="property_account_payable_company_b"
+        model="ir.property"
+    >
+        <field name="name">property_account_payable_company_b</field>
+        <field
+            name="fields_id"
+            search="[('model','=','res.partner'),('name','=','property_account_payable_id')]"
+        />
+        <field eval="'account.account,'+str(a_pay_company_b)" name="value" />
+        <field name="company_id" ref="company_b" />
+    </record>
+    <!--
+        Create fiscal position for each company (A and B)
+        -->
+    <record
+        id="1_fiscal_position_template_intraeub2b_company_a"
+        model="account.fiscal.position"
+    >
+        <field name="name">Intra-EU B2B - (Company A)</field>
+        <field name="auto_apply" eval="True" />
+        <field name="vat_required" eval="True" />
+        <field name="country_group_id" ref="base.europe" />
+        <field
+            name="note"
+        >French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of "CGI"</field>
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record
+        id="1_fiscal_position_template_import_export_company_a"
+        model="account.fiscal.position"
+    >
+        <field name="name">Import/Export + DOM-TOM - (Company A)</field>
+        <field
+            name="note"
+        >French VAT exemption according to articles 262 I of "CGI"</field>
+        <field name="company_id" ref="company_a" />
+    </record>
+    <record
+        id="1_fiscal_position_template_intraeub2b_company_b"
+        model="account.fiscal.position"
+    >
+        <field name="name">Intra-EU B2B - (Company B)</field>
+        <field name="auto_apply" eval="True" />
+        <field name="vat_required" eval="True" />
+        <field name="country_group_id" ref="base.europe" />
+        <field
+            name="note"
+        >French VAT exemption according to articles 262 ter I (for products) and/or 283-2 (for services) of "CGI"</field>
+        <field name="company_id" ref="company_b" />
+    </record>
+    <record
+        id="1_fiscal_position_template_import_export_company_b"
+        model="account.fiscal.position"
+    >
+        <field name="name">Import/Export + DOM-TOM - (Company B)</field>
+        <field
+            name="note"
+        >French VAT exemption according to articles 262 I of "CGI"</field>
+        <field name="company_id" ref="company_b" />
+    </record>
+    <!--
+        Update partner for each company (A and B)
+        -->
+    <record id="partner_company_a" model="res.partner">
+        <field name="company_type">company</field>
+        <field
+            name="property_account_receivable_id"
+            ref="property_account_receivable_company_a"
+        />
+        <field
+            name="property_account_payable_id"
+            ref="property_account_payable_company_a"
+        />
+        <field name="company_id" ref="" />
+    </record>
+    <record id="partner_company_b" model="res.partner">
+        <field name="company_type">company</field>
+        <field
+            name="property_account_receivable_id"
+            ref="property_account_receivable_company_b"
+        />
+        <field
+            name="property_account_payable_id"
+            ref="property_account_payable_company_b"
+        />
+        <field name="company_id" ref="" />
+    </record>
+    <!--
+        Create inter company product
+        -->
+    <record id="product_consultant_multi_company" model="product.product">
+        <field name="name">Service Multi Company</field>
+        <field name="uom_id" ref="uom.product_uom_hour" />
+        <field name="uom_po_id" ref="uom.product_uom_hour" />
+        <field name="categ_id" ref="product.product_category_3" />
+        <field name="type">service</field>
+        <field name="company_id" ref="" />
+    </record>
+    <!--
+        Create draft invoice
+        -->
+    <record id="customer_invoice_company_a" model="account.move">
+        <field name="type">out_invoice</field>
+        <field name="partner_id" ref="partner_company_b" />
+        <field name="journal_id" ref="sales_journal_company_a" />
+        <field name="company_id" ref="company_a" />
+        <field name="state">draft</field>
+        <field
+            name="invoice_line_ids"
+            eval="[
+            (0, 0, {
+                'product_id': ref('product_consultant_multi_company'),
+                'price_unit': 450.0, 'quantity': 1,
+                'name': 'Service Multi Company',
+                'company_id': ref('company_a'),
+            }),
+        ]"
+        />
+    </record>
+</odoo>
