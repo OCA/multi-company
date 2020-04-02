@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo13-addon-account_invoice_inter_company',
         'odoo13-addon-company_dependent_attribute',
+        'odoo13-addon-purchase_sale_inter_company',
     ],
     classifiers=[
         'Programming Language :: Python',
