@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="model">res.config.settings</field>
+        <field
+            name="inherit_id"
+            ref="account_invoice_inter_company.res_config_settings_view_form"
+        />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//div[@id='inter_company_invoice_validation']"
+                position='after'
+            >
+                <div class="o_form_label mt8">Purchase/Sale</div>
+                <div id="inter_company_so_from_po">
+                    <field
+                        name="so_from_po"
+                        class="oe_inline"
+                        domain="[('company_id', '=', company_id)]"
+                    />
+                    <label
+                        string="Sale from purchase"
+                        class="o_light_label"
+                        for="so_from_po"
+                    />
+                </div>
+                <div
+                    id="inter_company_warehouse"
+                    attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}"
+                >
+                    <label for="warehouse_id" class="o_light_label" />
+                    <field
+                        name="warehouse_id"
+                        attrs="{'required': [('so_from_po', '=', True)]}"
+                        class="oe_inline"
+                        domain="[('company_id', '=', company_id)]"
+                    />
+                    <label for="intercompany_sale_user_id" class="o_light_label" />
+                    <field
+                        name="intercompany_sale_user_id"
+                        attrs="{'required': [('so_from_po', '=', True)]}"
+                        class="oe_inline"
+                    />
+                    <br />
+                    <field name="sale_auto_validation" class="oe_inline" />
+                    <label for="sale_auto_validation" class="oe_inline o_light_label" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
