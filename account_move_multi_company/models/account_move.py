@@ -95,13 +95,16 @@ class AccountMove(models.Model):
                     'line_ids': transfer_lines})
                 journal_entry_transfer.post()
 
-                transfer_lines = journal_entry_transfer.line_ids.\
-                    filtered("credit").sorted(key=lambda r: r.id)
+                transfer_lines = journal_entry_transfer.line_ids.filtered(
+                    lambda l:
+                    l.account_id != l.company_id.due_from_account_id).\
+                    sorted(key=lambda r: r.id)
 
                 # Reconcile the entries
                 for (line, rec_line) in \
                         zip(transfer_lines, lines_to_reconcile):
-                    (line + rec_line).reconcile()
+                    if line.account_id.reconcile:
+                        (line + rec_line).reconcile()
 
                 # Create and post the entries for the other companies
                 dedicated_company_move = self.env['account.move'].sudo()
