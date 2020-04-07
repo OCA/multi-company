@@ -1,0 +1,74 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * base_multi_company
+#
+# Translators:
+# falexandresilva <falexandresilva@gmail.com>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-06-15 16:43+0000\n"
+"PO-Revision-Date: 2019-11-24 19:58+0000\n"
+"Last-Translator: Rodrigo Macedo <rmsolucoeseminformatic4@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) (https://www.transifex.com/oca/teams/"
+"23907/pt_BR/)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 3.8\n"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
+msgid "Companies"
+msgstr "Empresas"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__display_name
+msgid "Display Name"
+msgstr "Nome"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__id
+msgid "ID"
+msgstr "Identificação"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment____last_update
+msgid "Last Modified on"
+msgstr "Última modificação"
+
+#. module: base_multi_company
+#: model:ir.model,name:base_multi_company.model_multi_company_abstract
+msgid "Multi-Company Abstract"
+msgstr "Resumo de várias empresas"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__name
+msgid "Name"
+msgstr "Nome"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
+msgid "Parent"
+msgstr "Pai"
+
+#. module: base_multi_company
+#: model:ir.model,name:base_multi_company.model_res_company_assignment
+msgid "Res Company Assignment"
+msgstr "Res Atribuição da Empresa"
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
+msgid "Visible For All Companies"
+msgstr "Visível para todas as Empresas"
