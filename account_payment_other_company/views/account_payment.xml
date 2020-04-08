@@ -10,11 +10,11 @@
         <field name="arch" type="xml">
             <field name="journal_id" position="after">
                 <field name="company_id" attrs="{'invisible': True}"/>
-                <field name="other_journal_id" 
-                       attrs="{'invisible': [('hide_other_journal', '=', True)], 'required': [('hide_other_journal', '=', False)]}"
+                <field name="other_journal_id"
+                       attrs="{'invisible': [('show_other_journal', '=', False)], 'required': [('show_other_journal', '=', True)]}"
                        domain="[('type', 'in', ['bank', 'cash']), ('company_id','!=', company_id)]"
                        context="{'sudo': True}"/>
-                <field name="hide_other_journal" attrs="{'invisible': True}"/>
+                <field name="show_other_journal" attrs="{'invisible': True}"/>
             </field>
         </field>
     </record>
@@ -28,9 +28,9 @@
                 <field name="company_id" attrs="{'invisible': True}"/>
                 <field name="other_journal_id"
                        domain="[('type', 'in', ['bank', 'cash']), ('company_id','!=', company_id)]"
-                       attrs="{'invisible': [('hide_other_journal', '=', True)], 'required': [('hide_other_journal', '=', False)]}"
+                       attrs="{'invisible': [('show_other_journal', '=', False)], 'required': [('show_other_journal', '=', True)]}"
                        context="{'sudo': True}"/>
-                <field name="hide_other_journal" attrs="{'invisible': True}"/>
+                <field name="show_other_journal" attrs="{'invisible': True}"/>
             </field>
         </field>
     </record>
