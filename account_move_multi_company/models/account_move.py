@@ -44,6 +44,7 @@ class AccountMove(models.Model):
                         dedicated_companies_vals[line.transfer_to_company_id]\
                             = {
                             'date': move.date,
+                            'ref': move.ref,
                             'journal_id':
                                 line.transfer_to_company_id.
                                 due_fromto_payment_journal_id.id,
@@ -93,6 +94,7 @@ class AccountMove(models.Model):
                     self.env.user.company_id.due_fromto_payment_journal_id.id
                 journal_entry_transfer = self.env['account.move'].create({
                     'date': move.date,
+                    'ref': move.ref,
                     'journal_id': journal_id,
                     'line_ids': transfer_lines})
                 journal_entry_transfer.post()
