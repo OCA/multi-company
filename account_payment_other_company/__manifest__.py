@@ -3,7 +3,7 @@
 
 {
     'name': 'Account Payment Other Company',
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'summary': 'Create Payments for Other Companies',
     'author': 'Open Source Integrators, '
               'Odoo Community Association (OCA)',

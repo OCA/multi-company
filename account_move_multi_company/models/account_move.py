@@ -43,6 +43,8 @@ class AccountMove(models.Model):
                         # Add the lines for the other company journal entry
                         dedicated_companies_vals[line.transfer_to_company_id]\
                             = {
+                            'date': move.date,
+                            'ref': move.ref,
                             'journal_id':
                                 line.transfer_to_company_id.
                                 due_fromto_payment_journal_id.id,
@@ -91,6 +93,8 @@ class AccountMove(models.Model):
                 journal_id = \
                     self.env.user.company_id.due_fromto_payment_journal_id.id
                 journal_entry_transfer = self.env['account.move'].create({
+                    'date': move.date,
+                    'ref': move.ref,
                     'journal_id': journal_id,
                     'line_ids': transfer_lines})
                 journal_entry_transfer.post()
@@ -113,5 +117,7 @@ class AccountMove(models.Model):
                         self.env['account.move'].sudo().with_context(
                             force_company=company).create(
                             dedicated_companies_vals[company])
-                dedicated_company_move.post()
+                # TODO: Determine the conditions to auto-post this entry
+                # Left in draft to set analytic information
+                # dedicated_company_move.post()
         return res
