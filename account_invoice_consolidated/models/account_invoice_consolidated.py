@@ -157,7 +157,7 @@ class AccountInvoiceConsolidation(models.Model):
             if invoice_consolidated_seq:
                 rec.write({'name': invoice_consolidated_seq})
             inv_vals = {
-                'ref': rec.name,
+                'reference': rec.name,
                 'partner_id': rec.partner_id.id,
                 'account_id': rec.partner_id.
                 property_account_receivable_id.id,
