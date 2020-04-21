@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo12-addon-account_bill_line_distribution',
         'odoo12-addon-account_invoice_consolidated',
         'odoo12-addon-account_invoice_inter_company',
+        'odoo12-addon-account_move_multi_company',
         'odoo12-addon-account_multicompany_easy_creation',
         'odoo12-addon-account_payment_other_company',
         'odoo12-addon-base_multi_company',
