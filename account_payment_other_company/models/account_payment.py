@@ -19,7 +19,7 @@ class AccountPayment(models.Model):
         for rec in self:
             res = (rec.journal_id.id == rec.company_id.\
                due_fromto_payment_journal_id.id and \
-               rec.payment_type == 'outbound')
+               rec.payment_type in ('outbound', 'inbound'))
             # If False, reset the other journal
             if not res:
                 rec.other_journal_id = False
