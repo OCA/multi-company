@@ -82,13 +82,12 @@ class AccountMove(models.Model):
         )
         force_number = False
         if inter_invoice and inter_invoice.state in ["draft", "cancel"]:
-            force_number = inter_invoice.move_name
-            inter_invoice.move_name = False
-            inter_invoice.unlink()
+            force_number = inter_invoice.name
+            inter_invoice.with_context(force_delete=True).unlink()
         # create invoice
         dest_invoice_data = self._prepare_invoice_data(dest_company)
         if force_number:
-            dest_invoice_data["move_name"] = force_number
+            dest_invoice_data["name"] = force_number
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         for src_line in self.invoice_line_ids:
