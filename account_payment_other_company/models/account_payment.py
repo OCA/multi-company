@@ -32,7 +32,7 @@ class AccountPayment(models.Model):
         self.hide_other_journal = not (
             self.journal_id.id == self.company_id.
             due_fromto_payment_journal_id.id and
-            self.payment_type == 'outbound')
+            self.payment_type in ('outbound', 'inbound'))
 
     @api.multi
     def _prepare_other_payment_values(self):
