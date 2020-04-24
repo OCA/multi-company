@@ -39,6 +39,7 @@ class TestAccountPayment(SavepointCase):
         cls.company_a.due_fromto_payment_journal_id = cls.env.ref(
             'account_payment_other_company.sales_journal_company_a'
         )
+        cls.company_a.due_fromto_payment_journal_id.update_posted = True
         cls.company_b.due_fromto_payment_journal_id = cls.env.ref(
             'account_payment_other_company.bank_journal_company_b'
         )
@@ -66,6 +67,7 @@ class TestAccountPayment(SavepointCase):
 
         cls.company_b_journal = cls.env.\
             ref('account_payment_other_company.bank_journal_company_b')
+        cls.company_b_journal.update_posted = True
 
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
 
@@ -88,7 +90,7 @@ class TestAccountPayment(SavepointCase):
             'payment_method_id': 1,
             'partner_type': 'supplier',
             'partner_id': self.env.ref('base.res_partner_1').id,
-            'hide_other_journal': False
+            'show_other_journal': False
         }
         payment = self.account_payment_obj.create(vals)
         payment.invoice_ids = [self.invoice_obj.id]
@@ -108,28 +110,32 @@ class TestAccountPayment(SavepointCase):
             'payment_method_id': 1,
             'partner_type': 'supplier',
             'partner_id': self.env.ref('base.res_partner_1').id,
-            'hide_other_journal': False
+            'show_other_journal': False
         }
         payment = self.account_payment_obj.create(vals)
         payment.invoice_ids = [self.invoice_obj.id]
         payment.action_validate_invoice_payment()
+        ref = _("%s from %s" % (payment.name, payment.company_id.name))
         move = self.env['account.move'].sudo().\
-            search([('ref', '=', payment.id)])
+            search([('ref', '=', ref)])
 
         # Check Credit/Debit
-        self.assertEquals(move.line_ids[0].credit, 0.0)
+        self.assertEquals(move.line_ids[0].credit,
+                          self.invoice_obj.amount_total)
         self.assertEquals(move.line_ids[0].debit,
-                          self.invoice_obj.amount_total)
+                          0.0)
         self.assertEquals(move.line_ids[1].credit,
+                          0.0)
+        self.assertEquals(move.line_ids[1].debit,
                           self.invoice_obj.amount_total)
-        self.assertEquals(move.line_ids[1].debit, 0.0)
 
         # Check Accounts
         self.assertEquals(move.line_ids[0].account_id,
-                          payment.other_journal_id.default_debit_account_id)
+                          payment.other_journal_id.default_credit_account_id
+                          )
         self.assertEquals(move.line_ids[1].account_id,
-                          payment.other_journal_id.
-                          company_id.due_from_account_id)
+                          payment.other_journal_id.company_id.
+                          due_to_account_id)
 
         # Check Partners
         self.assertEquals(move.line_ids[0].partner_id, payment.partner_id)
