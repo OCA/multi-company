@@ -17,9 +17,10 @@ class AccountPayment(models.Model):
     @api.onchange('journal_id', 'payment_type')
     def onchange_show_other_journal(self):
         for rec in self:
-            res = (rec.journal_id.id == rec.company_id.\
-               due_fromto_payment_journal_id.id and \
-               rec.payment_type in ('outbound', 'inbound'))
+            res = (rec.journal_id.id == rec.company_id.
+                   due_fromto_payment_journal_id.id and
+                   rec.payment_type in ('outbound', 'inbound') and
+                   rec.partner_type == 'supplier')
             # If False, reset the other journal
             if not res:
                 rec.other_journal_id = False
