@@ -39,6 +39,7 @@ class TestAccountPayment(SavepointCase):
         cls.company_a.due_fromto_payment_journal_id = cls.env.ref(
             'account_payment_other_company.sales_journal_company_a'
         )
+        cls.company_a.due_fromto_payment_journal_id.update_posted = True
         cls.company_b.due_fromto_payment_journal_id = cls.env.ref(
             'account_payment_other_company.bank_journal_company_b'
         )
@@ -66,6 +67,7 @@ class TestAccountPayment(SavepointCase):
 
         cls.company_b_journal = cls.env.\
             ref('account_payment_other_company.bank_journal_company_b')
+        cls.company_b_journal.update_posted = True
 
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
 
@@ -88,7 +90,7 @@ class TestAccountPayment(SavepointCase):
             'payment_method_id': 1,
             'partner_type': 'supplier',
             'partner_id': self.env.ref('base.res_partner_1').id,
-            'hide_other_journal': False
+            'show_other_journal': False
         }
         payment = self.account_payment_obj.create(vals)
         payment.invoice_ids = [self.invoice_obj.id]
@@ -108,7 +110,7 @@ class TestAccountPayment(SavepointCase):
             'payment_method_id': 1,
             'partner_type': 'supplier',
             'partner_id': self.env.ref('base.res_partner_1').id,
-            'hide_other_journal': False
+            'show_other_journal': False
         }
         payment = self.account_payment_obj.create(vals)
         payment.invoice_ids = [self.invoice_obj.id]
