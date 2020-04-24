@@ -115,23 +115,27 @@ class TestAccountPayment(SavepointCase):
         payment = self.account_payment_obj.create(vals)
         payment.invoice_ids = [self.invoice_obj.id]
         payment.action_validate_invoice_payment()
+        ref = _("%s from %s" % (payment.name, payment.company_id.name))
         move = self.env['account.move'].sudo().\
-            search([('ref', '=', payment.id)])
+            search([('ref', '=', ref)])
 
         # Check Credit/Debit
-        self.assertEquals(move.line_ids[0].credit, 0.0)
+        self.assertEquals(move.line_ids[0].credit,
+                          self.invoice_obj.amount_total)
         self.assertEquals(move.line_ids[0].debit,
-                          self.invoice_obj.amount_total)
+                          0.0)
         self.assertEquals(move.line_ids[1].credit,
+                          0.0)
+        self.assertEquals(move.line_ids[1].debit,
                           self.invoice_obj.amount_total)
-        self.assertEquals(move.line_ids[1].debit, 0.0)
 
         # Check Accounts
         self.assertEquals(move.line_ids[0].account_id,
-                          payment.other_journal_id.default_debit_account_id)
+                          payment.other_journal_id.default_credit_account_id
+                          )
         self.assertEquals(move.line_ids[1].account_id,
-                          payment.other_journal_id.
-                          company_id.due_from_account_id)
+                          payment.other_journal_id.company_id.
+                          due_to_account_id)
 
         # Check Partners
         self.assertEquals(move.line_ids[0].partner_id, payment.partner_id)
