@@ -14,8 +14,10 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_payment_other_company
-#: model:ir.model.fields,field_description:account_payment_other_company.field_account_payment__hide_other_journal
-msgid "Hide Other Journal"
+#: code:addons/account_payment_other_company/models/account_payment.py:70
+#: code:addons/account_payment_other_company/tests/test_account_payment.py:118
+#, python-format
+msgid "%s from %s"
 msgstr ""
 
 #. module: account_payment_other_company
@@ -29,7 +31,12 @@ msgid "Journal Entries"
 msgstr ""
 
 #. module: account_payment_other_company
-#: code:addons/account_payment_other_company/tests/test_account_payment.py:75
+#: model:ir.model.fields,field_description:account_payment_other_company.field_account_payment__other_move_id
+msgid "Move in the other company"
+msgstr ""
+
+#. module: account_payment_other_company
+#: code:addons/account_payment_other_company/tests/test_account_payment.py:77
 #, python-format
 msgid "No Chart of Account Template has been defined !"
 msgstr ""
@@ -42,5 +49,10 @@ msgstr ""
 #. module: account_payment_other_company
 #: model:ir.model,name:account_payment_other_company.model_account_payment
 msgid "Payments"
+msgstr ""
+
+#. module: account_payment_other_company
+#: model:ir.model.fields,field_description:account_payment_other_company.field_account_payment__show_other_journal
+msgid "Show Other Journal"
 msgstr ""
 
