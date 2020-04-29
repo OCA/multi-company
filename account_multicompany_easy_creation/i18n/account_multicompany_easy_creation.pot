@@ -114,7 +114,7 @@ msgid "Default Sales Tax"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
-#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:208
+#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:211
 #, python-format
 msgid "Description not set in tax template: '%s'"
 msgstr ""
