@@ -61,24 +61,46 @@ class AccountPayment(models.Model):
     def _prepare_other_payment_values(self):
         other_journal = self.env['account.journal'].sudo().\
             browse(self.other_journal_id.id)
-        return {
-            'partner_id': self.partner_id.id,
-            'journal_id': self.other_journal_id.id,
-            'state': 'draft',
-            'company_id': other_journal.company_id.id,
-            'date': self.payment_date,
-            'ref': _("%s from %s" % (self.name, self.company_id.name)),
-            'line_ids': [(0, 0, {
-                'account_id': other_journal.company_id.
-                due_to_account_id.id,
-                'partner_id': self.company_id.partner_id.id,
-                'debit': self.amount,
-            }), (0, 0, {
-                'account_id': other_journal.default_credit_account_id.id,
+        # Flip debit/credit for inbound
+        if self.payment_type == 'inbound':
+            return {
                 'partner_id': self.partner_id.id,
-                'credit': self.amount,
-            })]
-        }
+                'journal_id': self.other_journal_id.id,
+                'state': 'draft',
+                'company_id': other_journal.company_id.id,
+                'date': self.payment_date,
+                'ref': _("%s from %s" % (self.name, self.company_id.name)),
+                'line_ids': [(0, 0, {
+                    'account_id': other_journal.company_id.
+                    due_to_account_id.id,
+                    'partner_id': self.company_id.partner_id.id,
+                    'credit': self.amount,
+                }), (0, 0, {
+                    'account_id': other_journal.default_credit_account_id.id,
+                    'partner_id': self.partner_id.id,
+                    'debit': self.amount,
+                })]
+            }
+        # Original Code
+        else:
+            return {
+                'partner_id': self.partner_id.id,
+                'journal_id': self.other_journal_id.id,
+                'state': 'draft',
+                'company_id': other_journal.company_id.id,
+                'date': self.payment_date,
+                'ref': _("%s from %s" % (self.name, self.company_id.name)),
+                'line_ids': [(0, 0, {
+                    'account_id': other_journal.company_id.
+                    due_to_account_id.id,
+                    'partner_id': self.company_id.partner_id.id,
+                    'debit': self.amount,
+                }), (0, 0, {
+                    'account_id': other_journal.default_credit_account_id.id,
+                    'partner_id': self.partner_id.id,
+                    'credit': self.amount,
+                })]
+            }
 
     @api.multi
     def post(self):
