@@ -5,7 +5,7 @@
 {
     "name": "Account Move Multi-Company",
     "summary": "Allow to transfer amount to other companies",
-    "version": "12.0.1.0.0",
+    "version": "12.0.1.0.1",
     "category": "Accounting & Finance",
     "author": "Open Source Integrators, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
