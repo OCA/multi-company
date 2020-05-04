@@ -14,7 +14,8 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: account_payment_other_company
-#: code:addons/account_payment_other_company/models/account_payment.py:70
+#: code:addons/account_payment_other_company/models/account_payment.py:72
+#: code:addons/account_payment_other_company/models/account_payment.py:92
 #: code:addons/account_payment_other_company/tests/test_account_payment.py:118
 #, python-format
 msgid "%s from %s"
