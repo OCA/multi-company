@@ -18,20 +18,19 @@ class ProductTemplate(models.Model):
         if not match_tax_ids:
             return isinstance(taxes_ids, list) and taxes_ids or []
         AccountTax = self.env["account.tax"]
-        for tax in AccountTax.browse(match_tax_ids):
-            taxes_ids.extend(
-                AccountTax.search(
-                    [("name", "=", tax.name), ("company_id", "=", company_id)]
-                ).ids
-            )
+        taxes = AccountTax.browse(match_tax_ids)
+        taxes_ids.extend(
+            AccountTax.search(
+                [("name", "in", taxes.mapped("name")), ("company_id", "=", company_id)]
+            ).ids
+        )
         return taxes_ids
 
-    @api.multi
     def set_multicompany_taxes(self):
         self.ensure_one()
         customer_tax_ids = self.taxes_id.ids
         supplier_tax_ids = self.supplier_taxes_id.ids
-        company_id = self.env.user.company_id.id
+        company_id = self.env.company.id
         obj = self.sudo()
         default_customer_tax_ids = obj.taxes_by_company("taxes_id", company_id)
         default_supplier_tax_ids = obj.taxes_by_company("supplier_taxes_id", company_id)
@@ -64,14 +63,6 @@ class ProductTemplate(models.Model):
 
     @api.model
     def create(self, vals):
-        res = super(ProductTemplate, self).create(vals)
+        res = super().create(vals)
         res.set_multicompany_taxes()
         return res
-
-
-class ProductProduct(models.Model):
-    _inherit = "product.product"
-
-    @api.multi
-    def set_multicompany_taxes(self):
-        self.product_tmpl_id.set_multicompany_taxes()
