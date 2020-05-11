@@ -1,5 +1,5 @@
 # Copyright 2018 ACSONE SA/NV
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
 from odoo.tests.common import TransactionCase
 
@@ -8,7 +8,7 @@ class TestMailMultiCompany(TransactionCase):
     def _create_message(self):
         return (
             self.env["mail.message"]
-            .sudo(self.user_demo)
+            .with_user(self.user_demo)
             .create(
                 {
                     "reply_to": "test.reply@example.com",
@@ -19,7 +19,7 @@ class TestMailMultiCompany(TransactionCase):
         )
 
     def setUp(self):
-        super(TestMailMultiCompany, self).setUp()
+        super().setUp()
         self.user_demo = self.env.ref("base.user_demo")
         company_obj = self.env["res.company"]
         server_obj = self.env["ir.mail_server"]
