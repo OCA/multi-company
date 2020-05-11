@@ -1,12 +1,12 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_multicompany_easy_creation
+# 	* account_multicompany_easy_creation
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 12.0\n"
+"Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: <>\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,7 +50,9 @@ msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_holder_name
-msgid "Account holder name, in case it is different than the name of the Account Holder"
+msgid ""
+"Account holder name, in case it is different than the name of the Account "
+"Holder"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
@@ -75,7 +77,8 @@ msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_type
-msgid "Bank account type: Normal or IBAN. Inferred from the bank account number."
+msgid ""
+"Bank account type: Normal or IBAN. Inferred from the bank account number."
 msgstr ""
 
 #. module: account_multicompany_easy_creation
@@ -166,7 +169,7 @@ msgid "Default Sales Tax"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
-#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:191
+#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:0
 #, python-format
 msgid "Description not set in tax template: '%s'"
 msgstr ""
@@ -194,17 +197,22 @@ msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
-msgid "Go over partner fiscal positions in actual company to match and set equivalent fiscal positions in the new company."
+msgid ""
+"Go over partner fiscal positions in actual company to match and set "
+"equivalent fiscal positions in the new company."
 msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
-msgid "Go over product taxes in actual company to match and set equivalent taxes in then new company."
+msgid ""
+"Go over product taxes in actual company to match and set equivalent taxes in"
+" then new company."
 msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
-msgid "Go over specific accounts in actual company to match and set equivalent taxes in the new company.\n"
+msgid ""
+"Go over specific accounts in actual company to match and set equivalent taxes in the new company.\n"
 "Applies to products, categories, partners, ..."
 msgstr ""
 
@@ -264,13 +272,15 @@ msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
-msgid "Set default purchase tax to all products.\n"
+msgid ""
+"Set default purchase tax to all products.\n"
 "If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
-msgid "Set default sales tax to all products.\n"
+msgid ""
+"Set default sales tax to all products.\n"
 "If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
 msgstr ""
 
@@ -296,7 +306,8 @@ msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
-msgid "Smart search to set specific accounts in products, categories, partners, ..."
+msgid ""
+"Smart search to set specific accounts in products, categories, partners, ..."
 msgstr ""
 
 #. module: account_multicompany_easy_creation
@@ -370,17 +381,16 @@ msgid "Wizard"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
-#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
-msgid "Wizard Account Multi-company Easy Creation"
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
+msgid "Wizard Account Multi-company Bank"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
-#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
-msgid "account.multicompany.bank.wiz"
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
+msgid "Wizard Account Multi-company Easy Creation"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "or"
 msgstr ""
-
