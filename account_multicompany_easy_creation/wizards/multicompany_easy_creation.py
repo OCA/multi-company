@@ -1,4 +1,4 @@
-# Copyright 2018 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
+# Copyright 2018 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, fields, models
@@ -12,9 +12,15 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     _description = "Wizard Account Multi-company Easy Creation"
 
     def _default_sequence_ids(self):
+        # this is a "trick" for avoiding glue modules
         exclude_seq_list = self.env["ir.config_parameter"].get_param(
             "account_multicompany_easy_creation.exclude_sequence_list",
-            [False, "aeat.sequence.type"],
+            [
+                False,
+                "aeat.sequence.type",
+                "pos.config.simplified_invoice",
+                "stock.scrap",
+            ],
         )
         if not isinstance(exclude_seq_list, list):
             exclude_seq_list = safe_eval(exclude_seq_list)
@@ -108,15 +114,9 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         string="Default Category Expense Account",
     )
 
-    def install_chart_account(self):
-        """ install a chart of accounts for the given company """
-        user_company = self.env.user.company_id
-        self.env.user.company_id = self.new_company_id
-        self.sudo().chart_template_id.try_loading_for_current_company()
-        self.env.user.company_id = user_company
-
     def create_bank_journals(self):
         AccountJournal = self.env["account.journal"].sudo()
+        AccountAccount = self.env["account.account"].sudo()
         bank_journals = AccountJournal.search(
             [("type", "=", "bank"), ("company_id", "=", self.new_company_id.id)]
         )
@@ -129,12 +129,22 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             if i < len(bank_journals):
                 bank_journals[i].update(vals)
             else:
+                account_account = AccountAccount.create(
+                    {
+                        "code": "57200X",
+                        "name": vals["name"],
+                        "user_type_id": self.env.ref(
+                            "account.data_account_type_liquidity"
+                        ).id,
+                        "company_id": vals["company_id"],
+                    }
+                )
                 vals.update(
                     {
                         "code": False,
                         "sequence_id": False,
-                        "default_debit_account_id": False,
-                        "default_credit_account_id": False,
+                        "default_debit_account_id": account_account.id,
+                        "default_credit_account_id": account_account.id,
                     }
                 )
                 AccountJournal.create(vals)
@@ -147,11 +157,14 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.new_company_id = self.env["res.company"].create(
             {"name": self.name, "user_ids": [(6, 0, self.user_ids.ids)]}
         )
-        self.install_chart_account()
+        self.new_company_id = self.env["res.company"].create(
+            {"name": self.name, "user_ids": [(6, 0, self.user_ids.ids)]}
+        )
+        self.new_company_id.chart_template_id = self.chart_template_id
+        self.new_company_id.chart_template_id.try_loading_for_current_company()
         self.create_bank_journals()
         self.create_sequences()
 
-    # TODO: Cache don't work
     @ormcache("self.id", "company_id", "match_tax_ids")
     def taxes_by_company(self, company_id, match_tax_ids):
         AccountTax = self.env["account.tax"].sudo()
@@ -363,6 +376,7 @@ class AccountMulticompanyBankWiz(models.TransientModel):
     _inherit = "res.partner.bank"
     _name = "account.multicompany.bank.wiz"
     _order = "id"
+    _description = "Wizard Account Multi-company Bank"
 
     wizard_id = fields.Many2one(comodel_name="account.multicompany.easy.creation.wiz",)
     partner_id = fields.Many2one(required=False,)

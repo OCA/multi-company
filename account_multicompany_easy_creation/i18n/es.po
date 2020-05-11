@@ -430,6 +430,3 @@ msgstr "'account.multicompany.bank.wiz'"
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "or"
 msgstr "o"
-
-#~ msgid "Number of digits in an account code"
-#~ msgstr "Número de dígitos en un código de cuenta"
