@@ -1,12 +1,12 @@
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 {
     "name": "Email Gateway Multi company",
-    "version": "10.0.0.1.0",
-    "author": "Comunitea, Odoo Community Association (OCA)",
+    "version": "13.0.0.1.0",
+    "category": "Extra Tools",
+    "author": "Odoo Community Association (OCA), " "Comunitea",
+    "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
     "depends": ["mail"],
-    "category": "Extra Tools",
-    "website": "https://github.com/OCA/server-tools",
     "data": ["security/mail_security.xml", "views/ir_mail_server_view.xml"],
     "installable": True,
 }
