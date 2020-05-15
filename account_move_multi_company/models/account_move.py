@@ -20,11 +20,13 @@ class AccountMove(models.Model):
                     company_id = line.transfer_to_company_id.id
                     # Add the lines for the current company journal entry
                     transfer_lines.append((0, 0, {
+                        'name': line.name,
                         'account_id': line.account_id.id,
                         'partner_id': line.partner_id.id,
                         'debit': line.credit,
                         'credit': line.debit}))
                     transfer_lines.append((0, 0, {
+                        'name': line.name
                         'account_id':
                             self.env.user.company_id.due_from_account_id.id,
                         'partner_id':
@@ -50,6 +52,7 @@ class AccountMove(models.Model):
                                 due_fromto_payment_journal_id.id,
                             'company_id': company_id,
                             'line_ids': [(0, 0, {
+                                'name': name,
                                 'account_id':
                                     line.transfer_to_company_id.
                                     due_to_account_id.id,
@@ -57,6 +60,7 @@ class AccountMove(models.Model):
                                 'debit': line.credit,
                                 'credit': line.debit
                             }), (0, 0, {
+                                'name': name,
                                 'account_id': account_id,
                                 'partner_id': line.partner_id.id,
                                 'debit': line.debit,
