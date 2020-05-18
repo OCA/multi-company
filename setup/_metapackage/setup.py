@@ -15,6 +15,7 @@ setuptools.setup(
         'odoo12-addon-account_multicompany_easy_creation',
         'odoo12-addon-account_payment_other_company',
         'odoo12-addon-base_multi_company',
+        'odoo12-addon-calendar_event_multi_company',
         'odoo12-addon-calendar_event_type_multi_company',
         'odoo12-addon-company_dependent_attribute',
         'odoo12-addon-crm_lead_tag_multi_company',
