@@ -231,8 +231,9 @@ class AccountInvoice(models.Model):
             'company_id': dest_company.id,
             'invoice_id': dest_invoice.id,
         }
-        dest_line_data = self.env['account.invoice.line'].play_onchanges(
-            dest_line_data, ['product_id'])
+        dest_line_data_changed = self.env['account.invoice.line'] \
+            .play_onchanges(dest_line_data, ['product_id'])
+        dest_line_data.update(dest_line_data_changed)
         account_id = dest_line_data.get('account_id', False)
         if account_id:
             account = self.env['account.account'].browse(account_id)
