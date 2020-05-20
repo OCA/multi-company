@@ -45,7 +45,8 @@ class AccountInvoice(models.Model):
                                 'account_id':
                                     inv.company_id.due_from_account_id.id,
                                 'partner_id':
-                                    distrib.company_id.partner_id.id})
+                                    distrib.company_id.partner_id.id,
+                                'inv_line': invoice_line_id.id})
                             # Credit line for the current company
                             from_lines.append({
                                 'name': invoice_line_id.name,
@@ -53,15 +54,16 @@ class AccountInvoice(models.Model):
                                 'account_id':
                                     invoice_line_id.account_id.id,
                                 'partner_id':
-                                    inv.company_id.partner_id.id})
+                                    inv.company_id.partner_id.id,
+                                'inv_line': invoice_line_id.id})
 
-                    # Create Journal Entry in the current company
-                    if from_lines:
-                        from_move = account_move.sudo().create(from_move_value)
-                        for line in from_lines:
-                            line.update({'move_id': from_move.id})
-                        self.env['account.move.line'].create(from_lines)
-                        from_move.post()
+                # Create Journal Entry in the current company
+                if from_lines:
+                    from_move = account_move.sudo().create(from_move_value)
+                    for line in from_lines:
+                        line.update({'move_id': from_move.id})
+                    self.env['account.move.line'].create(from_lines)
+                    from_move.post()
 
                     # Due To's
                     for company in companies:
@@ -87,7 +89,9 @@ class AccountInvoice(models.Model):
                                         'partner_id': inv.
                                         company_id.partner_id.id
                                     })
-                                    line_account = invoice_line_id.account_id
+                                    line_account = self.\
+                                        env['account.invoice.line'].\
+                                            browse(line['inv_line']).account_id
                                     # Debit Account of invoice line
                                     new_account = self.\
                                         env['account.account'].\
@@ -98,9 +102,9 @@ class AccountInvoice(models.Model):
                                     if not new_account:
                                         raise UserError(_("No corresponding \
                                                           Account for code %s\
-                                                           in Company %s") %
+                                                          in Company %s") %
                                                         (line_account.code,
-                                                         company.name))
+                                                            company.name))
                                     to_lines.append({
                                         'name': line['name'],
                                         'debit': line['debit'],
@@ -122,3 +126,21 @@ class AccountInvoice(models.Model):
                                     create(to_lines)
                                 to_move.post()
         return res
+
+    @api.multi
+    def action_invoice_cancel(self):
+        for inv in self:
+            moves = self.env['account.move']
+            if inv.move_id:
+                moves += inv.move_id
+            moves = self.env['account.move'].sudo().\
+                search(['|', ('ref', 'ilike', inv.number),
+                       ('name', 'ilike', inv.number)])
+            for move_id in moves:
+                for line_id in move_id.line_ids:
+                    line_id.remove_move_reconcile()
+        self.write({'state': 'cancel', 'move_id': False})
+        if moves:
+            moves.button_cancel()
+            moves.unlink()
+        return super().action_invoice_cancel()
