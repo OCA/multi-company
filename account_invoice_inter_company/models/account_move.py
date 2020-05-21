@@ -2,6 +2,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tests.common import Form
 from odoo.tools import float_compare
 
 
@@ -167,35 +168,28 @@ class AccountMove(models.Model):
                 _('Please define %s journal for this company: "%s" (id:%d).')
                 % (dest_journal_type, dest_company.name, dest_company.id)
             )
-        # find account, payment term, fiscal position, bank.
-        dest_partner_data = {
-            "type": dest_inv_type,
-            "partner_id": self.company_id.partner_id.id,
-            "company_id": dest_company.id,
-        }
-        dest_partner_data = self.env["account.move"].play_onchanges(
-            dest_partner_data, ["partner_id"]
+        # Use test.Form() class to trigger propper onchanges on the invoice
+        dest_invoice_data = Form(
+            self.env["account.move"].with_context(
+                default_type=dest_inv_type, force_company=dest_company.id
+            )
         )
-        return {
-            "invoice_origin": _("%s - Invoice: %s") % (self.company_id.name, self.name),
-            "type": dest_inv_type,
-            "invoice_date": self.invoice_date,
-            "ref": self.name,
-            "partner_id": self.company_id.partner_id.id,
-            "journal_id": dest_journal.id,
-            "currency_id": self.currency_id.id,
-            "fiscal_position_id": dest_partner_data.get("fiscal_position_id", False),
-            "invoice_payment_term_id": dest_partner_data.get(
-                "invoice_payment_term_id", False
-            ),
-            "company_id": dest_company.id,
-            "invoice_partner_bank_id": dest_partner_data.get(
-                "invoice_partner_bank_id", False
-            ),
-            "auto_generated": True,
-            "auto_invoice_id": self.id,
-            "narration": self.narration,
-        }
+        dest_invoice_data.journal_id = dest_journal
+        dest_invoice_data.partner_id = self.company_id.partner_id
+        dest_invoice_data.ref = self.name
+        dest_invoice_data.invoice_date = self.invoice_date
+        dest_invoice_data.narration = self.narration
+        dest_invoice_data.currency_id = self.currency_id
+        vals = dest_invoice_data._values_to_save(all_fields=True)
+        vals.update(
+            {
+                "invoice_origin": _("%s - Invoice: %s")
+                % (self.company_id.name, self.name),
+                "auto_invoice_id": self.id,
+                "auto_generated": True,
+            }
+        )
+        return vals
 
     def button_cancel(self):
         for invoice in self:
@@ -236,68 +230,32 @@ class AccountMoveLine(models.Model):
             :rtype dest_company : res.company record
         """
         self.ensure_one()
-        src_company_partner = self.move_id.company_id.partner_id
-        # get account move line data from product onchange
-        dest_line_data = {
-            "name": "",
-            "move_id": dest_move.id,
-            "product_id": self.product_id.id,
-            "product_uom_id": self.product_id.uom_id.id,
-            "quantity": self.quantity,
-            "partner_id": src_company_partner.id,
-            "company_id": dest_company.id,
-        }
-        dest_line_data = self.env["account.move.line"].play_onchanges(
-            dest_line_data, ["product_id"]
+        # Use test.Form() class to trigger propper onchanges on the line
+        product = (
+            dest_company.company_share_product
+            and self.product_id
+            or self.env["product.product"]
         )
-        account_id = dest_line_data.get("account_id", False)
-        if account_id:
-            account = self.env["account.account"].browse(account_id)
-        else:
-            account = self.env["account.account"].search(
-                [
-                    (
-                        "user_type_id",
-                        "=",
-                        self.env.ref("account.data_account_type_revenue").id,
-                    ),
-                    ("company_id", "=", dest_company.id),
-                ],
-                limit=1,
-            )
-            if not account:
-                raise UserError(
-                    _('Please define %s account for this company: "%s" (id:%d).')
-                    % (
-                        self.env.ref("account.data_account_type_revenue").name,
-                        dest_company.name,
-                        dest_company.id,
-                    )
-                )
-        tax_ids = dest_line_data.get("tax_ids", False)
-        product_id = False
-        if dest_company.company_share_product:
-            product_id = self.product_id.id
-        vals = {
-            "name": self.name,
-            "move_id": dest_line_data.get("move_id", False),
+        dest_form = Form(
+            dest_move.with_context(force_company=dest_company.id),
+            "account_invoice_inter_company.view_move_form",
+        )
+        with dest_form.invoice_line_ids.new() as line_form:
+            # HACK: Related fields manually set due to Form() limitations
+            line_form.company_id = dest_move.company_id
+            # Regular fields
+            line_form.display_type = self.display_type
+            line_form.product_id = product
+            line_form.name = self.name
+            if line_form.product_uom_id != self.product_uom_id:
+                line_form.product_uom_id = self.product_uom_id
+            line_form.quantity = self.quantity
             # TODO: it's wrong to just copy the price_unit
             # You have to check if the tax is price_include True or False
             # in source and target companies
-            "price_unit": self.price_unit,
-            "quantity": self.quantity,
-            "discount": self.discount,
-            "product_id": product_id,
-            "sequence": self.sequence,
-            "tax_ids": tax_ids or [],
-            # Analytic accounts are per company
-            # The problem is that we can't really "guess" the
-            # analytic account to set. It probably needs to be
-            # set via an inherit of this method in a custom module
-            "analytic_account_id": dest_line_data.get("analytic_account_id", False),
-            "account_id": account.id or False,
-            "auto_invoice_line_id": self.id,
-            "partner_id": src_company_partner.id,
-            "company_id": dest_company.id,
-        }
+            line_form.price_unit = self.price_unit
+            line_form.discount = self.discount
+            line_form.sequence = self.sequence
+        vals = dest_form._values_to_save(all_fields=True)["invoice_line_ids"][0][2]
+        vals.update({"move_id": dest_move.id, "auto_invoice_line_id": self.id})
         return vals
