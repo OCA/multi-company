@@ -8,10 +8,10 @@ from odoo.modules.module import get_resource_path
 from odoo.tools import convert_file
 
 
-class TestAccountInvoiceInterCompany(SavepointCase):
+class TestAccountInvoiceInterCompanyBase(SavepointCase):
     @classmethod
     def setUpClass(cls):
-        super(TestAccountInvoiceInterCompany, cls).setUpClass()
+        super().setUpClass()
         module = "account_invoice_inter_company"
         convert_file(
             cls.cr, module,
@@ -26,13 +26,15 @@ class TestAccountInvoiceInterCompany(SavepointCase):
             'account_invoice_inter_company.user_company_a')
         cls.user_company_b = cls.env.ref(
             'account_invoice_inter_company.user_company_b')
-
+        cls.product_a = cls.invoice_company_a.invoice_line_ids.product_id
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !"))
 
+
+class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompany):
     def test01_user(self):
         # Check user of company B (company of destination)
         # with which we check the intercompany product
@@ -52,6 +54,10 @@ class TestAccountInvoiceInterCompany(SavepointCase):
     def test03_confirm_invoice(self):
         # ensure the catalog is shared
         self.env.ref('product.product_comp_rule').write({'active': False})
+        # Make sure there are no taxes in target company for the used product
+        self.product_a.with_context(
+            force_company=self.user_company_b.id
+        ).supplier_taxes_id = False
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(
             self.user_company_a.id).action_invoice_open()

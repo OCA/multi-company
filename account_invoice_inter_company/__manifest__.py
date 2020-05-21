@@ -12,9 +12,9 @@
     'license': 'AGPL-3',
     'depends': [
         'account',
-        'onchange_helper',
     ],
     'data': [
+        'views/account_invoice_views.xml',
         'views/res_config_settings_view.xml',
     ],
     'installable': True,
