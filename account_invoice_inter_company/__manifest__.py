@@ -10,7 +10,7 @@
     "website": "https://github.com/OCA/multi-company",
     "author": "Odoo SA, Akretion, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "depends": ["account", "onchange_helper"],
-    "data": ["views/res_config_settings_view.xml"],
+    "depends": ["account"],
+    "data": ["views/account_move_views.xml", "views/res_config_settings_view.xml"],
     "installable": True,
 }
