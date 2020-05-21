@@ -8,10 +8,10 @@ from odoo.tests.common import SavepointCase
 from odoo.tools import convert_file
 
 
-class TestAccountInvoiceInterCompany(SavepointCase):
+class TestAccountInvoiceInterCompanyBase(SavepointCase):
     @classmethod
     def setUpClass(cls):
-        super(TestAccountInvoiceInterCompany, cls).setUpClass()
+        super().setUpClass()
         module = "account_invoice_inter_company"
         convert_file(
             cls.cr,
@@ -30,7 +30,15 @@ class TestAccountInvoiceInterCompany(SavepointCase):
         )
         cls.user_company_a = cls.env.ref("account_invoice_inter_company.user_company_a")
         cls.user_company_b = cls.env.ref("account_invoice_inter_company.user_company_b")
-
+        cls.company_a = cls.env.ref("account_invoice_inter_company.company_a")
+        cls.company_b = cls.env.ref("account_invoice_inter_company.company_b")
+        cls.company_a.invoice_auto_validation = True
+        cls.product_a = cls.invoice_company_a.invoice_line_ids.product_id
+        cls.product_a.with_context(
+            force_company=cls.company_b.id
+        ).property_account_expense_id = cls.env.ref(
+            "account_invoice_inter_company.a_expense_company_b"
+        ).id
         cls.chart = cls.env["account.chart.template"].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
@@ -38,6 +46,8 @@ class TestAccountInvoiceInterCompany(SavepointCase):
                 _("No Chart of Account Template has been defined !")
             )
 
+
+class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
     def test01_user(self):
         # Check user of company B (company of destination)
         # with which we check the intercompany product
@@ -55,9 +65,13 @@ class TestAccountInvoiceInterCompany(SavepointCase):
         for line in self.invoice_company_a.invoice_line_ids:
             self.assertFalse(line.product_id.company_id)
 
-    def test03_confirm_invoice(self):
+    def test03_confirm_invoice_and_cancel(self):
         # ensure the catalog is shared
         self.env.ref("product.product_comp_rule").write({"active": False})
+        # Make sure there are no taxes in target company for the used product
+        self.product_a.with_context(
+            force_company=self.user_company_b.id
+        ).supplier_taxes_id = False
         # Confirm the invoice of company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
@@ -66,10 +80,7 @@ class TestAccountInvoiceInterCompany(SavepointCase):
         )
         self.assertNotEquals(invoices, False)
         self.assertEquals(len(invoices), 1)
-        if invoices.company_id.invoice_auto_validation:
-            self.assertEquals(invoices[0].state, "posted")
-        else:
-            self.assertEquals(invoices[0].state, "draft")
+        self.assertEquals(invoices[0].state, "posted")
         self.assertEquals(
             invoices[0].partner_id, self.invoice_company_a.company_id.partner_id
         )
@@ -84,22 +95,11 @@ class TestAccountInvoiceInterCompany(SavepointCase):
             invoices[0].invoice_line_ids[0].product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
-
-    def test04_cancel_invoice(self):
-        # Confirm the invoice of company A
-        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
-        # Check state of invoices before to cancel invoice of company A
-        self.assertEquals(self.invoice_company_a.state, "posted")
-        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
-            [("auto_invoice_id", "=", self.invoice_company_a.id)]
-        )
-        self.assertNotEquals(invoices[0].state, "cancel")
         # Cancel the invoice of company A
         invoice_origin = ("%s - Canceled Invoice: %s") % (
             self.invoice_company_a.company_id.name,
             self.invoice_company_a.name,
         )
-        self.invoice_company_a.with_user(self.user_company_a.id).button_draft()
         self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()
         # Check invoices after to cancel invoice of company A
         self.assertEquals(self.invoice_company_a.state, "cancel")

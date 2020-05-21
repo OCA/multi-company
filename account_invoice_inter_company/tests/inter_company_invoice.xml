@@ -403,6 +403,7 @@
             (0, 0, {
                 'product_id': ref('product_consultant_multi_company'),
                 'price_unit': 450.0, 'quantity': 1,
+                'product_uom_id': ref('uom.product_uom_hour'),
                 'name': 'Service Multi Company',
                 'company_id': ref('company_a'),
             }),
