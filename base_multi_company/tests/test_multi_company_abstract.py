@@ -97,6 +97,13 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.record.company_id = self.company_2
         self.assertIn(self.company_2.id, self.record.company_ids.ids)
 
+    def test_inverse_company_id_remove(self):
+        """ It should clear company_ids when company_id is cleared. """
+        self.record.company_id = self.company_2
+        self.assertIn(self.company_2.id, self.record.company_ids.ids)
+        self.record.company_id = False
+        self.assertFalse(self.record.company_ids)
+
     def test_search_company_id(self):
         """ It should return correct record by searching company_id. """
         self.add_company(self.company_2)
