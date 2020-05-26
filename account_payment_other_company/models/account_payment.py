@@ -30,6 +30,7 @@ class AccountPayment(models.Model):
     def create_move_other_company(self):
         res = {}
         for rec in self:
+            rec.onchange_show_other_journal()
             if rec.other_journal_id:
                 other_company = rec.sudo().other_journal_id.company_id
                 # Update the existing move
