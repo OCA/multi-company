@@ -258,4 +258,9 @@ class AccountMoveLine(models.Model):
             line_form.sequence = self.sequence
         vals = dest_form._values_to_save(all_fields=True)["invoice_line_ids"][0][2]
         vals.update({"move_id": dest_move.id, "auto_invoice_line_id": self.id})
+        if self.analytic_account_id and not self.analytic_account_id.company_id:
+            vals["analytic_account_id"] = self.analytic_account_id.id
+            analytic_tags = self.analytic_tag_ids.filtered(lambda x: not x.company_id)
+            if analytic_tags:
+                vals["analytic_tag_ids"] = [(4, x) for x in analytic_tags.ids]
         return vals
