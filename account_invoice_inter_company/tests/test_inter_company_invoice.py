@@ -26,7 +26,8 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             'account_invoice_inter_company.user_company_a')
         cls.user_company_b = cls.env.ref(
             'account_invoice_inter_company.user_company_b')
-        cls.product_a = cls.invoice_company_a.invoice_line_ids.product_id
+        cls.invoice_line_a = cls.invoice_company_a.invoice_line_ids[0]
+        cls.product_a = cls.invoice_line_a.product_id
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
@@ -34,7 +35,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 _("No Chart of Account Template has been defined !"))
 
 
-class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompany):
+class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
     def test01_user(self):
         # Check user of company B (company of destination)
         # with which we check the intercompany product
@@ -58,6 +59,20 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompany):
         self.product_a.with_context(
             force_company=self.user_company_b.id
         ).supplier_taxes_id = False
+        # Put some analytic data for checking its propagation
+        analytic_account = self.env['account.analytic.account'].create({
+            'name': 'Test analytic account',
+            'company_id': False,
+        })
+        analytic_tag = self.env['account.analytic.tag'].create({
+            'name': 'Test analytic tag',
+            'company_id': False,
+        })
+        self.invoice_line_a.account_analytic_id = analytic_account.id
+        self.invoice_line_a.analytic_tag_ids = [(4, analytic_tag.id)]
+        # Give user A permission to analytic
+        self.user_company_a.groups_id = [
+            (4, self.env.ref('analytic.group_analytic_accounting').id)]
         # Confirm the invoice of company A
         self.invoice_company_a.sudo(
             self.user_company_a.id).action_invoice_open()
@@ -77,9 +92,15 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompany):
                           self.invoice_company_a.partner_id)
         self.assertEquals(len(invoices[0].invoice_line_ids),
                           len(self.invoice_company_a.invoice_line_ids))
+        invoice_line = invoices[0].invoice_line_ids[0]
         self.assertEquals(
-            invoices[0].invoice_line_ids[0].product_id,
-            self.invoice_company_a.invoice_line_ids[0].product_id)
+            invoice_line.product_id, self.invoice_line_a.product_id)
+        self.assertEquals(
+            invoice_line.account_analytic_id,
+            self.invoice_line_a.account_analytic_id)
+        self.assertEquals(
+            invoice_line.analytic_tag_ids,
+            self.invoice_line_a.analytic_tag_ids)
 
     def test04_cancel_invoice(self):
         # Confirm the invoice of company A

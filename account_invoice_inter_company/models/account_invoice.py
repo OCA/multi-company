@@ -252,4 +252,11 @@ class AccountInvoiceLine(models.Model):
             'auto_invoice_line_id': self.id,
             'invoice_id': dest_invoice.id,
         })
+        if (self.account_analytic_id and
+                not self.account_analytic_id.company_id):
+            vals["account_analytic_id"] = self.account_analytic_id.id
+            analytic_tags = self.analytic_tag_ids.filtered(
+                lambda x: not x.company_id)
+            if analytic_tags:
+                vals["analytic_tag_ids"] = [(4, x) for x in analytic_tags.ids]
         return vals
