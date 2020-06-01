@@ -1,4 +1,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# Copyright 2015-2017 Chafique Delli <chafique.delli@akretion.com>
+# Copyright 2020 Tecnativa - David Vidal
+# Copyright 2020 Tecnativa - Pedro M. Baeza
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
@@ -85,6 +88,7 @@ class AccountInvoice(models.Model):
             dest_invoice_data['move_name'] = force_number
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
+        dest_inv_line_data = []
         for src_line in self.invoice_line_ids:
             if dest_company.company_share_product and \
                     not src_line.product_id:
@@ -92,9 +96,9 @@ class AccountInvoice(models.Model):
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
                     "inter-company invoices.") % src_line.name)
-            dest_inv_line_data = src_line._prepare_invoice_line_data(
-                dest_invoice, dest_company)
-            self.env['account.invoice.line'].create(dest_inv_line_data)
+            dest_inv_line_data.append(src_line._prepare_invoice_line_data(
+                dest_invoice, dest_company))
+        self.env['account.invoice.line'].create(dest_inv_line_data)
         # add tax_line_ids in created invoice
         dest_invoice_line_ids = dest_invoice.invoice_line_ids
         if (any(

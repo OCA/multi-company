@@ -1,4 +1,6 @@
 # Copyright 2015-2017 Chafique Delli <chafique.delli@akretion.com>
+# Copyright 2020 Tecnativa - David Vidal
+# Copyright 2020 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _
@@ -18,16 +20,22 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             get_resource_path(module, "tests", "inter_company_invoice.xml"),
             None, 'init', False, 'test', cls.registry._assertion_report,
         )
+        cls.module = __name__.split('addons.')[1].split('.')[0]
         cls.account_obj = cls.env['account.account']
         cls.invoice_obj = cls.env['account.invoice']
         cls.invoice_company_a = cls.env.ref(
-            'account_invoice_inter_company.customer_invoice_company_a')
-        cls.user_company_a = cls.env.ref(
-            'account_invoice_inter_company.user_company_a')
-        cls.user_company_b = cls.env.ref(
-            'account_invoice_inter_company.user_company_b')
+            cls.module + '.customer_invoice_company_a')
+        cls.user_company_a = cls.env.ref(cls.module + '.user_company_a')
+        cls.user_company_b = cls.env.ref(cls.module + '.user_company_b')
         cls.invoice_line_a = cls.invoice_company_a.invoice_line_ids[0]
         cls.product_a = cls.invoice_line_a.product_id
+        cls.invoice_line_b = cls.env["account.invoice.line"].create({
+            "invoice_id": cls.invoice_company_a.id,
+            "product_id": cls.product_a.id,
+            "name": "Test second line",
+            "account_id": cls.env.ref(cls.module + ".a_sale_company_a").id,
+            "price_unit": 20,
+        })
         cls.chart = cls.env['account.chart.template'].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
