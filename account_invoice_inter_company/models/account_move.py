@@ -91,6 +91,7 @@ class AccountMove(models.Model):
             dest_invoice_data["name"] = force_number
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
+        dest_move_line_data = []
         for src_line in self.invoice_line_ids:
             if dest_company.company_share_product and not src_line.product_id:
                 raise UserError(
@@ -101,9 +102,10 @@ class AccountMove(models.Model):
                     )
                     % src_line.name
                 )
-            self.env["account.move.line"].create(
+            dest_move_line_data.append(
                 src_line._prepare_account_move_line(dest_invoice, dest_company)
             )
+        self.env["account.move.line"].create(dest_move_line_data)
         dest_invoice._move_autocomplete_invoice_lines_values()
         # Validation of account invoice
         precision = self.env["decimal.precision"].precision_get("Account")

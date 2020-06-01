@@ -1,4 +1,6 @@
 # Copyright 2015-2017 Chafique Delli <chafique.delli@akretion.com>
+# Copyright 2020 Tecnativa - David Vidal
+# Copyright 2020 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _
@@ -12,11 +14,11 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        module = "account_invoice_inter_company"
+        cls.module = __name__.split("addons.")[1].split(".")[0]
         convert_file(
             cls.cr,
-            module,
-            get_resource_path(module, "tests", "inter_company_invoice.xml"),
+            cls.module,
+            get_resource_path(cls.module, "tests", "inter_company_invoice.xml"),
             None,
             "init",
             False,
@@ -25,11 +27,9 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
         cls.account_obj = cls.env["account.account"]
         cls.account_move_obj = cls.env["account.move"]
-        cls.invoice_company_a = cls.env.ref(
-            "account_invoice_inter_company.customer_invoice_company_a"
-        )
-        cls.user_company_a = cls.env.ref("account_invoice_inter_company.user_company_a")
-        cls.user_company_b = cls.env.ref("account_invoice_inter_company.user_company_b")
+        cls.invoice_company_a = cls.env.ref(cls.module + ".customer_invoice_company_a")
+        cls.user_company_a = cls.env.ref(cls.module + ".user_company_a")
+        cls.user_company_b = cls.env.ref(cls.module + ".user_company_b")
         cls.company_a = cls.env.ref("account_invoice_inter_company.company_a")
         cls.company_b = cls.env.ref("account_invoice_inter_company.company_b")
         cls.company_a.invoice_auto_validation = True
@@ -40,6 +40,15 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         ).property_account_expense_id = cls.env.ref(
             "account_invoice_inter_company.a_expense_company_b"
         ).id
+        cls.invoice_line_b = cls.env["account.move.line"].create(
+            {
+                "move_id": cls.invoice_company_a.id,
+                "product_id": cls.product_a.id,
+                "name": "Test second line",
+                "account_id": cls.env.ref(cls.module + ".a_sale_company_a").id,
+                "price_unit": 20,
+            }
+        )
         cls.chart = cls.env["account.chart.template"].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
