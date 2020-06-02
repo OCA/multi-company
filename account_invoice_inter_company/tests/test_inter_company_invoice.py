@@ -82,8 +82,9 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.user_company_a.groups_id = [
             (4, self.env.ref('analytic.group_analytic_accounting').id)]
         # Confirm the invoice of company A
-        self.invoice_company_a.sudo(
-            self.user_company_a.id).action_invoice_open()
+        self.invoice_company_a.with_context(
+            test_account_invoice_inter_company=True,
+        ).sudo(self.user_company_a.id).action_invoice_open()
         # Check destination invoice created in company B
         invoices = self.invoice_obj.sudo(self.user_company_b.id).search([
             ('auto_invoice_id', '=', self.invoice_company_a.id)
@@ -112,8 +113,9 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test04_cancel_invoice(self):
         # Confirm the invoice of company A
-        self.invoice_company_a.sudo(
-            self.user_company_a.id).action_invoice_open()
+        self.invoice_company_a.with_context(
+            test_account_invoice_inter_company=True,
+        ).sudo(self.user_company_a.id).action_invoice_open()
         # Check state of invoices before to cancel invoice of company A
         self.assertEquals(self.invoice_company_a.state, 'open')
         invoices = self.invoice_obj.sudo(self.user_company_b.id).search([

@@ -5,7 +5,7 @@
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
-from odoo.tools import float_compare
+from odoo.tools import config, float_compare
 from odoo.tests.common import Form
 
 
@@ -34,6 +34,10 @@ class AccountInvoice(models.Model):
     def action_invoice_open(self):
         """ Validated invoice generate cross invoice base on company rules """
         res = super(AccountInvoice, self).action_invoice_open()
+        # Don't generate inter-company invoices when testing unrelated modules
+        if (config["test_enable"] and not
+                self.env.context.get("test_account_invoice_inter_company")):
+            return
         for src_invoice in self:
             # do not consider invoices that have already been auto-generated,
             # nor the invoices that were already validated in the past
