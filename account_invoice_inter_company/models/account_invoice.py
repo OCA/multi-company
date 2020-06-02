@@ -1,8 +1,12 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+# Copyright 2015-2017 Chafique Delli <chafique.delli@akretion.com>
+# Copyright 2020 Tecnativa - David Vidal
+# Copyright 2020 Tecnativa - Pedro M. Baeza
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
-from odoo.tools import float_compare
+from odoo.tools import config, float_compare
+from odoo.tests.common import Form
 
 
 class AccountInvoice(models.Model):
@@ -30,6 +34,10 @@ class AccountInvoice(models.Model):
     def action_invoice_open(self):
         """ Validated invoice generate cross invoice base on company rules """
         res = super(AccountInvoice, self).action_invoice_open()
+        # Don't generate inter-company invoices when testing unrelated modules
+        if (config["test_enable"] and not
+                self.env.context.get("test_account_invoice_inter_company")):
+            return
         for src_invoice in self:
             # do not consider invoices that have already been auto-generated,
             # nor the invoices that were already validated in the past
@@ -84,6 +92,7 @@ class AccountInvoice(models.Model):
             dest_invoice_data['move_name'] = force_number
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
+        dest_inv_line_data = []
         for src_line in self.invoice_line_ids:
             if dest_company.company_share_product and \
                     not src_line.product_id:
@@ -91,9 +100,9 @@ class AccountInvoice(models.Model):
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
                     "inter-company invoices.") % src_line.name)
-            dest_inv_line_data = src_line._prepare_invoice_line_data(
-                dest_invoice, dest_company)
-            self.env['account.invoice.line'].create(dest_inv_line_data)
+            dest_inv_line_data.append(src_line._prepare_invoice_line_data(
+                dest_invoice, dest_company))
+        self.env['account.invoice.line'].create(dest_inv_line_data)
         # add tax_line_ids in created invoice
         dest_invoice_line_ids = dest_invoice.invoice_line_ids
         if (any(
@@ -161,36 +170,29 @@ class AccountInvoice(models.Model):
             raise UserError(_(
                 'Please define %s journal for this company: "%s" (id:%d).')
                 % (dest_journal_type, dest_company.name, dest_company.id))
-        # find account, payment term, fiscal position, bank.
-        dest_partner_data = {
-            'type': dest_inv_type,
-            'partner_id': self.company_id.partner_id.id,
-            'company_id': dest_company.id,
-        }
-        dest_partner_data = self.env['account.invoice'].play_onchanges(
-            dest_partner_data, ['partner_id'])
-        return {
-            'name': self.name,
-            'origin': _('%s - Invoice: %s') % (self.company_id.name,
-                                               self.number),
-            'type': dest_inv_type,
-            'date_invoice': self.date_invoice,
-            'reference': self.number,
-            'account_id': dest_partner_data.get('account_id', False),
-            'partner_id': self.company_id.partner_id.id,
-            'journal_id': dest_journal.id,
-            'currency_id': self.currency_id.id,
-            'fiscal_position_id': dest_partner_data.get(
-                'fiscal_position_id', False),
-            'payment_term_id': dest_partner_data.get(
-                'payment_term_id', False),
-            'company_id': dest_company.id,
-            'partner_bank_id': dest_partner_data.get(
-                'partner_bank_id', False),
-            'auto_generated': True,
+        # Use test.Form() class to trigger propper onchanges on the invoice
+        dest_invoice_data = Form(
+            self.env['account.invoice'].with_context(
+                default_type=dest_inv_type,
+                force_company=dest_company.id
+            ))
+        dest_invoice_data.company_id = dest_company
+        dest_invoice_data.partner_id = self.company_id.partner_id
+        dest_invoice_data.name = self.name
+        dest_invoice_data.date_invoice = self.date_invoice
+        dest_invoice_data.reference = self.number
+        dest_invoice_data.comment = self.comment
+        dest_invoice_data.journal_id = dest_journal
+        dest_invoice_data.currency_id = self.currency_id
+        vals = dest_invoice_data._values_to_save(all_fields=True)
+        vals.update({
+            'origin': _('%s - Invoice: %s') % (
+                self.company_id.name, self.number),
             'auto_invoice_id': self.id,
             'comment': self.comment,
-        }
+            'auto_generated': True,
+        })
+        return vals
 
     @api.multi
     def action_invoice_cancel(self):
@@ -226,57 +228,43 @@ class AccountInvoiceLine(models.Model):
             :rtype dest_company : res.company record
         """
         self.ensure_one()
-        src_company_partner = self.invoice_id.company_id.partner_id
-        # get invoice line data from product onchange
-        dest_line_data = {
-            'product_id': self.product_id.id,
-            'uom_id': self.product_id.uom_id.id,
-            'quantity': self.quantity,
-            'name': '',
-            'partner_id': src_company_partner.id,
-            'company_id': dest_company.id,
-            'invoice_id': dest_invoice.id,
-        }
-        dest_line_data = self.env['account.invoice.line'].play_onchanges(
-            dest_line_data, ['product_id'])
-        account_id = dest_line_data.get('account_id', False)
-        if account_id:
-            account = self.env['account.account'].browse(account_id)
-        else:
-            account = self.env['account.account'].search([
-                ('user_type_id', '=', self.env.ref(
-                    'account.data_account_type_revenue').id),
-                ('company_id', '=', dest_company.id)], limit=1)
-            if not account:
-                raise UserError(_(
-                    'Please define %s account for this company: "%s" (id:%d).')
-                    % (self.env.ref('account.data_account_type_revenue').name,
-                       dest_company.name, dest_company.id))
-        tax_ids = dest_line_data.get('invoice_line_tax_ids', False)
-        product_id = False
-        if dest_company.company_share_product:
-            product_id = self.product_id.id
-        vals = {
-            'name': self.name,
+        # Use test.Form() class to trigger propper onchanges on the line
+        product = (
+            dest_company.company_share_product and self.product_id or
+            self.env['product.product'])
+        dest_invoice_form = Form(
+            dest_invoice.with_context(force_company=dest_company.id),
+            'account_invoice_inter_company.invoice_supplier_form',
+        )
+        with dest_invoice_form.invoice_line_ids.new() as invoice_line:
+            # HACK: Related fields manually set due to Form() limitations
+            invoice_line.company_id = dest_invoice.company_id
+            invoice_line.currency_id = dest_invoice.currency_id
+            invoice_line.partner_id = dest_invoice.partner_id
+            invoice_line.invoice_type = dest_invoice.type
+            invoice_line.company_currency_id = dest_invoice.company_currency_id
+            # Regular fields
+            invoice_line.product_id = product
+            invoice_line.name = self.name
+            invoice_line.uom_id = self.product_id.uom_id
+            invoice_line.quantity = self.quantity
             # TODO: it's wrong to just copy the price_unit
             # You have to check if the tax is price_include True or False
             # in source and target companies
-            'price_unit': self.price_unit,
-            'quantity': self.quantity,
-            'discount': self.discount,
-            'product_id': product_id,
-            'sequence': self.sequence,
-            'invoice_line_tax_ids': tax_ids or [],
-            # Analytic accounts are per company
-            # The problem is that we can't really "guess" the
-            # analytic account to set. It probably needs to be
-            # set via an inherit of this method in a custom module
-            'account_analytic_id': dest_line_data.get(
-                'account_analytic_id', False),
-            'account_id': account.id or False,
+            invoice_line.price_unit = self.price_unit
+            invoice_line.discount = self.discount
+            invoice_line.sequence = self.sequence
+        vals = dest_invoice_form._values_to_save(
+            all_fields=True)['invoice_line_ids'][0][2]
+        vals.update({
             'auto_invoice_line_id': self.id,
-            'invoice_id': dest_line_data.get('invoice_id', False),
-            'partner_id': src_company_partner.id,
-            'company_id': dest_company.id,
-        }
+            'invoice_id': dest_invoice.id,
+        })
+        if (self.account_analytic_id and
+                not self.account_analytic_id.company_id):
+            vals["account_analytic_id"] = self.account_analytic_id.id
+            analytic_tags = self.analytic_tag_ids.filtered(
+                lambda x: not x.company_id)
+            if analytic_tags:
+                vals["analytic_tag_ids"] = [(4, x) for x in analytic_tags.ids]
         return vals
