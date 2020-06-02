@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_invoice_inter_company
+# 	* account_invoice_inter_company
 #
 msgid ""
 msgstr ""
@@ -17,23 +17,27 @@ msgstr ""
 "X-Generator: Weblate 3.8\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:204
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:206
 #, python-format
 msgid "%s - Canceled Invoice: %s"
 msgstr "%s - 已取消的发票：%s"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:174
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:189
 #, python-format
 msgid "%s - Invoice: %s"
 msgstr "%s - 发票：%s"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-msgid "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" groups="
+"\"base.group_multi_company\" role=\"img\"/>"
 msgstr ""
-"<span class=\"fa fa-lg fa-building-o\" title=\"此处设置的值是特定于公司的。\" aria-label=\""
-"此处设置的值是特定于公司的。\" groups=\"base.group_multi_company\" role=\"img\"/>"
+"<span class=\"fa fa-lg fa-building-o\" title=\"此处设置的值是特定于公司"
+"的。\" aria-label=\"此处设置的值是特定于公司的。\" groups=\"base."
+"group_multi_company\" role=\"img\"/>"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_invoice__auto_generated
@@ -77,19 +81,13 @@ msgid "Invoices Auto Validation"
 msgstr "发票自动验证"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:34
+#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:43
 #, python-format
 msgid "No Chart of Account Template has been defined !"
 msgstr "没有定义帐户模板图表！"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:251
-#, python-format
-msgid "Please define %s account for this company: \"%s\" (id:%d)."
-msgstr "请为该公司定义%s帐户：\"%s\" (id:%d)."
-
-#. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:161
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:170
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "请为该公司定义%s日记账： \"%s\" (id:%d)."
@@ -110,29 +108,45 @@ msgid "Source Invoice Line"
 msgstr "来源发票行"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:90
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:99
 #, python-format
-msgid "The invoice line '%s' doesn't have a product. All invoice lines should have a product for inter-company invoices."
+msgid ""
+"The invoice line '%s' doesn't have a product. All invoice lines should have "
+"a product for inter-company invoices."
 msgstr "发票行'%s'没有产品。所有发票行都应有一个用于公司间发票的产品。"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:114
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:123
 #, python-format
-msgid "WARNING!!!!! Failure in the inter-company invoice creation process: the total amount of this invoice is %s but the total amount of the invoice %s in the company %s is %s"
-msgstr "警告！！！！！公司间发票创建过程失败：此发票的总金额为%s，但公司%s中发票的总金额%s为%s"
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %s but the total amount of the invoice %s in "
+"the company %s is %s"
+msgstr ""
+"警告！！！！！公司间发票创建过程失败：此发票的总金额为%s，但公司%s中发票的总"
+"金额%s为%s"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
-msgid "When an invoice is created by a multi company rule for this company, it will automatically validate it"
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it"
 msgstr "当该公司的多公司规则创建发票时，它将自动验证它"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
-msgid "When an invoice is created by a multi company rule for this company, it will automatically validate it."
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it."
 msgstr "当该公司的多公司规则创建发票时，它将自动验证它。"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:55
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:63
 #, python-format
-msgid "You cannot create invoice in company '%s' with product '%s' because it is not multicompany"
+msgid ""
+"You cannot create invoice in company '%s' with product '%s' because it is "
+"not multicompany"
 msgstr "您无法使用产品'%s'在公司'%s'中创建发票，因为它不是多公司"
+
+#~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
+#~ msgstr "请为该公司定义%s帐户：\"%s\" (id:%d)."
