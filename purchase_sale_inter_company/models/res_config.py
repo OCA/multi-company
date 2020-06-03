@@ -18,10 +18,25 @@ class InterCompanyRulesConfig(models.TransientModel):
         'Sale User.',
         readonly=False,
     )
+    po_from_so = fields.Boolean(
+        related='company_id.po_from_so',
+        string="Create Purchase Orders when selling to this company",
+        help='Generate a Purchase Order when a Sale Order with this company '
+        'as customer is created.\n The intercompany user must at least be '
+        'Purchase User.',
+        readonly=False,
+    )
     sale_auto_validation = fields.Boolean(
         related='company_id.sale_auto_validation',
         string='Sale Orders Auto Validation',
         help='When a Sale Order is created by a multi company rule for '
+             'this company, it will automatically validate it.',
+        readonly=False,
+    )
+    purchase_auto_validation = fields.Boolean(
+        related='company_id.purchase_auto_validation',
+        string='Purchase Orders Auto Validation',
+        help='When a Purchase Order is created by a multi company rule for '
              'this company, it will automatically validate it.',
         readonly=False,
     )
@@ -31,6 +46,14 @@ class InterCompanyRulesConfig(models.TransientModel):
         string='Warehouse for Sale Orders',
         help='Default value to set on Sale Orders that will be created '
         'based on Purchase Orders made to this company.',
+        readonly=False,
+    )
+    po_picking_type_id = fields.Many2one(
+        comodel_name='stock.picking.type',
+        related='company_id.po_picking_type_id',
+        string='Picking type for Purchase Orders',
+        help='Default value to set on Purchase Orders ("Deliver To" field) that '
+        'will be created based on Sale Orders made to this company.',
         readonly=False,
     )
     intercompany_user_id = fields.Many2one(

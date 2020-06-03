@@ -16,11 +16,28 @@
                 <label for="warehouse_id" class="o_light_label"/>
                 <field name="warehouse_id" attrs="{'required': [('so_from_po', '=', True)]}" class="oe_inline"
                        domain="[('company_id', '=', company_id)]"/>
-                <label for="intercompany_user_id" class="o_light_label"/>
-                <field name="intercompany_user_id" attrs="{'required': [('so_from_po', '=', True)]}" class="oe_inline"/>
                 <br/>
                 <field name="sale_auto_validation" class="oe_inline"/>
                 <label for="sale_auto_validation" class="oe_inline o_light_label"/>
+            </div>
+            <div id="inter_company_po_from_so">
+                <field name="po_from_so" class="oe_inline"
+                       domain="[('company_id', '=', company_id)]"/>
+                <label string="Purchase from sale" class="o_light_label" for="po_from_so"/>
+            </div>
+            <div id="inter_company_po_picking_type"
+                attrs="{'invisible':['|', ('company_id', '=', False), ('po_from_so', '=', False)]}">
+                <label for="po_picking_type_id" class="o_light_label"/>
+                <field name="po_picking_type_id" attrs="{'required': [('po_from_so', '=', True)]}" class="oe_inline"
+                       domain="['|', ('warehouse_id', '=', False), ('warehouse_id.company_id', '=', company_id)]"/>
+                <br/>
+                <field name="purchase_auto_validation" class="oe_inline"/>
+                <label for="purchase_auto_validation" class="oe_inline o_light_label"/>
+            </div>
+            <div id="inter_company_user"
+                attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False), ('po_from_so', '=', False)]}">
+                <label for="intercompany_user_id" class="o_light_label"/>
+                <field name="intercompany_user_id" attrs="{'required': ['|', ('so_from_po', '=', True), ('po_from_so', '=', True)]}" class="oe_inline"/>
             </div>
          </xpath>
     </field>
