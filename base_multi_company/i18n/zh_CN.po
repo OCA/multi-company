@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* base_multi_company
+# 	* base_multi_company
 #
 msgid ""
 msgstr ""
@@ -28,19 +28,16 @@ msgstr "公司"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__display_name
 msgid "Display Name"
 msgstr "显示名称"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__id
 msgid "ID"
 msgstr "ID"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment____last_update
 msgid "Last Modified on"
 msgstr "最后修改时间"
 
@@ -49,22 +46,14 @@ msgstr "最后修改时间"
 msgid "Multi-Company Abstract"
 msgstr "抽象多公司"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__name
-msgid "Name"
-msgstr "名称"
+#~ msgid "Name"
+#~ msgstr "名称"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
-msgid "Parent"
-msgstr "上级"
+#~ msgid "Parent"
+#~ msgstr "上级"
 
-#. module: base_multi_company
-#: model:ir.model,name:base_multi_company.model_res_company_assignment
-msgid "Res Company Assignment"
-msgstr "公司分配"
+#~ msgid "Res Company Assignment"
+#~ msgstr "公司分配"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
-msgid "Visible For All Companies"
-msgstr "对所有公司可见"
+#~ msgid "Visible For All Companies"
+#~ msgstr "对所有公司可见"
