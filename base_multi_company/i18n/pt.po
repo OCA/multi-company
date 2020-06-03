@@ -31,19 +31,16 @@ msgstr "Empresa"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__display_name
 msgid "Display Name"
 msgstr "Nome a Exibir"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__id
 msgid "ID"
 msgstr "ID"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment____last_update
 msgid "Last Modified on"
 msgstr "Última Modificação Em"
 
@@ -52,22 +49,11 @@ msgstr "Última Modificação Em"
 msgid "Multi-Company Abstract"
 msgstr "Abstração Multi-Empresa"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__name
-msgid "Name"
-msgstr "Nome"
+#~ msgid "Name"
+#~ msgstr "Nome"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
-msgid "Parent"
-msgstr "Ascendente"
+#~ msgid "Parent"
+#~ msgstr "Ascendente"
 
-#. module: base_multi_company
-#: model:ir.model,name:base_multi_company.model_res_company_assignment
-msgid "Res Company Assignment"
-msgstr ""
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
-msgid "Visible For All Companies"
-msgstr "Visível para todas as Empresas"
+#~ msgid "Visible For All Companies"
+#~ msgstr "Visível para todas as Empresas"
