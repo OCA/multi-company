@@ -49,14 +49,11 @@ def post_init_hook(cr, rule_ref, model_name):
         column1 = model._fields["company_ids"].column1
         column2 = model._fields["company_ids"].column2
         SQL = """
-            INSERT INTO %s
-            (%s, %s)
-            SELECT id, company_id FROM %s WHERE company_id IS NOT NULL
-        """ % (
-            table_name,
-            column1,
-            column2,
-            model._table,
+            INSERT INTO {}
+            ({}, {})
+            SELECT id, company_id FROM {} WHERE company_id IS NOT NULL
+        """.format(
+            table_name, column1, column2, model._table,
         )
         env.cr.execute(SQL)
 
