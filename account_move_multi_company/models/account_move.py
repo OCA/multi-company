@@ -53,7 +53,7 @@ class AccountMove(models.Model):
                         'debit': line.debit,
                         'credit': line.credit}))
 
-                    if line.transfer_to_company_id not in\
+                    if line.transfer_to_company_id.id not in\
                             dedicated_companies_vals:
                         account = \
                             self.env['account.account'].sudo().with_context(
