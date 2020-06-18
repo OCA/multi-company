@@ -117,12 +117,6 @@ msgstr "Nessun template di piano dei conti è stato definito !"
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s account for this company: \"%s\" (id:%d)."
-msgstr "Prego definire un conto %s per questa azienda: \"%s\" (id:%d)."
-
-#. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_move.py:0
-#, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Prego definire un registro %s per questa azienda: \"%s\" (id:%d)."
 
@@ -214,6 +208,9 @@ msgid ""
 msgstr ""
 "Impossibile creare la fattura nell'azienda '%s' con il prodotto '%s' perchè "
 "non è multi azienda"
+
+#~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
+#~ msgstr "Prego definire un conto %s per questa azienda: \"%s\" (id:%d)."
 
 #~ msgid "Invoice"
 #~ msgstr "Fattura"
