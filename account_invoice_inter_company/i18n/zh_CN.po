@@ -111,12 +111,6 @@ msgstr "没有定义会计科目表！"
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s account for this company: \"%s\" (id:%d)."
-msgstr "请为该公司定义 %s 科目：\"%s\" (id:%d)."
-
-#. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_move.py:0
-#, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "请为该公司定义 %s 日记账： \"%s\" (id:%d)."
 
@@ -174,7 +168,9 @@ msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
 "total amount of this invoice is %s but the total amount of the invoice %s in "
 "the company %s is %s"
-msgstr "警告!!!!! 公司间发票创建失败：此发票的总金额为 %s ，但公司中 %s 发票 %s 总金额为 %s"
+msgstr ""
+"警告!!!!! 公司间发票创建失败：此发票的总金额为 %s ，但公司中 %s 发票 %s 总金"
+"额为 %s"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
@@ -197,6 +193,9 @@ msgid ""
 "You cannot create invoice in company '%s' with product '%s' because it is "
 "not multicompany"
 msgstr "您无法在公司 '%s' 使用产品 '%s' 创建发票，因为该产品不支持多公司"
+
+#~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
+#~ msgstr "请为该公司定义 %s 科目：\"%s\" (id:%d)."
 
 #~ msgid "Invoice"
 #~ msgstr "发票"
