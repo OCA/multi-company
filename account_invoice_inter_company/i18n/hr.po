@@ -118,12 +118,6 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s account for this company: \"%s\" (id:%d)."
-msgstr ""
-
-#. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_move.py:0
-#, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr ""
 
