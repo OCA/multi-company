@@ -111,12 +111,6 @@ msgstr "Es wurde keine Kontenplanvorlage definiert!"
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s account for this company: \"%s\" (id:%d)."
-msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
-
-#. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_move.py:0
-#, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
 
@@ -207,6 +201,9 @@ msgid ""
 "You cannot create invoice in company '%s' with product '%s' because it is "
 "not multicompany"
 msgstr ""
+
+#~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
+#~ msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
 
 #, fuzzy
 #~ msgid "Inter Company OCA features"
