@@ -114,14 +114,6 @@ msgstr "Aucun modèle de plan de comptes n'a été défini !"
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s account for this company: \"%s\" (id:%d)."
-msgstr ""
-"Merci de créer un compte comptable de type %s dans la société: \"%s\" (id:"
-"%d)."
-
-#. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_move.py:0
-#, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Merci de créer un journal de type %s dans la société: \"%s\" (id:%d)."
 
@@ -213,6 +205,11 @@ msgid ""
 msgstr ""
 "Vous ne pouvez pas créer de facture dans la société '%s' avec le produit "
 "'%s' car il n'est pas multisociété"
+
+#~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
+#~ msgstr ""
+#~ "Merci de créer un compte comptable de type %s dans la société: \"%s\" (id:"
+#~ "%d)."
 
 #, fuzzy
 #~ msgid "Inter Company OCA features"
