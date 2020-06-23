@@ -9,4 +9,4 @@ class AccountMove(models.Model):
     def _post_validate(self):
         # Override to prevent ValidationError
         # Method in odoo/addons/account/models/account_move line 357
-        return True
+        return self._check_lock_date()
