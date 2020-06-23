@@ -26,6 +26,23 @@ class AccountMove(models.Model):
             'credit': credit,
         }
 
+    def prepare_company_move_line_values(
+            self, line, transfer_lines):
+        transfer_lines.append((0, 0, {
+            'name': line.name,
+            'account_id': line.account_id.id,
+            'partner_id': line.partner_id.id,
+            'debit': line.credit,
+            'credit': line.debit}))
+        transfer_lines.append((0, 0, {
+            'name': line.name,
+            'account_id':
+                self.env.user.company_id.due_from_account_id.id,
+            'partner_id':
+                line.transfer_to_company_id.partner_id.id,
+            'debit': line.debit,
+            'credit': line.credit}))
+
     @api.multi
     def post(self, invoice=False):
         res = super().post(invoice)
@@ -38,21 +55,7 @@ class AccountMove(models.Model):
                 if line.transfer_to_company_id:
                     company_id = line.transfer_to_company_id.id
                     # Add the lines for the current company journal entry
-                    transfer_lines.append((0, 0, {
-                        'name': line.name,
-                        'account_id': line.account_id.id,
-                        'partner_id': line.partner_id.id,
-                        'debit': line.credit,
-                        'credit': line.debit}))
-                    transfer_lines.append((0, 0, {
-                        'name': line.name,
-                        'account_id':
-                            self.env.user.company_id.due_from_account_id.id,
-                        'partner_id':
-                            line.transfer_to_company_id.partner_id.id,
-                        'debit': line.debit,
-                        'credit': line.credit}))
-
+                    self.prepare_company_move_line_values(line, transfer_lines)
                     if line.transfer_to_company_id.id not in\
                             dedicated_companies_vals:
                         account = \
