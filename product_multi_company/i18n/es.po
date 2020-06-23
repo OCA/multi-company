@@ -19,8 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: product_multi_company
+#: model:ir.model,name:product_multi_company.model_product_category
+msgid "Product Category"
+msgstr ""
+
+#. module: product_multi_company
 #: model:ir.model,name:product_multi_company.model_product_template
 msgid "Product Template (Multi-Company)"
+msgstr ""
+
+#. module: product_multi_company
+#: model:ir.model.fields,field_description:product_multi_company.field_product_category__route_ids
+msgid "Routes"
+msgstr ""
+
+#. module: product_multi_company
+#: model:ir.model.fields,field_description:product_multi_company.field_product_category__total_route_ids
+msgid "Total routes"
 msgstr ""
 
 #~ msgid "Companies"
