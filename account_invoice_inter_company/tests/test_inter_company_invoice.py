@@ -135,3 +135,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEquals(self.invoice_company_a.state, "cancel")
         self.assertEquals(invoices[0].state, "cancel")
         self.assertEquals(invoices[0].invoice_origin, invoice_origin)
+        # Check if keep the invoice number
+        invoice_number = self.invoice_company_a.name
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        self.assertEquals(self.invoice_company_a.name, invoice_number)
