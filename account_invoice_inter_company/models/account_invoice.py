@@ -171,8 +171,8 @@ class AccountInvoice(models.Model):
             'partner_id': self.company_id.partner_id.id,
             'company_id': dest_company.id,
         }
-        dest_partner_data = self.env['account.invoice'].play_onchanges(
-            dest_partner_data, ['partner_id'])
+        dest_partner_data.update(self.env['account.invoice'].play_onchanges(
+            dest_partner_data, ['partner_id']))
         if not dest_partner_data.get('payment_term_id'):
             # check access rule for payment term
             domain = self._get_user_domain(dest_company)
@@ -231,8 +231,8 @@ class AccountInvoice(models.Model):
             'company_id': dest_company.id,
             'invoice_id': dest_invoice.id,
         }
-        dest_line_data = self.env['account.invoice.line'].play_onchanges(
-            dest_line_data, ['product_id'])
+        dest_line_data.update(self.env['account.invoice.line'].play_onchanges(
+            dest_line_data, ['product_id']))
         account_id = dest_line_data.get('account_id', False)
         if account_id:
             account = self.env['account.account'].browse(account_id)
