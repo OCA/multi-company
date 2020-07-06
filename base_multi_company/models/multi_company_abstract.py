@@ -26,9 +26,10 @@ class MultiCompanyAbstract(models.AbstractModel):
 
     @api.depends("company_ids")
     def _compute_company_id(self):
-        current_companies = self.env.companies
         for record in self:
-            if all(elem in record.company_ids.ids for elem in current_companies.ids):
+            # Give the priority of the current company of the user to avoid
+            # multi company incompatibility errors.
+            if self.env.company in record.company_ids:
                 record.company_id = self.env.company.id
             else:
                 record.company_id = record.company_ids[:1].id
