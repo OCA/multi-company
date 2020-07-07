@@ -71,7 +71,6 @@ msgstr "Prelievo interaziendale"
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
 #, fuzzy
-#| msgid "Intercompany User"
 msgid "Intercompany Sale User"
 msgstr "Utente interaziendale"
 
@@ -88,7 +87,6 @@ msgstr "Ordine d'acquisto"
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Purchase Order"
 msgid "Purchase/Sale"
 msgstr "Ordine d'acquisto"
 
@@ -106,7 +104,6 @@ msgstr "Vendita da acquisto"
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_sale_order
 #, fuzzy
-#| msgid "Sale Order"
 msgid "Sales Order"
 msgstr "Ordine di vendita"
 
