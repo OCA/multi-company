@@ -27,6 +27,12 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
         cls.account_obj = cls.env["account.account"]
         cls.account_move_obj = cls.env["account.move"]
+        # if product_multi_company is installed
+        if "company_ids" in cls.env["product.template"]._fields:
+            # We have to do that because the default method added a company
+            cls.env.ref(
+                cls.module + ".product_consultant_multi_company"
+            ).company_ids = False
         cls.invoice_company_a = cls.env.ref(cls.module + ".customer_invoice_company_a")
         cls.user_company_a = cls.env.ref(cls.module + ".user_company_a")
         cls.user_company_b = cls.env.ref(cls.module + ".user_company_b")
