@@ -59,6 +59,19 @@ msgstr "res.config.settings"
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
+#| msgid ""
+#| "Configure company rules to automatically create invoices when one of your "
+#| "company sells/buys to another of your company."
+msgid ""
+"Configure company rules to automatically create SO/PO when one of your "
+"company sells/buys to another of your company."
+msgstr ""
+"Configurer les règles de la société pour créer automatiquement les factures "
+"quand l'une de vos sociétés vend/achète à une autre de vos sociétés."
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+#, fuzzy
 msgid "Inter Company OCA features"
 msgstr "Facturation inter-sociétés"
 
@@ -167,14 +180,6 @@ msgstr ""
 
 #~ msgid "Automate inter-company invoicing"
 #~ msgstr "Automatiser la facture inter-sociétés"
-
-#~ msgid ""
-#~ "Configure company rules to automatically create invoices when one of your "
-#~ "company sells/buys to another of your company."
-#~ msgstr ""
-#~ "Configurer les règles de la société pour créer automatiquement les "
-#~ "factures quand l'une de vos sociétés vend/achète à une autre de vos "
-#~ "sociétés."
 
 #~ msgid "Inter-Company Invoicing"
 #~ msgstr "Facturation inter-sociétés"
