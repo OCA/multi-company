@@ -38,6 +38,10 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         cls.product_consultant = cls.env.ref(
             "purchase_sale_inter_company.product_consultant_multi_company"
         )
+        # if product_multi_company is installed
+        if "company_ids" in cls.env["product.template"]._fields:
+            # We have to do that because the default method added a company
+            cls.product_consultant.company_ids = False
         cls.product_consultant.with_user(
             cls.user_b.id
         ).property_account_income_id = cls.account_sale_b
