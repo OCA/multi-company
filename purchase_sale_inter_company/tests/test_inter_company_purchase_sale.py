@@ -13,9 +13,16 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls._load(
-            "account_invoice_inter_company", "tests", "inter_company_invoice.xml",
-        )
+        if cls.env["res.partner"]._fields.get("company_ids"):
+            cls._load(
+                "account_invoice_inter_company",
+                "tests",
+                "inter_company_invoice_partner_multi.xml",
+            )
+        else:
+            cls._load(
+                "account_invoice_inter_company", "tests", "inter_company_invoice.xml",
+            )
         cls._load(
             "purchase_sale_inter_company", "tests", "inter_company_purchase_sale.xml",
         )
