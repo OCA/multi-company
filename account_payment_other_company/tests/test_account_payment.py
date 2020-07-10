@@ -49,18 +49,17 @@ class TestAccountPayment(SavepointCase):
                 'account_payment_other_company.a_expense_company_b'
             )
 
-        cls.company_a.due_from_account_id = cls.env.ref(
-            'account_payment_other_company.a_pay_company_a'
-        )
-        cls.company_a.due_to_account_id = cls.env.ref(
-            'account_payment_other_company.a_recv_company_a'
-        )
-        cls.company_b.due_from_account_id = cls.env.ref(
-            'account_payment_other_company.a_recv_company_b'
-        )
-        cls.company_b.due_to_account_id = cls.env.ref(
-            'account_payment_other_company.a_pay_company_b'
-        )
+        cls.company_a.due_from_account_id = cls.company_a.\
+            due_fromto_payment_journal_id.default_debit_account_id
+
+        cls.company_a.due_to_account_id = cls.company_a.\
+            due_fromto_payment_journal_id.default_credit_account_id
+
+        cls.company_b.due_from_account_id = cls.company_b.\
+            due_fromto_payment_journal_id.default_debit_account_id
+
+        cls.company_b.due_to_account_id = cls.company_b.\
+            due_fromto_payment_journal_id.default_credit_account_id
 
         cls.company_a_journal = cls.env.\
             ref('account_payment_other_company.bank_journal_company_a')

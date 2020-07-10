@@ -47,7 +47,7 @@ class AccountPayment(models.Model):
                 else:
                     aml = self.env['account.move.line'].search([
                         ('account_id', '=',
-                         rec.company_id.due_to_account_id.id),
+                         rec.company_id.due_from_account_id.id),
                         ('payment_id', '=', rec.id)])
                     aml.partner_id = other_company.partner_id.id
                     account_move = self.env['account.move']
