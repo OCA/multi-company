@@ -23,6 +23,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.location_output_company_a = cls.env["stock.location"].create(
             {"name": "Output - a", "usage": "internal", "company_id": cls.company_a.id}
         )
+        if "company_ids" in cls.env["res.partner"]._fields:
+            # We have to do that because the default method added a company
+            cls.partner_company_a.company_ids = [(6, 0, cls.company_a.ids)]
+            cls.partner_company_b.company_ids = [(6, 0, cls.company_b.ids)]
         cls.warehouse_company_a = cls.env["stock.warehouse"].create(
             {
                 "name": "purchase warehouse - a",
