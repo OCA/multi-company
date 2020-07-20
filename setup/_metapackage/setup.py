@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo13-addon-account_invoice_inter_company',
         'odoo13-addon-base_multi_company',
         'odoo13-addon-company_dependent_attribute',
+        'odoo13-addon-mail_multicompany',
         'odoo13-addon-product_multi_company',
         'odoo13-addon-purchase_sale_inter_company',
     ],
