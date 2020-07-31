@@ -157,7 +157,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             'company_id': company1.id,
             'company_ids': [(6, False, companies.ids)],
         })
-        tester = tester_obj.create({
+        tester = tester_obj.sudo(user).create({
             'name': 'My tester',
             'company_ids': [(6, False, companies.ids)],
         })
