@@ -222,6 +222,7 @@ class AccountInvoice(models.Model):
             :rtype src_company_partner_id : res.partner record
         """
         # get invoice line data from product onchange
+
         dest_line_data = {
             'product_id': src_line.product_id.id,
             'uom_id': src_line.product_id.uom_id.id,
@@ -231,8 +232,9 @@ class AccountInvoice(models.Model):
             'company_id': dest_company.id,
             'invoice_id': dest_invoice.id,
         }
-        dest_line_data = self.env['account.invoice.line'].play_onchanges(
-            dest_line_data, ['product_id'])
+        new_values = self.env['account.invoice.line'].play_onchanges(
+            dest_line_data, ['product_id', 'uom_id'])
+        dest_line_data.update(new_values)
         account_id = dest_line_data.get('account_id', False)
         if account_id:
             account = self.env['account.account'].browse(account_id)
