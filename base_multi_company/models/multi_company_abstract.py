@@ -48,9 +48,11 @@ class MultiCompanyAbstract(models.AbstractModel):
     @api.multi
     def _inverse_company_id(self):
         for record in self:
-            if record.company_id and record.company_id.id not in \
-                    record.company_ids.ids:
-                record.company_ids = [(4, record.company_id.id)]
+            if record.company_id:
+                if record.company_id.id not in record.company_ids.ids:
+                    record.company_ids = [(4, record.company_id.id)]
+            else:
+                record.company_ids = [(5, )]
 
     @api.model
     def _search_company_id(self, operator, value):

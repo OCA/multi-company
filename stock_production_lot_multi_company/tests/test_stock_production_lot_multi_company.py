@@ -69,13 +69,11 @@ class TestStockProductionLotMultiCompany(TransactionCase):
             {'name': 'Main company product',
              'default_code': '[MCP]',
              'company_id': self.main_comp.id,
-             'track_all': True,
              'uom_id': self.unit_uom.id})
         self.second_comp_product = self.product_model.create(
             {'name': 'Secondary company product',
              'default_code': '[SCP]',
              'company_id': self.secondary_company.id,
-             'track_all': True,
              'uom_id': self.unit_uom.id})
 
     def test_lot_main_creation(self):

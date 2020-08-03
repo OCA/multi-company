@@ -58,7 +58,6 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.Model = self.env['multi.company.abstract.tester']
         self.record = self.Model.create({
             'name': 'test',
-            'active': True,
         })
         Companies = self.env['res.company']
         self.company_1 = Companies._company_default_get()
@@ -97,6 +96,13 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         """ It should add the company using company_id. """
         self.record.company_id = self.company_2
         self.assertIn(self.company_2.id, self.record.company_ids.ids)
+
+    def test_inverse_company_id_remove(self):
+        """ It should clear company_ids when company_id is cleared. """
+        self.record.company_id = self.company_2
+        self.assertIn(self.company_2.id, self.record.company_ids.ids)
+        self.record.company_id = False
+        self.assertFalse(self.record.company_ids)
 
     def test_search_company_id(self):
         """ It should return correct record by searching company_id. """
@@ -157,15 +163,15 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             'company_id': company1.id,
             'company_ids': [(6, False, companies.ids)],
         })
-        tester = tester_obj.create({
-            'name': 'My tester',
-            'company_ids': [(6, False, companies.ids)],
-        })
-        tester = tester.sudo(user)
         # Current company_id should be updated with current company of the user
         for company in user.company_ids:
-            user.write({
+            user.update({
                 'company_id': company.id,
+            })
+            # Transient model can only be read from its creator
+            tester = tester_obj.sudo(user).create({
+                'name': 'My tester',
+                'company_ids': [(6, False, companies.ids)],
             })
             # Force recompute
             tester.invalidate_cache()
@@ -174,10 +180,15 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             self.assertEqual(tester.company_id.id, company.id)
             # So can read company fields without Access error
             self.assertTrue(bool(tester.company_id.name))
+
         # Switch to a company not in tester.company_ids
-        user.write({
+        user.update({
             'company_ids': [(4, company4.id, False)],
             'company_id': company4.id,
+        })
+        tester = tester_obj.sudo(user).create({
+            'name': 'My tester',
+            'company_ids': [(6, False, companies.ids)],
         })
         # Force recompute
         tester.invalidate_cache()
