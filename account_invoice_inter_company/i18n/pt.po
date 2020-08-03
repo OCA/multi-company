@@ -20,7 +20,7 @@ msgstr ""
 "X-Generator: Weblate 3.0.1\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:285
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:286
 #: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:109
 #, python-format
 msgid "%s - Canceled Invoice: %s"
@@ -114,7 +114,7 @@ msgid "Invoices Auto Validation (Inter company)"
 msgstr "Autovalidação de Fatura (Interempresa)"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:245
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:246
 #, python-format
 msgid "Please define %s account for this company: \"%s\" (id:%d)."
 msgstr "Por favor, defina a conta %s para esta empresa: \"%s\" (id:%d)."
