@@ -27,6 +27,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             cls.module + '.customer_invoice_company_a')
         cls.user_company_a = cls.env.ref(cls.module + '.user_company_a')
         cls.user_company_b = cls.env.ref(cls.module + '.user_company_b')
+        cls.user_child_company_b = cls.env.ref(cls.module + '.child_partner_company_b')
         cls.invoice_line_a = cls.invoice_company_a.invoice_line_ids[0]
         cls.product_a = cls.invoice_line_a.product_id
         cls.invoice_line_b = cls.env["account.invoice.line"].create({
@@ -132,3 +133,23 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEquals(self.invoice_company_a.state, 'cancel')
         self.assertEquals(invoices[0].state, 'cancel')
         self.assertEquals(invoices[0].origin, origin)
+
+    def test_confirm_invoice_with_child_partner(self):
+        # ensure the catalog is shared
+        self.env.ref('product.product_comp_rule').write({'active': False})
+        # Make sure there are no taxes in target company for the used product
+        self.product_a.with_context(
+            force_company=self.user_company_b.id
+        ).supplier_taxes_id = False
+        # When a contact of the company is defined as partner,
+        # it also must trigger the intercompany workflow
+        self.invoice_company_a.write({"partner_id": self.user_child_company_b.id})
+        # Confirm the invoice of company A
+        self.invoice_company_a.with_context(
+            test_account_invoice_inter_company=True,
+        ).sudo(self.user_company_a.id).action_invoice_open()
+        # Check destination invoice created in company B
+        invoices = self.invoice_obj.sudo(self.user_company_b.id).search([
+            ('auto_invoice_id', '=', self.invoice_company_a.id)
+        ])
+        self.assertEqual(len(invoices), 1)

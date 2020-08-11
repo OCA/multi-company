@@ -26,7 +26,7 @@ class AccountInvoice(models.Model):
     def _find_company_from_invoice_partner(self):
         self.ensure_one()
         company = self.env['res.company'].sudo().search([
-            ('partner_id', '=', self.partner_id.id)
+            ('partner_id', '=', self.commercial_partner_id.id)
         ], limit=1)
         return company or False
 
