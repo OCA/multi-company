@@ -11,6 +11,11 @@
         <field name="name">Company B</field>
         <field name="company_id" eval="False" />
     </record>
+    <record id="child_partner_company_b" model="res.partner">
+        <field name="name">Child, Company B</field>
+        <field name="company_id" eval="False" />
+        <field name="parent_id" ref="partner_company_b" />
+    </record>
     <!--
         Create company A and B
         -->
