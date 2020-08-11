@@ -36,6 +36,9 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         cls.invoice_company_a = cls.env.ref(cls.module + ".customer_invoice_company_a")
         cls.user_company_a = cls.env.ref(cls.module + ".user_company_a")
         cls.user_company_b = cls.env.ref(cls.module + ".user_company_b")
+        cls.child_partner_company_b = cls.env.ref(
+            cls.module + ".child_partner_company_b"
+        )
         cls.company_a = cls.env.ref("account_invoice_inter_company.company_a")
         cls.company_b = cls.env.ref("account_invoice_inter_company.company_b")
         cls.company_a.invoice_auto_validation = True
@@ -145,3 +148,17 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         invoice_number = self.invoice_company_a.name
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         self.assertEquals(self.invoice_company_a.name, invoice_number)
+
+    def test_confirm_invoice_with_child_partner(self):
+        # ensure the catalog is shared
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # When a contact of the company is defined as partner,
+        # it also must trigger the intercompany workflow
+        self.invoice_company_a.write({"partner_id": self.child_partner_company_b.id})
+        # Confirm the invoice of company A
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        # Check destination invoice created in company B
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(len(invoices), 1)
