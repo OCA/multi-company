@@ -26,7 +26,7 @@ class AccountMove(models.Model):
         company = (
             self.env["res.company"]
             .sudo()
-            .search([("partner_id", "=", self.partner_id.id)], limit=1)
+            .search([("partner_id", "=", self.commercial_partner_id.id)], limit=1)
         )
         return company or False
 
