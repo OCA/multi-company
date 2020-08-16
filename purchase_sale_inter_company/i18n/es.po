@@ -27,7 +27,6 @@ msgstr "Compañías"
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_config_settings
 #, fuzzy
-#| msgid "res.config.settings"
 msgid "Config Settings"
 msgstr "res.config.settings"
 
@@ -40,9 +39,6 @@ msgstr "Crear pedido de venta al comprar a esta compañía"
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
 #, fuzzy
-#| msgid ""
-#| "Default value to set on Sale Orders that will be created based on "
-#| "Purchase Orders made to this company."
 msgid ""
 "Default value to set on Sale Orders that will be created based on Purchase "
 "Orders made to this company"
@@ -74,7 +70,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
 #, fuzzy
-#| msgid "Intercompany User"
 msgid "Intercompany Picking"
 msgstr "Usuario intercompañía"
 
@@ -82,7 +77,6 @@ msgstr "Usuario intercompañía"
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
 #, fuzzy
-#| msgid "Intercompany User"
 msgid "Intercompany Sale User"
 msgstr "Usuario intercompañía"
 
@@ -99,7 +93,6 @@ msgstr "Pedido de compra"
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Purchase Order"
 msgid "Purchase/Sale"
 msgstr "Pedido de compra"
 
@@ -117,7 +110,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_sale_order
 #, fuzzy
-#| msgid "Sales Order Line"
 msgid "Sales Order"
 msgstr "Línea de pedido de venta"
 
@@ -129,7 +121,6 @@ msgstr "Línea de pedido de venta"
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__auto_purchase_order_id
 #, fuzzy
-#| msgid "Source Purchase Order Line"
 msgid "Source Purchase Order"
 msgstr "Linea pedido de compra origen"
 
@@ -174,7 +165,6 @@ msgstr "Almacén para pedidos de venta"
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__warehouse_id
 #, fuzzy
-#| msgid "Warehouse For Sale Orders"
 msgid "Warehouse for Sale Orders"
 msgstr "Almacén para pedidos de venta"
 

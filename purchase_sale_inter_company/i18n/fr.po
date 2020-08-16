@@ -85,7 +85,6 @@ msgstr "Bon de commande"
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Purchase to Sale"
 msgid "Purchase/Sale"
 msgstr "Achat vers Vente"
 
@@ -103,7 +102,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_sale_order
 #, fuzzy
-#| msgid "Sales Order"
 msgid "Sales Order"
 msgstr "Commande de ventes"
 
@@ -156,7 +154,6 @@ msgstr "Entrepôt pour les commandes de vente"
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__warehouse_id
 #, fuzzy
-#| msgid "Warehouse For Sale Orders"
 msgid "Warehouse for Sale Orders"
 msgstr "Entrepôt pour les commandes de vente"
 
@@ -187,9 +184,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, fuzzy, python-format
-#| msgid ""
-#| "You cannot create SO from PO because sale price list currency is "
-#| "different from purchase price list currency."
 msgid ""
 "You cannot create SO from PO because sale price list currency is different "
 "than purchase price list currency."
