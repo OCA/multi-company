@@ -54,7 +54,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
 #, fuzzy
-#| msgid "Inter-Company Invoicing"
 msgid "Inter Company Invoice User"
 msgstr "Rechnungsstellung zwischen Unternehmen"
 
@@ -70,7 +69,6 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Inter-Company Invoicing"
 msgid "Intercompany user for invoices"
 msgstr "Rechnungsstellung zwischen Unternehmen"
 
@@ -88,7 +86,6 @@ msgstr "automatische Rechnungsprüfung"
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Invoice Line"
 msgid "Invoicing"
 msgstr "Rechnungszeile"
 
