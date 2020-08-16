@@ -57,10 +57,6 @@ msgstr "内部公司开票用户"
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid ""
-#| "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are "
-#| "company-specific.\" aria-label=\"Values set here are company-specific.\" "
-#| "groups=\"base.group_multi_company\" role=\"img\"/>"
 msgid ""
 "Inter Company OCA features\n"
 "                    <span class=\"fa fa-lg fa-building-o\" title=\"Values "
