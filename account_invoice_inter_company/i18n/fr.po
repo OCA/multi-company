@@ -49,7 +49,6 @@ msgstr "Sociétés"
 #. module: account_invoice_inter_company
 #: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
 #, fuzzy
-#| msgid "res.config.settings"
 msgid "Config Settings"
 msgstr "res.config.settings"
 
@@ -57,7 +56,6 @@ msgstr "res.config.settings"
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
 #, fuzzy
-#| msgid "Inter-Company Invoicing"
 msgid "Inter Company Invoice User"
 msgstr "Facturation inter-sociétés"
 
@@ -73,7 +71,6 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Inter-Company Invoicing"
 msgid "Intercompany user for invoices"
 msgstr "Facturation inter-sociétés"
 
@@ -91,7 +88,6 @@ msgstr "Auto Validation des factures"
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Invoice Line"
 msgid "Invoicing"
 msgstr "Ligne de facture"
 

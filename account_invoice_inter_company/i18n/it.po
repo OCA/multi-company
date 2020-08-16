@@ -52,17 +52,12 @@ msgstr "Impostazioni di configurazione"
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
 #, fuzzy
-#| msgid "Inter Company OCA features"
 msgid "Inter Company Invoice User"
 msgstr "Funzionalità OCA interaziendali"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid ""
-#| "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are "
-#| "company-specific.\" aria-label=\"Values set here are company-specific.\" "
-#| "groups=\"base.group_multi_company\" role=\"img\"/>"
 msgid ""
 "Inter Company OCA features\n"
 "                    <span class=\"fa fa-lg fa-building-o\" title=\"Values "
@@ -76,7 +71,6 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Inter Company OCA features"
 msgid "Intercompany user for invoices"
 msgstr "Funzionalità OCA interaziendali"
 
@@ -94,7 +88,6 @@ msgstr "Auto validazione fatture"
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-#| msgid "Invoice Line"
 msgid "Invoicing"
 msgstr "Riga fattura"
 
