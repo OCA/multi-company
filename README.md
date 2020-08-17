@@ -22,7 +22,7 @@ addon | version | summary
 [product_multi_company](product_multi_company/) | 10.0.1.0.0 | Select individually the product template visibility on each company
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 10.0.1.0.0 | Intercompany PO/SO rules
 [sale_layout_multi_company](sale_layout_multi_company/) | 10.0.1.0.0 | Multi company features for sale_layout
-[stock_production_lot_multi_company](stock_production_lot_multi_company/) | 10.0.1.0.1 | Make serial numbers multi-company aware
+[stock_production_lot_multi_company](stock_production_lot_multi_company/) | 10.0.1.1.0 | Make serial numbers multi-company aware
 
 
 Unported addons
