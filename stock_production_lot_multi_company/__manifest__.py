@@ -6,7 +6,7 @@
 {
     "name": "Stock Production Lot Multi Company",
     "summary": "Make serial numbers multi-company aware",
-    "version": "10.0.1.0.1",
+    "version": "10.0.1.1.0",
     "category": "Stock",
     "license": "AGPL-3",
     "author": "OdooMRP team, "
