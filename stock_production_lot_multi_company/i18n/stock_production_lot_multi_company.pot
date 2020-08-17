@@ -23,3 +23,8 @@ msgstr ""
 msgid "Lot/Serial"
 msgstr ""
 
+#. module: stock_production_lot_multi_company
+#: sql_constraint:stock.production.lot:0
+msgid "The combination of serial number, product and company must be unique!"
+msgstr ""
+
