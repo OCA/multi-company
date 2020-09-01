@@ -337,8 +337,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             }
         )
 
-        cls.product_consultant_multi_company = cls.env[
-            "product.product"].create(
+        cls.product_consultant_multi_company = cls.env["product.product"].create(
             {
                 "name": "Service Multi Company",
                 "uom_id": cls.env.ref("uom.product_uom_hour").id,
@@ -376,8 +375,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Debtors - (company A)",
                 "internal_type": "receivable",
                 "reconcile": "True",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_receivable").id,
+                "user_type_id": cls.env.ref("account.data_account_type_receivable").id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -387,8 +385,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Creditors - (company A)",
                 "internal_type": "payable",
                 "reconcile": "True",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_payable").id,
+                "user_type_id": cls.env.ref("account.data_account_type_payable").id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -408,7 +405,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "vat_required": True,
                 "country_group_id": cls.env.ref("base.europe").id,
                 "note": "French VAT exemption according to articles 262 ter"
-                        " I (for products) and/or 283-2 (for services) of CGI",
+                " I (for products) and/or 283-2 (for services) of CGI",
                 "company_id": cls.company_a.id,
             }
         )
@@ -431,7 +428,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "vat_required": True,
                 "country_group_id": cls.env.ref("base.europe").id,
                 "note": "French VAT exemption according to articles 262 ter"
-                        "I (for products) and/or 283-2 (for services) of CGI",
+                "I (for products) and/or 283-2 (for services) of CGI",
                 "company_id": cls.company_b.id,
             }
         )
@@ -512,23 +509,19 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             (4, self.env.ref("analytic.group_analytic_accounting").id)
         ]
         # Confirm the invoice of company A
-        self.invoice_company_a.with_user(
-            self.user_company_a.id).action_post()
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
-        invoices = self.account_move_obj.with_user(
-            self.user_company_b.id).search(
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertNotEquals(invoices, False)
         self.assertEquals(len(invoices), 1)
         self.assertEquals(invoices[0].state, "posted")
         self.assertEquals(
-            invoices[0].partner_id,
-            self.invoice_company_a.company_id.partner_id,
+            invoices[0].partner_id, self.invoice_company_a.company_id.partner_id,
         )
         self.assertEquals(
-            invoices[0].company_id.partner_id,
-            self.invoice_company_a.partner_id,
+            invoices[0].company_id.partner_id, self.invoice_company_a.partner_id,
         )
         self.assertEquals(
             len(invoices[0].invoice_line_ids),
@@ -540,28 +533,24 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
         self.assertEquals(
-            invoice_line.analytic_account_id,
-            self.invoice_line_a.analytic_account_id,
+            invoice_line.analytic_account_id, self.invoice_line_a.analytic_account_id,
         )
         self.assertEquals(
-            invoice_line.analytic_tag_ids,
-            self.invoice_line_a.analytic_tag_ids
+            invoice_line.analytic_tag_ids, self.invoice_line_a.analytic_tag_ids
         )
         # Cancel the invoice of company A
         invoice_origin = ("%s - Canceled Invoice: %s") % (
             self.invoice_company_a.company_id.name,
             self.invoice_company_a.name,
         )
-        self.invoice_company_a.with_user(
-            self.user_company_a.id).button_cancel()
+        self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()
         # Check invoices after to cancel invoice of company A
         self.assertEquals(self.invoice_company_a.state, "cancel")
         self.assertEquals(invoices[0].state, "cancel")
         self.assertEquals(invoices[0].invoice_origin, invoice_origin)
         # Check if keep the invoice number
         invoice_number = self.invoice_company_a.name
-        self.invoice_company_a.with_user(
-            self.user_company_a.id).action_post()
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         self.assertEquals(self.invoice_company_a.name, invoice_number)
 
     def test_confirm_invoice_with_child_partner(self):
@@ -569,13 +558,11 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.env.ref("product.product_comp_rule").write({"active": False})
         # When a contact of the company is defined as partner,
         # it also must trigger the intercompany workflow
-        self.invoice_company_a.write(
-            {"partner_id": self.child_partner_company_b.id})
+        self.invoice_company_a.write({"partner_id": self.child_partner_company_b.id})
         # Confirm the invoice of company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
-        invoices = self.account_move_obj.with_user(
-            self.user_company_b.id).search(
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertEqual(len(invoices), 1)
