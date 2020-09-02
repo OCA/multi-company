@@ -1,0 +1,37 @@
+<odoo>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+    <!-- From an Invoice -->
+    <record id="account_payment_paid_by_invoice" model="ir.ui.view">
+        <field name="name">account.payment.tree.paid.by.invoice</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_invoice_form"/>
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field name="company_id" attrs="{'invisible': True}"/>
+                <field name="other_journal_id"
+                       attrs="{'invisible': [('show_other_journal', '=', False)], 'required': [('show_other_journal', '=', True)]}"
+                       domain="[('type', 'in', ['bank', 'cash']), ('company_id','!=', company_id)]"
+                       context="{'sudo': True}"/>
+                <field name="show_other_journal" attrs="{'invisible': True}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="account_payment_paid_by_form" model="ir.ui.view">
+        <field name="name">account.payment.tree.paid.by.form</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <field name="journal_id" position="after">
+                <field name="company_id" attrs="{'invisible': True}"/>
+                <field name="other_journal_id"
+                       domain="[('type', 'in', ['bank', 'cash']), ('company_id','!=', company_id)]"
+                       attrs="{'invisible': [('show_other_journal', '=', False)], 'required': [('show_other_journal', '=', True)]}"
+                       context="{'sudo': True}"/>
+                <field name="show_other_journal" attrs="{'invisible': True}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

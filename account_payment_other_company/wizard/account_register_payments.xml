@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_account_payment_from_invoices_multi_company" model="ir.ui.view">
+            <field name="name">account.register.payments.wizard</field>
+            <field name="model">account.register.payments</field>
+            <field name="inherit_id" ref="account.view_account_payment_from_invoices"/>
+            <field name="arch" type="xml">
+                <field name="journal_id" position="after">
+                    <field name="company_id" attrs="{'invisible': True}"/>
+                    <field name="other_journal_id"
+                        domain="[('type', 'in', ['bank', 'cash']), ('company_id','!=', company_id)]"
+                        attrs="{'invisible': [('show_other_journal', '=', False)], 'required': [('show_other_journal', '=', True)]}"
+                        context="{'sudo': True}"/>
+                    <field name="show_other_journal" attrs="{'invisible': True}"/>
+                </field>
+            </field>
+        </record>
+</odoo>

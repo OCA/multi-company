@@ -126,6 +126,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         current user and not on allowed companies (company_ids).
         :return: bool
         """
+        group_user = self.env.ref("base.group_user")
         user_obj = self.env['res.users']
         company_obj = self.env['res.company']
         company1 = self.env.ref("base.main_company")
@@ -146,6 +147,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
             'login': 'best-emplyee@example.com',
             'company_id': company1.id,
             'company_ids': [(6, False, companies.ids)],
+            'groups_id': [(6, 0, [group_user.id])],
         })
         tester_obj = self.env['multi.company.abstract.tester'].sudo(user)
         tester = tester_obj.create({
