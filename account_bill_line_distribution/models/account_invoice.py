@@ -11,7 +11,7 @@ class AccountInvoice(models.Model):
     def prepare_due_from_move_values(self):
         return {
             'journal_id': self.company_id.due_fromto_payment_journal_id.id,
-            'date': self.date_invoice,
+            'date': self.date,
             'state': 'draft',
             'company_id': self.company_id.id,
             'ref': self.number,
@@ -66,7 +66,7 @@ class AccountInvoice(models.Model):
                         # care of already
                         if company.id != inv.company_id.id:
                             to_move_vals = {
-                                'date': inv.date_invoice,
+                                'date': inv.date,
                                 'journal_id':
                                     company.due_fromto_payment_journal_id.id,
                                 'state': 'draft',
