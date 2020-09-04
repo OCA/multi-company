@@ -49,7 +49,7 @@ class AccountPayment(models.Model):
                         ('account_id', '=',
                          rec.company_id.due_from_account_id.id),
                         ('payment_id', '=', rec.id)])
-                    aml.partner_id = other_company.partner_id.id
+                    aml.write({'partner_id' : other_company.partner_id.id})
                     account_move = self.env['account.move']
                     vals = rec._prepare_other_payment_values()
                     rec.other_move_id = account_move.sudo().with_context(

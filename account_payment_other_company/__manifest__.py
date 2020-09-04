@@ -15,6 +15,7 @@
     ],
     'data': [
         'views/account_payment.xml',
+        'views/account_register_payments.xml'
     ],
     'development_status': 'Beta',
     'maintainers': [
