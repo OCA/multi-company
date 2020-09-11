@@ -146,21 +146,21 @@
         <field name="company_id" ref="company_b"/>
     </record>
     <record id="a_sale_company_b" model="account.account">
-        <field name="code">X2001-B</field>
+        <field name="code">X2001-A</field>
         <field name="name">Product Sales - (company B)</field>
         <field name="internal_type">other</field>
         <field name="user_type_id" ref="account.data_account_type_revenue"/>
         <field name="company_id" ref="company_b"/>
     </record>
     <record id="a_expense_company_b" model="account.account">
-        <field name="code">X2110-B</field>
+        <field name="code">X2110-A</field>
         <field name="name">Expenses - (company B)</field>
         <field name="internal_type">other</field>
         <field name="user_type_id" ref="account.data_account_type_expenses"/>
         <field name="company_id" ref="company_b"/>
     </record>
     <record id="a_bank_company_b" model="account.account">
-        <field name="code">512001-B</field>
+        <field name="code">512001-A</field>
         <field name="name">Bank - (company B)</field>
         <field name="user_type_id" ref="account.data_account_type_liquidity"/>
         <field name="company_id" ref="company_b"/>
@@ -338,6 +338,15 @@
 
     <record id="customer_invoice_line_company_a" model="account.invoice.line">
         <field name="invoice_id" ref="customer_invoice_company_a"/>
+        <field name="product_id" ref="product.product_product_1"/>
+        <field name="name">Service Multi Company</field>
+        <field name="account_id" ref="a_sale_company_a"/>
+        <field name="price_unit" eval="450.0" />
+        <field name="company_id" ref="company_a"/>
+    </record>
+
+    <record id="vendor_bill_line_company_a" model="account.invoice.line">
+        <field name="invoice_id" ref="vendor_bill_company_a"/>
         <field name="product_id" ref="product.product_product_1"/>
         <field name="name">Service Multi Company</field>
         <field name="account_id" ref="a_sale_company_a"/>

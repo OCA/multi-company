@@ -11,6 +11,14 @@ class AccountInvoiceLine(models.Model):
         'account.invoice.line.distribution', 'invoice_line_id',
         string='Distribution', copy=True)
 
+    @api.onchange('quantity', 'price_unit')
+    def onchange_comp_amount_percent(self):
+        for dist_id in self.distribution_ids:
+            dist_id.amount = 0.00
+            dist_id.percent = 0.00
+            dist_id.onchange_amount_total()
+            dist_id.onchange_percent_total()
+
     def get_default_distribution(self):
         return {'percent': 100.00,
                 'company_id':
@@ -58,5 +66,22 @@ class AccountInvoiceLine(models.Model):
                 i += 1
             if 'index' in locals():
                 self.distribution_ids[index].percent = 100.00 - percentage
+        else:
+            self.distribution_ids = [self.get_default_distribution()]
+
+    @api.onchange('distribution_ids')
+    def _onchange_distribution_ids_amount(self):
+        amount = 0.00
+        if self.distribution_ids:
+            i = 0
+            for dist in self.distribution_ids:
+                if dist.company_id != self.env.user.company_id:
+                    amount += dist.amount
+                else:
+                    index = i
+                i += 1
+            if 'index' in locals():
+                self.distribution_ids[index].amount = \
+                    self.price_subtotal - amount
         else:
             self.distribution_ids = [self.get_default_distribution()]
