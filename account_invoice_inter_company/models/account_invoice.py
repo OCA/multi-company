@@ -51,7 +51,7 @@ class AccountInvoice(models.Model):
     @api.multi
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
-        if not dest_company.company_share_product:
+        if dest_company.company_share_product:
             return
         domain = dest_company._get_user_domain()
         dest_user = self.env['res.users'].search(domain, limit=1)
@@ -94,8 +94,7 @@ class AccountInvoice(models.Model):
         # create invoice lines
         dest_inv_line_data = []
         for src_line in self.invoice_line_ids:
-            if dest_company.company_share_product and \
-                    not src_line.product_id:
+            if not src_line.product_id:
                 raise UserError(_(
                     "The invoice line '%s' doesn't have a product. "
                     "All invoice lines should have a product for "
@@ -229,9 +228,7 @@ class AccountInvoiceLine(models.Model):
         """
         self.ensure_one()
         # Use test.Form() class to trigger propper onchanges on the line
-        product = (
-            dest_company.company_share_product and self.product_id or
-            self.env['product.product'])
+        product = self.product_id or False
         dest_invoice_form = Form(
             dest_invoice.with_context(force_company=dest_company.id),
             'account_invoice_inter_company.invoice_supplier_form',
