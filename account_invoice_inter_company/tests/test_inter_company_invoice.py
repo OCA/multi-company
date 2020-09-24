@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tests.common import Form, SavepointCase
 
 
@@ -566,3 +566,50 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertEqual(len(invoices), 1)
+
+    def test_confirm_invoice_with_product_and_shared_catalog(self):
+        """ With no security rule, child company have access to any product.
+            Then child invoice can share the same product
+        """
+        # ensure the catalog is shared even if product is in other company
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # Product is set to a specific company
+        self.product_a.write({"company_id": self.company_a.id})
+        invoices = self._confirm_invoice_with_product()
+        self.assertNotEqual(
+            invoices.invoice_line_ids[0].product_id, self.env["product.product"]
+        )
+
+    def test_confirm_invoice_with_native_product_rule_and_shared_product(self):
+        """ With native security rule, products with access in both companies
+            must be present in parent and child invoices.
+        """
+        # ensure the catalog is shared even if product is in other company
+        self.env.ref("product.product_comp_rule").write({"active": True})
+        # Product is set to a specific company
+        self.product_a.write({"company_id": False})
+        invoices = self._confirm_invoice_with_product()
+        self.assertEqual(invoices.invoice_line_ids[0].product_id, self.product_a)
+
+    def test_confirm_invoice_with_native_product_rule_and_unshared_product(self):
+        """ With native security rule, products with no access in both companies
+            must prevent child invoice creation.
+        """
+        # ensure the catalog is shared even if product is in other company
+        self.env.ref("product.product_comp_rule").write({"active": True})
+        # Product is set to a specific company
+        self.product_a.write({"company_id": self.company_a.id})
+        with self.assertRaises(UserError):
+            self._confirm_invoice_with_product()
+
+    def _confirm_invoice_with_product(self):
+        # Confirm the invoice of company A
+        self.invoice_company_a.with_context(
+            test_account_invoice_inter_company=True,
+        ).sudo(self.user_company_a.id).action_invoice_open()
+        # Check destination invoice created in company B
+        invoices = self.invoice_obj.sudo(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(len(invoices), 1)
+        return invoices
