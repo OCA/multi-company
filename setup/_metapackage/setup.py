@@ -14,6 +14,7 @@ setuptools.setup(
         'odoo13-addon-mail_multicompany',
         'odoo13-addon-product_multi_company',
         'odoo13-addon-purchase_sale_inter_company',
+        'odoo13-addon-res_company_code',
     ],
     classifiers=[
         'Programming Language :: Python',
