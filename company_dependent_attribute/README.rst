@@ -25,19 +25,16 @@ Company Dependent Attribute
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-Display company_dependent state of fields in "ir.model.fields" view
+Display company_dependent state of fields in "ir.model.fields" views
 
 company_dependent value of a field can be overrided in any module.
 Then it can be difficult to guess this value in a odoo instance with a lot of modules.
 
 This module is mainly intended for developers
 
-
-Prefixed `property_` fields are supposed to be company_dependent fields.
-
 .. figure:: https://raw.githubusercontent.com/OCA/multi-company/14.0/company_dependent_attribute/static/description/screen1.png
 
-the clothes do not make the man
+.. figure:: https://raw.githubusercontent.com/OCA/multi-company/14.0/company_dependent_attribute/static/description/screen2.png
 
 **Table of contents**
 
