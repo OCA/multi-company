@@ -19,15 +19,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: product_tax_multicompany_default
-#: model:ir.model,name:product_tax_multicompany_default.model_product_product
-msgid "Product"
-msgstr ""
-
-#. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_template
 #, fuzzy
 msgid "Product Template (Multi-Company)"
 msgstr "Produktvorlage"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model,name:product_tax_multicompany_default.model_product_product
+msgid "Product Variant (Multi-Company)"
+msgstr ""
 
 #. module: product_tax_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
