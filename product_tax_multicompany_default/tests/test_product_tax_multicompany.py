@@ -40,13 +40,11 @@ class TestsProductTaxMulticompany(SavepointCase):
             "amount_type": "percent",
             "type_tax_use": "sale",
         }
-        cls.tax_10_cc1 = AccountTax.sudo(cls.user_1.id).create(tax_vals)
-        cls.tax_10_cc2 = AccountTax.sudo(cls.user_2.id).create(tax_vals)
-        tax_vals.update(
-            {"name": "Test Customer Tax 20%", "amount": 20.0,}
-        )
-        cls.tax_20_cc1 = AccountTax.sudo(cls.user_1.id).create(tax_vals)
-        cls.tax_20_cc2 = AccountTax.sudo(cls.user_2.id).create(tax_vals)
+        cls.tax_10_cc1 = AccountTax.with_user(cls.user_1.id).create(tax_vals)
+        cls.tax_10_cc2 = AccountTax.with_user(cls.user_2.id).create(tax_vals)
+        tax_vals.update({"name": "Test Customer Tax 20%", "amount": 20.0})
+        cls.tax_20_cc1 = AccountTax.with_user(cls.user_1.id).create(tax_vals)
+        cls.tax_20_cc2 = AccountTax.with_user(cls.user_2.id).create(tax_vals)
         tax_vals.update(
             {
                 "name": "Test Supplier Tax 10%",
@@ -54,44 +52,21 @@ class TestsProductTaxMulticompany(SavepointCase):
                 "type_tax_use": "purchase",
             }
         )
-        cls.tax_10_sc1 = AccountTax.sudo(cls.user_1.id).create(tax_vals)
-        cls.tax_10_sc2 = AccountTax.sudo(cls.user_2.id).create(tax_vals)
-        tax_vals.update(
-            {"name": "Test Supplier Tax 20%", "amount": 20.0,}
-        )
-        cls.tax_20_sc1 = AccountTax.sudo(cls.user_1.id).create(tax_vals)
-        cls.tax_20_sc2 = AccountTax.sudo(cls.user_2.id).create(tax_vals)
-        IrDefault = cls.env["ir.default"]
-        IrDefault.set(
-            model_name="product.template",
-            field_name="taxes_id",
-            value=[cls.tax_10_cc1.id],
-            company_id=cls.company_1.id,
-        )
-        IrDefault.set(
-            model_name="product.template",
-            field_name="supplier_taxes_id",
-            value=[cls.tax_10_sc1.id],
-            company_id=cls.company_1.id,
-        )
-        IrDefault.set(
-            model_name="product.template",
-            field_name="taxes_id",
-            value=[cls.tax_20_cc2.id],
-            company_id=cls.company_2.id,
-        )
-        IrDefault.set(
-            model_name="product.template",
-            field_name="supplier_taxes_id",
-            value=[cls.tax_20_sc2.id],
-            company_id=cls.company_2.id,
-        )
+        cls.tax_10_sc1 = AccountTax.with_user(cls.user_1.id).create(tax_vals)
+        cls.tax_10_sc2 = AccountTax.with_user(cls.user_2.id).create(tax_vals)
+        tax_vals.update({"name": "Test Supplier Tax 20%", "amount": 20.0})
+        cls.tax_20_sc1 = AccountTax.with_user(cls.user_1.id).create(tax_vals)
+        cls.tax_20_sc2 = AccountTax.with_user(cls.user_2.id).create(tax_vals)
+        cls.company_1.account_sale_tax_id = cls.tax_10_cc1.id
+        cls.company_1.account_purchase_tax_id = cls.tax_10_sc1.id
+        cls.company_2.account_sale_tax_id = cls.tax_20_cc2.id
+        cls.company_2.account_purchase_tax_id = cls.tax_20_sc2.id
 
     def test_multicompany_default_tax(self):
         product = (
             self.env["product.product"]
-            .sudo(self.user_1.id)
-            .create({"name": "Test Product", "company_id": False,})
+            .with_user(self.user_1.id)
+            .create({"name": "Test Product", "company_id": False})
         )
         product = product.sudo()
         self.assertIn(self.tax_10_cc1, product.taxes_id)
@@ -102,7 +77,7 @@ class TestsProductTaxMulticompany(SavepointCase):
     def test_not_default_tax_if_set(self):
         product = (
             self.env["product.product"]
-            .sudo(self.user_1.id)
+            .with_user(self.user_1.id)
             .create(
                 {
                     "name": "Test Product",
@@ -119,7 +94,7 @@ class TestsProductTaxMulticompany(SavepointCase):
     def test_default_tax_if_set_match(self):
         product = (
             self.env["product.product"]
-            .sudo(self.user_2.id)
+            .with_user(self.user_2.id)
             .create(
                 {
                     "name": "Test Product",
@@ -134,22 +109,11 @@ class TestsProductTaxMulticompany(SavepointCase):
         self.assertIn(self.tax_10_sc1, product.supplier_taxes_id)
 
     def test_tax_not_default_set_match(self):
-        IrDefault = self.env["ir.default"]
-        IrDefault.set(
-            model_name="product.template",
-            field_name="taxes_id",
-            value=[self.tax_20_cc1.id],
-            company_id=self.company_1.id,
-        )
-        IrDefault.set(
-            model_name="product.template",
-            field_name="supplier_taxes_id",
-            value=[self.tax_20_sc1.id],
-            company_id=self.company_1.id,
-        )
+        self.company_1.account_sale_tax_id = self.tax_20_cc1.id
+        self.company_1.account_purchase_tax_id = self.tax_20_sc1.id
         product = (
             self.env["product.product"]
-            .sudo(self.user_1.id)
+            .with_user(self.user_1.id)
             .create(
                 {
                     "name": "Test Product",
