@@ -37,3 +37,42 @@ class MultiCompanyAbstract(models.AbstractModel):
 
     def _search_company_id(self, operator, value):
         return [("company_ids", operator, value)]
+
+    @api.model
+    def _name_search(
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
+        # In some situations the 'in' operator is used with company_id in a
+        # name_search. ORM does not convert to a proper WHERE clause when using
+        # the 'in' operator.
+        # e.g: ```
+        #     WHERE "res_partner"."id" in (SELECT "res_partner_id"
+        #     FROM "res_company_res_partner_rel" WHERE "res_company_id" IN (False, 1)
+        # ```
+        # patching the args to expand the cumbersome args int a OR clause fix
+        # the issue.
+        # e.g: ```
+        #     WHERE "res_partner"."id" not in (SELECT "res_partner_id"
+        #             FROM "res_company_res_partner_rel"
+        #             where "res_partner_id" is not null)
+        #         OR  ("res_partner"."id" in (SELECT "res_partner_id"
+        #             FROM "res_company_res_partner_rel" WHERE "res_company_id" IN 1)
+        # ```
+        new_args = []
+        for arg in args:
+            if type(arg) == list and arg[:2] == ["company_id", "in"]:
+                fix = []
+                for _i in range(len(arg[2]) - 1):
+                    fix.append("|")
+                for val in arg[2]:
+                    fix.append(["company_id", "=", val])
+                new_args.extend(fix)
+            else:
+                new_args.append(arg)
+        return super()._name_search(
+            name,
+            args=new_args,
+            operator=operator,
+            limit=limit,
+            name_get_uid=name_get_uid,
+        )
