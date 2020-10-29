@@ -5,65 +5,469 @@
 
 from odoo import _
 from odoo.exceptions import ValidationError
-from odoo.modules.module import get_resource_path
-from odoo.tests.common import SavepointCase
-from odoo.tools import convert_file
+from odoo.tests.common import Form, SavepointCase
 
 
 class TestAccountInvoiceInterCompanyBase(SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.module = __name__.split("addons.")[1].split(".")[0]
-        convert_file(
-            cls.cr,
-            cls.module,
-            get_resource_path(cls.module, "tests", "inter_company_invoice.xml"),
-            None,
-            "init",
-            False,
-            "test",
-            cls.registry._assertion_report,
-        )
         cls.account_obj = cls.env["account.account"]
         cls.account_move_obj = cls.env["account.move"]
-        # if product_multi_company is installed
-        if "company_ids" in cls.env["product.template"]._fields:
-            # We have to do that because the default method added a company
-            cls.env.ref(
-                cls.module + ".product_consultant_multi_company"
-            ).company_ids = False
-        cls.invoice_company_a = cls.env.ref(cls.module + ".customer_invoice_company_a")
-        cls.user_company_a = cls.env.ref(cls.module + ".user_company_a")
-        cls.user_company_b = cls.env.ref(cls.module + ".user_company_b")
-        cls.child_partner_company_b = cls.env.ref(
-            cls.module + ".child_partner_company_b"
-        )
-        cls.company_a = cls.env.ref("account_invoice_inter_company.company_a")
-        cls.company_b = cls.env.ref("account_invoice_inter_company.company_b")
-        cls.company_a.invoice_auto_validation = True
-        cls.invoice_line_a = cls.invoice_company_a.invoice_line_ids[0]
-        cls.product_a = cls.invoice_line_a.product_id
-        cls.product_a.with_context(
-            force_company=cls.company_b.id
-        ).property_account_expense_id = cls.env.ref(
-            "account_invoice_inter_company.a_expense_company_b"
-        ).id
-        cls.invoice_line_b = cls.env["account.move.line"].create(
-            {
-                "move_id": cls.invoice_company_a.id,
-                "product_id": cls.product_a.id,
-                "name": "Test second line",
-                "account_id": cls.env.ref(cls.module + ".a_sale_company_a").id,
-                "price_unit": 20,
-            }
-        )
         cls.chart = cls.env["account.chart.template"].search([], limit=1)
         if not cls.chart:
             raise ValidationError(
                 # translation to avoid pylint warnings
                 _("No Chart of Account Template has been defined !")
             )
+
+        cls.company_a = cls.env["res.company"].create(
+            {
+                "name": "Company A",
+                "vat": "FR86792377731",
+                "currency_id": cls.env.ref("base.EUR").id,
+                "country_id": cls.env.ref("base.fr").id,
+                "parent_id": cls.env.ref("base.main_company").id,
+                "invoice_auto_validation": True,
+            }
+        )
+        cls.chart.try_loading(cls.company_a)
+        cls.partner_company_a = cls.env["res.partner"].create(
+            {
+                "name": cls.company_a.name,
+                "is_company": True,
+                "company_id": cls.company_a.id,
+                "vat": "FR56465451",
+            }
+        )
+        cls.company_a.partner_id = cls.partner_company_a
+        cls.company_b = cls.env["res.company"].create(
+            {
+                "name": "Company B",
+                "vat": "FR83404833048",
+                "currency_id": cls.env.ref("base.EUR").id,
+                "country_id": cls.env.ref("base.fr").id,
+                "parent_id": cls.env.ref("base.main_company").id,
+                "invoice_auto_validation": True,
+            }
+        )
+        cls.chart.try_loading(cls.company_b)
+        cls.partner_company_b = cls.env["res.partner"].create(
+            {
+                "name": cls.company_b.name,
+                "is_company": True,
+                "company_id": cls.company_b.id,
+                "vat": "FR56465451",
+            }
+        )
+        cls.child_partner_company_b = cls.env["res.partner"].create(
+            {
+                "name": "Child, Company B",
+                "is_company": False,
+                "company_id": False,
+                "parent_id": cls.partner_company_b.id,
+            }
+        )
+        cls.company_b.partner_id = cls.partner_company_b
+        # cls.partner_company_b = cls.company_b.parent_id.partner_id
+        cls.user_company_a = cls.env["res.users"].create(
+            {
+                "name": "User A",
+                "login": "usera",
+                "company_type": "person",
+                "email": "usera@yourcompany.com",
+                "password": "usera_p4S$word",
+                "company_id": cls.company_a.id,
+                "company_ids": [(6, 0, [cls.company_a.id, cls.company_b.id])],
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        [
+                            cls.env.ref("base.group_partner_manager").id,
+                            cls.env.ref("account.group_account_manager").id,
+                        ],
+                    )
+                ],
+            }
+        )
+        cls.user_company_b = cls.env["res.users"].create(
+            {
+                "name": "User B",
+                "login": "userb",
+                "company_type": "person",
+                "email": "userb@yourcompany.com",
+                "password": "userb_p4S$word",
+                "company_id": cls.company_b.id,
+                "company_ids": [(6, 0, [cls.company_b.id, cls.company_a.id])],
+                "groups_id": [
+                    (
+                        6,
+                        0,
+                        [
+                            cls.env.ref("base.group_partner_manager").id,
+                            cls.env.ref("account.group_account_manager").id,
+                        ],
+                    )
+                ],
+            }
+        )
+        cls.sequence_sale_journal_company_a = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Sales Journal Company A",
+                "padding": 3,
+                "prefix": "SAJ-A/%(year)s/",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.sequence_misc_journaal_company_a = cls.env["ir.sequence"].create(
+            {
+                "name": "Miscellaneous Journal Company A",
+                "padding": 3,
+                "prefix": "MISC-A/%(year)s/",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.sequence_purchase_journal_company_a = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Expenses Journal Company A",
+                "padding": 3,
+                "prefix": "EXJ-A/%(year)s/",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.sequence_sale_journal_company_b = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Sales Journal Company B",
+                "padding": 3,
+                "prefix": "SAJ-B/%(year)s/",
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.sequence_misc_journal_company_b = cls.env["ir.sequence"].create(
+            {
+                "name": "Miscellaneous Journal Company B",
+                "padding": 3,
+                "prefix": "MISC-B/%(year)s/",
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.sequence_purchase_journal_company_b = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Expenses Journal Company B",
+                "padding": 3,
+                "prefix": "EXJ-B/%(year)s/",
+                "company_id": cls.company_b.id,
+            }
+        )
+
+        cls.sequence_misc_journal_company_a = cls.env["ir.sequence"].create(
+            {
+                "name": "Miscellaneous Journal Company A",
+                "padding": 3,
+                "prefix": "MISC-A/%(year)s/",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.sequence_purchase_journal_company_a = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Expenses Journal Company A",
+                "padding": 3,
+                "prefix": "EXJ-A/%(year)s/",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.sequence_sale_journal_company_b = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Sales Journal Company B",
+                "padding": 3,
+                "prefix": "SAJ-B/%(year)s/",
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.sequence_misc_journal_company_b = cls.env["ir.sequence"].create(
+            {
+                "name": "Miscellaneous Journal Company B",
+                "padding": 3,
+                "prefix": "MISC-B/%(year)s/",
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.sequence_purchase_journal_company_b = cls.env["ir.sequence"].create(
+            {
+                "name": "Account Expenses Journal Company B",
+                "padding": 3,
+                "prefix": "EXJ-B/%(year)s/",
+                "company_id": cls.company_b.id,
+            }
+        )
+
+        cls.a_sale_company_a = cls.account_obj.create(
+            {
+                "code": "X2001-A",
+                "name": "Product Sales - (company A)",
+                "internal_type": "other",
+                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.a_expense_company_a = cls.account_obj.create(
+            {
+                "code": "X2110-A",
+                "name": "Expenses - (company A)",
+                "internal_type": "other",
+                "user_type_id": cls.env.ref("account.data_account_type_expenses").id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.a_bank_company_a = cls.account_obj.create(
+            {
+                "code": "512001-A",
+                "name": "Bank - (company A)",
+                "user_type_id": cls.env.ref("account.data_account_type_liquidity").id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.a_recv_company_b = cls.account_obj.create(
+            {
+                "code": "X11002-B",
+                "name": "Debtors - (company B)",
+                "internal_type": "receivable",
+                "reconcile": "True",
+                "user_type_id": cls.env.ref("account.data_account_type_receivable").id,
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.a_pay_company_b = cls.account_obj.create(
+            {
+                "code": "X1111-B",
+                "name": "Creditors - (company B)",
+                "internal_type": "payable",
+                "reconcile": "True",
+                "user_type_id": cls.env.ref("account.data_account_type_payable").id,
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.a_sale_company_b = cls.account_obj.create(
+            {
+                "code": "X2001-B",
+                "name": "Product Sales - (company B)",
+                "internal_type": "other",
+                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.a_expense_company_b = cls.account_obj.create(
+            {
+                "code": "X2110-B",
+                "name": "Expenses - (company B)",
+                "internal_type": "other",
+                "user_type_id": cls.env.ref("account.data_account_type_expenses").id,
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.a_bank_company_b = cls.account_obj.create(
+            {
+                "code": "512001-B",
+                "name": "Bank - (company B)",
+                "user_type_id": cls.env.ref("account.data_account_type_liquidity").id,
+                "company_id": cls.company_b.id,
+            }
+        )
+
+        cls.sales_journal_company_a = cls.env["account.journal"].create(
+            {
+                "name": "Sales Journal - (Company A)",
+                "code": "SAJ-A",
+                "type": "sale",
+                "sequence_id": cls.sequence_sale_journal_company_a.id,
+                "default_credit_account_id": cls.a_sale_company_a.id,
+                "default_debit_account_id": cls.a_sale_company_a.id,
+                "company_id": cls.company_a.id,
+            }
+        )
+
+        cls.bank_journal_company_a = cls.env["account.journal"].create(
+            {
+                "name": "Bank Journal - (Company A)",
+                "code": "BNK-A",
+                "type": "bank",
+                "default_credit_account_id": cls.a_sale_company_a.id,
+                "default_debit_account_id": cls.a_sale_company_a.id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.misc_journal_company_a = cls.env["account.journal"].create(
+            {
+                "name": "Miscellaneous Operations - (Company A)",
+                "code": "MISC-A",
+                "type": "general",
+                "sequence_id": cls.sequence_misc_journal_company_a.id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.purchases_journal_company_b = cls.env["account.journal"].create(
+            {
+                "name": "Purchases Journal - (Company B)",
+                "code": "EXJ-B",
+                "type": "purchase",
+                "sequence_id": cls.sequence_purchase_journal_company_b.id,
+                "default_credit_account_id": cls.a_expense_company_b.id,
+                "default_debit_account_id": cls.a_expense_company_b.id,
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.bank_journal_company_b = cls.env["account.journal"].create(
+            {
+                "name": "Bank Journal - (Company B)",
+                "code": "BNK-B",
+                "type": "bank",
+                "default_credit_account_id": cls.a_sale_company_b.id,
+                "default_debit_account_id": cls.a_sale_company_b.id,
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.misc_journal_company_b = cls.env["account.journal"].create(
+            {
+                "name": "Miscellaneous Operations - (Company B)",
+                "code": "MISC-B",
+                "type": "general",
+                "sequence_id": cls.sequence_misc_journal_company_b.id,
+                "company_id": cls.company_b.id,
+            }
+        )
+
+        cls.product_consultant_multi_company = cls.env["product.product"].create(
+            {
+                "name": "Service Multi Company",
+                "uom_id": cls.env.ref("uom.product_uom_hour").id,
+                "uom_po_id": cls.env.ref("uom.product_uom_hour").id,
+                "categ_id": cls.env.ref("product.product_category_3").id,
+                "type": "service",
+            }
+        )
+        # if product_multi_company is installed
+        if "company_ids" in cls.env["product.template"]._fields:
+            # We have to do that because the default method added a company
+            cls.product_consultant_multi_company.company_ids = False
+
+        cls.env["ir.sequence"].create(
+            {
+                "name": "Account Sales Journal Company A",
+                "prefix": "SAJ-A/%(year)s/",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.pcg_X58 = cls.env["account.account.template"].create(
+            {
+                "name": "Internal Transfers",
+                "code": "X58",
+                "user_type_id": cls.env.ref(
+                    "account.data_account_type_current_assets"
+                ).id,
+                "reconcile": True,
+            }
+        )
+
+        cls.a_recv_company_a = cls.account_obj.create(
+            {
+                "code": "X11002-A",
+                "name": "Debtors - (company A)",
+                "internal_type": "receivable",
+                "reconcile": "True",
+                "user_type_id": cls.env.ref("account.data_account_type_receivable").id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.a_pay_company_a = cls.account_obj.create(
+            {
+                "code": "X1111-A",
+                "name": "Creditors - (company A)",
+                "internal_type": "payable",
+                "reconcile": "True",
+                "user_type_id": cls.env.ref("account.data_account_type_payable").id,
+                "company_id": cls.company_a.id,
+            }
+        )
+
+        cls.partner_company_a.property_account_receivable_id = cls.a_recv_company_a.id
+        cls.partner_company_a.property_account_payable_id = cls.a_pay_company_a.id
+
+        cls.partner_company_b.property_account_receivable_id = cls.a_recv_company_b.id
+        cls.partner_company_b.property_account_payable_id = cls.a_pay_company_b.id
+
+        cls.fiscal_position_template_intraeub2b_company_a = cls.env[
+            "account.fiscal.position"
+        ].create(
+            {
+                "name": "Intra-EU B2B - (Company A)",
+                "auto_apply": True,
+                "vat_required": True,
+                "country_group_id": cls.env.ref("base.europe").id,
+                "note": "French VAT exemption according to articles 262 ter"
+                " I (for products) and/or 283-2 (for services) of CGI",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.fiscal_position_template_import_export_company_a = cls.env[
+            "account.fiscal.position"
+        ].create(
+            {
+                "name": "Import/Export + DOM-TOM - (Company A)",
+                "note": "French VAT exemption according to articles 262 I of CGI",
+                "country_group_id": cls.env.ref("base.europe").id,
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.fiscal_position_template_intraeub2b_company_b = cls.env[
+            "account.fiscal.position"
+        ].create(
+            {
+                "name": "Intra-EU B2B - (Company B)",
+                "auto_apply": True,
+                "vat_required": True,
+                "country_group_id": cls.env.ref("base.europe").id,
+                "note": "French VAT exemption according to articles 262 ter"
+                "I (for products) and/or 283-2 (for services) of CGI",
+                "company_id": cls.company_b.id,
+            }
+        )
+        cls.fiscal_position_template_import_export_company_b = cls.env[
+            "account.fiscal.position"
+        ].create(
+            {
+                "name": "Import/Export + DOM-TOM - (Company B)",
+                "country_group_id": cls.env.ref("base.europe").id,
+                "note": "French VAT exemption according to articles 262 I of CGI",
+                "company_id": cls.company_b.id,
+            }
+        )
+
+        cls.invoice_company_a = Form(
+            cls.account_move_obj.with_context(
+                default_type="out_invoice", force_company=cls.company_a.id
+            )
+        )
+        cls.invoice_company_a.partner_id = cls.partner_company_b
+        cls.invoice_company_a.journal_id = cls.sales_journal_company_a
+        cls.invoice_company_a.currency_id = cls.env.ref("base.EUR")
+
+        with cls.invoice_company_a.invoice_line_ids.new() as line_form:
+            line_form.product_id = cls.product_consultant_multi_company
+            line_form.quantity = 1
+            line_form.product_uom_id = cls.env.ref("uom.product_uom_hour")
+            line_form.account_id = cls.a_sale_company_a
+            line_form.name = "Service Multi Company"
+            line_form.price_unit = 450.0
+        cls.invoice_company_a = cls.invoice_company_a.save()
+        cls.invoice_line_a = cls.invoice_company_a.invoice_line_ids[0]
+
+        cls.company_a.invoice_auto_validation = True
+
+        cls.product_a = cls.invoice_line_a.product_id
+        cls.product_a.with_context(
+            force_company=cls.company_b.id
+        ).property_account_expense_id = cls.a_expense_company_b.id
 
 
 class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
@@ -114,10 +518,10 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEquals(len(invoices), 1)
         self.assertEquals(invoices[0].state, "posted")
         self.assertEquals(
-            invoices[0].partner_id, self.invoice_company_a.company_id.partner_id
+            invoices[0].partner_id, self.invoice_company_a.company_id.partner_id,
         )
         self.assertEquals(
-            invoices[0].company_id.partner_id, self.invoice_company_a.partner_id
+            invoices[0].company_id.partner_id, self.invoice_company_a.partner_id,
         )
         self.assertEquals(
             len(invoices[0].invoice_line_ids),
@@ -129,7 +533,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
         self.assertEquals(
-            invoice_line.analytic_account_id, self.invoice_line_a.analytic_account_id
+            invoice_line.analytic_account_id, self.invoice_line_a.analytic_account_id,
         )
         self.assertEquals(
             invoice_line.analytic_tag_ids, self.invoice_line_a.analytic_tag_ids
