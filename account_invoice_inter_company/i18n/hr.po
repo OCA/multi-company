@@ -18,13 +18,13 @@ msgstr ""
 "X-Generator: Weblate 3.8\n"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:205
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:206
 #, python-format
 msgid "%s - Canceled Invoice: %s"
 msgstr "%s - Storniran račun: %s"
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:188
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:189
 #, python-format
 msgid "%s - Invoice: %s"
 msgstr "%s - Račun: %s"
@@ -95,7 +95,7 @@ msgid "No Chart of Account Template has been defined !"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:169
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:170
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr ""
@@ -116,7 +116,7 @@ msgid "Source Invoice Line"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:98
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:99
 #, python-format
 msgid ""
 "The invoice line '%s' doesn't have a product. All invoice lines should have "
@@ -124,7 +124,7 @@ msgid ""
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: code:addons/account_invoice_inter_company/models/account_invoice.py:122
+#: code:addons/account_invoice_inter_company/models/account_invoice.py:123
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
