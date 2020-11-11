@@ -93,7 +93,8 @@ class AccountInvoice(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         dest_inv_line_data = []
-        for src_line in self.invoice_line_ids:
+        for src_line in self.invoice_line_ids.filtered(
+                lambda x: not x.display_type):
             if not src_line.product_id:
                 raise UserError(_(
                     "The invoice line '%s' doesn't have a product. "
