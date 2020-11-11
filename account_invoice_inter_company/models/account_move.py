@@ -92,8 +92,8 @@ class AccountMove(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         dest_move_line_data = []
-        for src_line in self.invoice_line_ids:
-            if dest_company.company_share_product and not src_line.product_id:
+        for src_line in self.invoice_line_ids.filtered(lambda x: not x.display_type):
+            if not src_line.product_id:
                 raise UserError(
                     _(
                         "The invoice line '%s' doesn't have a product. "
@@ -233,11 +233,7 @@ class AccountMoveLine(models.Model):
         """
         self.ensure_one()
         # Use test.Form() class to trigger propper onchanges on the line
-        product = (
-            dest_company.company_share_product
-            and self.product_id
-            or self.env["product.product"]
-        )
+        product = self.product_id or False
         dest_form = Form(
             dest_move.with_context(force_company=dest_company.id),
             "account_invoice_inter_company.view_move_form",
