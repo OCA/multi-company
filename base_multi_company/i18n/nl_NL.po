@@ -66,7 +66,6 @@ msgstr "Parent id"
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_res_company_assignment
 #, fuzzy
-#| msgid "res.company.assignment"
 msgid "Res Company Assignment"
 msgstr "res.company.assignment"
 
