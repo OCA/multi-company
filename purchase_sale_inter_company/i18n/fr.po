@@ -155,9 +155,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:74
 #, fuzzy, python-format
-#| msgid ""
-#| "You cannot create SO from PO because sale price list currency is "
-#| "different from purchase price list currency."
 msgid ""
 "You cannot create SO from PO because sale price list currency is different "
 "than purchase price list currency."
