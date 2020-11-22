@@ -35,7 +35,6 @@ msgstr "Cuenta"
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__partner_id
 #, fuzzy
-#| msgid "Account"
 msgid "Account Holder"
 msgstr "Cuenta"
 
@@ -47,14 +46,12 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__journal_id
 #, fuzzy
-#| msgid "Account"
 msgid "Account Journal"
 msgstr "Cuenta"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_number
 #, fuzzy
-#| msgid "Account"
 msgid "Account Number"
 msgstr "Cuenta"
 
@@ -78,7 +75,6 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_id
 #, fuzzy
-#| msgid "Banks"
 msgid "Bank"
 msgstr "Bancos"
 
@@ -278,7 +274,6 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__sequence
 #, fuzzy
-#| msgid "Sequences"
 msgid "Sequence"
 msgstr "Secuencias"
 
@@ -417,7 +412,6 @@ msgstr "Asistente"
 #. module: account_multicompany_easy_creation
 #: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
 #, fuzzy
-#| msgid "account.multicompany.easy.creation.wiz"
 msgid "Wizard Account Multi-company Easy Creation"
 msgstr "'account.multicompany.easy.creation.wiz'"
 
