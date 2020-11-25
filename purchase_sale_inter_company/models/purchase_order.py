@@ -144,8 +144,7 @@ class PurchaseOrder(models.Model):
                 and dest_company.warehouse_id
                 or False
             )
-        if "requested_date" in new_order:
-            new_order.requested_date = self.date_planned
+        new_order.commitment_date = self.date_planned
         return new_order._convert_to_write(new_order._cache)
 
     def _prepare_sale_order_line_data(self, purchase_line, dest_company, sale_order):
