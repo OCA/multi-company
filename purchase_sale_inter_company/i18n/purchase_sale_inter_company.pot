@@ -132,7 +132,7 @@ msgid "When a Sale Order is created by a multi company rule for this company, it
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:161
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:160
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
