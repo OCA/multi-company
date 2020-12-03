@@ -34,6 +34,6 @@ class ResCompany(models.Model):
         group_account_invoice = self.env.ref("account.group_account_invoice")
         return [
             ("id", "!=", self.env.ref("base.user_root").id),
-            ("company_id", "=", self.id),
+            ("company_ids", "=", self.id),
             ("id", "in", group_account_invoice.users.ids),
         ]
