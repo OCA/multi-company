@@ -1,7 +1,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import Form
 from odoo.tools import float_compare
 
@@ -57,7 +57,11 @@ class AccountMove(models.Model):
         dest_user = self.env["res.users"].search(domain, limit=1)
         if dest_user:
             for line in self.invoice_line_ids:
-                if not line.product_id.with_user(dest_user).check_access_rights("read"):
+                try:
+                    line.sudo(False).product_id.product_tmpl_id.with_user(
+                        dest_user
+                    ).check_access_rule("read")
+                except AccessError:
                     raise UserError(
                         _(
                             "You cannot create invoice in company '%s' with "
