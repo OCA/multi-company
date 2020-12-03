@@ -4,7 +4,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tests.common import Form, SavepointCase
 
 
@@ -33,12 +33,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
         cls.chart.try_loading(cls.company_a)
         cls.partner_company_a = cls.env["res.partner"].create(
-            {
-                "name": cls.company_a.name,
-                "is_company": True,
-                "company_id": cls.company_a.id,
-                "vat": "FR56465451",
-            }
+            {"name": cls.company_a.name, "is_company": True, "vat": "FR56465451"}
         )
         cls.company_a.partner_id = cls.partner_company_a
         cls.company_b = cls.env["res.company"].create(
@@ -53,12 +48,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
         cls.chart.try_loading(cls.company_b)
         cls.partner_company_b = cls.env["res.partner"].create(
-            {
-                "name": cls.company_b.name,
-                "is_company": True,
-                "company_id": cls.company_b.id,
-                "vat": "FR56465451",
-            }
+            {"name": cls.company_b.name, "is_company": True, "vat": "FR56465451"}
         )
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
@@ -78,7 +68,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "email": "usera@yourcompany.com",
                 "password": "usera_p4S$word",
                 "company_id": cls.company_a.id,
-                "company_ids": [(6, 0, [cls.company_a.id, cls.company_b.id])],
+                "company_ids": [(6, 0, [cls.company_a.id])],
                 "groups_id": [
                     (
                         6,
@@ -99,7 +89,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "email": "userb@yourcompany.com",
                 "password": "userb_p4S$word",
                 "company_id": cls.company_b.id,
-                "company_ids": [(6, 0, [cls.company_b.id, cls.company_a.id])],
+                "company_ids": [(6, 0, [cls.company_b.id])],
                 "groups_id": [
                     (
                         6,
@@ -566,3 +556,54 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertEqual(len(invoices), 1)
+
+    def test_confirm_invoice_with_product_and_shared_catalog(self):
+        """ With no security rule, child company have access to any product.
+            Then child invoice can share the same product
+        """
+        # ensure the catalog is shared even if product is in other company
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # Product is set to a specific company
+        self.product_a.write({"company_id": self.company_a.id})
+        invoices = self._confirm_invoice_with_product()
+        self.assertNotEqual(
+            invoices.invoice_line_ids[0].product_id, self.env["product.product"]
+        )
+
+    def test_confirm_invoice_with_native_product_rule_and_shared_product(self):
+        """ With native security rule, products with access in both companies
+            must be present in parent and child invoices.
+        """
+        # ensure the catalog is shared even if product is in other company
+        self.env.ref("product.product_comp_rule").write({"active": True})
+        # Product is set to a specific company
+        self.product_a.write({"company_id": False})
+        # If product_multi_company is installed
+        if "company_ids" in dir(self.product_a):
+            self.product_a.write({"company_ids": [(5, 0, 0)]})
+        invoices = self._confirm_invoice_with_product()
+        self.assertEqual(invoices.invoice_line_ids[0].product_id, self.product_a)
+
+    def test_confirm_invoice_with_native_product_rule_and_unshared_product(self):
+        """ With native security rule, products with no access in both companies
+            must prevent child invoice creation.
+        """
+        # ensure the catalog is shared even if product is in other company
+        self.env.ref("product.product_comp_rule").write({"active": True})
+        # Product is set to a specific company
+        self.product_a.write({"company_id": self.company_a.id})
+        # If product_multi_company is installed
+        if "company_ids" in dir(self.product_a):
+            self.product_a.write({"company_ids": [(6, 0, [self.company_a.id])]})
+        with self.assertRaises(UserError):
+            self._confirm_invoice_with_product()
+
+    def _confirm_invoice_with_product(self):
+        # Confirm the invoice of company A
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        # Check destination invoice created in company B
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(len(invoices), 1)
+        return invoices

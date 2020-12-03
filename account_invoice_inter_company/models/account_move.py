@@ -1,7 +1,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import Form
 from odoo.tools import float_compare
 
@@ -51,13 +51,17 @@ class AccountMove(models.Model):
 
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
-        if not dest_company.company_share_product:
+        if dest_company.company_share_product:
             return
         domain = dest_company._get_user_domain()
         dest_user = self.env["res.users"].search(domain, limit=1)
         if dest_user:
             for line in self.invoice_line_ids:
-                if not line.product_id.with_user(dest_user).check_access_rights("read"):
+                try:
+                    line.sudo(False).product_id.product_tmpl_id.with_user(
+                        dest_user
+                    ).check_access_rule("read")
+                except AccessError:
                     raise UserError(
                         _(
                             "You cannot create invoice in company '%s' with "
@@ -92,8 +96,8 @@ class AccountMove(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         dest_move_line_data = []
-        for src_line in self.invoice_line_ids:
-            if dest_company.company_share_product and not src_line.product_id:
+        for src_line in self.invoice_line_ids.filtered(lambda x: not x.display_type):
+            if not src_line.product_id:
                 raise UserError(
                     _(
                         "The invoice line '%s' doesn't have a product. "
@@ -233,11 +237,7 @@ class AccountMoveLine(models.Model):
         """
         self.ensure_one()
         # Use test.Form() class to trigger propper onchanges on the line
-        product = (
-            dest_company.company_share_product
-            and self.product_id
-            or self.env["product.product"]
-        )
+        product = self.product_id or False
         dest_form = Form(
             dest_move.with_context(force_company=dest_company.id),
             "account_invoice_inter_company.view_move_form",
