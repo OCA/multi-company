@@ -270,9 +270,9 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Sales Journal - (Company A)",
                 "code": "SAJ-A",
                 "type": "sale",
-                "sequence_id": cls.sequence_sale_journal_company_a.id,
-                "default_credit_account_id": cls.a_sale_company_a.id,
-                "default_debit_account_id": cls.a_sale_company_a.id,
+                "secure_sequence_id": cls.sequence_sale_journal_company_a.id,
+                "payment_credit_account_id": cls.a_sale_company_a.id,
+                "payment_debit_account_id": cls.a_sale_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -282,8 +282,8 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Bank Journal - (Company A)",
                 "code": "BNK-A",
                 "type": "bank",
-                "default_credit_account_id": cls.a_sale_company_a.id,
-                "default_debit_account_id": cls.a_sale_company_a.id,
+                "payment_credit_account_id": cls.a_sale_company_a.id,
+                "payment_debit_account_id": cls.a_sale_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -292,7 +292,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Miscellaneous Operations - (Company A)",
                 "code": "MISC-A",
                 "type": "general",
-                "sequence_id": cls.sequence_misc_journal_company_a.id,
+                "secure_sequence_id": cls.sequence_misc_journal_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -301,9 +301,9 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Purchases Journal - (Company B)",
                 "code": "EXJ-B",
                 "type": "purchase",
-                "sequence_id": cls.sequence_purchase_journal_company_b.id,
-                "default_credit_account_id": cls.a_expense_company_b.id,
-                "default_debit_account_id": cls.a_expense_company_b.id,
+                "secure_sequence_id": cls.sequence_purchase_journal_company_b.id,
+                "payment_credit_account_id": cls.a_expense_company_b.id,
+                "payment_debit_account_id": cls.a_expense_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -312,8 +312,8 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Bank Journal - (Company B)",
                 "code": "BNK-B",
                 "type": "bank",
-                "default_credit_account_id": cls.a_sale_company_b.id,
-                "default_debit_account_id": cls.a_sale_company_b.id,
+                "payment_credit_account_id": cls.a_sale_company_b.id,
+                "payment_debit_account_id": cls.a_sale_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -322,7 +322,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Miscellaneous Operations - (Company B)",
                 "code": "MISC-B",
                 "type": "general",
-                "sequence_id": cls.sequence_misc_journal_company_b.id,
+                "secure_sequence_id": cls.sequence_misc_journal_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -434,8 +434,8 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
 
         cls.invoice_company_a = Form(
-            cls.account_move_obj.with_context(
-                default_type="out_invoice", force_company=cls.company_a.id
+            cls.account_move_obj.with_company(cls.company_a.id).with_context(
+                default_move_type="out_invoice",
             )
         )
         cls.invoice_company_a.partner_id = cls.partner_company_b
@@ -455,8 +455,8 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         cls.company_a.invoice_auto_validation = True
 
         cls.product_a = cls.invoice_line_a.product_id
-        cls.product_a.with_context(
-            force_company=cls.company_b.id
+        cls.product_a.with_company(
+            cls.company_b.id
         ).property_account_expense_id = cls.a_expense_company_b.id
 
 
@@ -464,10 +464,10 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
     def test01_user(self):
         # Check user of company B (company of destination)
         # with which we check the intercompany product
-        self.assertNotEquals(self.user_company_b.id, 1)
+        self.assertNotEqual(self.user_company_b.id, 1)
         orig_invoice = self.invoice_company_a
         dest_company = orig_invoice._find_company_from_invoice_partner()
-        self.assertEquals(self.user_company_b.company_id, dest_company)
+        self.assertEqual(self.user_company_b.company_id, dest_company)
         self.assertIn(
             self.user_company_b.id,
             self.env.ref("account.group_account_invoice").users.ids,
@@ -482,9 +482,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         # ensure the catalog is shared
         self.env.ref("product.product_comp_rule").write({"active": False})
         # Make sure there are no taxes in target company for the used product
-        self.product_a.with_context(
-            force_company=self.user_company_b.id
-        ).supplier_taxes_id = False
+        self.product_a.with_company(self.user_company_b.id).supplier_taxes_id = False
         # Put some analytic data for checking its propagation
         analytic_account = self.env["account.analytic.account"].create(
             {"name": "Test analytic account", "company_id": False}
@@ -504,31 +502,31 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
-        self.assertNotEquals(invoices, False)
-        self.assertEquals(len(invoices), 1)
-        self.assertEquals(invoices[0].state, "posted")
-        self.assertEquals(
+        self.assertNotEqual(invoices, False)
+        self.assertEqual(len(invoices), 1)
+        self.assertEqual(invoices[0].state, "posted")
+        self.assertEqual(
             invoices[0].partner_id,
             self.invoice_company_a.company_id.partner_id,
         )
-        self.assertEquals(
+        self.assertEqual(
             invoices[0].company_id.partner_id,
             self.invoice_company_a.partner_id,
         )
-        self.assertEquals(
+        self.assertEqual(
             len(invoices[0].invoice_line_ids),
             len(self.invoice_company_a.invoice_line_ids),
         )
         invoice_line = invoices[0].invoice_line_ids[0]
-        self.assertEquals(
+        self.assertEqual(
             invoice_line.product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
-        self.assertEquals(
+        self.assertEqual(
             invoice_line.analytic_account_id,
             self.invoice_line_a.analytic_account_id,
         )
-        self.assertEquals(
+        self.assertEqual(
             invoice_line.analytic_tag_ids, self.invoice_line_a.analytic_tag_ids
         )
         # Cancel the invoice of company A
@@ -538,13 +536,13 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()
         # Check invoices after to cancel invoice of company A
-        self.assertEquals(self.invoice_company_a.state, "cancel")
-        self.assertEquals(invoices[0].state, "cancel")
-        self.assertEquals(invoices[0].invoice_origin, invoice_origin)
+        self.assertEqual(self.invoice_company_a.state, "cancel")
+        self.assertEqual(invoices[0].state, "cancel")
+        self.assertEqual(invoices[0].invoice_origin, invoice_origin)
         # Check if keep the invoice number
         invoice_number = self.invoice_company_a.name
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
-        self.assertEquals(self.invoice_company_a.name, invoice_number)
+        self.assertEqual(self.invoice_company_a.name, invoice_number)
 
     def test_confirm_invoice_with_child_partner(self):
         # ensure the catalog is shared
