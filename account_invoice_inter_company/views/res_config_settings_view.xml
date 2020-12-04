@@ -53,19 +53,19 @@
                 </div>
             </xpath>
             <xpath
-                expr="//div[@id='multi_company']//field[@name='module_inter_company_rules']"
+                expr="//div[@id='multi_company']//field[@name='module_account_inter_company_rules']"
                 position="attributes"
             >
                 <attribute name="attrs">{'invisible': True}</attribute>
             </xpath>
             <xpath
-                expr="//div[@id='multi_company']//label[@for='module_inter_company_rules']"
+                expr="//div[@id='multi_company']//label[@for='module_account_inter_company_rules']"
                 position="attributes"
             >
                 <attribute name="attrs">{'invisible': True}</attribute>
             </xpath>
             <xpath
-                expr="//div[@id='multi_company']//field[@name='module_inter_company_rules']/../../div[2]/span"
+                expr="//div[@id='multi_company']//field[@name='module_account_inter_company_rules']/../../div[2]/span"
                 position="attributes"
             >
                 <attribute name="attrs">{'invisible': True}</attribute>
