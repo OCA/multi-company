@@ -60,27 +60,27 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.company_b.warehouse_id = cls.warehouse_company_b
         cls.company_b.sale_auto_validation = 1
 
-        cls.user_company_a.group_ids = [
+        cls.user_company_a.groups_id = [
             (
                 6,
                 0,
                 [
-                    cls.env.ref("account.group_account_manager"),
-                    cls.env.ref("base.group_partner_manager"),
-                    cls.env.ref("sales_team.group_sale_manager"),
-                    cls.env.ref("purchase.group_purchase_user"),
+                    cls.env.ref("account.group_account_manager").id,
+                    cls.env.ref("base.group_partner_manager").id,
+                    cls.env.ref("sales_team.group_sale_manager").id,
+                    cls.env.ref("purchase.group_purchase_user").id,
                 ],
             )
         ]
-        cls.user_company_b.group_ids = [
+        cls.user_company_b.groups_id = [
             (
                 6,
                 0,
                 [
-                    cls.env.ref("account.group_account_manager"),
-                    cls.env.ref("base.group_partner_manager"),
-                    cls.env.ref("sales_team.group_sale_manager"),
-                    cls.env.ref("purchase.group_purchase_user"),
+                    cls.env.ref("account.group_account_manager").id,
+                    cls.env.ref("base.group_partner_manager").id,
+                    cls.env.ref("sales_team.group_sale_manager").id,
+                    cls.env.ref("purchase.group_purchase_user").id,
                 ],
             )
         ]
@@ -88,6 +88,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.purchase_company_a = Form(cls.env["purchase.order"])
         cls.purchase_company_a.company_id = cls.company_a
         cls.purchase_company_a.partner_id = cls.partner_company_b
+
+        cls.product_consultant_multi_company.invoice_policy = "order"
 
         with cls.purchase_company_a.order_line.new() as line_form:
             line_form.product_id = cls.product_consultant_multi_company
@@ -109,9 +111,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "name": "Sales Journal - (Company B)",
                 "code": "SAJ-B",
                 "type": "sale",
-                "sequence_id": cls.sequence_sale_journal_company_b.id,
-                "default_credit_account_id": cls.a_sale_company_b.id,
-                "default_debit_account_id": cls.a_sale_company_b.id,
+                "secure_sequence_id": cls.sequence_sale_journal_company_b.id,
+                "payment_credit_account_id": cls.a_sale_company_b.id,
+                "payment_debit_account_id": cls.a_sale_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -120,9 +122,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "name": "Purchases Journal - (Company A)",
                 "code": "PAJ-A",
                 "type": "purchase",
-                "sequence_id": cls.sequence_purchase_journal_company_a.id,
-                "default_credit_account_id": cls.a_expense_company_a.id,
-                "default_debit_account_id": cls.a_expense_company_a.id,
+                "secure_sequence_id": cls.sequence_purchase_journal_company_a.id,
+                "payment_credit_account_id": cls.a_expense_company_a.id,
+                "payment_debit_account_id": cls.a_expense_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -170,26 +172,24 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             .with_user(self.user_company_b)
             .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
         )
-        self.assertNotEquals(sales, False)
-        self.assertEquals(len(sales), 1)
+        self.assertNotEqual(sales, False)
+        self.assertEqual(len(sales), 1)
         if sales.company_id.sale_auto_validation:
-            self.assertEquals(sales.state, "sale")
+            self.assertEqual(sales.state, "sale")
         else:
-            self.assertEquals(sales.state, "draft")
-        self.assertEquals(
+            self.assertEqual(sales.state, "draft")
+        self.assertEqual(
             sales.partner_id, self.purchase_company_a.company_id.partner_id
         )
-        self.assertEquals(
+        self.assertEqual(
             sales.company_id.partner_id, self.purchase_company_a.partner_id
         )
-        self.assertEquals(
-            len(sales.order_line), len(self.purchase_company_a.order_line)
-        )
-        self.assertEquals(
+        self.assertEqual(len(sales.order_line), len(self.purchase_company_a.order_line))
+        self.assertEqual(
             sales.order_line.product_id,
             self.purchase_company_a.order_line.product_id,
         )
-        self.assertEquals(sales.note, "Test note")
+        self.assertEqual(sales.note, "Test note")
 
     def xxtest_date_planned(self):
         # Install sale_order_dates module
@@ -206,7 +206,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             .with_user(self.user_company_b)
             .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
         )
-        self.assertEquals(sales.requested_date, "2070-12-31")
+        self.assertEqual(sales.requested_date, "2070-12-31")
 
     def test_raise_product_access(self):
         product_rule = self.env.ref("product.product_comp_rule")
@@ -233,11 +233,11 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         sale_invoice_id = sales._create_invoices()[0]
         sale_invoice_id.action_post()
-        self.assertEquals(
+        self.assertEqual(
             sale_invoice_id.auto_invoice_id,
             self.purchase_company_a.invoice_ids,
         )
-        self.assertEquals(
+        self.assertEqual(
             sale_invoice_id.auto_invoice_id.invoice_line_ids,
             self.purchase_company_a.order_line.invoice_lines,
         )
@@ -250,7 +250,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             .with_user(self.user_company_b)
             .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
         )
-        self.assertEquals(self.purchase_company_a.partner_ref, sales.name)
+        self.assertEqual(self.purchase_company_a.partner_ref, sales.name)
         self.purchase_company_a.with_user(self.user_company_a).button_cancel()
         self.assertFalse(self.purchase_company_a.partner_ref)
 

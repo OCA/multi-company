@@ -47,7 +47,5 @@ class StockPicking(models.Model):
                     )
         # Transfer dropship pickings
         for po_pick in po_picks.sudo():
-            po_pick.with_context(
-                force_company=po_pick.company_id.id,
-            ).action_done()
+            po_pick.with_company(po_pick.company_id.id).action_done()
         return super(StockPicking, self).action_done()
