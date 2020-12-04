@@ -13,11 +13,7 @@
             >
                 <div class="o_form_label mt8">Purchase/Sale</div>
                 <div id="inter_company_so_from_po">
-                    <field
-                        name="so_from_po"
-                        class="oe_inline"
-                        domain="[('company_id', '=', company_id)]"
-                    />
+                    <field name="so_from_po" class="oe_inline" />
                     <label
                         string="Sale from purchase"
                         class="o_light_label"
