@@ -71,10 +71,10 @@ class AccountMove(models.Model):
                     )
 
     def _inter_company_create_invoice(self, dest_company):
-        """ create an invoice for the given company : it will copy
-                the invoice lines in the new invoice.
-            :param dest_company : the company of the created invoice
-            :rtype dest_company : res.company record
+        """create an invoice for the given company : it will copy
+            the invoice lines in the new invoice.
+        :param dest_company : the company of the created invoice
+        :rtype dest_company : res.company record
         """
         self.ensure_one()
         self = self.with_context(check_move_validity=False)
@@ -157,9 +157,9 @@ class AccountMove(models.Model):
         return MAP_JOURNAL_TYPE.get(self.type)
 
     def _prepare_invoice_data(self, dest_company):
-        """ Generate invoice values
-            :param dest_company : the company of the created invoice
-            :rtype dest_company : res.company record
+        """Generate invoice values
+        :param dest_company : the company of the created invoice
+        :rtype dest_company : res.company record
         """
         self.ensure_one()
         dest_inv_type = self._get_destination_invoice_type()
@@ -229,11 +229,11 @@ class AccountMoveLine(models.Model):
 
     @api.model
     def _prepare_account_move_line(self, dest_move, dest_company):
-        """ Generate invoice line values
-            :param dest_move : the created invoice
-            :rtype dest_move : account.move record
-            :param dest_company : the company of the created invoice
-            :rtype dest_company : res.company record
+        """Generate invoice line values
+        :param dest_move : the created invoice
+        :rtype dest_move : account.move record
+        :param dest_company : the company of the created invoice
+        :rtype dest_company : res.company record
         """
         self.ensure_one()
         # Use test.Form() class to trigger propper onchanges on the line
