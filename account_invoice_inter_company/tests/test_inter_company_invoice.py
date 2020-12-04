@@ -508,10 +508,12 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEquals(len(invoices), 1)
         self.assertEquals(invoices[0].state, "posted")
         self.assertEquals(
-            invoices[0].partner_id, self.invoice_company_a.company_id.partner_id,
+            invoices[0].partner_id,
+            self.invoice_company_a.company_id.partner_id,
         )
         self.assertEquals(
-            invoices[0].company_id.partner_id, self.invoice_company_a.partner_id,
+            invoices[0].company_id.partner_id,
+            self.invoice_company_a.partner_id,
         )
         self.assertEquals(
             len(invoices[0].invoice_line_ids),
@@ -523,7 +525,8 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
         self.assertEquals(
-            invoice_line.analytic_account_id, self.invoice_line_a.analytic_account_id,
+            invoice_line.analytic_account_id,
+            self.invoice_line_a.analytic_account_id,
         )
         self.assertEquals(
             invoice_line.analytic_tag_ids, self.invoice_line_a.analytic_tag_ids
@@ -558,8 +561,8 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(len(invoices), 1)
 
     def test_confirm_invoice_with_product_and_shared_catalog(self):
-        """ With no security rule, child company have access to any product.
-            Then child invoice can share the same product
+        """With no security rule, child company have access to any product.
+        Then child invoice can share the same product
         """
         # ensure the catalog is shared even if product is in other company
         self.env.ref("product.product_comp_rule").write({"active": False})
@@ -571,8 +574,8 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
 
     def test_confirm_invoice_with_native_product_rule_and_shared_product(self):
-        """ With native security rule, products with access in both companies
-            must be present in parent and child invoices.
+        """With native security rule, products with access in both companies
+        must be present in parent and child invoices.
         """
         # ensure the catalog is shared even if product is in other company
         self.env.ref("product.product_comp_rule").write({"active": True})
@@ -585,8 +588,8 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(invoices.invoice_line_ids[0].product_id, self.product_a)
 
     def test_confirm_invoice_with_native_product_rule_and_unshared_product(self):
-        """ With native security rule, products with no access in both companies
-            must prevent child invoice creation.
+        """With native security rule, products with no access in both companies
+        must prevent child invoice creation.
         """
         # ensure the catalog is shared even if product is in other company
         self.env.ref("product.product_comp_rule").write({"active": True})
