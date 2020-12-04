@@ -35,7 +35,9 @@ class ResConfigSettings(models.TransientModel):
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
         product_rule = self.env.ref("product.product_comp_rule")
-        res.update(company_share_product=not bool(product_rule.active),)
+        res.update(
+            company_share_product=not bool(product_rule.active),
+        )
         return res
 
     def set_values(self):
