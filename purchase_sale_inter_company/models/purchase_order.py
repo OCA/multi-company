@@ -11,15 +11,15 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
     def button_approve(self, force=False):
-        """ Generate inter company sale order base on conditions."""
+        """Generate inter company sale order base on conditions."""
         res = super().button_approve(force)
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
             dest_company = purchase_order.partner_id.ref_company_ids
             if dest_company and dest_company.so_from_po:
-                purchase_order.with_context(
-                    force_company=dest_company.id
+                purchase_order.with_company(
+                    dest_company.id
                 )._inter_company_create_sale_order(dest_company)
         return res
 
