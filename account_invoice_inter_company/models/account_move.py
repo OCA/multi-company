@@ -44,9 +44,9 @@ class AccountMove(models.Model):
                 src_invoice = src_invoice.with_user(intercompany_user).sudo()
             else:
                 src_invoice = src_invoice.sudo()
-            src_invoice.with_context(
-                force_company=dest_company.id
-            )._inter_company_create_invoice(dest_company)
+            src_invoice.with_company(dest_company.id)._inter_company_create_invoice(
+                dest_company
+            )
         return res
 
     def _check_intercompany_product(self, dest_company):
@@ -55,20 +55,19 @@ class AccountMove(models.Model):
             return
         domain = dest_company._get_user_domain()
         dest_user = self.env["res.users"].search(domain, limit=1)
-        if dest_user:
-            for line in self.invoice_line_ids:
-                try:
-                    line.sudo(False).product_id.product_tmpl_id.with_user(
-                        dest_user
-                    ).check_access_rule("read")
-                except AccessError:
-                    raise UserError(
-                        _(
-                            "You cannot create invoice in company '%s' with "
-                            "product '%s' because it is not multicompany"
-                        )
-                        % (dest_company.name, line.product_id.name)
+        for line in self.invoice_line_ids:
+            try:
+                line.sudo(False).with_user(dest_user).with_context(
+                    {"allowed_company_ids": [dest_company.id]}
+                ).product_id.product_tmpl_id.check_access_rule("read")
+            except AccessError:
+                raise UserError(
+                    _(
+                        "You cannot create invoice in company '%s' with "
+                        "product '%s' because it is not multicompany"
                     )
+                    % (dest_company.name, line.product_id.name)
+                )
 
     def _inter_company_create_invoice(self, dest_company):
         """create an invoice for the given company : it will copy
@@ -144,7 +143,7 @@ class AccountMove(models.Model):
             "out_refund": "in_refund",
             "in_refund": "out_refund",
         }
-        return MAP_INVOICE_TYPE.get(self.type)
+        return MAP_INVOICE_TYPE.get(self.move_type)
 
     def _get_destination_journal_type(self):
         self.ensure_one()
@@ -154,7 +153,7 @@ class AccountMove(models.Model):
             "out_refund": "purchase",
             "in_refund": "sale",
         }
-        return MAP_JOURNAL_TYPE.get(self.type)
+        return MAP_JOURNAL_TYPE.get(self.move_type)
 
     def _prepare_invoice_data(self, dest_company):
         """Generate invoice values
@@ -176,8 +175,10 @@ class AccountMove(models.Model):
             )
         # Use test.Form() class to trigger propper onchanges on the invoice
         dest_invoice_data = Form(
-            self.env["account.move"].with_context(
-                default_type=dest_inv_type, force_company=dest_company.id
+            self.env["account.move"]
+            .with_company(dest_company.id)
+            .with_context(
+                default_move_type=dest_inv_type,
             )
         )
         dest_invoice_data.journal_id = dest_journal
@@ -239,7 +240,7 @@ class AccountMoveLine(models.Model):
         # Use test.Form() class to trigger propper onchanges on the line
         product = self.product_id or False
         dest_form = Form(
-            dest_move.with_context(force_company=dest_company.id),
+            dest_move.with_company(dest_company.id),
             "account_invoice_inter_company.view_move_form",
         )
         with dest_form.invoice_line_ids.new() as line_form:
