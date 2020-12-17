@@ -1,4 +1,5 @@
 from odoo import models
+from odoo.tools import ustr
 from urllib.parse import urlparse, parse_qs
 import re
 
@@ -8,7 +9,7 @@ class MailThread(models.AbstractModel):
 
     def _replace_local_links(self, html, base_url=None):
         if not base_url:
-            urls = re.findall(r'href=[\'"]?([^\'" >]+)', html)
+            urls = re.findall(r'href=[\'"]?([^\'" >]+)', ustr(html))
             for url in urls:
                 query = parse_qs(urlparse(url).query)
                 model = query.get("model", [""])[0]
