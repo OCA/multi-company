@@ -89,6 +89,12 @@ class TestProductMultiCompany(common.TransactionCase):
             self.product_company_1.with_user(self.user_company_1).company_id,
             self.company_1,
         )
+        # Templates and Variants initially have the same companies
+        self.assertEqual(
+            self.product_company_both.company_ids,
+            self.product_company_both.product_tmpl_id.company_ids,
+        )
+
         # All of this should be allowed
         self.product_company_1.with_user(self.user_company_1).name = "Test"
         self.product_company_both.with_user(self.user_company_1).name = "Test"
@@ -107,6 +113,14 @@ class TestProductMultiCompany(common.TransactionCase):
         # And this one not
         with self.assertRaises(AccessError):
             self.product_company_1.with_user(self.user_company_2).name = "Test"
+
+    def test_product_write(self):
+        # Companies on variants may be different compared to their templates
+        self.product_company_both.write({"company_ids": [(6, 0, self.company_1.ids)]})
+        self.assertNotEqual(
+            self.product_company_both.company_ids,
+            self.product_company_both.product_tmpl_id.company_ids,
+        )
 
     def test_uninstall(self):
         from ..hooks import uninstall_hook
