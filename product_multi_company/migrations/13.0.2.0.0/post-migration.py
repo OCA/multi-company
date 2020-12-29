@@ -2,7 +2,7 @@
 
 import logging
 
-from openerp import SUPERUSER_ID, api
+from odoo import SUPERUSER_ID, api
 
 _logger = logging.getLogger(__name__)
 
@@ -14,7 +14,10 @@ def migrate(cr, installed_version):
     )
     env = api.Environment(cr, SUPERUSER_ID, {})
     for product_product in env["product.product"].search([]):
-        if len(product_product.company_ids) == 0:
+        if (
+            len(product_product.company_ids) == 0
+            and len(product_product.product_tmpl_id.company_ids.ids) >= 1
+        ):
             product_product.write(
                 {
                     "company_ids": [

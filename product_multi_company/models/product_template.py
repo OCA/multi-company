@@ -16,13 +16,14 @@ class ProductTemplate(models.Model):
     @api.depends("product_variant_ids.company_ids")
     def _compute_company_ids(self):
         """Set of all companies from all variants plus the template's own companies."""
-        companies_set = set()
-        variants_companies = [
-            variant.company_ids.ids for variant in self.product_variant_ids
-        ]
-        for companies in variants_companies:
-            companies_set.update(companies)
-        self.company_ids += self.env["res.company"].browse(companies_set)
+        for template in self:
+            companies_set = set()
+            variants_companies = [
+                variant.company_ids.ids for variant in template.product_variant_ids
+            ]
+            for companies in variants_companies:
+                companies_set.update(companies)
+            template.company_ids += self.env["res.company"].browse(companies_set)
 
     def _inverse_company_ids(self):
         """Remove companies from this template's variants which are not assigned "
