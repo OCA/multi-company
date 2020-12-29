@@ -340,6 +340,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         if "company_ids" in cls.env["product.template"]._fields:
             # We have to do that because the default method added a company
             cls.product_consultant_multi_company.company_ids = False
+            cls.product_consultant_multi_company.product_tmpl_id.company_ids = False
 
         cls.env["ir.sequence"].create(
             {
