@@ -24,6 +24,7 @@ addon | version | summary
 [company_dependent_attribute](company_dependent_attribute/) | 13.0.1.0.0 | Display company dependent attribute on fields
 [mail_multicompany](mail_multicompany/) | 13.0.0.1.0 | Email Gateway Multi company
 [mail_template_multi_company](mail_template_multi_company/) | 13.0.1.0.0 | Mail Template Multi Company
+[partner_multi_company](partner_multi_company/) | 13.0.1.0.0 | Select individually the partner visibility on each company
 [product_multi_company](product_multi_company/) | 13.0.1.0.1 | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 13.0.1.0.0 | Product Tax Multi Company Default
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 13.0.1.0.2 | Intercompany PO/SO rules
