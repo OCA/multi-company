@@ -10,23 +10,7 @@ from odoo.tests import common
 class TestProductMultiCompany(common.TransactionCase):
     def setUp(self):
         super(TestProductMultiCompany, self).setUp()
-        self.group_user = self.env.ref("base.group_user")
-        self.env.ref("product.access_product_product_employee").write(
-            {
-                "perm_write": True,
-                "perm_read": True,
-                "perm_create": True,
-                "perm_unlink": True,
-            }
-        )
-        self.env.ref("product.access_product_template_user").write(
-            {
-                "perm_write": True,
-                "perm_read": True,
-                "perm_create": True,
-                "perm_unlink": True,
-            }
-        )
+        groups = self.env.ref("base.group_system")
         self.company_1 = self.env["res.company"].create({"name": "Test company 1"})
         self.company_2 = self.env["res.company"].create({"name": "Test company 2"})
         self.product_company_none = self.env["product.product"].create(
@@ -58,7 +42,7 @@ class TestProductMultiCompany(common.TransactionCase):
             {
                 "name": "User company 1",
                 "login": "user_company_1",
-                "groups_id": [(6, 0, self.group_user.ids)],
+                "groups_id": [(6, 0, groups.ids)],
                 "company_id": self.company_1.id,
                 "company_ids": [(6, 0, self.company_1.ids)],
             }
@@ -67,7 +51,7 @@ class TestProductMultiCompany(common.TransactionCase):
             {
                 "name": "User company 2",
                 "login": "user_company_2",
-                "groups_id": [(6, 0, self.group_user.ids)],
+                "groups_id": [(6, 0, groups.ids)],
                 "company_id": self.company_2.id,
                 "company_ids": [(6, 0, self.company_2.ids)],
             }
@@ -81,8 +65,12 @@ class TestProductMultiCompany(common.TransactionCase):
     def test_company_none(self):
         self.assertFalse(self.product_company_none.company_id)
         # All of this should be allowed
-        self.product_company_none.with_user(self.user_company_1.id).name = "Test"
-        self.product_company_none.with_user(self.user_company_2.id).name = "Test"
+        self.product_company_none.with_user(
+            self.user_company_1.id
+        ).description_sale = "Test 1"
+        self.product_company_none.with_user(
+            self.user_company_2.id
+        ).description_sale = "Test 2"
 
     def test_company_1(self):
         self.assertEqual(
@@ -90,11 +78,17 @@ class TestProductMultiCompany(common.TransactionCase):
             self.company_1,
         )
         # All of this should be allowed
-        self.product_company_1.with_user(self.user_company_1).name = "Test"
-        self.product_company_both.with_user(self.user_company_1).name = "Test"
+        self.product_company_1.with_user(
+            self.user_company_1
+        ).description_sale = "Test 1"
+        self.product_company_both.with_user(
+            self.user_company_1
+        ).description_sale = "Test 2"
         # And this one not
         with self.assertRaises(AccessError):
-            self.product_company_2.with_user(self.user_company_1).name = "Test"
+            self.product_company_2.with_user(
+                self.user_company_1
+            ).description_sale = "Test 3"
 
     def test_company_2(self):
         self.assertEqual(
@@ -102,11 +96,17 @@ class TestProductMultiCompany(common.TransactionCase):
             self.company_2,
         )
         # All of this should be allowed
-        self.product_company_2.with_user(self.user_company_2).name = "Test"
-        self.product_company_both.with_user(self.user_company_2).name = "Test"
+        self.product_company_2.with_user(
+            self.user_company_2
+        ).description_sale = "Test 1"
+        self.product_company_both.with_user(
+            self.user_company_2
+        ).description_sale = "Test 2"
         # And this one not
         with self.assertRaises(AccessError):
-            self.product_company_1.with_user(self.user_company_2).name = "Test"
+            self.product_company_1.with_user(
+                self.user_company_2
+            ).description_sale = "Test 3"
 
     def test_uninstall(self):
         from ..hooks import uninstall_hook
