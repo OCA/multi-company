@@ -1,7 +1,7 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import _, api, models, fields
+from openerp import _, api, fields, models
 from openerp.exceptions import Warning as UserError
 
 
@@ -21,9 +21,7 @@ class ProductPricelist(models.Model):
     def _check_required_company_for_intercompany(self):
         for record in self:
             if record.is_intercompany_supplier and not record.company_id:
-                raise UserError(
-                    _("The company is required for intercompany pricelist")
-                )
+                raise UserError(_("The company is required for intercompany pricelist"))
 
     def _inverse_intercompany_supplier(self):
         for rec in self:
@@ -52,7 +50,7 @@ class ProductPricelistItem(models.Model):
     _inherit = "product.pricelist.item"
 
     def _add_product_to_synchronize(self, todo):
-        """ formats the supplied arg:
+        """formats the supplied arg:
         todo[record.pricelist]["products"|"templates"]
         """
         for record in self:
@@ -70,10 +68,12 @@ class ProductPricelistItem(models.Model):
                 todo[pricelist]["templates"] |= record.product_tmpl_id
             else:
                 raise UserError(
-                    _("At least one pricelist item type is not supported yet."
-                      " Please ensure all intercompany pricelist items are "
-                      "linked to either a product template or a product "
-                      "variant.")
+                    _(
+                        "At least one pricelist item type is not supported yet."
+                        " Please ensure all intercompany pricelist items are "
+                        "linked to either a product template or a product "
+                        "variant."
+                    )
                 )
 
     def _process_product_to_synchronize(self, todo):

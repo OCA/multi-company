@@ -1,8 +1,8 @@
 # Copyright 2019 Akretion (http://www.akretion.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from odoo.exceptions import ValidationError, Warning as UserError
 from odoo.tests.common import TransactionCase
-from odoo.exceptions import Warning as UserError, ValidationError
 
 
 class TestPricelist(TransactionCase):
@@ -14,11 +14,7 @@ class TestPricelist(TransactionCase):
 
         self.user = self.env.ref("base.user_demo")
         self.user.write(
-            {
-                "groups_id": [
-                    (4, self.env.ref("sales_team.group_sale_manager").id)
-                ]
-            }
+            {"groups_id": [(4, self.env.ref("sales_team.group_sale_manager").id)]}
         )
         self.env = self.env(user=self.user)
         ref = self.env.ref
@@ -30,15 +26,11 @@ class TestPricelist(TransactionCase):
         )
         self.partner = ref("base.main_partner")
 
-        self.product_template_4 = ref(
-            "product.product_product_4_product_template"
-        )
+        self.product_template_4 = ref("product.product_product_4_product_template")
         self.product_product_4b = ref("product.product_product_4b")
         self.product_product_4c = ref("product.product_product_4c")
 
-        self.product_template_1 = ref(
-            "product.product_product_1_product_template"
-        )
+        self.product_template_1 = ref("product.product_product_1_product_template")
         self.product_product_2 = ref("product.product_product_2")
 
         self.pricelist_item_4 = ref(
@@ -49,9 +41,7 @@ class TestPricelist(TransactionCase):
         )
 
         self.sale_company = ref("base.main_company")
-        self.purchase_company = ref(
-            "product_supplier_intercompany.purchaser_company"
-        )
+        self.purchase_company = ref("product_supplier_intercompany.purchaser_company")
         self.supplier_info = self._get_supplier_info(self.product_template_1)
 
     def _get_supplier_info(self, record=None, sudo=True):
@@ -61,9 +51,7 @@ class TestPricelist(TransactionCase):
             ("company_id", "=", False),
         ]
         if record:
-            self.assertIn(
-                record._name, ["product.product", "product.template"]
-            )
+            self.assertIn(record._name, ["product.product", "product.template"])
             if record._name == "product.product":
                 domain += [
                     ("product_tmpl_id", "=", record.product_tmpl_id.id),
@@ -218,7 +206,9 @@ class TestPricelist(TransactionCase):
         product = self.env.ref("product.product_product_3")
         nbr_supplier = self.env["product.supplierinfo"].sudo().search_count([])
         self._add_item(
-            product, 30, pricelist_id=self.pricelist_not_intercompany.id,
+            product,
+            30,
+            pricelist_id=self.pricelist_not_intercompany.id,
         )
         self.assertEqual(
             nbr_supplier,
@@ -229,7 +219,9 @@ class TestPricelist(TransactionCase):
         with self.assertRaises(UserError):
             product = self.env.ref("product.product_product_3")
             self._add_item(
-                product, 30, pricelist_id=self.pricelist_not_intercompany.id,
+                product,
+                30,
+                pricelist_id=self.pricelist_not_intercompany.id,
             )
             product._synchronise_supplier_info(
                 pricelists=self.pricelist_not_intercompany
@@ -238,7 +230,9 @@ class TestPricelist(TransactionCase):
     def test_add_product_item_no_intercompany_empty_todo(self):
         product = self.env.ref("product.product_product_3")
         item = self._add_item(
-            product, 30, pricelist_id=self.pricelist_not_intercompany.id,
+            product,
+            30,
+            pricelist_id=self.pricelist_not_intercompany.id,
         )
         todo = {}
         item._add_product_to_synchronize(todo)
