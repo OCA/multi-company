@@ -1,7 +1,7 @@
 # Copyright 2019 Akretion (http://www.akretion.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.exceptions import ValidationError, Warning as UserError
+from odoo.exceptions import Warning as UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -239,5 +239,5 @@ class TestPricelist(TransactionCase):
         self.assertEqual(todo, {})
 
     def test_raise_error_required_company(self):
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(UserError):
             self.pricelist_intercompany.company_id = False
