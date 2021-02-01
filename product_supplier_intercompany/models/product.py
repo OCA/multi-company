@@ -89,7 +89,7 @@ class ProductProduct(models.Model):
         ):
             return True
 
-    @api.depends("product_tmpl_id.item_ids.fixed_price")
+    @api.depends("product_tmpl_id.pricelist_item_ids.fixed_price")
     def _compute_product_price(self):
         """We need the 'depends' in ordder to get the correct, updated price
         calculations when a pricelist item is added"""
@@ -100,6 +100,8 @@ class ProductProduct(models.Model):
 class ProductTemplate(models.Model):
     _name = "product.template"
     _inherit = ["product.template", "product.intercompany.supplier.mixin"]
+
+    pricelist_item_ids = fields.One2many("product.pricelist.item", "product_tmpl_id")
 
     def _get_intercompany_supplier_info_domain(self, pricelist):
         return [
@@ -126,7 +128,7 @@ class ProductTemplate(models.Model):
         ):
             return True
 
-    @api.depends("item_ids.fixed_price")
+    @api.depends("pricelist_item_ids.fixed_price")
     def _compute_template_price(self):
         """We need the 'depends' in ordder to get the correct, updated price
         calculations when a pricelist item is added"""
