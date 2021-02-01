@@ -1,7 +1,7 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import _, api, models, fields
+from openerp import _, api, fields, models
 from openerp.exceptions import Warning as UserError
 
 
@@ -41,16 +41,10 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
             for record in self.with_context(
                 pricelist=pricelist.id, automatic_intercompany_sync=True
             ):
-                domain = record._get_intercompany_supplier_info_domain(
-                    pricelist
-                )
-                supplierinfo = (
-                    record.env["product.supplierinfo"].sudo().search(domain)
-                )
+                domain = record._get_intercompany_supplier_info_domain(pricelist)
+                supplierinfo = record.env["product.supplierinfo"].sudo().search(domain)
                 if record._has_intercompany_price(pricelist):
-                    vals = record._prepare_intercompany_supplier_info(
-                        pricelist
-                    )
+                    vals = record._prepare_intercompany_supplier_info(pricelist)
                     if supplierinfo:
                         supplierinfo.write(vals)
                     else:
@@ -115,9 +109,9 @@ class ProductTemplate(models.Model):
         ]
 
     def _prepare_intercompany_supplier_info(self, pricelist):
-        vals = super(
-            ProductTemplate, self
-        )._prepare_intercompany_supplier_info(pricelist)
+        vals = super(ProductTemplate, self)._prepare_intercompany_supplier_info(
+            pricelist
+        )
         vals["product_tmpl_id"] = self.id
         return vals
 
