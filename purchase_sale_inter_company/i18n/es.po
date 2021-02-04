@@ -165,7 +165,7 @@ msgstr ""
 "compañía, este sera confirmado automáticamente."
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:160
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:163
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
