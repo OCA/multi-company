@@ -166,9 +166,7 @@ class PurchaseOrder(models.Model):
         )
         for onchange_method in new_line._onchange_methods["product_id"]:
             onchange_method(new_line)
-        new_line.update({
-            'product_uom': purchase_line.product_uom.id,
-        })
+        new_line.update({"product_uom": purchase_line.product_uom.id})
         return new_line._convert_to_write(new_line._cache)
 
     def button_cancel(self):
