@@ -12,6 +12,8 @@ setuptools.setup(
         'odoo13-addon-base_multi_company',
         'odoo13-addon-company_dependent_attribute',
         'odoo13-addon-mail_multicompany',
+        'odoo13-addon-mail_template_multi_company',
+        'odoo13-addon-partner_multi_company',
         'odoo13-addon-product_multi_company',
         'odoo13-addon-product_tax_multicompany_default',
         'odoo13-addon-purchase_sale_inter_company',
