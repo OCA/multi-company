@@ -19,6 +19,7 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
+[account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.0.0 | Intercompany invoice rules
 [company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 | Display company dependent attribute on fields
 
 [//]: # (end addons)
