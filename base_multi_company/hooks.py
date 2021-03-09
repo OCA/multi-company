@@ -31,7 +31,7 @@ def set_security_rule(env, rule_ref):
 
 
 def post_init_hook(cr, rule_ref, model_name):
-    """ Set the `domain_force` and default `company_ids` to `company_id`.
+    """Set the `domain_force` and default `company_ids` to `company_id`.
 
     Args:
         cr (Cursor): Database cursor to use for operation.
@@ -53,13 +53,16 @@ def post_init_hook(cr, rule_ref, model_name):
             ({}, {})
             SELECT id, company_id FROM {} WHERE company_id IS NOT NULL
         """.format(
-            table_name, column1, column2, model._table,
+            table_name,
+            column1,
+            column2,
+            model._table,
         )
         env.cr.execute(SQL)
 
 
 def uninstall_hook(cr, rule_ref):
-    """ Restore product rule to base value.
+    """Restore product rule to base value.
 
     Args:
         cr (Cursor): Database cursor to use for operation.
