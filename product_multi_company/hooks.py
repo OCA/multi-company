@@ -13,11 +13,14 @@ except ImportError:
 
 def post_init_hook(cr, registry):
     hooks.post_init_hook(
-        cr, "product.product_comp_rule", "product.template",
+        cr,
+        "product.product_comp_rule",
+        "product.template",
     )
 
 
 def uninstall_hook(cr, registry):
     hooks.uninstall_hook(
-        cr, "product.product_comp_rule",
+        cr,
+        "product.product_comp_rule",
     )
