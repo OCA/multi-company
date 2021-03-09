@@ -1,22 +1,25 @@
 # Copyright 2017 LasLabs Inc.
+# Copyright 2021 ACSONE SA/NV
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
+
+from odoo_test_helper import FakeModelLoader
 
 from odoo.tests import common
 
-from .common import setup_test_model
-from .multi_company_abstract_tester import MultiCompanyAbstractTester
 
-
-@common.at_install(False)
-@common.post_install(True)
 class TestMultiCompanyAbstract(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
-        super(TestMultiCompanyAbstract, cls).setUpClass()
+        super().setUpClass()
+        cls.loader = FakeModelLoader(cls.env, cls.__module__)
+        cls.loader.backup_registry()
 
-        setup_test_model(cls.env, [MultiCompanyAbstractTester])
+        # The fake class is imported here !! After the backup_registry
+        from .multi_company_abstract_tester import MultiCompanyAbstractTester
 
-        cls.test_model = cls.env[MultiCompanyAbstractTester._name]
+        cls.loader.update_registry((MultiCompanyAbstractTester,))
+
+        cls.test_model = cls.env["multi.company.abstract.tester"]
 
         cls.tester_model = cls.env["ir.model"].search(
             [("model", "=", "multi.company.abstract.tester")]
@@ -37,8 +40,13 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         cls.record_1 = cls.test_model.create({"name": "test"})
         cls.company_1 = cls.env.company
         cls.company_2 = cls.env["res.company"].create(
-            {"name": "Test Co 2", "account_no": "123456"}
+            {"name": "Test Co 2", "email": "base_multi_company@test.com"}
         )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.loader.restore_registry()
+        super().tearDownClass()
 
     def add_company(self, company):
         """ Add company to the test record. """
@@ -68,7 +76,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.add_company(self.company_2)
         record = self.test_model.search(
             [
-                ("company_id.account_no", "=", self.company_2.account_no),
+                ("company_id.email", "=", self.company_2.email),
                 ("id", "=", self.record_1.id),
             ]
         )
