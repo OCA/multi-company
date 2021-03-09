@@ -5,55 +5,57 @@ from odoo.exceptions import AccessError
 from odoo.tests import common
 
 
-@common.at_install(False)
-@common.post_install(True)
-class TestProductMultiCompany(common.TransactionCase):
-    def setUp(self):
-        super(TestProductMultiCompany, self).setUp()
-        groups = self.env.ref("base.group_system")
-        self.company_1 = self.env["res.company"].create({"name": "Test company 1"})
-        self.company_2 = self.env["res.company"].create({"name": "Test company 2"})
-        self.product_company_none = self.env["product.product"].create(
+class TestProductMultiCompany(common.SavepointCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
+        groups = cls.env.ref("base.group_system")
+        cls.product_obj = cls.env["product.product"]
+        cls.company_obj = cls.env["res.company"]
+        cls.company_1 = cls.company_obj.create({"name": "Test company 1"})
+        cls.company_2 = cls.company_obj.create({"name": "Test company 2"})
+        cls.product_company_none = cls.product_obj.create(
             {
                 "name": "Product without company",
                 "company_ids": [(6, 0, [])],
                 "company_id": False,
             }
         )
-        self.product_company_1 = self.env["product.product"].create(
+        cls.product_company_1 = cls.product_obj.create(
             {
                 "name": "Product from company 1",
-                "company_ids": [(6, 0, self.company_1.ids)],
+                "company_ids": [(6, 0, cls.company_1.ids)],
             }
         )
-        self.product_company_2 = self.env["product.product"].create(
+        cls.product_company_2 = cls.product_obj.create(
             {
                 "name": "Product from company 2",
-                "company_ids": [(6, 0, self.company_2.ids)],
+                "company_ids": [(6, 0, cls.company_2.ids)],
             }
         )
-        self.product_company_both = self.env["product.product"].create(
+        cls.product_company_both = cls.product_obj.create(
             {
                 "name": "Product for both companies",
-                "company_ids": [(6, 0, (self.company_1 + self.company_2).ids)],
+                "company_ids": [(6, 0, (cls.company_1 + cls.company_2).ids)],
             }
         )
-        self.user_company_1 = self.env["res.users"].create(
+        cls.user_company_1 = cls.env["res.users"].create(
             {
                 "name": "User company 1",
                 "login": "user_company_1",
                 "groups_id": [(6, 0, groups.ids)],
-                "company_id": self.company_1.id,
-                "company_ids": [(6, 0, self.company_1.ids)],
+                "company_id": cls.company_1.id,
+                "company_ids": [(6, 0, cls.company_1.ids)],
             }
         )
-        self.user_company_2 = self.env["res.users"].create(
+        cls.user_company_2 = cls.env["res.users"].create(
             {
                 "name": "User company 2",
                 "login": "user_company_2",
                 "groups_id": [(6, 0, groups.ids)],
-                "company_id": self.company_2.id,
-                "company_ids": [(6, 0, self.company_2.ids)],
+                "company_id": cls.company_2.id,
+                "company_ids": [(6, 0, cls.company_2.ids)],
             }
         )
 
