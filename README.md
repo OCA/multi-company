@@ -19,15 +19,15 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
-[account_invoice_inter_company](account_invoice_inter_company/) | 13.0.2.0.5 | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 13.0.2.0.6 | Intercompany invoice rules
 [base_multi_company](base_multi_company/) | 13.0.1.0.2 | Provides a base for adding multi-company support to models.
 [company_dependent_attribute](company_dependent_attribute/) | 13.0.1.0.0 | Display company dependent attribute on fields
 [mail_multicompany](mail_multicompany/) | 13.0.0.1.0 | Email Gateway Multi company
 [mail_template_multi_company](mail_template_multi_company/) | 13.0.1.0.0 | Mail Template Multi Company
 [partner_multi_company](partner_multi_company/) | 13.0.1.0.0 | Select individually the partner visibility on each company
-[product_multi_company](product_multi_company/) | 13.0.2.0.0 | Select individually the product template visibility on each company
+[product_multi_company](product_multi_company/) | 13.0.2.0.1 | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 13.0.1.0.0 | Product Tax Multi Company Default
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 13.0.1.0.3 | Intercompany PO/SO rules
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 13.0.1.0.4 | Intercompany PO/SO rules
 [res_company_code](res_company_code/) | 13.0.1.0.0 | Add 'code' field on company model
 
 [//]: # (end addons)
