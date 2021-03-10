@@ -100,6 +100,12 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         )
         self.assertEqual(record, self.record_1)
 
+        name_result = self.test_model.name_search(
+            "test", [["company_id", "in", [self.company_2.id]]]
+        )
+        # Result is [(<id>, "test")]
+        self.assertEqual(name_result[0][0], self.record_1.id)
+
     def test_compute_company_id2(self):
         """
         Test the computation of company_id for a multi_company_abstract.

@@ -59,16 +59,17 @@ class MultiCompanyAbstract(models.AbstractModel):
         #             FROM "res_company_res_partner_rel" WHERE "res_company_id" IN 1)
         # ```
         new_args = []
-        for arg in args:
-            if type(arg) == list and arg[:2] == ["company_id", "in"]:
-                fix = []
-                for _i in range(len(arg[2]) - 1):
-                    fix.append("|")
-                for val in arg[2]:
-                    fix.append(["company_id", "=", val])
-                new_args.extend(fix)
-            else:
-                new_args.append(arg)
+        if args:
+            for arg in args:
+                if type(arg) == list and arg[:2] == ["company_id", "in"]:
+                    fix = []
+                    for _i in range(len(arg[2]) - 1):
+                        fix.append("|")
+                    for val in arg[2]:
+                        fix.append(["company_id", "=", val])
+                    new_args.extend(fix)
+                else:
+                    new_args.append(arg)
         return super()._name_search(
             name,
             args=new_args,
