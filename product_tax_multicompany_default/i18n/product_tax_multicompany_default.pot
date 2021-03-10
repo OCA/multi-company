@@ -14,13 +14,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: product_tax_multicompany_default
-#: model:ir.model,name:product_tax_multicompany_default.model_product_product
-msgid "Product"
+#: model:ir.model,name:product_tax_multicompany_default.model_product_template
+msgid "Product Template (Multi-Company)"
 msgstr ""
 
 #. module: product_tax_multicompany_default
-#: model:ir.model,name:product_tax_multicompany_default.model_product_template
-msgid "Product Template (Multi-Company)"
+#: model:ir.model,name:product_tax_multicompany_default.model_product_product
+msgid "Product Variant (Multi-Company)"
 msgstr ""
 
 #. module: product_tax_multicompany_default
