@@ -17,7 +17,7 @@ class MailMessage(models.Model):
                 if hasattr(current_object, "company_id") and current_object.company_id:
                     vals["company_id"] = current_object.company_id.id
             if not vals.get("company_id"):
-                vals["company_id"] = self.env.company.id
+                vals["company_id"] = self.env.user.company_id.id
             if not vals.get("mail_server_id"):
                 vals["mail_server_id"] = (
                     self.sudo()
