@@ -13,11 +13,16 @@ class ResPartner(models.Model):
         compute_sudo=True,
         store=True,
     )
+    address_for_company_ids = fields.One2many(
+        "res.company",
+        "partner_id",
+        "Address for Company",
+    )
 
-    @api.depends("parent_id")
+    @api.depends("parent_id", "address_for_company_ids")
     def _compute_intercompany_readonly_shared(self):
-        partners = self.env["res.company"].search([]).partner_id
         for record in self:
             record.intercompany_readonly_shared = (
-                record in partners or record.parent_id.intercompany_readonly_shared
+                record.address_for_company_ids
+                or record.parent_id.intercompany_readonly_shared
             )
