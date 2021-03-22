@@ -17,7 +17,7 @@ class Base(models.AbstractModel):
             field = self._fields[name]
             if not (
                 field.comodel_name == "res.partner"
-                and all(self.mapped(f"{name}.intercompany_readonly_shared"))
+                and all(self.sudo().mapped(f"{name}.intercompany_readonly_shared"))
             ):
                 todo.append(name)
         return super()._check_company(todo)
