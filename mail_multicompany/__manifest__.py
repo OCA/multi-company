@@ -1,7 +1,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 {
     "name": "Email Gateway Multi company",
-    "version": "13.0.0.1.0",
+    "version": "14.0.0.1.0",
     "category": "Extra Tools",
     "author": "Odoo Community Association (OCA), " "Comunitea",
     "website": "https://github.com/OCA/multi-company",
