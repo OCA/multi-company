@@ -144,8 +144,27 @@ class PurchaseOrder(models.Model):
                 and dest_company.warehouse_id
                 or False
             )
-        new_order.commitment_date = self.date_planned
+        if "requested_date" in new_order:
+            new_order.requested_date = self.date_planned
         return new_order._convert_to_write(new_order._cache)
+
+    def _get_value_sale_order(self, sale_order, purchase_line):
+
+        if purchase_line.display_type is not None:
+            return {
+                "display_type": purchase_line.display_type,
+                "order_id": sale_order.id,
+                "name": purchase_line.name,
+                "product_id": purchase_line.product_id.id,
+            }
+        else:
+            return {
+                "order_id": sale_order.id,
+                "product_id": purchase_line.product_id.id,
+                "product_uom": purchase_line.product_uom.id,
+                "product_uom_qty": purchase_line.product_qty,
+                "auto_purchase_line_id": purchase_line.id,
+            }
 
     def _prepare_sale_order_line_data(self, purchase_line, dest_company, sale_order):
         """ Generate the Sale Order Line values from the PO line
@@ -155,18 +174,10 @@ class PurchaseOrder(models.Model):
             :rtype dest_company : res.company record
             :param sale_order : the Sale Order
         """
-        new_line = self.env["sale.order.line"].new(
-            {
-                "order_id": sale_order.id,
-                "product_id": purchase_line.product_id.id,
-                "product_uom": purchase_line.product_uom.id,
-                "product_uom_qty": purchase_line.product_qty,
-                "auto_purchase_line_id": purchase_line.id,
-            }
-        )
+        sale_order_dict = self._get_value_sale_order(sale_order, purchase_line)
+        new_line = self.env["sale.order.line"].new(sale_order_dict)
         for onchange_method in new_line._onchange_methods["product_id"]:
             onchange_method(new_line)
-        new_line.update({"product_uom": purchase_line.product_uom.id})
         return new_line._convert_to_write(new_line._cache)
 
     def button_cancel(self):
