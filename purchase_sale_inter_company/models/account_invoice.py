@@ -11,11 +11,9 @@ class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
     @api.multi
-    def inter_company_create_invoice(
-            self, dest_company, dest_inv_type, dest_journal_type):
-        res = super(AccountInvoice, self).inter_company_create_invoice(
-            dest_company, dest_inv_type, dest_journal_type)
-        if dest_inv_type == 'in_invoice':
+    def _inter_company_create_invoice(self, dest_company):
+        res = super(AccountInvoice, self)._inter_company_create_invoice(dest_company)
+        if res['dest_invoice'].type == 'in_invoice':
             # Link intercompany purchase order with intercompany invoice
             self._link_invoice_purchase(res['dest_invoice'])
         return res
@@ -25,8 +23,6 @@ class AccountInvoice(models.Model):
         self.ensure_one()
         orders = self.env['purchase.order']
         vals = {}
-        if dest_invoice.state not in ['draft', 'cancel']:
-            vals['invoiced'] = True
         for line in dest_invoice.invoice_line_ids:
             vals['invoice_lines'] = [(4, line.id)]
             purchase_lines = line.auto_invoice_line_id.sale_line_ids.mapped(
