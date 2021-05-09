@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo14-addon-account_invoice_inter_company',
         'odoo14-addon-company_dependent_attribute',
+        'odoo14-addon-mail_multicompany',
     ],
     classifiers=[
         'Programming Language :: Python',
