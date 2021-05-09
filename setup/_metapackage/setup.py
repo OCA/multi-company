@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo10-addon-account_invoice_inter_company',
         'odoo10-addon-account_type_multi_company',
+        'odoo10-addon-base_ir_filters_company',
         'odoo10-addon-base_multi_company',
         'odoo10-addon-partner_multi_company',
         'odoo10-addon-product_multi_company',
