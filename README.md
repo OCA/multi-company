@@ -19,6 +19,7 @@ addon | version | summary
 [account_type_multi_company](account_type_multi_company/) | 10.0.1.0.0 | Make account types multi-company aware
 [base_ir_filters_company](base_ir_filters_company/) | 10.0.1.0.0 | Filters by company
 [base_multi_company](base_multi_company/) | 10.0.2.0.1 | Provides a base for adding multi-company support to models.
+[mail_template_multi_company](mail_template_multi_company/) | 10.0.1.0.1 | Mail Template Multi Company
 [partner_multi_company](partner_multi_company/) | 10.0.1.0.0 | Select individually the partner visibility on each company
 [product_multi_company](product_multi_company/) | 10.0.1.0.0 | Select individually the product template visibility on each company
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 10.0.1.0.0 | Intercompany PO/SO rules
