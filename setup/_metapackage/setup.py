@@ -12,6 +12,7 @@ setuptools.setup(
         'odoo10-addon-account_type_multi_company',
         'odoo10-addon-base_ir_filters_company',
         'odoo10-addon-base_multi_company',
+        'odoo10-addon-mail_template_multi_company',
         'odoo10-addon-partner_multi_company',
         'odoo10-addon-product_multi_company',
         'odoo10-addon-purchase_sale_inter_company',
