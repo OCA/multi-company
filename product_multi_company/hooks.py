@@ -1,6 +1,8 @@
 # Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
+from odoo import api, SUPERUSER_ID
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -17,6 +19,8 @@ def post_init_hook(cr, registry):
         'product.product_comp_rule',
         'product.template',
     )
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    env['product.template'].sudo().search([])._compute_visible_for_all_companies()
 
 
 def uninstall_hook(cr, registry):
