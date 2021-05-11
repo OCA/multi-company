@@ -32,8 +32,7 @@ class MultiCompanyAbstract(models.AbstractModel):
     @api.multi
     def _compute_visible_for_all_companies(self):
         for rec in self:
-            if not rec.company_ids:
-                rec.visible_for_all_companies = True
+            rec.visible_for_all_companies = not bool(rec.company_ids)
 
     def _default_company_ids(self):
         return self.browse(
