@@ -17,11 +17,13 @@ class PurchaseOrder(models.Model):
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
+            initial_company = self.env.user.company_id
             dest_company = purchase_order.partner_id.ref_company_ids
             if dest_company and dest_company.so_from_po:
                 purchase_order.with_context(
                     force_company=dest_company.id
                 )._inter_company_create_sale_order(dest_company)
+                self.env.user.company_id = initial_company
         return res
 
     @api.multi
