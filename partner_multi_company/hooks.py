@@ -16,6 +16,8 @@ def post_init_hook(cr, registry):
         'base.res_partner_rule',
         'res.partner',
     )
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    env['res.partner'].sudo().search([])._compute_visible_for_all_companies()
 
 
 def uninstall_hook(cr, registry):
