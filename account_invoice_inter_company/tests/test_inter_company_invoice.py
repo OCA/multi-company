@@ -563,6 +563,46 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         with self.assertRaises(UserError):
             self._confirm_invoice_with_product()
 
+    def test_purchase_attachement_out_invoice(self):
+        # Sale Invoice PDF appears as attachment in the purchase invoice form.
+        # From a Sale Invoice.
+        self.invoice_company_a.action_post()
+        invoice_company_b = self.account_move_obj.with_user(
+            self.user_company_b.id
+        ).search([("auto_invoice_id", "=", self.invoice_company_a.id)])
+        invoice_b_pdf = self.env["ir.attachment"].search(
+            [("res_model", "=", "account.move"), ("res_id", "=", invoice_company_b.id)]
+        )
+        self.assertEqual(len(invoice_b_pdf), 1)
+        self.assertEqual(invoice_b_pdf.name, self.invoice_company_a.name + ".pdf")
+
+    def test_purchase_attachement_in_invoice(self):
+        # Sale Invoice PDF appears as attachment in the purchase invoice form.
+        # From a Purchase Invoice.
+        bill_company_a = Form(
+            self.account_move_obj.with_company(self.company_a.id).with_context(
+                default_move_type="in_invoice",
+            )
+        )
+        bill_company_a.partner_id = self.partner_company_b
+        bill_company_a.invoice_date = bill_company_a.date
+        with bill_company_a.invoice_line_ids.new() as line_form:
+            line_form.product_id = self.product_consultant_multi_company
+            line_form.quantity = 1
+            line_form.product_uom_id = self.env.ref("uom.product_uom_hour")
+            line_form.price_unit = 450.0
+        bill_company_a = bill_company_a.save()
+        bill_company_a.action_post()
+
+        invoice_company_b = self.account_move_obj.with_user(
+            self.user_company_b.id
+        ).search([("auto_invoice_id", "=", bill_company_a.id)])
+        bill_a_pdf = self.env["ir.attachment"].search(
+            [("res_model", "=", "account.move"), ("res_id", "=", bill_company_a.id)]
+        )
+        self.assertEqual(len(bill_a_pdf), 1)
+        self.assertEqual(bill_a_pdf.name, invoice_company_b.name + ".pdf")
+
     def _confirm_invoice_with_product(self):
         # Confirm the invoice of company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()

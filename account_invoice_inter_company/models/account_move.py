@@ -1,5 +1,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+import base64
+
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import Form
@@ -45,16 +47,34 @@ class AccountMove(models.Model):
             # do not consider invoices that have already been auto-generated,
             # nor the invoices that were already validated in the past
             dest_company = src_invoice._find_company_from_invoice_partner()
-            if not dest_company or src_invoice.auto_generated:
-                continue
-            intercompany_user = dest_company.intercompany_invoice_user_id
-            if intercompany_user:
-                src_invoice = src_invoice.with_user(intercompany_user).sudo()
-            else:
-                src_invoice = src_invoice.sudo()
-            src_invoice.with_company(dest_company.id).with_context(
-                skip_check_amount_difference=True
-            )._inter_company_create_invoice(dest_company)
+            if dest_company:
+                if not src_invoice.auto_generated:
+                    intercompany_user = dest_company.intercompany_invoice_user_id
+                    if intercompany_user:
+                        src_invoice = src_invoice.with_user(intercompany_user).sudo()
+                    else:
+                        src_invoice = src_invoice.sudo()
+                    src_invoice.with_company(dest_company.id).with_context(
+                        skip_check_amount_difference=True
+                    )._inter_company_create_invoice(dest_company)
+                if src_invoice.move_type in ["out_invoice", "out_refund"]:
+                    src_invoice._attach_original_pdf_report()
+
+    def _attach_original_pdf_report(self):
+        supplier_invoice = self.auto_invoice_id
+        if not supplier_invoice:
+            supplier_invoice = self.search([("auto_invoice_id", "=", self.id)], limit=1)
+        pdf = self.env.ref("account.account_invoices")._render_qweb_pdf([self.id])[0]
+        self.env["ir.attachment"].create(
+            {
+                "name": self.name + ".pdf",
+                "type": "binary",
+                "datas": base64.b64encode(pdf),
+                "res_model": "account.move",
+                "res_id": supplier_invoice.id,
+                "mimetype": "application/pdf",
+            }
+        )
 
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
