@@ -10,7 +10,7 @@
         <field name="perm_unlink" eval="False" />
         <field
                 name="domain_force"
-            >['|', ('intercompany_pricelist_id', '=', False), '&amp;', ('intercompany_pricelist_id', '!=', False), ('name', '!=', user.company_id.partner_id.id)]</field>
+            >['|', ('intercompany_pricelist_id', '=', False), '&amp;', ('intercompany_pricelist_id', '!=', False), ('intercompany_pricelist_id.company_id', '!=', company_id)]</field>
     </record>
 </data>
 </openerp>
