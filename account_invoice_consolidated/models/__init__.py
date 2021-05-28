@@ -8,5 +8,5 @@ from . import (
     res_company,
     account_invoice,
     res_partner,
-    account_invoice_line
+    account_invoice_line,
 )
