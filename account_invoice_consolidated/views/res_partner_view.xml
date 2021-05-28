@@ -7,15 +7,18 @@
     <record id='view_partner_form' model='ir.ui.view'>
         <field name='name'>inherit.view.partner.form</field>
         <field name='model'>res.partner</field>
-        <field name='inherit_id' ref='base.view_partner_form'/>
+        <field name='inherit_id' ref='base.view_partner_form' />
         <field name='arch' type='xml'>
             <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
-                <button name='view_consolidated_invoice'
-                        string='Consolidated Invoices'
-                        attrs="{'invisible':[('customer', '=', False)]}"
-                        type='object'
-                        context="{'default_partner_id': active_id}"
-                        class="oe_stat_button" icon="fa-file"/>
+                <button
+                    name='view_consolidated_invoice'
+                    string='Consolidated Invoices'
+                    attrs="{'invisible':[('customer', '=', False)]}"
+                    type='object'
+                    context="{'default_partner_id': active_id}"
+                    class="oe_stat_button"
+                    icon="fa-file"
+                />
             </xpath>
         </field>
     </record>
