@@ -30,7 +30,7 @@
                                         <img
                                             t-if="company.logo"
                                             t-att-src="image_data_uri(company.logo)"
-                                            style="max-height: 150px;"
+                                            style="max-height: 80px;"
                                             alt="Logo"
                                         />
                                     </div>
@@ -131,13 +131,13 @@
                                                     class="text-center"
                                                     style="border-top: 1px solid #924eb9;"
                                                 ><span
-                                                        t-field="o.invoice_ids[0].payment_term_id.name"
+                                                        t-field="o.invoice_ids[0].invoice_payment_term_id.name"
                                                     /></td>
                                                 <td
                                                     class="text-center"
                                                     style="border-top: 1px solid #924eb9;"
                                                 ><span
-                                                        t-field="o.invoice_ids[0].date_due"
+                                                        t-field="o.invoice_ids[0].invoice_date_due"
                                                     /></td>
                                             </tr>
                                         </tbody>
@@ -236,7 +236,7 @@
                                                     <td
                                                         class="text-center"
                                                         style="border: 1px solid #b9b9b9; border-collapse: collapse;"
-                                                    ><span t-field="line.number" /></td>
+                                                    ><span t-field="line.name" /></td>
                                                     <td
                                                         class="text-center"
                                                         style="border: 1px solid #b9b9b9; border-collapse: collapse;"
@@ -247,13 +247,13 @@
                                                         class="text-center"
                                                         style="border: 1px solid #b9b9b9; border-collapse: collapse;"
                                                     ><span
-                                                            t-field="line.date_invoice"
+                                                            t-field="line.invoice_date"
                                                         /></td>
                                                     <td
                                                         class="text-center"
                                                         style="border: 1px solid #b9b9b9; border-collapse: collapse;"
                                                     ><span
-                                                            t-field="line.date_due"
+                                                            t-field="line.invoice_date_due"
                                                         /></td>
                                                     <td
                                                         class="text-right"
@@ -277,7 +277,7 @@
                                                         class="text-right"
                                                         style="border: 1px solid #b9b9b9; border-collapse: collapse;"
                                                     ><span
-                                                            t-field="line.residual"
+                                                            t-field="line.amount_residual"
                                                         /></td>
                                                     <td
                                                         class="text-center"
@@ -339,7 +339,7 @@
                                                                 class="text-center"
                                                                 style="border: 1px solid #b9b9b9; border-collapse: collapse;"
                                                             ><span
-                                                                    t-field="inv_line.invoice_id"
+                                                                    t-field="inv_line.move_id"
                                                                 /></td>
                                                             <td
                                                                 class="text-center"
@@ -363,7 +363,7 @@
                                                                 class="text-right"
                                                                 style="border: 1px solid #b9b9b9; border-collapse: collapse;"
                                                             ><span
-                                                                    t-field="inv_line.uom_id"
+                                                                    t-field="inv_line.product_uom_id"
                                                                 /></td>
                                                             <td
                                                                 class="text-right"
@@ -599,14 +599,23 @@
     </record>
 
     <!--Report for Consolidated Invoice -->
-    <report
-        id="report_consolidated_inv"
-        string="Consolidated Invoice Report"
-        model="account.invoice.consolidated"
-        report_type="qweb-pdf"
-        paperformat="account_invoice_consolidated.paperformat_consolidated_invoice_pavlov"
-        file="account_invoice_consolidated.report_template_consolidated_inv"
-        name="account_invoice_consolidated.report_template_consolidated_inv"
-    />
+
+    <record id="report_consolidated_inv" model="ir.actions.report">
+            <field name="name">Consolidated Invoice Report</field>
+            <field name="model">account.invoice.consolidated</field>
+            <field name="binding_model_id" ref="model_account_invoice_consolidated" />
+            <field
+            name="paperformat_id"
+            ref="account_invoice_consolidated.paperformat_consolidated_invoice_pavlov"
+        />
+            <field name="report_type">qweb-pdf</field>
+            <field
+            name="report_name"
+        >account_invoice_consolidated.report_template_consolidated_inv</field>
+            <field
+            name="report_file"
+        >account_invoice_consolidated.report_consolidated_invoice</field>
+
+        </record>
 
 </odoo>

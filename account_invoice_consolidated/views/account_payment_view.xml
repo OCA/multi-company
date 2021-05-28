@@ -10,9 +10,8 @@
     >
         <field name="name">Register Payment</field>
         <field name="res_model">account.payment</field>
-        <field name="view_type">form</field>
         <field name="view_mode">form</field>
-        <field name="view_id" ref="account.view_account_payment_invoice_form" />
+        <field name="view_id" ref="account.view_account_payment_form" />
         <field name="target">new</field>
     </record>
 

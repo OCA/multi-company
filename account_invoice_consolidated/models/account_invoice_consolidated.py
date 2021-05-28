@@ -11,24 +11,35 @@ class AccountInvoiceConsolidation(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Invoice Consolidation"
 
-    @api.depends("invoice_ids")
+    @api.depends("invoice_ids", "invoice_id", "payment_ids")
     def compute_amount(self):
         amount_untaxed = 0.0
         amount_tax = 0.0
         residual = 0.0
         for consolidated_inv in self.sudo():
-            for invoice in consolidated_inv.invoice_ids:
-                inv = self.env["account.invoice"].sudo().browse(invoice.id)
+            invoice_ids = (
+                consolidated_inv.invoice_ids.sudo()
+                .search([("consolidated_by_id", "=", consolidated_inv.id)])
+                .ids
+            )
+            if invoice_ids:
                 self.env.cr.execute(
-                    "SELECT amount_untaxed,amount_tax,\
-                                    residual FROM account_invoice WHERE id\
-                                    =%s",
-                    (inv.id,),
+                    """
+                    SELECT
+                        sum(amount_untaxed) as amount_untaxed,
+                        sum(amount_tax) as amount_tax,
+                        sum(amount_residual) as amount_residual
+                    FROM
+                        account_move
+                    WHERE
+                        id in %s
+                """,
+                    (tuple(invoice_ids),),
                 )
                 vals = self.env.cr.dictfetchall()
                 amount_untaxed += vals[0]["amount_untaxed"]
                 amount_tax += vals[0]["amount_tax"]
-                residual += vals[0]["residual"]
+                residual += vals[0]["amount_residual"]
             consolidated_inv.amount_untaxed = amount_untaxed
             consolidated_inv.amount_tax = amount_tax
             consolidated_inv.residual = residual
@@ -46,7 +57,7 @@ class AccountInvoiceConsolidation(models.Model):
         required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
-        track_visibility="onchange",
+        tracking=True,
         default=lambda self: self.env.user.company_id,
     )
     partner_id = fields.Many2one(
@@ -54,32 +65,25 @@ class AccountInvoiceConsolidation(models.Model):
         required=True,
         readonly=True,
         states={"draft": [("readonly", False)]},
-        track_visibility="onchange",
+        tracking=True,
     )
     currency_id = fields.Many2one(related="company_id.currency_id", readonly=True)
     amount_untaxed = fields.Monetary(
-        compute="_compute_amount", track_visibility="onchange", store=True
+        compute="_compute_amount", tracking=True, store=True
     )
-    amount_tax = fields.Monetary(
-        compute="_compute_amount", track_visibility="onchange", store=True
-    )
-    amount_total = fields.Monetary(
-        compute="_compute_amount", track_visibility="onchange", store=True
-    )
+    amount_tax = fields.Monetary(compute="_compute_amount", tracking=True, store=True)
+    amount_total = fields.Monetary(compute="_compute_amount", tracking=True, store=True)
     residual = fields.Monetary(
-        compute="_compute_amount",
-        string="Amount Due",
-        track_visibility="onchange",
-        store=True,
+        compute="_compute_amount", string="Amount Due", tracking=True, store=True
     )
     amount_currency = fields.Monetary()
     invoice_id = fields.Many2one(
-        "account.invoice",
+        "account.move",
         string="Consolidated Invoice",
         readonly=True,
         states={"draft": [("readonly", False)]},
     )
-    invoice_ids = fields.One2many("account.invoice", "consolidated_by_id")
+    invoice_ids = fields.One2many("account.move", "consolidated_by_id")
     payment_ids = fields.One2many(
         "account.payment",
         "consolidation_id",
@@ -90,11 +94,11 @@ class AccountInvoiceConsolidation(models.Model):
         [("draft", "Draft"), ("invoice", "Invoice"), ("done", "Done")],
         default="draft",
         readonly=True,
-        track_visibility="onchange",
+        tracking=True,
     )
 
     invoice_line_ids = fields.One2many(
-        "account.invoice.line", "consolidated_by_id", string="Invoice Line Ids"
+        "account.move.line", "consolidated_by_id", string="Invoice Line Ids"
     )
 
     @api.constrains("name")
@@ -138,7 +142,6 @@ class AccountInvoiceConsolidation(models.Model):
                     )
                 )
 
-    @api.multi
     def get_invoices(self):
         if (
             not self.partner_id
@@ -149,49 +152,50 @@ class AccountInvoiceConsolidation(models.Model):
             self.invoice_ids = False
         if self.date_from and self.date_to and self.partner_id:
             inv_rec = (
-                self.env["account.invoice"]
+                self.env["account.move"]
                 .sudo()
                 .search(
                     [
                         ("partner_id", "=", self.partner_id.id),
-                        ("date_invoice", ">=", self.date_from),
-                        ("date_invoice", "<=", self.date_to),
-                        ("state", "=", "open"),
-                        ("type", "=", "out_invoice"),
+                        ("invoice_date", ">=", self.date_from),
+                        ("invoice_date", "<=", self.date_to),
+                        ("state", "=", "posted"),
+                        ("payment_state", "!=", "paid"),
+                        ("move_type", "=", "out_invoice"),
                     ]
                 )
             )
             if inv_rec:
                 for inv in inv_rec:
-                    inv = self.env["account.invoice"].sudo().browse(inv.id)
-                    query = """UPDATE account_invoice SET \
-                    consolidated_by_id = %s WHERE id=%s"""
+                    query = """UPDATE
+                                    account_move SET
+                                    consolidated_by_id = %s
+                                WHERE id=%s
+                            """
                     self.env.cr.execute(query, [self.id, inv.id])
                     for _inv_line in inv:
-                        query = """UPDATE account_invoice_line \
+                        query = """UPDATE account_move_line \
                         SET consolidated_by_id = %s WHERE id=%s"""
                         self.env.cr.execute(query, [self.id, inv.id])
             self.sudo().invoice_ids = (
-                self.env["account.invoice"]
+                self.env["account.move"]
                 .sudo()
                 .search([("consolidated_by_id", "=", self.id)])
                 .ids
             )
             self.sudo().invoice_line_ids = (
-                self.env["account.invoice.line"]
+                self.env["account.move.line"]
                 .sudo()
                 .search([("consolidated_by_id", "=", self.id)])
                 .ids
             )
 
-    @api.multi
     def get_invoice_price(self):
         self.get_invoices()
         self.compute_amount()
         if self.state != "invoice":
             self.state = "invoice"
 
-    @api.multi
     def action_confirm_invoice(self):
         for rec in self.sudo():
             if not rec.invoice_ids:
@@ -216,18 +220,15 @@ class AccountInvoiceConsolidation(models.Model):
             )
             if invoice_consolidated_seq:
                 rec.write({"name": invoice_consolidated_seq})
+
             inv_vals = {
-                "reference": rec.name,
+                "move_type": "out_invoice",
+                "payment_reference": rec.name,
                 "partner_id": rec.partner_id.id,
-                "account_id": rec.partner_id.property_account_receivable_id.id,
-                "payment_term_id": rec.partner_id.property_payment_term_id.id,
-                "journal_id": self.env["account.invoice"]
-                .sudo()
-                .default_get(["journal_id"])["journal_id"],
+                "invoice_payment_term_id": rec.partner_id.property_payment_term_id.id,
                 "company_id": rec.company_id.id,
             }
-            line_ids = []
-            line_ids = self.sudo().prepare_consolidated_invoice_line_values()
+            line_ids = self.sudo().prepare_consolidated_invoice_line_values() or []
             for invoice in rec.sudo().invoice_ids:
                 payment = (
                     self.env["account.payment"]
@@ -235,20 +236,24 @@ class AccountInvoiceConsolidation(models.Model):
                     .create(self.sudo().prepare_payment_values(invoice))
                 )
                 # Validate the payment to reconcile the invoice
-                payment.sudo().action_validate_invoice_payment()
+                payment.sudo().action_post()
+                for payment_rec in payment.move_id.line_ids:
+                    if payment_rec.account_id == payment.destination_account_id:
+                        invoice.js_assign_outstanding_line(payment_rec.id)
 
             inv_vals.update({"invoice_line_ids": line_ids})
             # Create and validate the consolidated invoice
             invoice_id = (
-                self.env["account.invoice"]
+                self.env["account.move"]
+                .sudo()
                 .with_context(company_id=rec.company_id.id)
                 .create(inv_vals)
             )
-            invoice_id.action_invoice_open()
-            rec.invoice_id = invoice_id.id
-            rec.state = "done"
+            if invoice_id.invoice_line_ids:
+                invoice_id.action_post()
+            rec.compute_amount()
+            rec.write({"invoice_id": invoice_id.id, "state": "done"})
 
-    @api.multi
     def unlink(self):
         for inv in self:
             if inv.state == "done":
@@ -256,16 +261,30 @@ class AccountInvoiceConsolidation(models.Model):
                     _("You cannot delete a finished consolidated invoice.")
                 )
             for invoice_id in inv.sudo().invoice_ids:
-                invoice = self.env["account.invoice"].sudo().browse(invoice_id.id)
+                invoice = self.env["account.move"].sudo().browse(invoice_id.id)
                 invoice.consolidated_by_id = False
             for invoice_line_id in inv.sudo().invoice_line_ids:
                 invoice_line = (
-                    self.env["account.invoice.line"].sudo().browse(invoice_line_id.id)
+                    self.env["account.move.line"].sudo().browse(invoice_line_id.id)
                 )
                 invoice_line.consolidated_by_id = False
         return super().unlink()
 
-    @api.multi
+    def get_tax(self, tax_ids):
+        tax_obj = self.env["account.tax"]
+        tax_list = []
+        for tax_id in tax_ids:
+            tax = tax_obj.sudo().search(
+                [
+                    ("name", "=", tax_id.name),
+                    ("company_id", "=", self.company_id.id),
+                    ("type_tax_use", "=", tax_id.type_tax_use),
+                ],
+                limit=1,
+            )
+            tax_list.append(tax.id)
+        return tax_list
+
     def prepare_consolidated_invoice_line_values(self):
         res = []
         for invoice_id in self.sudo().invoice_ids:
@@ -276,13 +295,14 @@ class AccountInvoiceConsolidation(models.Model):
                     {
                         "name": line_id.name + " - " + line_id.company_id.name,
                         "sequence": line_id.sequence,
-                        "origin": line_id.invoice_id.name,
+                        "ref": line_id.move_id.name,
                         "account_id": self.company_id.due_to_account_id.id,
                         "price_unit": line_id.price_unit,
                         "quantity": line_id.quantity,
                         "discount": line_id.discount,
-                        "uom_id": line_id.uom_id.id,
-                        "price_tax": line_id.price_tax,
+                        "product_uom_id": line_id.product_uom_id.id,
+                        "tax_base_amount": line_id.tax_base_amount,
+                        "tax_ids": [(6, 0, self.get_tax(line_id.tax_ids))],
                         "display_type": line_id.display_type,
                         "price_subtotal": line_id.price_subtotal,
                     },
@@ -290,20 +310,19 @@ class AccountInvoiceConsolidation(models.Model):
                 res.append(rec)
         return res
 
-    @api.multi
     def prepare_payment_values(self, invoice):
         journal_id = invoice.company_id.due_fromto_payment_journal_id
         res = {
             "partner_id": self.company_id.partner_id.id,
             "partner_type": "customer",
-            "amount": invoice.residual,
+            "amount": invoice.amount_residual,
             "journal_id": journal_id.id,
             "payment_type": "inbound",
             "payment_method_id": journal_id.inbound_payment_method_ids[0].id,
-            "payment_date": fields.Datetime.now(),
-            "communication": self.name,
+            "date": fields.Datetime.now(),
             "consolidation_id": self.id,
             "company_id": invoice.company_id.id,
-            "invoice_ids": [(4, invoice.id, None)],
+            "reconciled_invoice_ids": [(4, invoice.id, None)],
+            "move_type": "entry",
         }
         return res

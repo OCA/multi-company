@@ -6,7 +6,7 @@ from . import (
     account_invoice_consolidated,
     account_payment,
     res_company,
-    account_invoice,
+    account_move,
     res_partner,
-    account_invoice_line,
+    account_move_line,
 )
