@@ -9,7 +9,7 @@
         <field name="code">consolidated.invoice</field>
         <field name="prefix">CONSINV</field>
         <field name="padding">5</field>
-        <field name="company_id" eval="False"/>
+        <field name="company_id" eval="False" />
     </record>
 
 </odoo>

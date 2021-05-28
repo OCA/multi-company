@@ -6,7 +6,8 @@ from odoo import fields, models
 
 
 class AccountPayment(models.Model):
-    _inherit = 'account.payment'
+    _inherit = "account.payment"
 
-    consolidation_id = fields.Many2one('account.invoice.consolidated',
-                                       string='Consolidation')
+    consolidation_id = fields.Many2one(
+        "account.invoice.consolidated", string="Consolidation"
+    )

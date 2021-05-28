@@ -6,14 +6,16 @@ from odoo import models
 
 
 class ResPartner(models.Model):
-    _inherit = 'res.partner'
+    _inherit = "res.partner"
 
     def view_consolidated_invoice(self):
         self.ensure_one()
-        cons_invoices_rec = self.env['account.invoice.consolidated'].search(
-            [('partner_id', '=', self.id)])
-        action = self.env.ref('account_invoice_consolidated.'
-                              'account_invoice_consolidated_action')
+        cons_invoices_rec = self.env["account.invoice.consolidated"].search(
+            [("partner_id", "=", self.id)]
+        )
+        action = self.env.ref(
+            "account_invoice_consolidated." "account_invoice_consolidated_action"
+        )
         action = action.read()[0]
-        action['domain'] = [('id', 'in', cons_invoices_rec.ids)]
+        action["domain"] = [("id", "in", cons_invoices_rec.ids)]
         return action
