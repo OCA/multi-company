@@ -5,15 +5,15 @@
         -->
     <record id="partner_company_a" model="res.partner">
         <field name="name">Company A</field>
-        <field name="customer" eval="False" />
-        <field name="supplier" eval="True" />
+        <field name="customer_rank" eval="0" />
+        <field name="supplier_rank" eval="1" />
         <field name="company_id" eval="False" />
     </record>
 
     <record id="partner_company_b" model="res.partner">
         <field name="name">Company B</field>
-        <field name="customer" eval="True" />
-        <field name="supplier" eval="False" />
+        <field name="customer_rank" eval="0" />
+        <field name="supplier_rank" eval="1" />
         <field name="company_id" eval="False" />
     </record>
 
@@ -26,7 +26,6 @@
         <field name="parent_id" ref="base.main_company" />
         <field name="country_id" ref="base.fr" />
         <field name="vat">FR86792377731</field>
-        <field name="security_lead">2.0</field>
         <field name="currency_id" ref="base.USD" />
     </record>
 
@@ -213,30 +212,40 @@
         <field name="name">Sales Journal - (Company A)</field>
         <field name="code">SAJ-A</field>
         <field name="type">sale</field>
-        <field name="sequence_id" ref="sequence_sale_journal_company_a" />
-        <field name="default_credit_account_id" ref="a_sale_company_a" />
-        <field name="default_debit_account_id" ref="a_sale_company_a" />
-        <field name="update_posted" eval="True" />
-        <field name="company_id" ref="company_a" />
+        <field name="secure_sequence_id" ref="sequence_sale_journal_company_a" />
+        <field name="payment_credit_account_id" ref="a_sale_company_a" />
+        <field name="payment_debit_account_id" ref="a_sale_company_a" />
+        <field
+            name="inbound_payment_method_ids"
+            eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
+        />
+<!--         <field name="update_posted" eval="True"/>
+ -->        <field
+            name="company_id"
+            ref="company_a"
+        />
     </record>
 
     <record id="sales_journal_company_b" model="account.journal">
         <field name="name">Sales Journal - (Company B)</field>
         <field name="code">SAJ-B</field>
         <field name="type">sale</field>
-        <field name="sequence_id" ref="sequence_sale_journal_company_b" />
-        <field name="default_credit_account_id" ref="a_sale_company_b" />
-        <field name="default_debit_account_id" ref="a_sale_company_b" />
-        <field name="update_posted" eval="True" />
-        <field name="company_id" ref="company_b" />
+        <field name="secure_sequence_id" ref="sequence_sale_journal_company_b" />
+        <field name="payment_credit_account_id" ref="a_sale_company_b" />
+        <field name="payment_debit_account_id" ref="a_sale_company_b" />
+<!--         <field name="update_posted" eval="True"/>
+ -->        <field
+            name="company_id"
+            ref="company_b"
+        />
     </record>
 
     <record id="bank_journal_company_a" model="account.journal">
         <field name="name">Bank Journal - (Company A)</field>
         <field name="code">BNK-A</field>
         <field name="type">bank</field>
-        <field name="default_credit_account_id" ref="a_sale_company_a" />
-        <field name="default_debit_account_id" ref="a_sale_company_a" />
+        <field name="payment_credit_account_id" ref="a_sale_company_a" />
+        <field name="payment_debit_account_id" ref="a_sale_company_a" />
         <field name="company_id" ref="company_a" />
     </record>
 
@@ -244,19 +253,26 @@
         <field name="name">Purchases Journal - (Company B)</field>
         <field name="code">EXJ-B</field>
         <field name="type">purchase</field>
-        <field name="sequence_id" ref="sequence_purchase_journal_company_b" />
-        <field name="default_credit_account_id" ref="a_expense_company_b" />
-        <field name="default_debit_account_id" ref="a_expense_company_b" />
-        <field name="update_posted" eval="True" />
-        <field name="company_id" ref="company_b" />
+        <field name="secure_sequence_id" ref="sequence_purchase_journal_company_b" />
+        <field name="payment_credit_account_id" ref="a_expense_company_b" />
+        <field name="payment_debit_account_id" ref="a_expense_company_b" />
+<!--         <field name="update_posted" eval="True"/>
+ -->        <field
+            name="company_id"
+            ref="company_b"
+        />
     </record>
 
     <record id="bank_journal_company_b" model="account.journal">
         <field name="name">Bank Journal - (Company B)</field>
         <field name="code">BNK-B</field>
         <field name="type">bank</field>
-        <field name="default_credit_account_id" ref="a_sale_company_b" />
-        <field name="default_debit_account_id" ref="a_sale_company_b" />
+        <field name="payment_credit_account_id" ref="a_sale_company_b" />
+        <field name="payment_debit_account_id" ref="a_sale_company_b" />
+        <field
+            name="inbound_payment_method_ids"
+            eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
+        />
         <field name="company_id" ref="company_b" />
         <field name="currency_id" ref="base.USD" />
     </record>
@@ -402,40 +418,20 @@
     <!--
         Create draft invoice
         -->
-    <record id="customer_invoice_company_a" model="account.invoice">
-        <field name="type">out_invoice</field>
+    <record id="customer_invoice_company_a" model="account.move">
+        <field name="move_type">out_invoice</field>
         <field name="partner_id" ref="partner_user_a" />
-        <field name="account_id" ref="a_recv_company_a" />
         <field name="journal_id" ref="sales_journal_company_a" />
         <field name="company_id" ref="company_a" />
         <field name="state">draft</field>
     </record>
 
-    <record id="customer_invoice_company_b" model="account.invoice">
-        <field name="type">out_invoice</field>
+    <record id="customer_invoice_company_b" model="account.move">
+        <field name="move_type">out_invoice</field>
         <field name="partner_id" ref="partner_user_a" />
-        <field name="account_id" ref="a_recv_company_b" />
         <field name="journal_id" ref="sales_journal_company_b" />
         <field name="company_id" ref="company_b" />
         <field name="state">draft</field>
-    </record>
-
-    <record id="customer_invoice_line_company_a" model="account.invoice.line">
-        <field name="invoice_id" ref="customer_invoice_company_a" />
-        <field name="product_id" ref="product.product_product_1" />
-        <field name="name">Service Multi Company</field>
-        <field name="account_id" ref="a_sale_company_a" />
-        <field name="price_unit" eval="450.0" />
-        <field name="company_id" ref="company_a" />
-    </record>
-
-    <record id="customer_invoice_line_company_b" model="account.invoice.line">
-        <field name="invoice_id" ref="customer_invoice_company_b" />
-        <field name="product_id" ref="product.product_product_1" />
-        <field name="name">Service Multi Company</field>
-        <field name="account_id" ref="a_sale_company_b" />
-        <field name="price_unit" eval="450.0" />
-        <field name="company_id" ref="company_b" />
     </record>
 
 </odoo>

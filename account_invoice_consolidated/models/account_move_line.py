@@ -4,8 +4,8 @@
 from odoo import fields, models
 
 
-class AccountInvoiceLine(models.Model):
-    _inherit = "account.invoice.line"
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
 
     consolidated_by_id = fields.Many2one(
         "account.invoice.consolidated", string="Consolidated By", readonly=True
