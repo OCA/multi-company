@@ -543,6 +543,19 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         invoice_number = self.invoice_company_a.name
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         self.assertEqual(self.invoice_company_a.name, invoice_number)
+        # When the destination invoice is posted we can't modify the origin either
+        with self.assertRaises(UserError):
+            self.invoice_company_a.with_context(breakpoint=True).button_draft()
+        # Check that we can't modify the destination invoice
+        dest_invoice = self.account_move_obj.search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        dest_invoice.button_draft()
+        with self.assertRaises(UserError):
+            move_form = Form(dest_invoice)
+            with move_form.invoice_line_ids.edit(0) as line_form:
+                line_form.price_unit = 33.3
+            move_form.save()
 
     def test_confirm_invoice_with_child_partner(self):
         # ensure the catalog is shared
