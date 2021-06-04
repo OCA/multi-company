@@ -1,0 +1,2 @@
+- Multi-company must be enabled: Settings > General Settings, go to the *Multi-Companies* tab, then check *Multi-companies*
+- On each company, set the Due To/Due From Account and Journal.
