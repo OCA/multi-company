@@ -10,12 +10,7 @@
     "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
     "depends": ["account_invoice_consolidated"],
-    "data": [
-        "views/account_payment.xml",
-    ],
+    "data": ["views/account_payment.xml"],
     "development_status": "Beta",
-    "maintainers": [
-        "max3903",
-        "osi-scampbell",
-    ],
+    "maintainers": ["max3903", "osi-scampbell"],
 }
