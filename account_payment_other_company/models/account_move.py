@@ -4,7 +4,7 @@ from odoo import models
 
 
 class AccountMove(models.Model):
-    _inherit = 'account.move'
+    _inherit = "account.move"
 
     def _post_validate(self):
         # Override to prevent ValidationError
