@@ -15,9 +15,8 @@ class AccountPayment(models.Model):
     @api.onchange("journal_id", "payment_type")
     def onchange_show_other_journal(self):
         for rec in self:
-            journal_id = rec.company_id.due_fromto_payment_journal_id.id
             res = (
-                rec.journal_id.id == journal_id
+                rec.journal_id.id == rec.company_id.due_fromto_payment_journal_id.id
                 and rec.payment_type in ("outbound", "inbound")
                 and rec.partner_type == "supplier"
             )
