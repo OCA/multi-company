@@ -17,6 +17,11 @@ class ResPartner(models.Model):
         store=True,
         index=True,
     )
+    company_ids = fields.Many2many(
+        relation="partner_res_company_assignment_rel",
+        column1="partner_id",
+        column2="res_company_assignment_id",
+    )
 
     @api.model
     def create(self, vals):
