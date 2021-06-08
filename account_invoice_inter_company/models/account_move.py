@@ -33,7 +33,9 @@ class AccountMove(models.Model):
     def action_post(self):
         """ Validated invoice generate cross invoice base on company rules """
         res = super().action_post()
-        for src_invoice in self:
+        # Intercompany account entries or receipts aren't supported
+        supported_types = {"out_invoice", "in_invoice", "out_refund", "in_refund"}
+        for src_invoice in self.filtered(lambda x: x.move_type in supported_types):
             # do not consider invoices that have already been auto-generated,
             # nor the invoices that were already validated in the past
             dest_company = src_invoice._find_company_from_invoice_partner()
