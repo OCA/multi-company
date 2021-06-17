@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.intercompany</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoicing']//field[@name='property_account_income_id']" position="after">
+                <field name="property_account_income_intercompany"/>
+            </xpath>
+            <xpath expr="//page[@name='invoicing']//field[@name='property_account_expense_id']" position="after">
+                <field name="property_account_expense_intercompany"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_category_property_form" model="ir.ui.view">
+        <field name="name">product.category.property.form.intercompany</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_income_categ_id']" position="after">
+                    <field name="property_account_income_categ_intercompany"/>
+            </xpath>
+            <xpath expr="//field[@name='property_account_expense_categ_id']" position="after">
+                    <field name="property_account_expense_categ_intercompany"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
