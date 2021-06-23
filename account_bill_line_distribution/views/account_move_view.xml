@@ -42,8 +42,9 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
+<!--             FIXME: while we changed the unit price amount then can't changed the subtotal value so raise unbalanced entry error. -->
             <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
-                <attribute name="editable"/> #FIXME
+                <attribute name="editable"/>
             </xpath>
             <xpath expr="//field[@name='invoice_line_ids']//tree//field[@name='analytic_tag_ids']" position="after">
                 <field name="distribution_ids"/>
