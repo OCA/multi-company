@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo noupdate="1">
+
+    <record id="restaurant_floor_company_rule" model="ir.rule">
+        <field name="name">Restaurant Floor - Multi-Company</field>
+        <field name="model_id" ref="pos_restaurant.model_restaurant_floor"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+    <record id="restaurant_table_company_rule" model="ir.rule">
+        <field name="name">Restaurant Table - Multi-Company</field>
+        <field name="model_id" ref="pos_restaurant.model_restaurant_table"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+    <record id="restaurant_printer_company_rule" model="ir.rule">
+        <field name="name">Restaurant Printer - Multi-Company</field>
+        <field name="model_id" ref="pos_restaurant.model_restaurant_printer"/>
+        <field name="domain_force">['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]</field>
+    </record>
+
+</odoo>
