@@ -50,13 +50,13 @@ class PurchaseOrder(models.Model):
                     )
 
     def _inter_company_create_sale_order(self, dest_company):
-        """ Create a Sale Order from the current PO (self)
-            Note : In this method, reading the current PO is done as sudo,
-            and the creation of the derived
-            SO as intercompany_user, minimizing the access right required
-            for the trigger user.
-            :param dest_company : the company of the created PO
-            :rtype dest_company : res.company record
+        """Create a Sale Order from the current PO (self)
+        Note : In this method, reading the current PO is done as sudo,
+        and the creation of the derived
+        SO as intercompany_user, minimizing the access right required
+        for the trigger user.
+        :param dest_company : the company of the created PO
+        :rtype dest_company : res.company record
         """
         self.ensure_one()
         # Check intercompany user
@@ -106,15 +106,15 @@ class PurchaseOrder(models.Model):
     def _prepare_sale_order_data(
         self, name, partner, dest_company, direct_delivery_address
     ):
-        """ Generate the Sale Order values from the PO
-            :param name : the origin client reference
-            :rtype name : string
-            :param partner : the partner reprenseting the company
-            :rtype partner : res.partner record
-            :param dest_company : the company of the created SO
-            :rtype dest_company : res.company record
-            :param direct_delivery_address : the address of the SO
-            :rtype direct_delivery_address : res.partner record
+        """Generate the Sale Order values from the PO
+        :param name : the origin client reference
+        :rtype name : string
+        :param partner : the partner reprenseting the company
+        :rtype partner : res.partner record
+        :param dest_company : the company of the created SO
+        :rtype dest_company : res.company record
+        :param direct_delivery_address : the address of the SO
+        :rtype direct_delivery_address : res.partner record
         """
         self.ensure_one()
         delivery_address = (
@@ -148,12 +148,12 @@ class PurchaseOrder(models.Model):
         return new_order._convert_to_write(new_order._cache)
 
     def _prepare_sale_order_line_data(self, purchase_line, dest_company, sale_order):
-        """ Generate the Sale Order Line values from the PO line
-            :param purchase_line : the origin Purchase Order Line
-            :rtype purchase_line : purchase.order.line record
-            :param dest_company : the company of the created SO
-            :rtype dest_company : res.company record
-            :param sale_order : the Sale Order
+        """Generate the Sale Order Line values from the PO line
+        :param purchase_line : the origin Purchase Order Line
+        :rtype purchase_line : purchase.order.line record
+        :param dest_company : the company of the created SO
+        :rtype dest_company : res.company record
+        :param sale_order : the Sale Order
         """
         new_line = self.env["sale.order.line"].new(
             {
