@@ -1,0 +1,232 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * purchase_sale_inter_company
+#
+# Translators:
+# Matjaž Mozetič <m.mozetic@matmoz.si>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-19 00:51+0000\n"
+"PO-Revision-Date: 2017-10-19 00:51+0000\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>, 2017\n"
+"Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_res_company
+msgid "Companies"
+msgstr "Družbe"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__so_from_po
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__so_from_po
+msgid "Create Sale Orders when buying to this company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+"Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
+"podlagi nabavnih nalogov za to družbo."
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+"Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
+"podlagi nabavnih nalogov za to družbo."
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
+msgid ""
+"Generate a Sale Order when a Purchase Order with this company as supplier is "
+"created.\n"
+" The intercompany user must at least be Sale User."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
+msgid "Intercompany Sale User"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_account_move
+msgid "Journal Entries"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr "Nabavni nalog"
+
+#. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+#, fuzzy
+msgid "Purchase/Sale"
+msgstr "Nabava v prodajo"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sale_auto_validation
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__sale_auto_validation
+msgid "Sale Orders Auto Validation"
+msgstr "Samodejno overjanje prodajnih nalogov"
+
+#. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Sale from purchase"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_sale_order
+#, fuzzy
+msgid "Sales Order"
+msgstr "Prodajni nalog"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Postavka prodajnega naloga"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__auto_purchase_order_id
+msgid "Source Purchase Order"
+msgstr "Izvorni nabavni nalog"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line__auto_purchase_line_id
+msgid "Source Purchase Order Line"
+msgstr "Postavka izvornega prodajnega naloga"
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"There's no corresponding line in PO %s for assigning qty from %s for product "
+"%s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/account_move.py:0
+#, python-format
+msgid "This vendor bill is related with: {}"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
+msgid ""
+"User used to create the sales order arising from a purchase order in another "
+"company."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Sale Orders"
+msgstr "Skladišče za prodajne naloge"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__warehouse_id
+#, fuzzy
+msgid "Warehouse for Sale Orders"
+msgstr "Skladišče za prodajne naloge"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sale_auto_validation
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__sale_auto_validation
+msgid ""
+"When a Sale Order is created by a multi company rule for this company, it "
+"will automatically validate it."
+msgstr ""
+"Ko se ustvari prodajni nalog iz pravila konsolidiranja za to družbo, se le-"
+"ta samodejno overi."
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#, python-format
+msgid "You can't cancel an order that is %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#, python-format
+msgid "You cannot create SO from PO because product '%s' is not intercompany"
+msgstr ""
+"Prodajnega naloga ni mogoče ustvariti na osnovi nabavnega, ker proizvoda "
+"'%s' ni v sklopu strukturiranih družb."
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#, fuzzy, python-format
+msgid ""
+"You cannot create SO from PO because sale price list currency is different "
+"than purchase price list currency."
+msgstr ""
+"Prodajnega naloga ni mogoče ustvariti na osnovi nabavnega, ker je valuta "
+"prodajnega cenika drugačna od valute nabavnega."
+
+#~ msgid "Invoice"
+#~ msgstr "Račun"
+
+#~ msgid ""
+#~ "Configure correct warehouse for company (%s) in Menu: Settings/companies/"
+#~ "companies"
+#~ msgstr ""
+#~ "Nastavite pravilno skladišče za družbo (%s) v meniju: Nastavitve/Družbe/"
+#~ "Družbe"
+
+#~ msgid "Output - A"
+#~ msgstr "Izhod - A"
+
+#~ msgid "Output - B"
+#~ msgstr "Izhod - B"
+
+#~ msgid "Sale Auto Validation"
+#~ msgstr "Samodejno overjanje prodaje"
+
+#~ msgid "Stock - A"
+#~ msgstr "Zaloga - A"
+
+#~ msgid "Stock - B"
+#~ msgstr "Zaloga - B"
+
+#~ msgid ""
+#~ "When a Sale Order is created by a multi company rule for this company, it "
+#~ "will automatically validate it"
+#~ msgstr ""
+#~ "Ko se ustvari prodajni nalog iz pravila konsolidiranja za to družbo, se "
+#~ "le-ta samodejno overi"
+
+#~ msgid ""
+#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
+#~ msgstr ""
+#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
