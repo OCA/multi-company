@@ -186,7 +186,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             len(sales.order_line), len(self.purchase_company_a.order_line)
         )
         self.assertEquals(
-            sales.order_line.product_id, self.purchase_company_a.order_line.product_id,
+            sales.order_line.product_id,
+            self.purchase_company_a.order_line.product_id,
         )
         self.assertEquals(sales.note, "Test note")
 
@@ -233,7 +234,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         sale_invoice_id = sales._create_invoices()[0]
         sale_invoice_id.action_post()
         self.assertEquals(
-            sale_invoice_id.auto_invoice_id, self.purchase_company_a.invoice_ids,
+            sale_invoice_id.auto_invoice_id,
+            self.purchase_company_a.invoice_ids,
         )
         self.assertEquals(
             sale_invoice_id.auto_invoice_id.invoice_line_ids,
