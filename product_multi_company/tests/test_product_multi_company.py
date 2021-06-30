@@ -56,6 +56,7 @@ class TestProductMultiCompany(common.TransactionCase):
                  (6, 0, self.group_user.ids)],
              'company_id': self.company_2.id,
              'company_ids': [(6, 0, self.company_2.ids)]})
+        self.env.ref("product.product_comp_rule").active = True
 
     def test_create_product(self):
         product = self.env['product.product'].create({'name': 'Test'})

@@ -56,6 +56,7 @@ class TestPartnerMultiCompany(common.SavepointCase):
         })
         cls.partner_company_1 = cls.partner_company_1.sudo(cls.user_company_1)
         cls.partner_company_2 = cls.partner_company_2.sudo(cls.user_company_2)
+        cls.env.ref("base.res_partner_rule").active = True
 
     def test_create_partner(self):
         partner = self.env['res.partner'].create({'name': 'Test'})

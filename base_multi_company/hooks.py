@@ -29,8 +29,10 @@ def set_security_rule(env, rule_ref):
     rule = env.ref(rule_ref)
     if not rule:  # safeguard if it's deleted
         return
+    # We don't want to enable the rule if it isn't already active, as this leads
+    # to subsequent test fails in a CI context. This should be done via the core
+    # res.config.settings methods
     rule.write({
-        'active': True,
         'domain_force': (
             "['|', ('company_ids', 'in', user.company_id.ids),"
             " ('visible_for_all_companies', '=', True)]"

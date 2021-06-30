@@ -40,6 +40,15 @@ template security rule. This only means that updating the module will not
 restore the security rule this module changes. Only a complete removal and
 reinstallation will serve.
 
+Configuration
+=============
+
+You need to enable multicompany products first. To do so:
+
+#. Go to *Settings > General Settings* and then to the *Multi-companies* section.
+#. If it isn't already enabled set *Multi-companies* on.
+#. Then, set *Common Product Catalog* off if you wan't the access rules to be applied.
+
 Usage
 =====
 
