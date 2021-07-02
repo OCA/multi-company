@@ -10,8 +10,8 @@
         <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
             <xpath
-                expr="//form/sheet/notebook/page[1]/field[@name='invoice_line_ids']/tree/field[@name='account_id']"
-                position="after"
+                expr="//form/sheet/notebook/page[2]/field[@name='line_ids']/tree/field[@name='analytic_account_id']"
+                position="before"
             >
                     <field name="transfer_to_company_id" />
             </xpath>

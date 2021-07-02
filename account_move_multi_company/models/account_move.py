@@ -65,6 +65,7 @@ class AccountMove(models.Model):
             for line in move.line_ids.sorted(key=lambda r: r.id):
                 if line.transfer_to_company_id:
                     company_id = line.transfer_to_company_id.id
+                    company = line.transfer_to_company_id
                     # Add the lines for the current company journal entry
                     self.prepare_company_move_line_values(line, transfer_lines)
                     if line.transfer_to_company_id.id not in dedicated_companies_vals:
@@ -80,10 +81,11 @@ class AccountMove(models.Model):
                             )
                         )
                         # Add the lines for the other company journal entry
-                        dedicated_companies_vals[line.transfer_to_company_id.id] = {
+                        journal_id = company.due_fromto_payment_journal_id.id
+                        dedicated_companies_vals[company.id] = {
                             "date": move.date,
                             "ref": move.ref,
-                            "journal_id": line.transfer_to_company_id.due_fromto_payment_journal_id.id,
+                            "journal_id": journal_id,
                             "company_id": company_id,
                             "line_ids": [
                                 (
@@ -160,6 +162,15 @@ class AccountMove(models.Model):
                 # Create and post the entries for the other companies
                 dedicated_company_move = self.env["account.move"].sudo()
                 for company_id in dedicated_companies_vals:
+                    dedicated_companies_vals[company_id].update(
+                        {
+                            "payment_reference": move.payment_reference,
+                            "move_type": move.move_type,
+                            "invoice_date": move.invoice_date,
+                            "invoice_payment_term_id": move.invoice_payment_term_id.id,
+                            "partner_id": move.partner_id.id,
+                        }
+                    )
                     dedicated_company_move += (
                         self.env["account.move"]
                         .sudo()
