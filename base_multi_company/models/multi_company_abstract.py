@@ -21,6 +21,21 @@ class MultiCompanyAbstract(models.AbstractModel):
         default=lambda self: self._default_company_ids(),
     )
 
+    no_company_ids = fields.Boolean(
+        string="No Companies",
+        compute="_compute_no_company_ids",
+        store=True,
+        index=True,
+    )
+
+    @api.depends("company_ids")
+    def _compute_no_company_ids(self):
+        for record in self:
+            if record.company_ids:
+                record.no_company_ids = False
+            else:
+                record.no_company_ids = True
+
     def _default_company_ids(self):
         return self.browse(self.env.company.ids)
 
