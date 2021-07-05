@@ -1,6 +1,7 @@
 # Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # Copyright 2017 LasLabs Inc.
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
+from openupgradelib import openupgrade
 
 from odoo import SUPERUSER_ID, api
 
@@ -8,6 +9,41 @@ __all__ = [
     "post_init_hook",
     "uninstall_hook",
 ]
+
+
+def add_no_company_ids(env, spec):
+    """
+    :param env: Environment
+    :type env: Environment
+    :param spec: A list of tuples that contains:
+        - the model name
+        - the module
+        to add no_company_ids field and pre-compute values
+    :type spec: [type]
+    """
+    for (model_name, module) in spec:
+        model = env[model_name]
+        field_spec = [
+            (
+                "no_company_ids",
+                model_name,
+                model._table,
+                "boolean",
+                "boolean",
+                module,
+            )
+        ]
+        openupgrade.add_fields(env, field_spec)
+        table_rel = model._fields["company_ids"].relation
+        left = model._fields["company_ids"].column1
+        query = f"""
+            UPDATE {model} pt
+                SET no_company_ids = True
+                WHERE NOT EXISTS
+                (SELECT 1 FROM {table_rel}
+                WHERE {left} = pt.id)
+        """
+        env.cr.execute(query)
 
 
 def set_security_rule(env, rule_ref):
