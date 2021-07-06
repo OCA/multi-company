@@ -14,6 +14,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         comodel_name="res.company",
         compute="_compute_company_id",
         search="_search_company_id",
+        inverse="_inverse_company_id",
     )
     company_ids = fields.Many2many(
         string="Companies",
@@ -28,6 +29,11 @@ class MultiCompanyAbstract(models.AbstractModel):
         store=True,
         index=True,
     )
+
+    def _inverse_company_id(self):
+        """
+        This avoids warnings in logs
+        """
 
     @api.depends("company_ids")
     def _compute_no_company_ids(self):
