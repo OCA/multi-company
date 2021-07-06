@@ -24,6 +24,7 @@ class MultiCompanyAbstract(models.AbstractModel):
     no_company_ids = fields.Boolean(
         string="No Companies",
         compute="_compute_no_company_ids",
+        compute_sudo=True,
         store=True,
         index=True,
     )
