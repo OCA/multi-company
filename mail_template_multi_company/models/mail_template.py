@@ -9,5 +9,7 @@ class MailTemplate(models.Model):
     _inherit = "mail.template"
 
     company_id = fields.Many2one(
-        "res.company", default=lambda self: self.env.company, ondelete="set null",
+        "res.company",
+        default=lambda self: self.env.company,
+        ondelete="set null",
     )
