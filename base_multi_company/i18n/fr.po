@@ -9,14 +9,15 @@ msgstr ""
 "Project-Id-Version: Odoo Server 10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-12-16 02:03+0000\n"
-"PO-Revision-Date: 2017-12-16 02:03+0000\n"
-"Last-Translator: OCA Transbot <transbot@odoo-community.org>, 2017\n"
+"PO-Revision-Date: 2021-07-12 11:49+0000\n"
+"Last-Translator: nicolas-burel <nicolas.burel03@gmail.com>\n"
 "Language-Team: French (https://www.transifex.com/oca/teams/23907/fr/)\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
@@ -26,35 +27,35 @@ msgstr "Sociétés"
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_id
 msgid "Company"
-msgstr ""
+msgstr "Société"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Afficher le nom"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Dernière modification"
 
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
-msgstr ""
+msgstr "Résumé multi-entreprises"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__name
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_res_company_assignment__parent_id
@@ -69,4 +70,4 @@ msgstr ""
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__visible_for_all_companies
 msgid "Visible For All Companies"
-msgstr ""
+msgstr "Visible pour toutes les sociétés"
