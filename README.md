@@ -19,7 +19,7 @@ Available addons
 ----------------
 addon | version | summary
 --- | --- | ---
-[account_invoice_inter_company](account_invoice_inter_company/) | 13.0.2.0.7 | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 13.0.2.0.8 | Intercompany invoice rules
 [base_multi_company](base_multi_company/) | 13.0.1.0.2 | Provides a base for adding multi-company support to models.
 [company_dependent_attribute](company_dependent_attribute/) | 13.0.1.0.0 | Display company dependent attribute on fields
 [mail_multicompany](mail_multicompany/) | 13.0.0.1.0 | Email Gateway Multi company
