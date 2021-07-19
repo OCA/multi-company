@@ -121,11 +121,18 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         ])
         sale_invoice_id = sales.action_invoice_create()[0]
         sale_invoice = self.env['account.invoice'].browse(sale_invoice_id)
-        sale_invoice.action_invoice_open()
-        self.assertEquals(sale_invoice.auto_invoice_id,
-                          self.purchase_company_a.invoice_ids)
-        self.assertEquals(sale_invoice.auto_invoice_id.invoice_line_ids,
+        sale_invoice.with_context(
+            test_account_invoice_inter_company=True,
+        ).action_invoice_open()
+        self.assertEquals(self.purchase_company_a.invoice_ids.auto_invoice_id,
+                          sale_invoice)
+        self.assertEquals(self.purchase_company_a.invoice_ids.invoice_line_ids,
                           self.purchase_company_a.order_line.invoice_lines)
+        po_lines = self.purchase_company_a.invoice_ids.mapped(
+            "invoice_line_ids.purchase_line_id"
+        )
+        for ol in self.purchase_company_a.order_line:
+            self.assertIn(ol, po_lines)
 
     def test_cancel(self):
         self.company_b.sale_auto_validation = False
