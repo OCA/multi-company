@@ -21,6 +21,13 @@ class StockPicking(models.Model):
             if not purchase:
                 continue
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
+            if (
+                purchase.picking_ids
+                and not purchase.picking_ids[
+                    0
+                ].company_id.incoming_shipment_auto_validation
+            ):
+                continue
             for move_line in pick.move_line_ids:
                 qty_done = move_line.qty_done
                 sale_line_id = move_line.move_id.sale_line_id

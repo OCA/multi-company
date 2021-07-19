@@ -33,3 +33,8 @@ class ResCompany(models.Model):
         string="Intercompany Sale User",
         old_name="intercompany_user_id",
     )
+    incoming_shipment_auto_validation = fields.Boolean(
+        string="Incoming Shipment Auto Validation",
+        help="When the delivery order is validated, the incoming shipment "
+        "will be automtically validated.",
+    )

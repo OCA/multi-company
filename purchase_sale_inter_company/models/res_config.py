@@ -41,3 +41,10 @@ class InterCompanyRulesConfig(models.TransientModel):
         "order in another company.",
         readonly=False,
     )
+    incoming_shipment_auto_validation = fields.Boolean(
+        related="company_id.incoming_shipment_auto_validation",
+        string="Incoming Shipment Auto Validation",
+        help="When the delivery order is validated, the incoming shipment "
+        "will be automtically validated.",
+        readonly=False,
+    )

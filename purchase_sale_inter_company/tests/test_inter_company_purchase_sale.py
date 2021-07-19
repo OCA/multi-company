@@ -57,9 +57,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         cls.company_a.warehouse_id = cls.warehouse_company_a
         cls.company_a.sale_auto_validation = 1
+        cls.company_a.incoming_shipment_auto_validation = True
         cls.company_b.warehouse_id = cls.warehouse_company_b
         cls.company_b.sale_auto_validation = 1
-
+        cls.company_b.incoming_shipment_auto_validation = True
         cls.user_company_a.group_ids = [
             (
                 6,
