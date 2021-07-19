@@ -9,12 +9,9 @@ from odoo import _, models
 class AccountMove(models.Model):
     _inherit = "account.move"
 
-    def inter_company_create_invoice(
-        self, dest_company, dest_inv_type, dest_journal_type
-    ):
-        res = super().inter_company_create_invoice(
-            dest_company, dest_inv_type, dest_journal_type
-        )
+    def _inter_company_create_invoice(self, dest_company):
+        res = super()._inter_company_create_invoice(dest_company)
+        dest_inv_type = self._get_destination_invoice_type()
         if dest_inv_type == "in_invoice":
             # Link intercompany purchase order with intercompany invoice
             self._link_invoice_purchase(res["dest_invoice"])
@@ -24,8 +21,6 @@ class AccountMove(models.Model):
         self.ensure_one()
         orders = self.env["purchase.order"]
         vals = {}
-        if dest_invoice.state not in ["draft", "cancel"]:
-            vals["invoiced"] = True
         for line in dest_invoice.invoice_line_ids:
             vals["invoice_lines"] = [(4, line.id)]
             purchase_lines = line.auto_invoice_line_id.sale_line_ids.mapped(
