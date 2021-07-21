@@ -10,6 +10,9 @@
                 <field name="so_from_po" class="oe_inline"
                        domain="[('company_id', '=', company_id)]"/>
                 <label string="Sale from purchase" class="o_light_label" for="so_from_po"/>
+                <field name="intercompany_overwrite_purchase_price" class="oe_inline"
+                       domain="[('company_id', '=', company_id)]"/>
+                <label string="Intercompany Overwrite Purchase Price" class="o_light_label" for="intercompany_overwrite_purchase_price"/>
             </div>
             <div id="inter_company_warehouse"
                 attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">

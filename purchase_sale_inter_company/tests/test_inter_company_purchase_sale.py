@@ -53,6 +53,8 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         pricelists = cls.env['product.pricelist'].sudo().search([
             ('currency_id', '!=', currency_eur.id)
         ])
+        cls.company_b.intercompany_overwrite_purchase_price = True
+        cls.company_a.intercompany_overwrite_purchase_price = True
         # set all price list to EUR
         for pl in pricelists:
             pl.currency_id = currency_eur
@@ -64,6 +66,15 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
             get_resource_path(module, *args),
             {}, 'init', False, 'test', cls.registry._assertion_report,
         )
+
+    def test_do_not_sync_prices_and_raise(self):
+        """ If do_not_sync_prices is set to True assert prices for
+        corresponding PO - SO lines are the same
+        """
+        self.company_b.sale_auto_validation = True
+        self.company_a.intercompany_overwrite_purchase_price = False
+        with self.assertRaises(UserError):
+            self.purchase_company_a.sudo(self.user_a).button_approve()
 
     def test_purchase_sale_inter_company(self):
         self.purchase_company_a.notes = 'Test note'
