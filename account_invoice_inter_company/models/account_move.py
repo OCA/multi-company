@@ -188,6 +188,11 @@ class AccountMove(models.Model):
         dest_invoice_data.invoice_date = self.invoice_date
         dest_invoice_data.narration = self.narration
         dest_invoice_data.currency_id = self.currency_id
+        # The extract_state field is introduced by module
+        # 'account_invoice_extract' of Odoo Enterprise. The same
+        # is done in module account_facturx.
+        if "extract_state" in self:
+            dest_invoice_data.extract_state = "done"
         vals = dest_invoice_data._values_to_save(all_fields=True)
         vals.update(
             {
