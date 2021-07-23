@@ -10,6 +10,14 @@ class ResCompany(models.Model):
 
     _inherit = 'res.company'
 
+    do_not_sync_prices = fields.Boolean(
+        string="Do not synchronise prices on SO confirmation",
+        help='If selected intercompany sale order line prices will be '
+        'compared with their respective purchase order line prices and '
+        'an error will be raised if not equal. If left unchecked, no '
+        'comparison will be done and SO line price will be copied to the '
+        'PO line price.',
+    )
     so_from_po = fields.Boolean(
         string="Create Sale Orders when buying to this company",
         help='Generate a Sale Order when a Purchase Order with this company '

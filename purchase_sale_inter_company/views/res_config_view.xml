@@ -10,6 +10,9 @@
                 <field name="so_from_po" class="oe_inline"
                        domain="[('company_id', '=', company_id)]"/>
                 <label string="Sale from purchase" class="o_light_label" for="so_from_po"/>
+                <field name="do_not_sync_prices" class="oe_inline"
+                       domain="[('company_id', '=', company_id)]"/>
+                <label string="Do not synchronise prices" class="o_light_label" for="do_not_sync_prices"/>
             </div>
             <div id="inter_company_warehouse"
                 attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}">
