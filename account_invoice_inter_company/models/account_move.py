@@ -60,9 +60,9 @@ class AccountMove(models.Model):
         if dest_user:
             for line in self.invoice_line_ids:
                 try:
-                    line.sudo(False).product_id.product_tmpl_id.with_user(
-                        dest_user
-                    ).check_access_rule("read")
+                    line.sudo(False).product_id.product_tmpl_id.with_context(
+                        allowed_company_ids=dest_company.ids
+                    ).with_user(dest_user).check_access_rule("read")
                 except AccessError:
                     raise UserError(
                         _(
