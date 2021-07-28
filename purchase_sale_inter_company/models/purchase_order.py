@@ -59,6 +59,11 @@ class PurchaseOrder(models.Model):
             :rtype dest_company : res.company record
         """
         self.ensure_one()
+        self = self.with_context(
+            force_company=dest_company.id,
+            company_id=dest_company.id,
+            allowed_company_ids=dest_company.ids,
+        )
         # Check intercompany user
         intercompany_user = dest_company.intercompany_sale_user_id
         if not intercompany_user:
