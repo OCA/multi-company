@@ -1,0 +1,621 @@
+<odoo>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         Copyright (C) 2019 Serpent Consulting Services Pvt. Ltd.
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <template id="report_template_consolidated_inv">
+        <t t-call="web.html_container">
+
+            <t t-call="web.basic_layout">
+
+                <t t-foreach="docs" t-as="o">
+                    <t t-if="not company">
+                        <t t-if="company_id">
+                            <t t-set="company" t-value="company_id" />
+                        </t>
+                        <t t-elif="o and 'company_id' in o">
+                            <t t-set="company" t-value="o.company_id.sudo()" />
+                        </t>
+                        <t t-else="else">
+                            <t t-set="company" t-value="res_company" />
+                        </t>
+                    </t>
+                    <!-- Custom Header -->
+                    <div class="header" style="font-size: 10px !important;">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-3 mb4 text-center">
+                                        <img
+                                            t-if="company.logo"
+                                            t-att-src="image_data_uri(company.logo)"
+                                            style="max-height: 80px;"
+                                            alt="Logo"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div
+                                        class="col-6"
+                                        name="company_address"
+                                        style="display: inline; color: #9b8b87;"
+                                    >
+                                        <p>
+                                            <span t-field="company.partner_id.street" />
+                                            <span
+                                                t-field="company.partner_id.city"
+                                                style="border-left: 1px solid #95499e; padding-left: 5px;"
+                                            />,
+                                            <span
+                                                t-field="company.partner_id.country_id.name"
+                                            />
+                                            <span t-field="company.partner_id.zip" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="d-inline">
+                                        <p style="color: #924eb9">CONTACT US:
+                                            <span
+                                                t-field="company.partner_id.phone"
+                                                style="color: #000; font-weight: bold;"
+                                            />
+                                            <span
+                                                t-field="company.partner_id.email"
+                                                style="color: #000; border-left: 1px solid #95499e; padding-left: 5px;"
+                                            />
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <table
+                                        class="table table-sm"
+                                        style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                    >
+                                        <thead>
+                                            <tr
+                                                style="color: #fff; background-color: #92499e"
+                                            >
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                                >Invoice Date:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                                >Invoice Number:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                                >P.O. Number:</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="color: #000;">
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                                ><span t-field="o.date_to" /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                                ><span t-field="o.name" /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                                >NA</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: none;"
+                                                >Terms:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: none;"
+                                                >Due Date:</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td
+                                                    class="text-center"
+                                                    style="border-top: 1px solid #924eb9;"
+                                                ><span
+                                                        t-field="o.invoice_ids[0].invoice_payment_term_id.name"
+                                                    /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border-top: 1px solid #924eb9;"
+                                                ><span
+                                                        t-field="o.invoice_ids[0].invoice_date_due"
+                                                    /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Page Content -->
+                    <div class="page" style="font-size: 9px !important;">
+                        <br />
+                        <br />
+                        <div class="">
+                            <div class="row col-12">
+                                <div class="col-6">
+                                    <div>
+                                        <p
+                                            class="text-left"
+                                            style="padding: 3px; color: #fff; background-color: #a6a6a6; margin: 0px;"
+                                        >Bill To:</p>
+                                        <p
+                                            t-field="o.partner_id"
+                                            style="margin: 0px;"
+                                            t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": true}'
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div>
+                                        <p
+                                            class="text-left"
+                                            style="padding: 3px; color: #fff; background-color: #a6a6a6; margin: 0px;"
+                                        >Site Address:</p>
+                                        <p
+                                            t-field="o.company_id.partner_id"
+                                            style="margin: 0px;"
+                                            t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": true}'
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt32">
+                                <div class="col-12">
+                                    <table
+                                        class="table table-sm"
+                                        style="border: 1px solid #924eb9; border-collapse: collapse;"
+                                    >
+                                        <tbody>
+                                            <thead style="padding-top: 5px">
+                                                <tr
+                                                    style="color: #fff; background-color: #a6a6a6"
+                                                >
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Number:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Company:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Invoice Date:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Due Date:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Untaxed Amount:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Tax:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Total:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Amount Due:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Status:</th>
+                                                </tr>
+                                            </thead>
+                                            <t
+                                                t-foreach="o.sudo().invoice_ids"
+                                                t-as="line"
+                                            >
+                                                <tr style="color: #000;">
+                                                    <td
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span t-field="line.name" /></td>
+                                                    <td
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.company_id.name"
+                                                        /></td>
+                                                    <td
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.invoice_date"
+                                                        /></td>
+                                                    <td
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.invoice_date_due"
+                                                        /></td>
+                                                    <td
+                                                        class="text-right"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.amount_untaxed"
+                                                        /></td>
+                                                    <td
+                                                        class="text-right"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.amount_tax"
+                                                        /></td>
+                                                    <td
+                                                        class="text-right"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.amount_total"
+                                                        /></td>
+                                                    <td
+                                                        class="text-right"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span
+                                                            t-field="line.amount_residual"
+                                                        /></td>
+                                                    <td
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    ><span t-field="line.state" /></td>
+                                                </tr>
+                                            </t>
+                                            <thead>
+                                                <tr
+                                                    style="color: #fff; background-color: #a6a6a6"
+                                                >
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Description:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Origin:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Account:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Price:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Quantity:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Unit of Measure:</th>
+                                                    <th
+                                                        class="text-center"
+                                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                    >Subtotal:</th>
+                                                </tr>
+                                            </thead>
+                                            <t
+                                                t-foreach="o.sudo().invoice_ids"
+                                                t-as="line"
+                                            >
+                                                <t
+                                                    t-foreach="line.sudo().invoice_line_ids"
+                                                    t-as="inv_line"
+                                                >
+                                                    <tbody>
+                                                        <tr style="color: #000;">
+                                                            <td
+                                                                class="text-center"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.name"
+                                                                /></td>
+                                                            <td
+                                                                class="text-center"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.move_id"
+                                                                /></td>
+                                                            <td
+                                                                class="text-center"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.account_id"
+                                                                /></td>
+                                                            <td
+                                                                class="text-center"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.price_unit"
+                                                                /></td>
+                                                            <td
+                                                                class="text-right"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.quantity"
+                                                                /></td>
+                                                            <td
+                                                                class="text-right"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.product_uom_id"
+                                                                /></td>
+                                                            <td
+                                                                class="text-right"
+                                                                style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                            ><span
+                                                                    t-field="inv_line.price_subtotal"
+                                                                /></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </t>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row mt32">
+                                <div class="col-6">
+                                    <div style="margin: 2px;">
+                                        <span
+                                            t-field="o.company_id.cons_invoice_text"
+                                        />
+                                    </div>
+                                    <div style="padding: 8px">
+                                        <p
+                                            style="font-size: 9px; color: #93499e; font-weight: 600; margin: 5px;"
+                                        >Do you have a billing question?</p>
+                                        <p
+                                            style="font-size: 8px; margin: 5px;"
+                                        >Call us at <span t-field="company.phone" /></p>
+                                        <p
+                                            style="font-size: 9px; color: #93499e; font-weight: 600; margin: 10px 5px 5px 5px;"
+                                        >Sign up to receive your statements via email.</p>
+                                        <p
+                                            style="font-size: 8px; margin: 5px;"
+                                        >Contact us at <span
+                                                t-field="company.email"
+                                            /></p>
+                                    </div>
+                                    <p
+                                        style="font-size: 7px"
+                                    >Prices reflect a 3% cash discount for payment by cash, Wire, ACH, Debit ACH, or Check.</p>
+                                </div>
+                                <div class="col-4 offset-2">
+                                    <table
+                                        class="table table-sm"
+                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                    >
+                                        <tbody>
+                                            <tr>
+                                                <th
+                                                    class="text-left"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Amount Untaxed</th>
+                                                <td
+                                                    class="text-right"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span
+                                                        t-field="o.amount_untaxed"
+                                                    /></td>
+                                            </tr>
+                                            <tr>
+                                                <th
+                                                    class="text-left"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Misc</th>
+                                                <td
+                                                    class="text-right"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >00</td>
+                                            </tr>
+                                            <tr>
+                                                <th
+                                                    class="text-left"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Amount Tax</th>
+                                                <td
+                                                    class="text-right"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span t-field="o.amount_tax" /></td>
+                                            </tr>
+                                            <tr>
+                                                <th
+                                                    class="text-left"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Freight</th>
+                                                <td
+                                                    class="text-right"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >00</td>
+                                            </tr>
+                                            <tr>
+                                                <th
+                                                    class="text-left"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                />
+                                                <td
+                                                    class="text-right"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >00</td>
+                                            </tr>
+                                            <tr>
+                                                <th
+                                                    class="text-left"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Amount Total</th>
+                                                <td
+                                                    class="text-right"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span t-field="o.amount_total" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row mt64">
+                                <div class="col-12">
+                                    <table
+                                        class="table table-sm"
+                                        style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                    >
+                                        <thead>
+                                            <tr
+                                                style="color: #fff; background-color: #a6a6a6"
+                                            >
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Customer Name:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Account Number:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Invoice Number:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Invoice Date:</th>
+                                                <th
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                >Invoice Amount:</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr style="color: #000;">
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span
+                                                        t-field="o.partner_id.name"
+                                                    /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span
+                                                        t-field="o.partner_id.ref"
+                                                    /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span t-field="o.name" /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span t-field="o.date_to" /></td>
+                                                <td
+                                                    class="text-center"
+                                                    style="border: 1px solid #b9b9b9; border-collapse: collapse;"
+                                                ><span t-field="o.amount_total" /></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Custom Footer -->
+                    <div
+                        class="footer o_standard_footer"
+                        style="font-size: 8px !important;"
+                    >
+                        <div class="row">
+                            <div class="col-5">
+                                <p style="font-weight: 600;">Payable To:</p>
+                                <p
+                                    t-field="company.partner_id"
+                                    t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'
+                                />
+                            </div>
+                            <div class="col-7">
+                                <p
+                                    style="font-weight: 600;"
+                                >Address Changes or Comments:</p>
+                                <p
+                                    style="width: 100%; border-bottom: 1px solid #b9b9b9; margin: 10px 0px;"
+                                />
+                                <p
+                                    style="width: 100%; border-bottom: 1px solid #b9b9b9; margin: 10px 0px;"
+                                />
+                                <p
+                                    style="width: 100%; border-bottom: 1px solid #b9b9b9; margin: 10px 0px;"
+                                />
+                                <p
+                                    class="text-center mt4"
+                                >Visit us on the web – www.pavlovmedia.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+            </t>
+        </t>
+    </template>
+
+
+    <record id="paperformat_consolidated_invoice_pavlov" model="report.paperformat">
+        <field name="name">Pavlov Consolidated Invoice Report Format</field>
+        <field name="default" eval="True" />
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">45</field>
+        <field name="margin_bottom">33</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False" />
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <!--Report for Consolidated Invoice -->
+
+    <record id="report_consolidated_inv" model="ir.actions.report">
+            <field name="name">Consolidated Invoice Report</field>
+            <field name="model">account.invoice.consolidated</field>
+            <field name="binding_model_id" ref="model_account_invoice_consolidated" />
+            <field
+            name="paperformat_id"
+            ref="account_invoice_consolidated.paperformat_consolidated_invoice_pavlov"
+        />
+            <field name="report_type">qweb-pdf</field>
+            <field
+            name="report_name"
+        >account_invoice_consolidated.report_template_consolidated_inv</field>
+            <field
+            name="report_file"
+        >account_invoice_consolidated.report_consolidated_invoice</field>
+
+        </record>
+
+</odoo>
