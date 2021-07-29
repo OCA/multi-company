@@ -3,20 +3,28 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, models
+from odoo import _, api, models, fields
 from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
 
+    auto_sale_order_id = fields.Many2one(
+        comodel_name='sale.order',
+        string='Source Sale Order',
+        readonly=True,
+        copy=False,
+    )
+
     @api.multi
     def button_approve(self, force=False):
         """ Generate inter company sale order base on conditions."""
         res = super(PurchaseOrder, self).button_approve(force)
-        for purchase_order in self.sudo():
+        for purchase_order in self.sudo().filtered(lambda s: not s.auto_sale_order_id):
             # get the company from partner then trigger action of
             # intercompany relation
+            # Do not consider PO created from intercompany SO
             dest_company = purchase_order.partner_id.ref_company_ids
             if dest_company and dest_company.so_from_po:
                 purchase_order.with_context(
@@ -162,8 +170,20 @@ class PurchaseOrder(models.Model):
             if so.state not in ['draft', 'sent', 'cancel']:
                 raise UserError(_("You can't cancel an order that is %s")
                                 % so.state)
-        sale_orders.action_cancel()
+        if sale_orders:
+            sale_orders.action_cancel()
         self.write({
             'partner_ref': False,
         })
         return super().button_cancel()
+
+
+class PurchaseOrderLine(models.Model):
+    _inherit = "purchase.order.line"
+
+    auto_sale_line_id = fields.Many2one(
+        comodel_name='sale.order.line',
+        string='Source Sale Order Line',
+        readonly=True,
+        copy=False,
+    )

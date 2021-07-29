@@ -26,6 +26,8 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         )
         cls.purchase_company_a = cls.env.ref(
             'purchase_sale_inter_company.purchase_company_a')
+        cls.sale_company_b = cls.env.ref(
+            'purchase_sale_inter_company.sale_company_b')
         cls.company_a = cls.env.ref('purchase_sale_inter_company.company_a')
         cls.company_b = cls.env.ref('purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
@@ -145,3 +147,34 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         ])
         with self.assertRaises(UserError):
             self.purchase_company_a.sudo(self.user_a).button_cancel()
+
+    def test_sale_purchase_inter_company(self):
+        self.company_b.so_from_po = False
+        self.company_a.po_from_so = True
+        warehouse_company_a = self.env.ref(
+            'purchase_sale_inter_company.warehouse_company_a')
+        self.company_a.po_picking_type_id = warehouse_company_a.in_type_id.id
+        intercompany_user_a = self.user_a.copy()
+        intercompany_user_a.company_ids |= self.company_b
+        self.company_a.intercompany_user_id = intercompany_user_a
+        self.sale_company_b.note = 'Test sale note'
+        self.sale_company_b.sudo(self.user_b).action_confirm()
+        purchases = self.env['purchase.order'].sudo(self.user_a).search([
+            ('auto_sale_order_id', '=', self.sale_company_b.id)
+        ])
+        self.assertEquals(len(purchases), 1)
+        if purchases.company_id.purchase_auto_validation:
+            self.assertEquals(purchases.state, 'purchase')
+        else:
+            self.assertEquals(purchases.state, 'draft')
+        self.assertEquals(purchases.partner_id,
+                          self.sale_company_b.company_id.partner_id)
+        self.assertEquals(purchases.company_id.partner_id,
+                          self.sale_company_b.partner_id)
+        self.assertEquals(len(purchases.order_line),
+                          len(self.sale_company_b.order_line))
+        self.assertEquals(purchases.order_line.product_id,
+                          self.sale_company_b.order_line.product_id)
+        self.assertEquals(purchases.order_line.product_qty,
+                          self.sale_company_b.order_line.product_uom_qty)
+        self.assertEquals(purchases.notes, 'Test sale note')

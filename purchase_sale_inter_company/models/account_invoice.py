@@ -31,6 +31,12 @@ class AccountInvoice(models.Model):
             vals['invoice_lines'] = [(4, line.id)]
             purchase_lines = line.auto_invoice_line_id.sale_line_ids.mapped(
                 'auto_purchase_line_id')
+            if not purchase_lines:
+                # the case where PO is generated from SO
+                purchase_lines = self.env["purchase.order.line"].search([(
+                    "auto_sale_line_id", "in",
+                    line.auto_invoice_line_id.sale_line_ids.ids
+                )])
             purchase_lines.update(vals)
             orders |= purchase_lines.mapped('order_id')
         if orders:
