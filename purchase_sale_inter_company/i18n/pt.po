@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* purchase_sale_inter_company
+# 	* purchase_sale_inter_company
 #
 msgid ""
 msgstr ""
@@ -27,29 +27,58 @@ msgid "Config Settings"
 msgstr "Parâmetros de Configuração"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__po_from_so
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__po_from_so
+msgid "Create Purchase Orders when selling to this company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__so_from_po
 msgid "Create Sale Orders when buying to this company"
 msgstr "Criar Encomenda de Venda na compra a esta empresa"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__po_picking_type_id
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__po_picking_type_id
+msgid ""
+"Default value to set on Purchase Orders (\"Deliver To\" field) that will be "
+"created based on Sale Orders made to this company."
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid "Default value to set on Sale Orders that will be created based on Purchase Orders made to this company"
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
 msgstr ""
 "Valor padrão a definir nas Encomendas de Venda que serão criadas com base "
 "nas Encomendas de Compra feitas a esta empresa"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid "Default value to set on Sale Orders that will be created based on Purchase Orders made to this company."
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
 msgstr ""
 "Valor padrão a ser definido nas Encomendas de Venda que serão criadas com "
 "base nas Encomendas de Compra feitas a esta empresa."
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__po_from_so
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__po_from_so
+msgid ""
+"Generate a Purchase Order when a Sale Order with this company as customer is "
+"created.\n"
+" The intercompany user must at least be Purchase User."
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
-msgid "Generate a Sale Order when a Purchase Order with this company as supplier is created.\n"
+msgid ""
+"Generate a Sale Order when a Purchase Order with this company as supplier is "
+"created.\n"
 " The intercompany user must at least be Sale User."
 msgstr ""
 "Gerar uma Encomenda de Venda quando é criada uma Encomenda de Compra com "
@@ -73,9 +102,31 @@ msgid "Invoice"
 msgstr "Fatura"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__po_picking_type_id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__po_picking_type_id
+msgid "Picking type for Purchase Orders"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
 msgid "Purchase Order"
 msgstr "Encomenda de Compra"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__purchase_auto_validation
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__purchase_auto_validation
+msgid "Purchase Orders Auto Validation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Purchase from sale"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_sale_order
@@ -109,15 +160,27 @@ msgid "Source Purchase Order Line"
 msgstr "Linha de Encomenda de Compra Origem"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__auto_sale_order_id
+msgid "Source Sale Order"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__auto_sale_line_id
+msgid "Source Sale Order Line"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:39
 #, python-format
-msgid "There's no corresponding line in PO %s for assigning qty from %s for product %s"
+msgid ""
+"There's no corresponding line in PO %s for assigning qty from %s for product "
+"%s"
 msgstr ""
 "Não há linha correspondente na EC %s para atribuição de qtd de %s para o "
 "produto %s"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/account_invoice.py:39
+#: code:addons/purchase_sale_inter_company/models/account_invoice.py:45
 #, python-format
 msgid "This vendor bill is related with: {}"
 msgstr "Esta fatura de fornecedor está relacionada com: {}"
@@ -138,21 +201,38 @@ msgid "Warehouse for Sale Orders"
 msgstr "Armazém para Encomendas de Venda"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__purchase_auto_validation
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__purchase_auto_validation
+msgid ""
+"When a Purchase Order is created by a multi company rule for this company, "
+"it will automatically validate it."
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sale_auto_validation
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__sale_auto_validation
-msgid "When a Sale Order is created by a multi company rule for this company, it will automatically validate it."
+msgid ""
+"When a Sale Order is created by a multi company rule for this company, it "
+"will automatically validate it."
 msgstr ""
 "Quando uma Encomenda de Venda é criada por uma regra multi-empresa para esta "
 "empresa, esta será automaticamente validada."
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:163
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:171
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:146
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr "Não pode cancelar uma encomenda que seja %s"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:47
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:56
+#, python-format
+msgid "You cannot create PO from SO because product '%s' is not intercompany"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:55
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
 msgstr ""
@@ -160,9 +240,11 @@ msgstr ""
 "empresas"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:74
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:82
 #, python-format
-msgid "You cannot create SO from PO because sale price list currency is different than purchase price list currency."
+msgid ""
+"You cannot create SO from PO because sale price list currency is different "
+"than purchase price list currency."
 msgstr ""
 "Não pode criar uma EV a partir de uma EC porque a moeda da lista de preços "
 "de venda é diferente da moeda da lista de preços de compra."
