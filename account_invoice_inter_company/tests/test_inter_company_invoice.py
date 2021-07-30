@@ -24,7 +24,6 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         cls.company_a = cls.env["res.company"].create(
             {
                 "name": "Company A",
-                "vat": "FR86792377731",
                 "currency_id": cls.env.ref("base.EUR").id,
                 "country_id": cls.env.ref("base.fr").id,
                 "parent_id": cls.env.ref("base.main_company").id,
@@ -33,13 +32,12 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
         cls.chart.try_loading(cls.company_a)
         cls.partner_company_a = cls.env["res.partner"].create(
-            {"name": cls.company_a.name, "is_company": True, "vat": "FR56465451"}
+            {"name": cls.company_a.name, "is_company": True}
         )
         cls.company_a.partner_id = cls.partner_company_a
         cls.company_b = cls.env["res.company"].create(
             {
                 "name": "Company B",
-                "vat": "FR83404833048",
                 "currency_id": cls.env.ref("base.EUR").id,
                 "country_id": cls.env.ref("base.fr").id,
                 "parent_id": cls.env.ref("base.main_company").id,
@@ -48,7 +46,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         )
         cls.chart.try_loading(cls.company_b)
         cls.partner_company_b = cls.env["res.partner"].create(
-            {"name": cls.company_b.name, "is_company": True, "vat": "FR56465451"}
+            {"name": cls.company_b.name, "is_company": True}
         )
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
@@ -386,53 +384,6 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         cls.partner_company_b.property_account_receivable_id = cls.a_recv_company_b.id
         cls.partner_company_b.property_account_payable_id = cls.a_pay_company_b.id
 
-        cls.fiscal_position_template_intraeub2b_company_a = cls.env[
-            "account.fiscal.position"
-        ].create(
-            {
-                "name": "Intra-EU B2B - (Company A)",
-                "auto_apply": True,
-                "vat_required": True,
-                "country_group_id": cls.env.ref("base.europe").id,
-                "note": "French VAT exemption according to articles 262 ter"
-                " I (for products) and/or 283-2 (for services) of CGI",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.fiscal_position_template_import_export_company_a = cls.env[
-            "account.fiscal.position"
-        ].create(
-            {
-                "name": "Import/Export + DOM-TOM - (Company A)",
-                "note": "French VAT exemption according to articles 262 I of CGI",
-                "country_group_id": cls.env.ref("base.europe").id,
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.fiscal_position_template_intraeub2b_company_b = cls.env[
-            "account.fiscal.position"
-        ].create(
-            {
-                "name": "Intra-EU B2B - (Company B)",
-                "auto_apply": True,
-                "vat_required": True,
-                "country_group_id": cls.env.ref("base.europe").id,
-                "note": "French VAT exemption according to articles 262 ter"
-                "I (for products) and/or 283-2 (for services) of CGI",
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.fiscal_position_template_import_export_company_b = cls.env[
-            "account.fiscal.position"
-        ].create(
-            {
-                "name": "Import/Export + DOM-TOM - (Company B)",
-                "country_group_id": cls.env.ref("base.europe").id,
-                "note": "French VAT exemption according to articles 262 I of CGI",
-                "company_id": cls.company_b.id,
-            }
-        )
-
         cls.invoice_company_a = Form(
             cls.account_move_obj.with_company(cls.company_a.id).with_context(
                 default_move_type="out_invoice",
@@ -543,6 +494,19 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         invoice_number = self.invoice_company_a.name
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         self.assertEqual(self.invoice_company_a.name, invoice_number)
+        # When the destination invoice is posted we can't modify the origin either
+        with self.assertRaises(UserError):
+            self.invoice_company_a.with_context(breakpoint=True).button_draft()
+        # Check that we can't modify the destination invoice
+        dest_invoice = self.account_move_obj.search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        dest_invoice.button_draft()
+        with self.assertRaises(UserError):
+            move_form = Form(dest_invoice)
+            with move_form.invoice_line_ids.edit(0) as line_form:
+                line_form.price_unit = 33.3
+            move_form.save()
 
     def test_confirm_invoice_with_child_partner(self):
         # ensure the catalog is shared

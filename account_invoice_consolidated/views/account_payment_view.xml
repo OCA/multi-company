@@ -1,0 +1,18 @@
+<odoo>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         Copyright (C) 2019 Serpent Consulting Services Pvt. Ltd.
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record
+        id="action_account_consolidated_invoice_payment"
+        model="ir.actions.act_window"
+    >
+        <field name="name">Register Payment</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="account.view_account_payment_form" />
+        <field name="target">new</field>
+    </record>
+
+</odoo>
