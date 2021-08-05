@@ -5,7 +5,6 @@ from odoo import api, fields, models
 
 class AccountPaymentRegister(models.TransientModel):
     _inherit = "account.payment.register"
-    _description = "Register Payments"
 
     other_journal_id = fields.Many2one(
         "account.journal", string="Paid By", domain=[("type", "in", ("bank", "cash"))]
@@ -28,8 +27,8 @@ class AccountPaymentRegister(models.TransientModel):
                 rec.other_journal_id = False
             rec.show_other_journal = res
 
-    def create_payments(self):
-        res = super().create_payments()
+    def _create_payments(self):
+        res = super()._create_payments()
         if self.show_other_journal:
             for pay_id in res["domain"][0][2]:
                 payment_id = self.env["account.payment"].browse(pay_id)
@@ -43,10 +42,10 @@ class AccountPaymentRegister(models.TransientModel):
         active_ids = self._context.get("active_ids")
         active_model = self._context.get("active_model")
         # Check for selected invoices ids
-        if not active_ids or active_model != "account.invoice":
+        if not active_ids or active_model != "account.move":
             return rec
-        invoices = self.env["account.invoice"].browse(active_ids)
+        invoices = self.env["account.move"].browse(active_ids)
         # Check all invoices are for suppliers
-        if all(invoice.partner_id.supplier for invoice in invoices):
+        if all(invoice.move_type == "out_invoice" for invoice in invoices):
             rec.update({"partner_type": "supplier"})
         return rec
