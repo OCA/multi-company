@@ -91,13 +91,15 @@ class TestAccountPayment(SavepointCase):
             "currency_id": self.invoice_obj.currency_id.id,
             "payment_date": self.invoice_obj.date,
             "communication": "findme",
-            'other_journal_id': self.company_b_journal.id,
+            "other_journal_id": self.company_b_journal.id,
             "payment_method_id": 1,
             "partner_type": "supplier",
             "partner_id": self.env.ref("base.res_partner_1").id,
             "show_other_journal": False,
         }
-        payment = self.account_payment_obj.with_context(active_model='account.move', active_ids=self.invoice_obj.ids).create(vals)
+        payment = self.account_payment_obj.with_context(
+            active_model="account.move", active_ids=self.invoice_obj.ids
+        ).create(vals)
         payment.line_ids = [self.invoice_obj.line_ids[1].id]
         payment._create_payments()
 
@@ -117,7 +119,9 @@ class TestAccountPayment(SavepointCase):
             "partner_id": self.env.ref("base.res_partner_1").id,
             "show_other_journal": False,
         }
-        payment = self.account_payment_obj.with_context(active_model='account.move', active_ids=self.invoice_obj.ids).create(vals)
+        payment = self.account_payment_obj.with_context(
+            active_model="account.move", active_ids=self.invoice_obj.ids
+        ).create(vals)
         payment.line_ids = [self.invoice_obj.line_ids[1].id]
         payment._create_payments()
         move = self.invoice_obj
@@ -138,4 +142,6 @@ class TestAccountPayment(SavepointCase):
         )
         # Check Partners
         self.assertEqual(move.partner_id, payment.partner_id)
-        self.assertEqual(move.line_ids.company_id.partner_id, payment.company_id.partner_id)
+        self.assertEqual(
+            move.line_ids.company_id.partner_id, payment.company_id.partner_id
+        )
