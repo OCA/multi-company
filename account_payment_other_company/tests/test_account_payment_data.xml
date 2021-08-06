@@ -393,7 +393,6 @@
         <field name="journal_id" ref="sales_journal_company_a" />
         <field name="company_id" ref="company_a" />
         <field name="state">draft</field>
-        <field name="extract_state">done</field>
     </record>
 
     <record id="vendor_bill_company_a" model="account.move">
