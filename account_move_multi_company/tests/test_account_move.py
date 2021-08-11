@@ -6,6 +6,24 @@ class TestAccountMove(common.TransactionCase):
         super(TestAccountMove, self).setUp()
 
         self.company = self.env.ref("base.main_company")
+        self.partner_company_one = (
+            self.env["res.partner"].sudo().create({"name": "Test Company One"})
+        )
+
+        self.company_one = (
+            self.env["res.company"]
+            .sudo()
+            .create(
+                {
+                    "name": "Test Company One",
+                    # "security_lead":0.0,
+                    "currency_id": self.env.ref("base.EUR").id,
+                    "country_id": self.env.ref("base.fr").id,
+                    "partner_id": self.partner_company_one.id,
+                    "parent_id": self.company.id,
+                }
+            )
+        )
 
         self.due_to_due_from_journal_main_company = self.env["account.journal"].create(
             {
@@ -39,6 +57,15 @@ class TestAccountMove(common.TransactionCase):
             }
         )
 
+        self.account_payroll_clearing_A_company = self.env["account.account"].create(
+            {
+                "code": "Test-A 212410",
+                "name": "Test Payroll Clearing",
+                "user_type_id": user_type_current_liabilities.id,
+                "company_id": self.company_one.id,
+            }
+        )
+
         user_type_current_assets = self.env.ref(
             "account.data_account_type_current_assets"
         )
@@ -64,27 +91,21 @@ class TestAccountMove(common.TransactionCase):
             }
         )
 
+        self.account_salary_expense_A_company = self.env["account.account"].create(
+            {
+                "code": "Test-A 212400",
+                "name": "Test Salary Expenses",
+                "user_type_id": user_type_current_expenses.id,
+                "company_id": self.company_one.id,
+                "reconcile": True,
+            }
+        )
+
         self.company.due_fromto_payment_journal_id = (
             self.due_to_due_from_journal_main_company
         )
         self.company.due_from_account_id = self.account_due_from_main_company
         self.company.due_to_account_id = self.account_due_to_main_company
-
-        self.partner_company_one = (
-            self.env["res.partner"].sudo().create({"name": "Test Company One"})
-        )
-        self.company_one = (
-            self.env["res.company"]
-            .sudo()
-            .create(
-                {
-                    "name": "Test Company One",
-                    "partner_id": self.partner_company_one.id,
-                    "parent_id": self.company.id,
-                }
-            )
-        )
-
         self.due_to_due_from_journal_company_one = (
             self.env["account.journal"]
             .sudo()
@@ -98,7 +119,6 @@ class TestAccountMove(common.TransactionCase):
                 }
             )
         )
-
         self.account_due_to_company_one = (
             self.env["account.account"]
             .sudo()
@@ -243,17 +263,57 @@ class TestAccountMove(common.TransactionCase):
             )
         )
 
-    def test_post(self):
-
-        self.journalrec = (
-            self.env["account.journal"]
-            .sudo(self.account_user.id)
-            .search([("type", "=", "general")])[0]
+        self.account_userA = (
+            self.env["res.users"]
+            .with_context({"no_reset_password": True})
+            .create(
+                dict(
+                    name="Adviser",
+                    company_id=self.company_one.id,
+                    login="fm-A",
+                    email="accountmanager@yourcompany.com",
+                    groups_id=[(6, 0, [employee_group.id, employee_invoice_group.id])],
+                    company_ids=[
+                        (
+                            6,
+                            0,
+                            [self.company.id, self.company_one.id, self.company_two.id],
+                        )
+                    ],
+                )
+            )
         )
 
+        self.account_userB = (
+            self.env["res.users"]
+            .with_context({"no_reset_password": True})
+            .create(
+                dict(
+                    name="Adviser",
+                    company_id=self.company_one.id,
+                    login="fm-B",
+                    email="accountmanager@yourcompany.com",
+                    groups_id=[(6, 0, [employee_group.id, employee_invoice_group.id])],
+                    company_ids=[
+                        (
+                            6,
+                            0,
+                            [self.company.id, self.company_one.id, self.company_two.id],
+                        )
+                    ],
+                )
+            )
+        )
+
+    def test_post(self):
+        self.journalrec = (
+            self.env["account.journal"]
+            .with_user(self.account_user.id)
+            .search([("type", "=", "general")])[0]
+        )
         payroll_move = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_user.id)
             .create(
                 {
                     "journal_id": self.journalrec.id,
@@ -323,7 +383,7 @@ class TestAccountMove(common.TransactionCase):
         # Main company Due To/Due From Move Before Payroll Journal Entry Post
         main_company_due_tofrom_moves_before = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_user.id)
             .search_count(
                 [("journal_id", "=", self.due_to_due_from_journal_main_company.id)]
             )
@@ -333,7 +393,7 @@ class TestAccountMove(common.TransactionCase):
         # Post
         company_one_due_tofrom_moves_before = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_userA.id)
             .search_count(
                 [
                     ("journal_id", "=", self.due_to_due_from_journal_company_one.id),
@@ -341,12 +401,11 @@ class TestAccountMove(common.TransactionCase):
                 ]
             )
         )
-
         # Test Company Two Due To/Due From Move Before Payroll Journal Entry
         # Post
         company_two_due_tofrom_moves_before = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_userB.id)
             .search_count(
                 [
                     ("journal_id", "=", self.due_to_due_from_journal_company_two.id),
@@ -355,22 +414,20 @@ class TestAccountMove(common.TransactionCase):
             )
         )
 
-        payroll_move.post()
-
+        payroll_move.action_post()
         # Main company Due To/Due From Move After Payroll Journal Entry Post
         main_company_due_tofrom_moves_after = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_user.id)
             .search_count(
                 [("journal_id", "=", self.due_to_due_from_journal_main_company.id)]
             )
         )
-
         # Test Company One Due To/Due From Move After Payroll Journal Entry
         # Post
         company_one_due_tofrom_moves_after = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_userA.id)
             .search_count(
                 [
                     ("journal_id", "=", self.due_to_due_from_journal_company_one.id),
@@ -378,13 +435,12 @@ class TestAccountMove(common.TransactionCase):
                 ]
             )
         )
-
         # Test Company Two Due To/Due From Move After Payroll Journal Entry
         # Post
 
         company_two_due_tofrom_moves_after = (
             self.env["account.move"]
-            .sudo(self.account_user.id)
+            .with_user(self.account_userB.id)
             .search_count(
                 [
                     ("journal_id", "=", self.due_to_due_from_journal_company_two.id),
@@ -392,7 +448,6 @@ class TestAccountMove(common.TransactionCase):
                 ]
             )
         )
-
         # Check for Company One
         self.assertEqual(
             main_company_due_tofrom_moves_after,
