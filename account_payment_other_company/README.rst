@@ -14,13 +14,13 @@ Account Payment Other Company
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/12.0/account_payment_other_company
+    :target: https://github.com/OCA/multi-company/tree/14.0/account_payment_other_company
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
     :target: https://translation.odoo-community.org/projects/multi-company-12-0/multi-company-12-0-account_payment_other_company
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/133/12.0
+    :target: https://runbot.odoo-community.org/runbot/133/14.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
@@ -105,6 +105,6 @@ Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-max3903| |maintainer-osi-scampbell| 
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/12.0/account_payment_other_company>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/14.0/account_payment_other_company>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
