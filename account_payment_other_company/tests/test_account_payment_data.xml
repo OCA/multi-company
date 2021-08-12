@@ -8,6 +8,11 @@
         <field name="company_id" eval="False" />
     </record>
 
+    <record id="partner_company_test" model="res.partner">
+        <field name="name">Company Test</field>
+        <field name="company_id" eval="False" />
+    </record>
+
     <record id="partner_company_b" model="res.partner">
         <field name="name">Company B</field>
         <field name="company_id" eval="False" />
@@ -27,7 +32,7 @@
         <field name="parent_id" ref="base.main_company" />
         <field name="country_id" ref="base.fr" />
         <field name="vat">FR86792377731</field>
-         <!-- <field name="security_lead">2.0</field> -->
+        <!-- <field name="security_lead">2.0</field> -->
         <field name="currency_id" ref="base.EUR" />
         <!-- <field name="invoice_auto_validation">1</field> -->
 
@@ -402,9 +407,9 @@
 
     <record id="vendor_bill_company_a" model="account.move">
         <field name="move_type">in_invoice</field>
-        <field name="partner_id" ref="partner_company_a" />
-        <field name="journal_id" ref="purchases_journal_company_b" />
-        <field name="company_id" ref="company_b" />
+        <field name="partner_id" ref="partner_company_test" />
+        <field name="journal_id" ref="purchases_journal_company_a" />
+        <field name="company_id" ref="company_a" />
         <field name="state">draft</field>
     </record>
 
@@ -414,7 +419,10 @@
         <field name="name">Service Multi Company</field>
         <field name="account_id" ref="a_sale_company_a" />
         <field name="price_unit" eval="450.0" />
+        <field name="price_subtotal" eval="450.0" />
+        <field name="price_total" eval="450.0" />
         <field name="company_id" ref="company_a" />
+        <field name="account_internal_type">receivable</field>
     </record>
 
 </odoo>

@@ -31,7 +31,7 @@ class TestAccountPayment(SavepointCase):
         )
         cls.company_a = cls.env.ref("account_payment_other_company.company_a")
         cls.company_b = cls.env.ref("account_payment_other_company.company_b")
-        cls.account_payment_obj = cls.env["account.payment.register"]
+        cls.account_payment_obj = cls.env["account.payment"]
         cls.journal_1 = cls.env["account.journal"]
         cls.journal_2 = cls.env["account.journal"]
         cls.account_dt1 = cls.env["account.account"]
@@ -85,34 +85,33 @@ class TestAccountPayment(SavepointCase):
         self.invoice_obj.action_post()
         vals = {
             "amount": self.invoice_obj.amount_total,
-            "journal_id": self.company_a_journal.id,
+            "journal_id": self.invoice_obj.journal_id.id,
             "company_id": self.company_a.id,
             "payment_type": "outbound",
             "currency_id": self.invoice_obj.currency_id.id,
-            "payment_date": self.invoice_obj.date,
-            "communication": "findme",
+            "date": self.invoice_obj.date,
+            "ref": "findme",
             "other_journal_id": self.company_b_journal.id,
             "payment_method_id": 1,
             "partner_type": "supplier",
-            "partner_id": self.env.ref("base.res_partner_1").id,
+            "partner_id": self.invoice_obj.partner_id.id,
             "show_other_journal": False,
         }
         payment = self.account_payment_obj.with_context(
             active_model="account.move", active_ids=self.invoice_obj.ids
         ).create(vals)
-        payment.line_ids = [self.invoice_obj.line_ids[1].id]
-        payment._create_payments()
+        payment.action_post()
 
     def test_vendor_payment_other_co(self):
         self.invoice_obj.action_post()
         vals = {
-            "amount": self.invoice_obj.amount_total,
+            "amount": self.invoice_obj.amount_residual,
             "journal_id": self.company_a.due_fromto_payment_journal_id.id,
             "company_id": self.company_a.id,
             "payment_type": "outbound",
             "currency_id": self.invoice_obj.currency_id.id,
-            "payment_date": self.invoice_obj.date,
-            "communication": "findme",
+            "date": self.invoice_obj.date,
+            "ref": "findme",
             "other_journal_id": self.company_b_journal.id,
             "payment_method_id": 1,
             "partner_type": "supplier",
@@ -122,9 +121,8 @@ class TestAccountPayment(SavepointCase):
         payment = self.account_payment_obj.with_context(
             active_model="account.move", active_ids=self.invoice_obj.ids
         ).create(vals)
-        payment.line_ids = [self.invoice_obj.line_ids[1].id]
-        payment._create_payments()
-        move = self.invoice_obj
+        payment.action_post()
+        move = payment
 
         # Check Credit/Debit
         self.assertEqual(move.line_ids[0].credit, self.invoice_obj.amount_total)
@@ -132,13 +130,12 @@ class TestAccountPayment(SavepointCase):
         self.assertEqual(move.line_ids[1].credit, 0.0)
         self.assertEqual(move.line_ids[1].debit, self.invoice_obj.amount_total)
         # Check Accounts
-        self.assertEqual(
-            move.line_ids[0].account_id,
+        self.assertIn(
             payment.journal_id.payment_credit_account_id,
+            move.line_ids.mapped("account_id"),
         )
-        self.assertEqual(
-            move.line_ids[1].account_id,
-            payment.journal_id.company_id.due_to_account_id,
+        self.assertIn(
+            payment.company_id.due_from_account_id, move.line_ids.mapped("account_id")
         )
         # Check Partners
         self.assertEqual(move.partner_id, payment.partner_id)
