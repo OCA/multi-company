@@ -1,0 +1,432 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_multicompany_easy_creation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 10.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-03-06 14:43+0100\n"
+"PO-Revision-Date: 2019-02-04 17:50+0000\n"
+"Last-Translator: Marta Vázquez Rodríguez <vazrodmar@gmail.com>\n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.4\n"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__aba_routing
+msgid "ABA/Routing"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Accept"
+msgstr "Aceptar"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Account"
+msgstr "Cuenta"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__partner_id
+#, fuzzy
+#| msgid "Account"
+msgid "Account Holder"
+msgstr "Cuenta"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_holder_name
+msgid "Account Holder Name"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__journal_id
+#, fuzzy
+#| msgid "Account"
+msgid "Account Journal"
+msgstr "Cuenta"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_number
+#, fuzzy
+#| msgid "Account"
+msgid "Account Number"
+msgstr "Cuenta"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_holder_name
+msgid ""
+"Account holder name, in case it is different than the name of the Account "
+"Holder"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Accounts"
+msgstr "Cuentas"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__aba_routing
+msgid "American Bankers Association Routing Number"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_id
+#, fuzzy
+#| msgid "Banks"
+msgid "Bank"
+msgstr "Bancos"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_bic
+msgid "Bank Identifier Code"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_type
+msgid ""
+"Bank account type: Normal or IBAN. Inferred from the bank account number."
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__bank_ids
+msgid "Bank accounts to create"
+msgstr "Cuentas bancarias a crear"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Banks"
+msgstr "Bancos"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__chart_template_id
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Chart Template"
+msgstr "Plantilla plan contable"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__company_id
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__new_company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__name
+msgid "Company Name"
+msgstr "Nombre de la compañía"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.actions.act_window,name:account_multicompany_easy_creation.wizard_multicompany_easy_creation_action
+#: model:ir.ui.menu,name:account_multicompany_easy_creation.multicompany_easy_creation_menu
+msgid "Company easy creation"
+msgstr "Creación sencilla de compañía"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__create_uid
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__create_date
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__currency_id
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__currency_id
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__account_expense_categ_id
+msgid "Default Category Expense Account"
+msgstr "Cuenta por defecto de gastos en categorías"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__account_income_categ_id
+msgid "Default Category Income Account"
+msgstr "Cuenta por defecto de ingresos en categorías"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__account_payable_id
+msgid "Default Payable Account"
+msgstr "Cuenta por defecto a pagar"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__default_purchase_tax_id
+msgid "Default Purchase Tax"
+msgstr "Impuesto por defecto en compras"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__account_receivable_id
+msgid "Default Receivable Account"
+msgstr "Cuenta por defecto a cobrar"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__default_sale_tax_id
+msgid "Default Sales Tax"
+msgstr "Impuesto por defecto en ventas"
+
+#. module: account_multicompany_easy_creation
+#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:191
+#, python-format
+msgid "Description not set in tax template: '%s'"
+msgstr "Descripción no establecida en plantilla del impuesto: '%s'"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__display_name
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__display_name
+msgid "Display Name"
+msgstr "Nombre a mostrar"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Fill company data"
+msgstr "Rellenar datos de la compañía"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
+msgid "Force Purchase Tax In All Products"
+msgstr "Forzar impuesto de compra en todos los productos"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
+msgid "Force Sale Tax In All Products"
+msgstr "Forzar impuesto de venta en todos los productos"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
+msgid ""
+"Go over partner fiscal positions in actual company to match and set "
+"equivalent fiscal positions in the new company."
+msgstr ""
+"Revisar posiciones fiscales de los contactos en la compañía actual buscar "
+"para establecer la posición fiscal equivalente en la nueva compañía."
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
+msgid ""
+"Go over product taxes in actual company to match and set equivalent taxes in "
+"then new company."
+msgstr ""
+"Revisar impuestos de los productos en la compañía actual buscar para "
+"establecer los impuestos equivalentes en la nueva compañía."
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
+msgid ""
+"Go over specific accounts in actual company to match and set equivalent "
+"taxes in the new company.\n"
+"Applies to products, categories, partners, ..."
+msgstr ""
+"Revisar las cuentas específicas en la compañía actual para buscar y "
+"establecer las cuentas equivalentes en la nueva compañía.\n"
+"Se aplica a productos, categorías, contactos, ..."
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__qr_code_valid
+msgid "Has all required arguments"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__id
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__id
+msgid "ID"
+msgstr "ID (identificación)"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz____last_update
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz____last_update
+msgid "Last Modified on"
+msgstr "Última modificación el"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__write_uid
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__write_date
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_name
+msgid "Name"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__sanitized_acc_number
+msgid "Sanitized Account Number"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__sequence
+#, fuzzy
+#| msgid "Sequences"
+msgid "Sequence"
+msgstr "Secuencias"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Sequences"
+msgstr "Secuencias"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__sequence_ids
+msgid "Sequences to create"
+msgstr "Secuencias a crear"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
+msgid ""
+"Set default purchase tax to all products.\n"
+"If smart search product tax is also enabled matches founded will overwrite "
+"default taxes, but not founded will remain"
+msgstr ""
+"Establecer impuesto de compras por defecto a todos los productos.\n"
+"Si la búsqueda inteligente de impuesto en producto está también activada sus "
+"coincidencias sobreescribirán los impuestos por defecto, pero los se "
+"conservará el impuesto por defecto cuando no se encuentren coincidencias"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
+msgid ""
+"Set default sales tax to all products.\n"
+"If smart search product tax is also enabled matches founded will overwrite "
+"default taxes, but not founded will remain"
+msgstr ""
+"Establecer impuesto de ventas por defecto a todos los productos.\n"
+"Si la búsqueda inteligente de impuesto en producto está también activada sus "
+"coincidencias sobreescribirán los impuestos por defecto, pero los se "
+"conservará el impuesto por defecto cuando no se encuentren coincidencias"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
+msgid "Smart Search Fiscal Position"
+msgstr "Búsqueda inteligente de posición fiscal"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
+msgid "Smart Search Product Tax"
+msgstr "Búsqueda inteligente de impuesto de producto"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
+msgid "Smart Search Specific Account"
+msgstr "Búsqueda inteligente cuenta específica"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Smart search to set product taxes"
+msgstr "Búsqueda inteligente para establecer impuestos en productos"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid ""
+"Smart search to set specific accounts in products, categories, partners, ..."
+msgstr ""
+"Búsqueda inteligente para establecer cuentas específicas en productos, "
+"categorías, contactos, ..."
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Smart search to set specific fiscal position in partners"
+msgstr "Búsqueda inteligente para establecer posición fiscal en contactos"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_bic
+msgid "Sometimes called BIC or Swift."
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Taxes"
+msgstr "Impuestos"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__journal_id
+msgid "The accounting journal corresponding to this bank account."
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_type
+msgid "Type"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_accounts
+msgid "Update Default Accounts"
+msgstr "Actualizar cuentas por defecto"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_taxes
+msgid "Update Default Taxes"
+msgstr "Actualizar impuestos por defecto"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Update default accounts"
+msgstr "Actualizar cuentas por defecto"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_accounts
+msgid "Update default accounts defined in account chart template"
+msgstr "Actualizar cuentas por defecto definidas en el plan contable"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Update default taxes"
+msgstr "Actualizar impuestos por defecto"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_taxes
+msgid "Update default taxes applied to local transactions"
+msgstr "Actualizar impuestos por defecto aplicados a transacciones locales"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Users"
+msgstr "Usuarios"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__user_ids
+msgid "Users allowed"
+msgstr "Usuarios con permiso"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__wizard_id
+msgid "Wizard"
+msgstr "Asistente"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
+#, fuzzy
+#| msgid "account.multicompany.easy.creation.wiz"
+msgid "Wizard Account Multi-company Easy Creation"
+msgstr "'account.multicompany.easy.creation.wiz'"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
+msgid "account.multicompany.bank.wiz"
+msgstr "'account.multicompany.bank.wiz'"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "or"
+msgstr "o"
