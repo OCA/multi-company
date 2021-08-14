@@ -13,21 +13,21 @@ as well as inter company communication.
 
 Available addons
 ----------------
-addon | version | summary
---- | --- | ---
-[partner_multi_company](partner_multi_company/) | 9.0.1.0.1 | Select individually the partner visibility on each company
-[product_multi_company](product_multi_company/) | 9.0.1.0.1 | Select individually the product visibility on each company
-[product_tax_multicompany_default](product_tax_multicompany_default/) | 9.0.1.0.0 | Product Tax Multi Company Default
-[sales_team_multicompany](sales_team_multicompany/) | 9.0.1.0.0 | Add companies in sales team and filter the sales team from the company
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[partner_multi_company](partner_multi_company/) | 9.0.1.0.1 |  | Select individually the partner visibility on each company
+[product_multi_company](product_multi_company/) | 9.0.1.0.1 |  | Select individually the product visibility on each company
+[product_tax_multicompany_default](product_tax_multicompany_default/) | 9.0.1.0.0 |  | Product Tax Multi Company Default
+[sales_team_multicompany](sales_team_multicompany/) | 9.0.1.0.0 |  | Add companies in sales team and filter the sales team from the company
 
 
 Unported addons
 ---------------
-addon | version | summary
---- | --- | ---
-[account_type_multi_company](account_type_multi_company/) | 8.0.1.0.0 (unported) | Make account types multi-company aware
-[product_autocompany](product_autocompany/) | 1.0 (unported) | Product automatic company
-[product_name_unique_per_company](product_name_unique_per_company/) | 1.0 (unported) | Product name unique per company
-[stock_production_lot_multi_company](stock_production_lot_multi_company/) | 8.0.1.0.0 (unported) | Make serial numbers multi-company aware
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[account_type_multi_company](account_type_multi_company/) | 8.0.1.0.0 (unported) |  | Make account types multi-company aware
+[product_autocompany](product_autocompany/) | 1.0 (unported) |  | Product automatic company
+[product_name_unique_per_company](product_name_unique_per_company/) | 1.0 (unported) |  | Product name unique per company
+[stock_production_lot_multi_company](stock_production_lot_multi_company/) | 8.0.1.0.0 (unported) |  | Make serial numbers multi-company aware
 
 [//]: # (end addons)
