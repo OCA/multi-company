@@ -17,13 +17,13 @@ TODO: add repo description.
 
 Available addons
 ----------------
-addon | version | summary
---- | --- | ---
-[account_invoice_consolidated](account_invoice_consolidated/) | 14.0.1.0.0 | Consolidate your invoices across companies
-[account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.0.1 | Intercompany invoice rules
-[company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 | Display company dependent attribute on fields
-[mail_multicompany](mail_multicompany/) | 14.0.0.1.0 | Email Gateway Multi company
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.1.0.0 | Intercompany PO/SO rules
+addon | version | maintainers | summary
+--- | --- | --- | ---
+[account_invoice_consolidated](account_invoice_consolidated/) | 14.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![swapnesh-serpentcs](https://github.com/swapnesh-serpentcs.png?size=30px)](https://github.com/swapnesh-serpentcs) | Consolidate your invoices across companies
+[account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.0.1 |  | Intercompany invoice rules
+[company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 |  | Display company dependent attribute on fields
+[mail_multicompany](mail_multicompany/) | 14.0.0.1.0 |  | Email Gateway Multi company
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.1.0.0 |  | Intercompany PO/SO rules
 
 [//]: # (end addons)
 
