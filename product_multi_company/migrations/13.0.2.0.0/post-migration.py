@@ -13,15 +13,12 @@ def migrate(cr, installed_version):
         "because it was not correctly inherited from product.template."
     )
     env = api.Environment(cr, SUPERUSER_ID, {})
-    for product_product in env["product.product"].search([]):
-        if (
-            len(product_product.company_ids) == 0
-            and len(product_product.product_tmpl_id.company_ids.ids) >= 1
-        ):
-            product_product.write(
-                {
-                    "company_ids": [
-                        (6, 0, product_product.product_tmpl_id.company_ids.ids)
-                    ]
-                }
-            )
+    env.cr.execute(
+        """
+        INSERT INTO product_product_res_company_rel
+        (product_product_id, res_company_id)
+        SELECT pp.id, rel.res_company_id
+        FROM product_template_res_company_rel rel
+        JOIN product_product pp ON pp.product_tmpl_id = rel.product_template_id
+        """
+    )
