@@ -9,7 +9,7 @@
     "category": "Product Management",
     "version": "13.0.2.0.1",
     "license": "AGPL-3",
-    "depends": ["base_multi_company", "product", "stock"],
+    "depends": ["base_multi_company", "product"],
     "data": [
         "views/product_template_view.xml",
         "security/product_multi_company_security.xml",

@@ -27,19 +27,3 @@ def migrate(env, version):
             },
         )
     hooks.set_security_rule(env, "product.product_comp_rule")
-    env.ref("stock.product_pulled_flow_comp_rule").write(
-        {
-            "domain_force": (
-                "['|', ('company_id', '=', False), ('company_id', "
-                "'in', company_ids)]"
-            ),
-        }
-    )
-    env.ref("stock.stock_location_route_comp_rule").write(
-        {
-            "domain_force": (
-                "['|', ('company_id', '=', False), ('company_id', "
-                "'in', company_ids)]"
-            ),
-        }
-    )
