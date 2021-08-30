@@ -26,3 +26,12 @@ class ResCompany(models.Model):
                 company.complete_name = company.name
             else:
                 company.complete_name = "{} - {}".format(company.code, company.name)
+
+    @api.model
+    def name_search(self, name, args=None, operator="ilike", limit=100):
+        args = args or []
+        domain = []
+        if name:
+            domain = ["|", ("code", operator, name), ("name", operator, name)]
+        company = self.search(domain + args, limit=limit)
+        return company.name_get()
