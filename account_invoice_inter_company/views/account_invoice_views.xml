@@ -6,6 +6,10 @@
         <field name="inherit_id" ref="account.invoice_supplier_form"/>
         <field name="mode">primary</field>
         <field name="arch" type="xml">
+            <!-- Enforce this to avoid issues writing the company_id-->
+            <xpath expr="//field[@name='invoice_line_ids']/tree" position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </xpath>
             <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='company_id']" position="attributes">
                 <attribute name="readonly">0</attribute>
             </xpath>
