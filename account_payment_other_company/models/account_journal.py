@@ -47,7 +47,7 @@ class AccountJournal(models.Model):
     @api.model
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
         if self.env.context.get("sudo", False):
-            records = self.sudo().search(
+            records = self.with_user(SUPERUSER_ID).search(
                 domain or [], offset=offset, limit=limit, order=order
             )
         else:
@@ -74,7 +74,7 @@ class AccountJournal(models.Model):
 
     def name_get(self):
         res = []
-        for journal in self.sudo():
+        for journal in self.with_user(SUPERUSER_ID):
             name = journal.name
             if (
                 journal.currency_id
