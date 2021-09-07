@@ -1,6 +1,6 @@
-# Copyright (C) 2019 Open Source Integrators
+# Copyright (C) 2021 Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import _, api, fields, models
+from odoo import SUPERUSER_ID, _, api, fields, models
 
 
 class AccountPayment(models.Model):
@@ -28,18 +28,17 @@ class AccountPayment(models.Model):
     def create_move_other_company(self):
         res = {}
         for rec in self:
-            rec.onchange_show_other_journal()
             if rec.other_journal_id:
-                other_company = rec.sudo().other_journal_id.company_id
+                other_company = rec.with_user(SUPERUSER_ID).other_journal_id.company_id
                 # Update the existing move
                 if rec.other_move_id:
                     # Cancel the entry
-                    rec.other_move_id.sudo().button_cancel()
+                    rec.other_move_id.with_user(SUPERUSER_ID).button_cancel()
                     # Delete the move lines
-                    rec.other_move_id.sudo().line_ids.unlink()
+                    rec.other_move_id.with_user(SUPERUSER_ID).line_ids.unlink()
                     # Update the move with new lines
                     vals = rec._prepare_other_payment_values()
-                    rec.other_move_id.sudo().with_context(
+                    rec.other_move_id.with_user(SUPERUSER_ID).with_context(
                         force_company=other_company.id
                     ).write(vals)
                 # or create a new one
@@ -54,30 +53,28 @@ class AccountPayment(models.Model):
                     account_move = self.env["account.move"]
                     vals = rec._prepare_other_payment_values()
                     rec.other_move_id = (
-                        account_move.sudo()
-                        .with_context(force_company=other_company.id)
+                        account_move.with_user(SUPERUSER_ID)
+                        .with_company(other_company)
                         .create(vals)
                     )
                 # Post the move
                 res = (
-                    rec.other_move_id.sudo()
-                    .with_context(force_company=other_company.id)
-                    .post()
+                    rec.other_move_id.with_user(SUPERUSER_ID)
+                    .with_company(other_company)
+                    .action_post()
                 )
         return res
 
     def _prepare_other_payment_values(self):
-        other_journal = (
-            self.env["account.journal"].sudo().browse(self.other_journal_id.id)
-        )
+        other_journal = self.with_user(SUPERUSER_ID).other_journal_id
         # Flip debit/credit for inbound
         if self.payment_type == "inbound":
             return {
                 "partner_id": self.partner_id.id,
-                "journal_id": self.other_journal_id.id,
+                "journal_id": other_journal.id,
                 "state": "draft",
                 "company_id": other_journal.company_id.id,
-                "date": self.payment_date,
+                "date": self.date,
                 "ref": _("%s from %s" % (self.name, self.company_id.name)),
                 "line_ids": [
                     (
@@ -93,7 +90,7 @@ class AccountPayment(models.Model):
                         0,
                         0,
                         {
-                            "account_id": other_journal.default_credit_account_id.id,
+                            "account_id": other_journal.default_account_id.id,
                             "partner_id": self.partner_id.id,
                             "debit": self.amount,
                         },
@@ -104,10 +101,10 @@ class AccountPayment(models.Model):
         else:
             return {
                 "partner_id": self.partner_id.id,
-                "journal_id": self.other_journal_id.id,
+                "journal_id": other_journal.id,
                 "state": "draft",
                 "company_id": other_journal.company_id.id,
-                "date": self.payment_date,
+                "date": self.date,
                 "ref": _("%s from %s" % (self.name, self.company_id.name)),
                 "line_ids": [
                     (
@@ -123,7 +120,7 @@ class AccountPayment(models.Model):
                         0,
                         0,
                         {
-                            "account_id": other_journal.default_credit_account_id.id,
+                            "account_id": other_journal.default_account_id.id,
                             "partner_id": self.partner_id.id,
                             "credit": self.amount,
                         },

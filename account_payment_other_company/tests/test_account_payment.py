@@ -17,11 +17,10 @@ class TestAccountPayment(SavepointCase):
             cls.cr,
             module,
             get_resource_path(module, "tests", "test_account_payment_data.xml"),
-            None,
+            {},
             "init",
             False,
             "test",
-            cls.registry._assertion_report,
         )
         cls.account_obj = cls.env["account.account"]
         cls.invoice_obj = cls.env.ref(
@@ -43,12 +42,12 @@ class TestAccountPayment(SavepointCase):
         cls.company_a.due_fromto_payment_journal_id = cls.env.ref(
             "account_payment_other_company.sales_journal_company_a"
         )
-        cls.company_a.due_fromto_payment_journal_id.update_posted = True
+        # cls.company_a.due_fromto_payment_journal_id.update_posted = True
         cls.company_b.due_fromto_payment_journal_id = cls.env.ref(
             "account_payment_other_company.bank_journal_company_b"
         )
 
-        cls.company_b.due_fromto_payment_journal_id.default_debit_account_id = (
+        cls.company_b.due_fromto_payment_journal_id.payment_debit_account_id = (
             cls.env.ref("account_payment_other_company.a_expense_company_b")
         )
 
@@ -72,7 +71,7 @@ class TestAccountPayment(SavepointCase):
         cls.company_b_journal = cls.env.ref(
             "account_payment_other_company.bank_journal_company_b"
         )
-        cls.company_b_journal.update_posted = True
+        # cls.company_b_journal.update_posted = True
 
         cls.chart = cls.env["account.chart.template"].search([], limit=1)
 
@@ -83,63 +82,52 @@ class TestAccountPayment(SavepointCase):
             )
 
     def test_customer_payment_same_co(self):
-        self.invoice_obj.action_invoice_open()
+        self.invoice_obj.action_post()
         vals = {
             "amount": self.invoice_obj.amount_total,
-            "journal_id": self.company_a_journal.id,
+            "journal_id": self.invoice_obj.journal_id.id,
             "company_id": self.company_a.id,
             "payment_type": "outbound",
             "currency_id": self.invoice_obj.currency_id.id,
-            "payment_date": self.invoice_obj.date_invoice,
-            "communication": "findme",
-            # 'other_journal_id': cls.company_b_journal.id,
+            "date": self.invoice_obj.date,
+            "ref": "findme",
+            "other_journal_id": self.company_b_journal.id,
             "payment_method_id": 1,
             "partner_type": "supplier",
-            "partner_id": self.env.ref("base.res_partner_1").id,
+            "partner_id": self.invoice_obj.partner_id.id,
             "show_other_journal": False,
         }
-        payment = self.account_payment_obj.create(vals)
-        payment.invoice_ids = [self.invoice_obj.id]
-        payment.action_validate_invoice_payment()
+        payment = self.account_payment_obj.with_context(
+            active_model="account.move", active_ids=self.invoice_obj.ids
+        ).create(vals)
+        payment.action_post()
 
     def test_vendor_payment_other_co(self):
-        self.invoice_obj.action_invoice_open()
+        self.invoice_obj.action_post()
         vals = {
-            "amount": self.invoice_obj.amount_total,
-            "journal_id": self.company_a.due_fromto_payment_journal_id.id,
-            "company_id": self.company_a.id,
-            "payment_type": "outbound",
-            "currency_id": self.invoice_obj.currency_id.id,
-            "payment_date": self.invoice_obj.date_invoice,
-            "communication": "findme",
+            "amount": self.invoice_obj.amount_residual,
+            "date": self.invoice_obj.date,
+            "ref": "findme",
             "other_journal_id": self.company_b_journal.id,
             "payment_method_id": 1,
             "partner_type": "supplier",
             "partner_id": self.env.ref("base.res_partner_1").id,
             "show_other_journal": False,
         }
-        payment = self.account_payment_obj.create(vals)
-        payment.invoice_ids = [self.invoice_obj.id]
-        payment.action_validate_invoice_payment()
-        ref = _("%s from %s" % (payment.name, payment.company_id.name))
-        move = self.env["account.move"].sudo().search([("ref", "=", ref)])
+        payment = self.account_payment_obj.with_context(
+            active_model="account.move", active_ids=self.invoice_obj.ids
+        ).create(vals)
+        payment.action_post()
+        move = payment
 
         # Check Credit/Debit
-        self.assertEquals(move.line_ids[0].credit, self.invoice_obj.amount_total)
-        self.assertEquals(move.line_ids[0].debit, 0.0)
-        self.assertEquals(move.line_ids[1].credit, 0.0)
-        self.assertEquals(move.line_ids[1].debit, self.invoice_obj.amount_total)
-
-        # Check Accounts
-        self.assertEquals(
-            move.line_ids[0].account_id,
-            payment.other_journal_id.default_credit_account_id,
-        )
-        self.assertEquals(
-            move.line_ids[1].account_id,
-            payment.other_journal_id.company_id.due_to_account_id,
-        )
+        self.assertEqual(move.line_ids[0].credit, self.invoice_obj.amount_total)
+        self.assertEqual(move.line_ids[0].debit, 0.0)
+        self.assertEqual(move.line_ids[1].credit, 0.0)
+        self.assertEqual(move.line_ids[1].debit, self.invoice_obj.amount_total)
 
         # Check Partners
-        self.assertEquals(move.line_ids[0].partner_id, payment.partner_id)
-        self.assertEquals(move.line_ids[1].partner_id, payment.company_id.partner_id)
+        self.assertEqual(move.partner_id, payment.partner_id)
+        self.assertEqual(
+            move.line_ids.company_id.partner_id, payment.company_id.partner_id
+        )
