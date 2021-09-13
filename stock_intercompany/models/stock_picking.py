@@ -33,7 +33,17 @@ class StockPicking(models.Model):
 
     # override of method from stock module
     def _action_done(self):
+        counterparts = []
         for picking in self:
             if picking.location_dest_id.usage == "customer":
-                picking._create_counterpart_picking()
-        return super(StockPicking, self)._action_done()
+                counterpart = picking._create_counterpart_picking()
+                counterparts.append((picking, counterpart))
+        res = super(StockPicking, self)._action_done()
+        for picking, counterpart in counterparts:
+            picking._finalize_counterpart_picking(counterpart)
+        return res
+
+    def _finalize_counterpart_picking(self, counterpart_picking):
+        """hook to finalize required steps on the counterpart picking after the initial
+        outgoing picking is done"""
+        pass
