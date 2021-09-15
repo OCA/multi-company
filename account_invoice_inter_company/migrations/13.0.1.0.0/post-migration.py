@@ -5,6 +5,7 @@ from openupgradelib import openupgrade
 
 def fill_account_move_auto_invoice_id(env):
     openupgrade.logged_query(
+        env.cr,
         """
             UPDATE account_move am
             SET
@@ -14,7 +15,7 @@ def fill_account_move_auto_invoice_id(env):
                 JOIN account_invoice ai2 ON ai.auto_invoice_id = ai2.id
                 JOIN account_move am2 ON am2.old_invoice_id = ai2.id
             WHERE am.old_invoice_id = ai.id AND ai.auto_invoice_id IS NOT NULL
-        """
+        """,
     )
 
 
