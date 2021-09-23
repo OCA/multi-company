@@ -30,21 +30,6 @@ class MultiCompanyAbstract(models.AbstractModel):
         index=True,
     )
 
-    def _inverse_company_id(self):
-        # To allow modifying allowed companies by non-aware base_multi_company
-        # through company_id field we:
-        # - Add company to company_ids if not in existing ones (not removing
-        # existing ones as people that write company_id field has maybe
-        # no access to other ones.)
-        # - Remove all companies if company_id is False (give access to all)
-
-        for record in self:
-            company = record.company_id
-            if company and company not in record.company_ids:
-                record.company_ids = [(4, company.id)]
-            elif not company:
-                record.company_ids = [(5,)]
-
     @api.depends("company_ids")
     def _compute_no_company_ids(self):
         for record in self:
@@ -68,8 +53,32 @@ class MultiCompanyAbstract(models.AbstractModel):
             else:
                 record.company_id = record.company_ids[:1].id
 
+    def _inverse_company_id(self):
+        # To allow modifying allowed companies by non-aware base_multi_company
+        # through company_id field we:
+        # - Remove all companies, then add the provided one
+        for record in self:
+            company = record.company_id
+            record.company_ids = [(5,)]
+            if company:
+                record.company_ids = [(4, company.id)]
+
     def _search_company_id(self, operator, value):
         return [("company_ids", operator, value)]
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Discard changes in company_id field if company_ids has been given."""
+        for vals in vals_list:
+            if "company_ids" in vals and "company_id" in vals:
+                del vals["company_id"]
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Discard changes in company_id field if company_ids has been given."""
+        if "company_ids" in vals and "company_id" in vals:
+            del vals["company_id"]
+        return super().write(vals)
 
     @api.model
     def _name_search(
@@ -92,17 +101,18 @@ class MultiCompanyAbstract(models.AbstractModel):
         #             FROM "res_company_res_partner_rel" WHERE "res_company_id" IN 1)
         # ```
         new_args = []
-        if args:
-            for arg in args:
-                if type(arg) == list and arg[:2] == ["company_id", "in"]:
-                    fix = []
-                    for _i in range(len(arg[2]) - 1):
-                        fix.append("|")
-                    for val in arg[2]:
-                        fix.append(["company_id", "=", val])
-                    new_args.extend(fix)
-                else:
-                    new_args.append(arg)
+        if args is None:
+            args = []
+        for arg in args:
+            if type(arg) == list and arg[:2] == ["company_id", "in"]:
+                fix = []
+                for _i in range(len(arg[2]) - 1):
+                    fix.append("|")
+                for val in arg[2]:
+                    fix.append(["company_id", "=", val])
+                new_args.extend(fix)
+            else:
+                new_args.append(arg)
         return super()._name_search(
             name,
             args=new_args,
