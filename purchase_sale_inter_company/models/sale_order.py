@@ -17,12 +17,44 @@ class SaleOrder(models.Model):
         copy=False,
     )
 
+    def assert_intercompany_prices_equal(self):
+        """Check if the prices of both orders are the same"""
+        unequal_line = []
+        for so in self:
+            for line in so.sudo().order_line:
+                if not line.auto_purchase_line_id:
+                    continue
+                if not so.currency_id.compare_amounts(
+                   line.price_unit, line.auto_purchase_line_id.price_unit):
+                    continue
+                po_line_prod = (
+                    line.product_id.default_code or line.product_id.name)
+                so_line_prod = (
+                    line.auto_purchase_line_id.product_id.default_code
+                    or line.auto_purchase_line_id.product_id.name)
+                unequal_line.append(
+                    _("PO line %s with price %s is not equal to SO "
+                      "line %s with price %s \n"
+                      ) % (po_line_prod,
+                           line.auto_purchase_line_id.price_unit,
+                           so_line_prod,
+                           line.price_unit))
+
+        if unequal_line:
+            raise UserError(
+                _('Error. The following lines do not match on'
+                  ' the remote order: %s') % "\n".join(unequal_line))
+
     @api.multi
     def action_confirm(self):
         for order in self.filtered('auto_purchase_order_id'):
-            for line in order.order_line.sudo():
-                if line.auto_purchase_line_id:
-                    line.auto_purchase_line_id.price_unit = line.price_unit
+            po_company = order.sudo().auto_purchase_order_id.company_id
+            if not po_company.intercompany_overwrite_purchase_price:
+                order.assert_intercompany_prices_equal()
+            else:
+                for line in order.order_line.sudo():
+                    if line.auto_purchase_line_id:
+                        line.auto_purchase_line_id.price_unit = line.price_unit
         res = super(SaleOrder, self).action_confirm()
         for sale_order in self.sudo().filtered(lambda s: not s.auto_purchase_order_id):
             # Do not consider SO created from intercompany PO

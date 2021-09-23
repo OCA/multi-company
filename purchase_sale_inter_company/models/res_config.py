@@ -10,6 +10,16 @@ class InterCompanyRulesConfig(models.TransientModel):
 
     _inherit = 'res.config.settings'
 
+    intercompany_overwrite_purchase_price = fields.Boolean(
+        related='company_id.intercompany_overwrite_purchase_price',
+        string="Synchronise prices on SO confirmation",
+        help='If unchecked intercompany sale order line prices will be '
+        'compared with their respective purchase order line prices and '
+        'an error will be raised if not equal. If selected, no '
+        'comparison will be done and SO line price will be copied to the '
+        'PO line price.',
+        readonly=False,
+    )
     so_from_po = fields.Boolean(
         related='company_id.so_from_po',
         string="Create Sale Orders when buying to this company",
