@@ -68,6 +68,12 @@ msgstr ""
 "podlagi nabavnih nalogov za to družbo."
 
 #. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:45
+#, python-format
+msgid "Error. The following lines do not match on the remote order: %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__po_from_so
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__po_from_so
 msgid ""
@@ -86,6 +92,29 @@ msgid ""
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__intercompany_overwrite_purchase_price
+msgid ""
+"If not selected intercompany sale order line prices will be compared with "
+"their respective purchase order line prices and an error will be raised if "
+"not equal. If selected, no comparison will be done and SO line price will be "
+"copied to the PO line price."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_overwrite_purchase_price
+msgid ""
+"If unchecked intercompany sale order line prices will be compared with their "
+"respective purchase order line prices and an error will be raised if not "
+"equal. If selected, no comparison will be done and SO line price will be "
+"copied to the PO line price."
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Intercompany Overwrite Purchase Price"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
 msgid "Intercompany Picking"
 msgstr ""
@@ -100,6 +129,12 @@ msgstr ""
 #: model:ir.model,name:purchase_sale_inter_company.model_account_invoice
 msgid "Invoice"
 msgstr "Račun"
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:36
+#, python-format
+msgid "PO line %s with price %s is not equal to SO line %s with price %s \n"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__po_picking_type_id
@@ -171,6 +206,12 @@ msgid "Source Sale Order Line"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_overwrite_purchase_price
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_overwrite_purchase_price
+msgid "Synchronise prices on SO confirmation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:39
 #, python-format
 msgid ""
@@ -220,13 +261,13 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:171
-#: code:addons/purchase_sale_inter_company/models/sale_order.py:146
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:178
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/sale_order.py:56
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:88
 #, python-format
 msgid "You cannot create PO from SO because product '%s' is not intercompany"
 msgstr ""
