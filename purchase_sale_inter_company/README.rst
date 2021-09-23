@@ -23,7 +23,7 @@ Inter Company Module for Purchase to Sale Order
     :target: https://runbot.odoo-community.org/runbot/133/12.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5|
+|badge1| |badge2| |badge3| |badge4| |badge5| 
 
 This module is useful if there are multiple companies in the same Odoo database and those companies sell goods or services among themselves.
 It allows to create a sale order in company B from a purchase order in company A.
@@ -64,8 +64,6 @@ or
 - Select *Purchase from sale*.
 - Select the *Picking type for Purchase Orders*, it is the picking type that will be used to automatically generate the purchase order.
 - If you check the option *Purchase Orders Auto Validation* in the configuration of company A, then when you validate a *Sale Order* in company B with company A as customer, the *Purchase Order* will be automatically validated in company A with company B as supplier.
-- By default, the prices from the sale order lines will be synced to the prices on the purchase order lines when the sale order is confirmed. If you un-check *Intercompany Overwrite Purchase Price* in the intercompany settings (configurable per company), intercompany sale order line prices will be compared with their respective purchase order line prices and an error will be raised if not equal.
-
 
 Bug Tracker
 ===========
