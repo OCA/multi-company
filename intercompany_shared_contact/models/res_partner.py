@@ -8,21 +8,48 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = "res.partner"
 
-    intercompany_readonly_shared = fields.Boolean(
-        compute="_compute_intercompany_readonly_shared",
-        compute_sudo=True,
-        store=True,
-    )
-    address_for_company_ids = fields.One2many(
+    res_company_id = fields.One2many(
         "res.company",
         "partner_id",
-        "Address for Company",
+        readonly=True,
+        help="Effectively a One2one field to represent the corresponding res.company",
+    )
+    origin_company_id = fields.Many2one(
+        "res.company",
+        compute="_compute_origin_company_id",
+        store=True,
+        help="Hack field to keep the information of the 'real' company_id. "
+        "That way, we can share the contact by setting company_id to null, "
+        "without losing any information. If null, the contact is not shared.",
     )
 
-    @api.depends("parent_id", "address_for_company_ids")
-    def _compute_intercompany_readonly_shared(self):
+    @api.depends("res_company_id", "parent_id.origin_company_id")
+    def _compute_origin_company_id(self):
         for record in self:
-            record.intercompany_readonly_shared = (
-                record.address_for_company_ids
-                or record.parent_id.intercompany_readonly_shared
-            )
+            if record.parent_id.origin_company_id:
+                record.origin_company_id = record.parent_id.origin_company_id
+                record.company_id = False
+            if record.res_company_id:
+                record.origin_company_id = record.res_company_id
+                record.company_id = False
+            else:
+                record.origin_company_id = False
+
+    # super().sudo().create() has some interaction that loops infinitely,
+    # thus the switch with multiple sudo() calls
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        if self.env.context.get("creating_res_company"):
+            self = self.sudo()
+        result = super().create(vals_list)
+        self = self.sudo(False)
+        return result
+
+    @api.model
+    def write(self, vals):
+        if self.env.context.get("creating_res_company"):
+            self = self.sudo()
+        result = super().write(vals)
+        self = self.sudo(False)
+        return result
