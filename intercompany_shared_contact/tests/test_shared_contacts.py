@@ -61,3 +61,21 @@ class IntercompanySharedContactCase(SavepointCase):
         self.partner_other.invalidate_cache()
         with self.assertRaises(AccessError):
             self.partner_other.with_user(self.user_y).name
+
+    def test_create_company(self):
+        """
+        User with admin access can create a company
+        """
+        self.user_x.groups_id |= self.env.ref("base.group_erp_manager")
+        self.env["res.company"].with_user(self.user_x).create(
+            {
+                "name": "Company X bis",
+            }
+        )
+
+    def test_update_company(self):
+        """
+        User with admin access can update a company
+        """
+        self.user_x.groups_id |= self.env.ref("base.group_erp_manager")
+        self.company_x.with_user(self.user_x).write({"name": "FOO"})

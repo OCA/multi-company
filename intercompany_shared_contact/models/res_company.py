@@ -17,5 +17,9 @@ class ResCompany(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        self = self.with_context(creating_res_company=True)
-        return super().create(vals_list).with_context(creating_res_company=False)
+        self.check_access_rights("create")
+        # We need to use sudo as the partner created will be linked
+        # to the new company and this company is not yet added to the current user
+        # so we are in a case of write/create on a partner where
+        # the origin_company_id do not belong yet to the user
+        return super(ResCompany, self.sudo()).create(vals_list)

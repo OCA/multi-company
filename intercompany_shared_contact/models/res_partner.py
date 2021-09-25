@@ -34,22 +34,3 @@ class ResPartner(models.Model):
                 record.company_id = False
             else:
                 record.origin_company_id = False
-
-    # super().sudo().create() has some interaction that loops infinitely,
-    # thus the switch with multiple sudo() calls
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        if self.env.context.get("creating_res_company"):
-            self = self.sudo()
-        result = super().create(vals_list)
-        self = self.sudo(False)
-        return result
-
-    @api.model
-    def write(self, vals):
-        if self.env.context.get("creating_res_company"):
-            self = self.sudo()
-        result = super().write(vals)
-        self = self.sudo(False)
-        return result
