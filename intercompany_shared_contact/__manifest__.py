@@ -11,7 +11,7 @@
     "version": "14.0.1.0.0",
     "category": "Partner",
     "website": "https://github.com/OCA/multi-company",
-    "author": "Odoo Community Association (OCA), " "Akretion",
+    "author": "Odoo Community Association (OCA), Akretion",
     "license": "AGPL-3",
     "application": False,
     "installable": True,
@@ -19,8 +19,6 @@
         "contacts",
     ],
     "data": [
-        "views/res_partner_view.xml",
-        "views/res_users_view.xml",
         "security/ir_rule.xml",
     ],
     "demo": [],
