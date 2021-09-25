@@ -53,6 +53,13 @@ class IntercompanySharedContactCase(SavepointCase):
         with self.assertRaises(AccessError):
             partner_y.name = "boom"
 
+    def test_intercompany_update_company_dependent(self):
+        """
+        Company dependent field of Company contacts are modifiable by other companies
+        """
+        partner_y = self.partner_y.with_user(self.user_x)
+        partner_y.barcode = "ça-fait-pas-boom"
+
     def test_intercompany_other(self):
         """
         Private, non-company-linked contacts are not shared
