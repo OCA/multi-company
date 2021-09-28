@@ -14,182 +14,119 @@ from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice 
 
 class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     @classmethod
+    def _create_warehouse(cls, code, company, use_company_address=True):
+        if use_company_address:
+            address = company.partner_id
+        else:
+            address = cls.env["res.partner"].create({"name": f"{code} address"})
+        return cls.env["stock.warehouse"].create(
+            {
+                "name": f"Warehouse {code}",
+                "code": code,
+                "partner_id": address.id,
+                "company_id": company.id,
+            }
+        )
+
+    @classmethod
+    def _configure_user(cls, user):
+        for xml in [
+            "account.group_account_manager",
+            "base.group_partner_manager",
+            "sales_team.group_sale_manager",
+            "purchase.group_purchase_manager",
+        ]:
+            user.groups_id |= cls.env.ref(xml)
+
+    @classmethod
+    def _create_purchase_order(cls):
+        po = Form(cls.env["purchase.order"])
+        po.company_id = cls.company_a
+        po.partner_id = cls.partner_company_b
+
+        cls.product.invoice_policy = "order"
+
+        with po.order_line.new() as line_form:
+            line_form.product_id = cls.product
+            line_form.product_qty = 3.0
+            line_form.name = "Service Multi Company"
+            line_form.price_unit = 450.0
+        return po.save()
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.product = cls.product_consultant_multi_company
 
-        cls.location_stock_company_a = cls.env["stock.location"].create(
-            {"name": "Stock - a", "usage": "internal", "company_id": cls.company_a.id}
-        )
-        cls.location_output_company_a = cls.env["stock.location"].create(
-            {"name": "Output - a", "usage": "internal", "company_id": cls.company_a.id}
-        )
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
             cls.partner_company_a.company_ids = [(6, 0, cls.company_a.ids)]
             cls.partner_company_b.company_ids = [(6, 0, cls.company_b.ids)]
-        cls.warehouse_company_a = cls.env["stock.warehouse"].create(
-            {
-                "name": "purchase warehouse - a",
-                "code": "CMPa",
-                "wh_input_stock_loc_id": cls.location_stock_company_a.id,
-                "lot_stock_id": cls.location_stock_company_a.id,
-                "wh_output_stock_loc_id": cls.location_output_company_a.id,
-                "partner_id": cls.partner_company_a.id,
-                "company_id": cls.company_a.id,
-            }
+
+        # Configure 2 Warehouse per company
+        cls.warehouse_a = cls._create_warehouse("CA-WA", cls.company_a)
+        cls.warehouse_b = cls._create_warehouse(
+            "CA-WB", cls.company_a, use_company_address=False
         )
-        cls.location_stock_company_b = cls.env["stock.location"].create(
-            {"name": "Stock - b", "usage": "internal", "company_id": cls.company_b.id}
+
+        cls.warehouse_c = cls._create_warehouse("CB-WC", cls.company_b)
+        cls.warehouse_d = cls._create_warehouse(
+            "CB-WD", cls.company_b, use_company_address=False
         )
-        cls.location_output_company_b = cls.env["stock.location"].create(
-            {"name": "Output - b", "usage": "internal", "company_id": cls.company_b.id}
-        )
-        cls.warehouse_company_b = cls.env["stock.warehouse"].create(
-            {
-                "name": "purchase warehouse - b",
-                "code": "CMPb",
-                "wh_input_stock_loc_id": cls.location_stock_company_b.id,
-                "lot_stock_id": cls.location_stock_company_b.id,
-                "wh_output_stock_loc_id": cls.location_output_company_b.id,
-                "partner_id": cls.partner_company_b.id,
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.company_a.warehouse_id = cls.warehouse_company_a
-        cls.company_a.sale_auto_validation = 1
-        cls.company_b.warehouse_id = cls.warehouse_company_b
+
+        # Configure Company B (the supplier)
+        cls.company_b.so_from_po = True
+        cls.company_b.warehouse_id = cls.warehouse_c
         cls.company_b.sale_auto_validation = 1
 
-        cls.user_company_a.groups_id = [
-            (
-                6,
-                0,
-                [
-                    cls.env.ref("account.group_account_manager").id,
-                    cls.env.ref("base.group_partner_manager").id,
-                    cls.env.ref("sales_team.group_sale_manager").id,
-                    cls.env.ref("purchase.group_purchase_user").id,
-                ],
-            )
-        ]
-        cls.user_company_b.groups_id = [
-            (
-                6,
-                0,
-                [
-                    cls.env.ref("account.group_account_manager").id,
-                    cls.env.ref("base.group_partner_manager").id,
-                    cls.env.ref("sales_team.group_sale_manager").id,
-                    cls.env.ref("purchase.group_purchase_user").id,
-                ],
-            )
-        ]
-
-        cls.purchase_company_a = Form(cls.env["purchase.order"])
-        cls.purchase_company_a.company_id = cls.company_a
-        cls.purchase_company_a.partner_id = cls.partner_company_b
-
-        cls.product_consultant_multi_company.invoice_policy = "order"
-
-        with cls.purchase_company_a.order_line.new() as line_form:
-            line_form.product_id = cls.product_consultant_multi_company
-            line_form.product_qty = 3.0
-            line_form.name = "Service Multi Company"
-            line_form.price_unit = 450.0
-        cls.purchase_company_a = cls.purchase_company_a.save()
-
-        cls.sequence_purchase_journal_company_a = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Expenses Journal Company A",
-                "padding": 3,
-                "prefix": "EXJ-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.sales_journal_company_b = cls.env["account.journal"].create(
-            {
-                "name": "Sales Journal - (Company B)",
-                "code": "SAJ-B",
-                "type": "sale",
-                "secure_sequence_id": cls.sequence_sale_journal_company_b.id,
-                "payment_credit_account_id": cls.a_sale_company_b.id,
-                "payment_debit_account_id": cls.a_sale_company_b.id,
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.purchases_journal_company_a = cls.env["account.journal"].create(
-            {
-                "name": "Purchases Journal - (Company A)",
-                "code": "PAJ-A",
-                "type": "purchase",
-                "secure_sequence_id": cls.sequence_purchase_journal_company_a.id,
-                "payment_credit_account_id": cls.a_expense_company_a.id,
-                "payment_debit_account_id": cls.a_expense_company_a.id,
-                "company_id": cls.company_a.id,
-            }
-        )
-
-        cls.company_b.so_from_po = True
-        cls.purchase_manager_gr = cls.env.ref("purchase.group_purchase_manager")
-        cls.sale_manager_gr = cls.env.ref("sales_team.group_sale_manager")
-        cls.user_company_b = cls.user_company_b
-        cls.purchase_manager_gr.users = [
-            (4, cls.user_company_a.id, 4, cls.user_company_b.id)
-        ]
-        cls.sale_manager_gr.users = [
-            (4, cls.user_company_a.id, 4, cls.user_company_b.id)
-        ]
         cls.intercompany_sale_user_id = cls.user_company_b.copy()
         cls.intercompany_sale_user_id.company_ids |= cls.company_a
         cls.company_b.intercompany_sale_user_id = cls.intercompany_sale_user_id
-        cls.account_sale_b = cls.a_sale_company_b
-        cls.product_consultant = cls.product_consultant_multi_company
-        # if product_multi_company is installed
-        if "company_ids" in cls.env["product.template"]._fields:
-            # We have to do that because the default method added a company
-            cls.product_consultant.company_ids = False
-        cls.product_consultant.with_user(
-            cls.user_company_b.id
-        ).property_account_income_id = cls.account_sale_b
-        currency_eur = cls.env.ref("base.EUR")
-        cls.purchase_company_a.currency_id = currency_eur
-        pricelists = (
-            cls.env["product.pricelist"]
-            .sudo()
-            .search([("currency_id", "!=", currency_eur.id)])
-        )
-        # set all price list to EUR
-        for pl in pricelists:
-            pl.currency_id = currency_eur
 
-    def test_purchase_sale_inter_company(self):
-        self.purchase_company_a.notes = "Test note"
-        # Confirm the purchase of company A
+        # Configure User
+        cls._configure_user(cls.user_company_a)
+        cls._configure_user(cls.user_company_b)
+
+        # Create purchase order
+        cls.purchase_company_a = cls._create_purchase_order()
+
+        # Configure pricelist to USD
+        cls.env["product.pricelist"].sudo().search([]).write(
+            {"currency_id": cls.env.ref("base.USD").id}
+        )
+
+    def _approve_po(self):
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        # Check sale order created in company B
-        sales = (
+
+    def _get_sale(self):
+        return (
             self.env["sale.order"]
             .with_user(self.user_company_b)
             .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
         )
-        self.assertNotEqual(sales, False)
-        self.assertEqual(len(sales), 1)
-        if sales.company_id.sale_auto_validation:
-            self.assertEqual(sales.state, "sale")
-        else:
-            self.assertEqual(sales.state, "draft")
+
+    def test_purchase_sale_inter_company(self):
+        self.purchase_company_a.notes = "Test note"
+        # Confirm the purchase of company A
+        self._approve_po()
+        # Check sale order created in company B
+        sale = self._get_sale()
+        self.assertEqual(len(sale), 1)
+        self.assertEqual(sale.state, "sale")
+        self.assertEqual(sale.partner_id, self.purchase_company_a.company_id.partner_id)
+        self.assertEqual(sale.company_id.partner_id, self.purchase_company_a.partner_id)
+        self.assertEqual(len(sale.order_line), len(self.purchase_company_a.order_line))
         self.assertEqual(
-            sales.partner_id, self.purchase_company_a.company_id.partner_id
-        )
-        self.assertEqual(
-            sales.company_id.partner_id, self.purchase_company_a.partner_id
-        )
-        self.assertEqual(len(sales.order_line), len(self.purchase_company_a.order_line))
-        self.assertEqual(
-            sales.order_line.product_id,
+            sale.order_line.product_id,
             self.purchase_company_a.order_line.product_id,
         )
-        self.assertEqual(sales.note, "Test note")
+        self.assertEqual(sale.note, "Test note")
+
+    def test_not_auto_validate(self):
+        self.company_b.sale_auto_validation = False
+        self._approve_po()
+        sale = self._get_sale()
+        self.assertEqual(sale.state, "draft")
 
     def xxtest_date_planned(self):
         # Install sale_order_dates module
@@ -213,13 +150,13 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         product_rule.active = True
         # if product_multi_company is installed
         if "company_ids" in self.env["product.template"]._fields:
-            self.product_consultant.company_ids = [(6, 0, [self.company_a.id])]
-        self.product_consultant.company_id = self.company_a
+            self.product.company_ids = [(6, 0, [self.company_a.id])]
+        self.product.company_id = self.company_a
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_approve()
 
     def test_raise_currency(self):
-        currency = self.env.ref("base.USD")
+        currency = self.env.ref("base.EUR")
         self.purchase_company_a.currency_id = currency
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_approve()
