@@ -14,11 +14,8 @@ from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice 
 
 class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     @classmethod
-    def _create_warehouse(cls, code, company, use_company_address=True):
-        if use_company_address:
-            address = company.partner_id
-        else:
-            address = cls.env["res.partner"].create({"name": f"{code} address"})
+    def _create_warehouse(cls, code, company):
+        address = cls.env["res.partner"].create({"name": f"{code} address"})
         return cls.env["stock.warehouse"].create(
             {
                 "name": f"Warehouse {code}",
@@ -56,6 +53,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # no job: avoid issue if account_invoice_inter_company_queued is installed
+        cls.env = cls.env(context={"test_queue_job_no_delay": 1})
+
         cls.product = cls.product_consultant_multi_company
 
         if "company_ids" in cls.env["res.partner"]._fields:
@@ -64,15 +64,15 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             cls.partner_company_b.company_ids = [(6, 0, cls.company_b.ids)]
 
         # Configure 2 Warehouse per company
-        cls.warehouse_a = cls._create_warehouse("CA-WA", cls.company_a)
-        cls.warehouse_b = cls._create_warehouse(
-            "CA-WB", cls.company_a, use_company_address=False
+        cls.warehouse_a = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_a.id)]
         )
+        cls.warehouse_b = cls._create_warehouse("CA-WB", cls.company_a)
 
-        cls.warehouse_c = cls._create_warehouse("CB-WC", cls.company_b)
-        cls.warehouse_d = cls._create_warehouse(
-            "CB-WD", cls.company_b, use_company_address=False
+        cls.warehouse_c = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_b.id)]
         )
+        cls.warehouse_d = cls._create_warehouse("CB-WD", cls.company_b)
 
         # Configure Company B (the supplier)
         cls.company_b.so_from_po = True
@@ -96,9 +96,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
 
     def _approve_po(self):
+        """Confirm the PO in company A and return the related sale of Company B"""
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
-
-    def _get_sale(self):
         return (
             self.env["sale.order"]
             .with_user(self.user_company_b)
@@ -107,27 +106,40 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_purchase_sale_inter_company(self):
         self.purchase_company_a.notes = "Test note"
-        # Confirm the purchase of company A
-        self._approve_po()
-        # Check sale order created in company B
-        sale = self._get_sale()
+        sale = self._approve_po()
         self.assertEqual(len(sale), 1)
         self.assertEqual(sale.state, "sale")
-        self.assertEqual(sale.partner_id, self.purchase_company_a.company_id.partner_id)
-        self.assertEqual(sale.company_id.partner_id, self.purchase_company_a.partner_id)
+        self.assertEqual(sale.partner_id, self.partner_company_a)
         self.assertEqual(len(sale.order_line), len(self.purchase_company_a.order_line))
-        self.assertEqual(
-            sale.order_line.product_id,
-            self.purchase_company_a.order_line.product_id,
-        )
+        self.assertEqual(sale.order_line.product_id, self.product)
         self.assertEqual(sale.note, "Test note")
 
     def test_not_auto_validate(self):
         self.company_b.sale_auto_validation = False
-        self._approve_po()
-        sale = self._get_sale()
+        sale = self._approve_po()
         self.assertEqual(sale.state, "draft")
 
+    def test_deliver_to_warehouse_a(self):
+        self.purchase_company_a.picking_type_id = self.warehouse_a.in_type_id
+        sale = self._approve_po()
+        self.assertEqual(self.warehouse_a.partner_id, sale.partner_shipping_id)
+
+    def test_deliver_to_warehouse_b(self):
+        self.purchase_company_a.picking_type_id = self.warehouse_b.in_type_id
+        sale = self._approve_po()
+        self.assertEqual(self.warehouse_b.partner_id, sale.partner_shipping_id)
+
+    def test_send_from_warehouse_c(self):
+        self.company_b.warehouse_id = self.warehouse_c
+        sale = self._approve_po()
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
+
+    def test_send_from_warehouse_d(self):
+        self.company_b.warehouse_id = self.warehouse_d
+        sale = self._approve_po()
+        self.assertEqual(sale.warehouse_id, self.warehouse_d)
+
+    # TODO FIXME
     def xxtest_date_planned(self):
         # Install sale_order_dates module
         module = self.env["ir.module.module"].search(
@@ -137,13 +149,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             return False
         module.button_install()
         self.purchase_company_a.date_planned = "2070-12-31"
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        sales = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
-        )
-        self.assertEqual(sales.requested_date, "2070-12-31")
+        sale = self._approve_po()
+        self.assertEqual(sale.requested_date, "2070-12-31")
 
     def test_raise_product_access(self):
         product_rule = self.env.ref("product.product_comp_rule")
@@ -153,49 +160,42 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self.product.company_ids = [(6, 0, [self.company_a.id])]
         self.product.company_id = self.company_a
         with self.assertRaises(UserError):
-            self.purchase_company_a.with_user(self.user_company_a).button_approve()
+            self._approve_po()
 
     def test_raise_currency(self):
         currency = self.env.ref("base.EUR")
         self.purchase_company_a.currency_id = currency
         with self.assertRaises(UserError):
-            self.purchase_company_a.with_user(self.user_company_a).button_approve()
+            self._approve_po()
 
     def test_purchase_invoice_relation(self):
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        sales = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
-        )
-        sale_invoice_id = sales._create_invoices()[0]
-        sale_invoice_id.action_post()
+        sale = self._approve_po()
+        sale_invoice = sale._create_invoices()[0]
+        sale_invoice.action_post()
+        self.assertEqual(len(self.purchase_company_a.invoice_ids), 1)
         self.assertEqual(
-            sale_invoice_id.auto_invoice_id,
-            self.purchase_company_a.invoice_ids,
+            self.purchase_company_a.invoice_ids.auto_invoice_id,
+            sale_invoice,
         )
-        self.assertEqual(
-            sale_invoice_id.auto_invoice_id.invoice_line_ids,
-            self.purchase_company_a.order_line.invoice_lines,
-        )
+        self.assertEqual(len(self.purchase_company_a.order_line.invoice_lines), 1)
+        self.assertEqual(self.purchase_company_a.order_line.qty_invoiced, 3)
 
     def test_cancel(self):
         self.company_b.sale_auto_validation = False
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        sales = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
-        )
-        self.assertEqual(self.purchase_company_a.partner_ref, sales.name)
+        sale = self._approve_po()
+        self.assertEqual(self.purchase_company_a.partner_ref, sale.name)
         self.purchase_company_a.with_user(self.user_company_a).button_cancel()
         self.assertFalse(self.purchase_company_a.partner_ref)
+        self.assertEqual(sale.state, "cancel")
 
     def test_cancel_confirmed_po_so(self):
         self.company_b.sale_auto_validation = True
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        self.env["sale.order"].with_user(self.user_company_b).search(
-            [("auto_purchase_order_id", "=", self.purchase_company_a.id)]
-        )
+        self._approve_po()
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+
+    def test_so_change_price(self):
+        sale = self._approve_po()
+        sale.order_line.price_unit = 10
+        sale.action_confirm()
+        self.assertEqual(self.purchase_company_a.order_line.price_unit, 10)
