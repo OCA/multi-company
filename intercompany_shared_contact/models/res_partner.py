@@ -23,6 +23,7 @@ class ResPartner(models.Model):
         help="Hack field to keep the information of the 'real' company_id. "
         "That way, we can share the contact by setting company_id to null, "
         "without losing any information. If null, the contact is not shared.",
+        index=True,
     )
 
     @api.depends("res_company_id", "parent_id.origin_company_id")
