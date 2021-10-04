@@ -59,7 +59,8 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.env.user.company_ids = [(4, self.company_2.id)]
         self.env.user.company_id = self.company_2.id
         self.assertEqual(
-            self.record_1.company_id.id, self.company_2.id,
+            self.record_1.company_id.id,
+            self.company_2.id,
         )
 
     def test_search_company_id(self):
