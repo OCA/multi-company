@@ -1,14 +1,13 @@
 # Copyright 2017 LasLabs Inc.
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
 
-from odoo.tests import common
+from odoo.tests import common, tagged
 
 from .common import setup_test_model
 from .multi_company_abstract_tester import MultiCompanyAbstractTester
 
 
-@common.at_install(False)
-@common.post_install(True)
+@tagged("at_install", "post_install")
 class TestMultiCompanyAbstract(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
@@ -37,7 +36,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         cls.record_1 = cls.test_model.create({"name": "test"})
         cls.company_1 = cls.env.company
         cls.company_2 = cls.env["res.company"].create(
-            {"name": "Test Co 2", "account_no": "123456"}
+            {"name": "Test Co 2", "phone": "03-555-1234"}
         )
 
     def add_company(self, company):
@@ -68,7 +67,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         self.add_company(self.company_2)
         record = self.test_model.search(
             [
-                ("company_id.account_no", "=", self.company_2.account_no),
+                ("company_id.phone", "=", self.company_2.phone),
                 ("id", "=", self.record_1.id),
             ]
         )
