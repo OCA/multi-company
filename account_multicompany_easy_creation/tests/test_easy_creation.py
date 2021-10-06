@@ -9,9 +9,7 @@ class TestEasyCreation(common.SavepointCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = cls.env.ref("base.user_admin")
-        cls.chart_template_id = cls.env.ref(
-            "l10n_generic_coa.configurable_chart_template"
-        )
+        cls.chart_template_id = cls.env["account.chart.template"].search([], limit=1)
 
     def _test_model_items(self, model, company_id):
         self.assertGreaterEqual(

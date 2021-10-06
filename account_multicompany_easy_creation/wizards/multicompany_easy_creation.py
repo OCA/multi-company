@@ -169,13 +169,12 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.create_bank_journals()
         self.create_sequences()
 
-    @ormcache("self.id", "company_id", "match_tax_ids")
-    def taxes_by_company(self, company_id, match_tax_ids):
+    @ormcache("self.id", "company_id", "match_taxes")
+    def taxes_by_company(self, company_id, match_taxes):
         AccountTax = self.env["account.tax"].sudo()
-        account_taxes = AccountTax.browse(match_tax_ids)
         return AccountTax.search(
             [
-                ("description", "in", account_taxes.mapped("description")),
+                ("description", "in", match_taxes.mapped("description")),
                 ("company_id", "=", company_id),
             ]
         ).ids
@@ -185,7 +184,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             lambda tax: tax.company_id == company_from
         )
         tax_ids = product_taxes and self.taxes_by_company(
-            self.new_company_id.id, product_taxes.ids
+            self.new_company_id.id, product_taxes
         )
         if tax_ids:
             product.update({taxes_field: [(4, tax_id) for tax_id in tax_ids]})
