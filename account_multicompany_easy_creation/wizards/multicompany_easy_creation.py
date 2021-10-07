@@ -210,10 +210,22 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     def set_product_taxes(self):
         user_company = self.env.user.company_id
-        products = self.env["product.product"].sudo().search([])
+        products = (
+            self.env["product.product"]
+            .sudo()
+            .search(
+                [
+                    "&",
+                    ("company_id", "=", False),
+                    "|",
+                    ("taxes_id", "!=", False),
+                    ("supplier_taxes_id", "!=", False),
+                ]
+            )
+        )
         updated_sale = updated_purchase = products.browse()
         if self.smart_search_product_tax:
-            for product in products:
+            for product in products.filtered("taxes_id"):
                 if self.update_product_taxes(product, "taxes_id", user_company):
                     updated_sale |= product
         if self.update_default_taxes and self.force_sale_tax:
@@ -221,7 +233,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 {"taxes_id": [(4, self.match_tax(self.default_sale_tax_id).id)]}
             )
         if self.smart_search_product_tax:
-            for product in products:
+            for product in products.filtered("supplier_taxes_id"):
                 if self.update_product_taxes(
                     product, "supplier_taxes_id", user_company
                 ):
