@@ -1,0 +1,1 @@
+On the delivery-carrier form view, go to the "Information" tab, and put the companies in which you want to use that product. If none is selected, the delivery-carrier will be visible in all of them. The default value is the current one.
