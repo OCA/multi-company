@@ -169,13 +169,12 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.create_bank_journals()
         self.create_sequences()
 
-    @ormcache("self.id", "company_id", "match_tax_ids")
-    def taxes_by_company(self, company_id, match_tax_ids):
+    @ormcache("self.id", "company_id", "match_taxes")
+    def taxes_by_company(self, company_id, match_taxes):
         AccountTax = self.env["account.tax"].sudo()
-        account_taxes = AccountTax.browse(match_tax_ids)
         return AccountTax.search(
             [
-                ("description", "in", account_taxes.mapped("description")),
+                ("description", "in", match_taxes.mapped("description")),
                 ("company_id", "=", company_id),
             ]
         ).ids
@@ -185,7 +184,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             lambda tax: tax.company_id == company_from
         )
         tax_ids = product_taxes and self.taxes_by_company(
-            self.new_company_id.id, product_taxes.ids
+            self.new_company_id.id, product_taxes
         )
         if tax_ids:
             product.update({taxes_field: [(4, tax_id) for tax_id in tax_ids]})
@@ -211,10 +210,22 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     def set_product_taxes(self):
         user_company = self.env.user.company_id
-        products = self.env["product.product"].sudo().search([])
+        products = (
+            self.env["product.product"]
+            .sudo()
+            .search(
+                [
+                    "&",
+                    ("company_id", "=", False),
+                    "|",
+                    ("taxes_id", "!=", False),
+                    ("supplier_taxes_id", "!=", False),
+                ]
+            )
+        )
         updated_sale = updated_purchase = products.browse()
         if self.smart_search_product_tax:
-            for product in products:
+            for product in products.filtered("taxes_id"):
                 if self.update_product_taxes(product, "taxes_id", user_company):
                     updated_sale |= product
         if self.update_default_taxes and self.force_sale_tax:
@@ -222,7 +233,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 {"taxes_id": [(4, self.match_tax(self.default_sale_tax_id).id)]}
             )
         if self.smart_search_product_tax:
-            for product in products:
+            for product in products.filtered("supplier_taxes_id"):
                 if self.update_product_taxes(
                     product, "supplier_taxes_id", user_company
                 ):
