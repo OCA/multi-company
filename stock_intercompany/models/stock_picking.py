@@ -19,6 +19,7 @@ class StockPicking(models.Model):
                     .search([("company_id", "=", company.id)], limit=1)
                 )
             vals = {
+                "partner_id": self.env.user.company_id.partner_id.id,
                 "company_id": company.id,
                 "picking_type_id": company.intercompany_in_type_id.id
                 or warehouse.in_type_id.id,
@@ -46,4 +47,3 @@ class StockPicking(models.Model):
     def _finalize_counterpart_picking(self, counterpart_picking):
         """hook to finalize required steps on the counterpart picking after the initial
         outgoing picking is done"""
-        pass
