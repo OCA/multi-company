@@ -171,13 +171,18 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     @ormcache("self.id", "company_id", "match_taxes")
     def taxes_by_company(self, company_id, match_taxes):
-        AccountTax = self.env["account.tax"].sudo()
-        return AccountTax.search(
-            [
-                ("description", "in", match_taxes.mapped("description")),
-                ("company_id", "=", company_id),
-            ]
-        ).ids
+        xml_ids = match_taxes.sudo().get_external_id().values()
+        # If any tax doesn't have xml, we won't be able to match it
+        record_ids = []
+        for xml_id in xml_ids:
+            if not xml_id:
+                continue
+            module, ref = xml_id.split(".", 1)
+            _company, name = ref.split("_", 1)
+            record = self.env.ref("{}.{}_{}".format(module, company_id, name), False)
+            if record:
+                record_ids.append(record.id)
+        return record_ids
 
     def update_product_taxes(self, product, taxes_field, company_from):
         product_taxes = product[taxes_field].filtered(
@@ -192,20 +197,16 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         return False
 
     def match_tax(self, tax_template):
-        if not tax_template.description:
+        """We can only match the new company tax if the chart was used"""
+        xml_id = tax_template and tax_template.get_external_id().get(tax_template.id)
+        if not xml_id:
             raise ValidationError(
-                _("Description not set in tax template: '%s'") % tax_template.name
+                _("This tax template can't be match without xml_id: '%s'")
+                % tax_template.name
             )
-        return (
-            self.sudo()
-            .env["account.tax"]
-            .search(
-                [
-                    ("company_id", "=", self.new_company_id.id),
-                    ("description", "=", tax_template.description),
-                ],
-                limit=1,
-            )
+        module, name = xml_id.split(".", 1)
+        return self.sudo().env.ref(
+            "{}.{}_{}".format(module, self.new_company_id.id, name)
         )
 
     def set_product_taxes(self):
