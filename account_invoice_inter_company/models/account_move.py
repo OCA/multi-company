@@ -198,6 +198,10 @@ class AccountMove(models.Model):
                 "auto_generated": True,
             }
         )
+        if self.partner_shipping_id and not self.partner_shipping_id.company_id:
+            # if shipping partner is shared you may want to propagate its value
+            # to supplier invoice allowing to analyse invoices
+            vals["partner_shipping_id"] = self.partner_shipping_id.id
         return vals
 
     def button_draft(self):
