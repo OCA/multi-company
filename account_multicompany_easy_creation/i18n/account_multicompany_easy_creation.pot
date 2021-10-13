@@ -169,12 +169,6 @@ msgid "Default Sales Tax"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
-#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:0
-#, python-format
-msgid "Description not set in tax template: '%s'"
-msgstr ""
-
-#. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__display_name
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__display_name
 msgid "Display Name"
@@ -328,6 +322,12 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__journal_id
 msgid "The accounting journal corresponding to this bank account."
+msgstr ""
+
+#. module: account_multicompany_easy_creation
+#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:0
+#, python-format
+msgid "This tax template can't be match without xml_id: '%s'"
 msgstr ""
 
 #. module: account_multicompany_easy_creation
