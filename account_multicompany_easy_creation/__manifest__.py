@@ -3,7 +3,7 @@
 {
     "name": "Quick Company Creation Wizard",
     "summary": "This module adds a wizard to create companies easily",
-    "version": "13.0.1.0.3",
+    "version": "13.0.1.0.4",
     "category": "Multicompany",
     "website": "https://github.com/OCA/multi-company"
     "account_multicompany_easy_creation",
