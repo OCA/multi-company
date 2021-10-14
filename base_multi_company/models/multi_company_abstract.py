@@ -31,9 +31,19 @@ class MultiCompanyAbstract(models.AbstractModel):
     )
 
     def _inverse_company_id(self):
-        """
-        This avoids warnings in logs
-        """
+        # To allow modifying allowed companies by non-aware base_multi_company
+        # through company_id field we:
+        # - Add company to company_ids if not in existing ones (not removing
+        # existing ones as people that write company_id field has maybe
+        # no access to other ones.)
+        # - Remove all companies if company_id is False (give access to all)
+
+        for record in self:
+            company = record.company_id
+            if company and company not in record.company_ids:
+                record.company_ids = [(4, company.id)]
+            elif not company:
+                record.company_ids = [(5,)]
 
     @api.depends("company_ids")
     def _compute_no_company_ids(self):
