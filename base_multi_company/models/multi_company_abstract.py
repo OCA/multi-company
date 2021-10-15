@@ -57,6 +57,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         return self.browse(self.env.company.ids)
 
     @api.depends("company_ids")
+    @api.depends_context("company")
     def _compute_company_id(self):
         for record in self:
             # Give the priority of the current company of the user to avoid
