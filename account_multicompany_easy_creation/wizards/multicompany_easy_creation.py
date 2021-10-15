@@ -120,7 +120,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         """ install a chart of accounts for the given company """
         user_company = self.env.user.company_id
         self.env.user.company_id = self.new_company_id
-        self.sudo().chart_template_id.try_loading_for_current_company()
+        self.chart_template_id.try_loading_for_current_company()
         self.env.user.company_id = user_company
 
     def create_bank_journals(self):
@@ -164,37 +164,48 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.create_bank_journals()
         self.create_sequences()
 
-    # TODO: Cache don't work
-    @ormcache('self.id', 'company_id', 'match_tax_ids')
-    def taxes_by_company(self, company_id, match_tax_ids):
-        AccountTax = self.env['account.tax'].sudo()
-        account_taxes = AccountTax.browse(match_tax_ids)
-        return AccountTax.search([
-            ('description', 'in', account_taxes.mapped('description')),
-            ('company_id', '=', company_id),
-        ]).ids
+    @ormcache("self.id", "company_id", "match_taxes")
+    def taxes_by_company(self, company_id, match_taxes):
+        xml_ids = match_taxes.sudo().get_external_id().values()
+        # If any tax doesn't have xml, we won't be able to match it
+        record_ids = []
+        for xml_id in xml_ids:
+            if not xml_id:
+                continue
+            module, ref = xml_id.split(".", 1)
+            _company, name = ref.split("_", 1)
+            record = self.env.ref(
+                "%s.%s_%s" % (module, company_id, name), False
+            )
+            if record:
+                record_ids.append(record.id)
+        return record_ids
 
     def update_product_taxes(self, product, taxes_field, company_from):
         product_taxes = product[taxes_field].filtered(
             lambda tax: tax.company_id == company_from)
         tax_ids = (
             product_taxes and
-            self.taxes_by_company(self.new_company_id.id, product_taxes.ids))
+            self.taxes_by_company(self.new_company_id.id, product_taxes))
         if tax_ids:
             product.update({taxes_field: [(4, tax_id) for tax_id in tax_ids]})
             return True
         return False
 
     def match_tax(self, tax_template):
-        if not tax_template.description:
+        """We can only match the new company tax if the chart was used"""
+        xml_id = tax_template and tax_template.get_external_id().get(
+            tax_template.id
+        )
+        if not xml_id:
             raise ValidationError(
-                _("Description not set in tax template: '%s'") %
+                _("This tax template can't be match without xml_id: '%s'") %
                 tax_template.name
             )
-        return self.sudo().env['account.tax'].search([
-            ('company_id', '=', self.new_company_id.id),
-            ('description', '=', tax_template.description),
-        ], limit=1)
+        module, name = xml_id.split(".", 1)
+        return self.sudo().env.ref(
+            "%s.%s_%s" % (module, self.new_company_id.id, name)
+        )
 
     def set_product_taxes(self):
         user_company = self.env.user.company_id
