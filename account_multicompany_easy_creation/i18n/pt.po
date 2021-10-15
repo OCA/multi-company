@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_multicompany_easy_creation
+# 	* account_multicompany_easy_creation
 #
 msgid ""
 msgstr ""
@@ -53,7 +53,9 @@ msgstr "Número da Conta"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_holder_name
-msgid "Account holder name, in case it is different than the name of the Account Holder"
+msgid ""
+"Account holder name, in case it is different than the name of the Account "
+"Holder"
 msgstr ""
 "Nome do proprietário da conta, no caso de ser diferente do nome do "
 "Proprietário da Conta"
@@ -80,7 +82,8 @@ msgstr "Código de Identificação Bancária (BIC)"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_type
-msgid "Bank account type: Normal or IBAN. Inferred from the bank account number."
+msgid ""
+"Bank account type: Normal or IBAN. Inferred from the bank account number."
 msgstr ""
 "Tipo de conta bancária: Normal ou IBAN. Identificável no número de conta "
 "bancária."
@@ -173,12 +176,6 @@ msgid "Default Sales Tax"
 msgstr "Imposto de Venda pré-definido"
 
 #. module: account_multicompany_easy_creation
-#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:191
-#, python-format
-msgid "Description not set in tax template: '%s'"
-msgstr "A descrição não está definida no modelo de impostos: '%s'"
-
-#. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__display_name
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__display_name
 msgid "Display Name"
@@ -201,21 +198,27 @@ msgstr "Forçar Imposto de Venda em todos os Produtos"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
-msgid "Go over partner fiscal positions in actual company to match and set equivalent fiscal positions in the new company."
+msgid ""
+"Go over partner fiscal positions in actual company to match and set "
+"equivalent fiscal positions in the new company."
 msgstr ""
 "Analise as posições fiscais do parceiro na empresa atual, para combinar e "
 "definir as posições fiscais equivalentes na nova empresa."
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
-msgid "Go over product taxes in actual company to match and set equivalent taxes in then new company."
+msgid ""
+"Go over product taxes in actual company to match and set equivalent taxes in "
+"then new company."
 msgstr ""
 "Analise os impostos sobre produtos na empresa atual, para combinar e definir "
 "os impostos equivalentes na nova empresa."
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
-msgid "Go over specific accounts in actual company to match and set equivalent taxes in the new company.\n"
+msgid ""
+"Go over specific accounts in actual company to match and set equivalent "
+"taxes in the new company.\n"
 "Applies to products, categories, partners, ..."
 msgstr ""
 "Analise as contas específicas na empresa atual, para combinar e definir "
@@ -278,8 +281,10 @@ msgstr "Sequências a criar"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
-msgid "Set default purchase tax to all products.\n"
-"If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
+msgid ""
+"Set default purchase tax to all products.\n"
+"If smart search product tax is also enabled matches founded will overwrite "
+"default taxes, but not founded will remain"
 msgstr ""
 "Defina o imposto de compra pré-definido para todos os produtos.\n"
 "Se também estiver ativa a pesquisa inteligente do imposto sobre o produto, "
@@ -288,8 +293,10 @@ msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
-msgid "Set default sales tax to all products.\n"
-"If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
+msgid ""
+"Set default sales tax to all products.\n"
+"If smart search product tax is also enabled matches founded will overwrite "
+"default taxes, but not founded will remain"
 msgstr ""
 "Defina o imposto de venda pré-definido para todos os produtos.\n"
 "Se também estiver ativa a pesquisa inteligente do imposto sobre o produto, "
@@ -318,10 +325,11 @@ msgstr "Pesquisa inteligente para definir impostos de produto"
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
-msgid "Smart search to set specific accounts in products, categories, partners, ..."
+msgid ""
+"Smart search to set specific accounts in products, categories, partners, ..."
 msgstr ""
-"Pesquisa inteligente para definir contas em produtos, categorias, parceiros, "
-"..."
+"Pesquisa inteligente para definir contas em produtos, categorias, "
+"parceiros, ..."
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
@@ -343,6 +351,12 @@ msgstr "Impostos"
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__journal_id
 msgid "The accounting journal corresponding to this bank account."
 msgstr "O diário da contabilidade correspondente a esta conta bancária."
+
+#. module: account_multicompany_easy_creation
+#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:202
+#, python-format
+msgid "This tax template can't be match without xml_id: '%s'"
+msgstr ""
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_type
@@ -408,3 +422,6 @@ msgstr "account.multicompany.bank.wiz"
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "or"
 msgstr "ou"
+
+#~ msgid "Description not set in tax template: '%s'"
+#~ msgstr "A descrição não está definida no modelo de impostos: '%s'"
