@@ -31,7 +31,10 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             ]
         )
 
-    name = fields.Char(string="Company Name", required=True,)
+    name = fields.Char(
+        string="Company Name",
+        required=True,
+    )
     currency_id = fields.Many2one(
         comodel_name="res.currency",
         string="Currency",
@@ -39,7 +42,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         default=lambda s: s.env.user.company_id.currency_id,
     )
     chart_template_id = fields.Many2one(
-        comodel_name="account.chart.template", string="Chart Template",
+        comodel_name="account.chart.template",
+        string="Chart Template",
     )
     bank_ids = fields.One2many(
         comodel_name="account.multicompany.bank.wiz",
@@ -56,7 +60,10 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         string="Sequences to create",
         default=lambda s: s._default_sequence_ids(),
     )
-    new_company_id = fields.Many2one(comodel_name="res.company", string="Company",)
+    new_company_id = fields.Many2one(
+        comodel_name="res.company",
+        string="Company",
+    )
     # TAXES
     smart_search_product_tax = fields.Boolean(
         default=True,
@@ -67,7 +74,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         help="Update default taxes applied to local transactions",
     )
     default_sale_tax_id = fields.Many2one(
-        comodel_name="account.tax.template", string="Default Sales Tax",
+        comodel_name="account.tax.template",
+        string="Default Sales Tax",
     )
     force_sale_tax = fields.Boolean(
         string="Force Sale Tax In All Products",
@@ -76,7 +84,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         "will overwrite default taxes, but not founded will remain",
     )
     default_purchase_tax_id = fields.Many2one(
-        comodel_name="account.tax.template", string="Default Purchase Tax",
+        comodel_name="account.tax.template",
+        string="Default Purchase Tax",
     )
     force_purchase_tax = fields.Boolean(
         string="Force Purchase Tax In All Products",
@@ -100,10 +109,12 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         help="Update default accounts defined in account chart template",
     )
     account_receivable_id = fields.Many2one(
-        comodel_name="account.account.template", string="Default Receivable Account",
+        comodel_name="account.account.template",
+        string="Default Receivable Account",
     )
     account_payable_id = fields.Many2one(
-        comodel_name="account.account.template", string="Default Payable Account",
+        comodel_name="account.account.template",
+        string="Default Payable Account",
     )
     account_income_categ_id = fields.Many2one(
         comodel_name="account.account.template",
@@ -394,5 +405,9 @@ class AccountMulticompanyBankWiz(models.TransientModel):
     _order = "id"
     _description = "Wizard Account Multi-company Bank"
 
-    wizard_id = fields.Many2one(comodel_name="account.multicompany.easy.creation.wiz",)
-    partner_id = fields.Many2one(required=False,)
+    wizard_id = fields.Many2one(
+        comodel_name="account.multicompany.easy.creation.wiz",
+    )
+    partner_id = fields.Many2one(
+        required=False,
+    )
