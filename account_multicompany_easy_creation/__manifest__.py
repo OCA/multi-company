@@ -3,7 +3,7 @@
 {
     "name": "Quick Company Creation Wizard",
     "summary": "This module adds a wizard to create companies easily",
-    "version": "13.0.1.0.4",
+    "version": "14.0.1.0.0",
     "category": "Multicompany",
     "website": "https://github.com/OCA/multi-company"
     "account_multicompany_easy_creation",
@@ -11,5 +11,5 @@
     "license": "AGPL-3",
     "installable": True,
     "depends": ["account"],
-    "data": ["wizards/multicompany_easy_creation.xml"],
+    "data": ["wizards/multicompany_easy_creation.xml", "security/ir.model.access.csv"],
 }
