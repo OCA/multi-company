@@ -117,13 +117,15 @@
             </form>
         </field>
     </record>
-    <act_window
+     <record
+        model="ir.actions.act_window"
         id="wizard_multicompany_easy_creation_action"
-        name="Company easy creation"
-        res_model="account.multicompany.easy.creation.wiz"
-        view_mode="form"
-        target="new"
-    />
+    >
+        <field name="name">Company easy creation</field>
+        <field name="res_model">account.multicompany.easy.creation.wiz</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
     <menuitem
         id="multicompany_easy_creation_menu"
         name="Company easy creation"
