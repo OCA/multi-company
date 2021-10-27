@@ -174,6 +174,7 @@ class AccountInvoice(models.Model):
         dest_invoice_data = Form(
             self.env['account.invoice'].with_context(
                 default_type=dest_inv_type,
+                default_company_id=dest_company.id,
                 force_company=dest_company.id
             ))
         dest_invoice_data.company_id = dest_company
