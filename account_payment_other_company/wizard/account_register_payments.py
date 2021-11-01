@@ -11,9 +11,6 @@ class AccountPaymentRegister(models.TransientModel):
         "account.journal", string="Paid By", domain=[("type", "in", ("bank", "cash"))]
     )
     show_other_journal = fields.Boolean(default=False, invisible=True)
-    company_id = fields.Many2one(
-        "res.company", related="journal_id.company_id", string="Company", readonly=True
-    )
 
     @api.onchange("journal_id", "payment_type")
     def onchange_show_other_journal(self):
