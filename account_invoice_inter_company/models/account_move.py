@@ -4,6 +4,7 @@ from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import Form
 from odoo.tools import float_compare
+from odoo.tools.misc import clean_context
 
 
 class AccountMove(models.Model):
@@ -163,6 +164,7 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
+        self = self.with_context(clean_context(self.env.context))
         dest_inv_type = self._get_destination_invoice_type()
         dest_journal_type = self._get_destination_journal_type()
         # find the correct journal
