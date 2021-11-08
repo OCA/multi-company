@@ -1,0 +1,90 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* intercompany_shared_contact
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: intercompany_shared_contact
+#: model:ir.model,name:intercompany_shared_contact.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model,name:intercompany_shared_contact.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_company__display_name
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_partner__display_name
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_users__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,help:intercompany_shared_contact.field_res_partner__res_company_id
+#: model:ir.model.fields,help:intercompany_shared_contact.field_res_users__res_company_id
+msgid "Effectively a One2one field to represent the corresponding res.company"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,help:intercompany_shared_contact.field_res_partner__origin_company_id
+#: model:ir.model.fields,help:intercompany_shared_contact.field_res_users__origin_company_id
+msgid ""
+"Hack field to keep the information of the 'real' company_id. That way, we "
+"can share the contact by setting company_id to null, without losing any "
+"information. If null, the contact is not shared."
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_company__id
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_partner__id
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_users__id
+msgid "ID"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_company____last_update
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_partner____last_update
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_users____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_partner__origin_company_id
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_users__origin_company_id
+msgid "Origin Company"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_partner__res_company_id
+#: model:ir.model.fields,field_description:intercompany_shared_contact.field_res_users__res_company_id
+msgid "Res Company"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model.constraint,message:intercompany_shared_contact.constraint_res_company_partner_uniq
+msgid "The company partner_id must be unique !"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: model:ir.model,name:intercompany_shared_contact.model_res_users
+msgid "Users"
+msgstr ""
+
+#. module: intercompany_shared_contact
+#: code:addons/intercompany_shared_contact/models/res_partner.py:0
+#, python-format
+msgid ""
+"You do not have the right to modify the field: %s for an intercompany "
+"contact"
+msgstr ""
