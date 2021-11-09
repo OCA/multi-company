@@ -11,6 +11,6 @@ class IrFilters(models.Model):
     company_id = fields.Many2one(
         "res.company",
         "Company",
-        default=lambda self: self.env.user.company_id,
+        default=lambda self: self.env.company,
         ondelete="cascade",
     )
