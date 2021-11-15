@@ -1,6 +1,7 @@
 # Copyright (C) 2021 Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
-from odoo import api, fields, models
+from odoo import api, fields, models,_
+from odoo.exceptions import ValidationError
 
 
 class AccountInvoiceLineDistribution(models.Model):
@@ -32,6 +33,15 @@ class AccountInvoiceLineDistribution(models.Model):
     #        [('line_company_uniq', 'UNIQUE (invoice_line_id, company_id)',
     #          'You cannot have the same company twice in a distribution!')]
 
+    @api.constrains("invoice_line_id","company_id")
+    def _check_unique_company_distribution(self):
+        for rec in self:
+            distribution_lines = rec.search_count([('invoice_line_id','=',rec.invoice_line_id.id),
+                                                    ('company_id','=',rec.company_id.id),
+                                                    ('id','!=',rec.id)])
+            if distribution_lines:
+                raise ValidationError(_('You cannot have the same company twice in a distribution!'))
+            
     @api.onchange("percent")
     def _onchange_percent_total(self):
         for dist in self:

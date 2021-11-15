@@ -17,28 +17,29 @@ class AccountMoveLine(models.Model):
     def _onchange_comp_amount_percent(self):
         for dist_line in self.distribution_ids:
             dist_line.update({
-                'amount': 0.00,
-                'percent': 0.00
-            })
+                              'amount': 0.00,
+                              'percent':0.00
+                              })
             dist_line._onchange_amount_total()
             dist_line._onchange_percent_total()
 
     def get_default_distribution(self):
         return {'percent': 100.00,
                 'company_id':
-                    self.env.context.get('company_id')
-                    or self.company_id.id
-                    or self.move_id.company_id.id
-                    or self.env.user.company_id.id}
+                    self.env.context.get('company_id') or
+                    self.company_id.id or
+                    self.move_id.company_id.id or
+                    self.env.user.company_id.id
+                }
 
     @api.model_create_multi
     def create(self, vals_list):
         lines = super(AccountMoveLine, self).create(vals_list)
-        invoice_line = lines.filtered(lambda line: line.move_id.move_type in (
-            'out_invoice', 'in_invoice', 'out_refund', 'in_refund', 'out_receipt', 'in_receipt'))
+        invoice_line = lines.filtered(lambda line: line.move_id.move_type in ('out_invoice', 'in_invoice', 'out_refund', 'in_refund', 'out_receipt', 'in_receipt'))
+        invoice_line.distribution_ids._onchange_percent_total()
         if not invoice_line.distribution_ids:
-            invoice_line.write(
-                {'distribution_ids': [(0, 0, invoice_line.get_default_distribution())]})
+            invoice_line.write({'distribution_ids' : [(0, 0, invoice_line.get_default_distribution())]})
+            invoice_line._onchange_distribution_ids_amount()
         return lines
 
     @api.constrains('distribution_ids')
@@ -86,11 +87,9 @@ class AccountMoveLine(models.Model):
 
     def open_line_view(self):
         self.ensure_one()
-        view = self.env.ref(
-            'account_bill_line_distribution.move_line_distribution_form')
-
+        view = self.env.ref('account_bill_line_distribution.move_line_distribution_form')
         return {
-            'name': _('Invoice lines'),
+            'name': _('Distribution lines'),
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
             'res_model': 'account.move.line',
