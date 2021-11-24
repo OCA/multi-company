@@ -189,7 +189,7 @@ class AccountMove(models.Model):
                     },
                 )
             )
-            account = self.env["account.account"].browse(line["account_id"])
+            account = self.env['account.move.line'].search([('name', '=', line['name']), ('move_id', '=', invoice_id.id)], limit=1).account_id
             # Debit Account of invoice line
             new_account = (
                 self.env["account.account"]
@@ -235,7 +235,7 @@ class AccountMove(models.Model):
                     },
                 )
             )
-            account = self.env["account.account"].browse(line["account_id"])
+            account = self.env['account.move.line'].search([('name', '=', line['name']), ('move_id', '=', invoice_id.id)], limit=1).account_id
             # Debit Account of invoice line
             new_account = (
                 self.env["account.account"]
