@@ -36,10 +36,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             user.groups_id |= cls.env.ref(xml)
 
     @classmethod
-    def _create_purchase_order(cls):
+    def _create_purchase_order(cls, partner):
         po = Form(cls.env["purchase.order"])
         po.company_id = cls.company_a
-        po.partner_id = cls.partner_company_b
+        po.partner_id = partner
 
         cls.product.invoice_policy = "order"
 
@@ -88,7 +88,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls._configure_user(cls.user_company_b)
 
         # Create purchase order
-        cls.purchase_company_a = cls._create_purchase_order()
+        cls.purchase_company_a = cls._create_purchase_order(cls.partner_company_b)
 
         # Configure pricelist to USD
         cls.env["product.pricelist"].sudo().search([]).write(
@@ -199,3 +199,13 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         sale.order_line.price_unit = 10
         sale.action_confirm()
         self.assertEqual(self.purchase_company_a.order_line.price_unit, 10)
+
+    def test_po_with_contact_as_partner(self):
+        contact = self.env["res.partner"].create(
+            {"name": "Test contact", "parent_id": self.partner_company_b.id}
+        )
+        self.purchase_company_a = self._create_purchase_order(contact)
+        sale = self._approve_po()
+        self.assertEqual(len(sale), 1)
+        self.assertEqual(sale.state, "sale")
+        self.assertEqual(sale.partner_id, self.partner_company_a)
