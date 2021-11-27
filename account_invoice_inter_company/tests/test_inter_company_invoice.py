@@ -572,3 +572,21 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.assertEqual(len(invoices), 1)
         return invoices
+
+    def test_confirm_invoice_and_full_refund(self):
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        self._confirm_invoice_with_product()
+        wizard = self.env["account.move.reversal"].create(
+            {
+                "refund_method": "cancel",
+                "move_ids": [(6, 0, self.invoice_company_a.ids)],
+            }
+        )
+        action = wizard.reverse_moves()
+        refund_company_a = self.account_move_obj.browse(action["res_id"])
+
+        # Check destination refund created in company B
+        refund = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", refund_company_a.id)]
+        )
+        self.assertEqual(len(refund), 1)
