@@ -23,7 +23,7 @@ class ProductProduct(models.Model):
                 purchase = self.env["purchase.order"].browse(
                     self.env.context.get("parent_id")
                 )
-                seller_partner = purchase.partner_id
+                seller_partner = purchase.partner_id.commercial_partner_id
                 seller_company = (
                     self.env["res.company"]
                     .sudo()
