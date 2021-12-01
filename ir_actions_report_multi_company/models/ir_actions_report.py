@@ -6,6 +6,6 @@ from odoo import fields, models
 
 class IrActionsReport(models.Model):
 
-    _inherit = 'ir.actions.report'
+    _inherit = "ir.actions.report"
 
-    company_id = fields.Many2one('res.company')
+    company_id = fields.Many2one("res.company")
