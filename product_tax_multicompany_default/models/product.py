@@ -71,11 +71,12 @@ class ProductTemplate(models.Model):
             }
         )
 
-    @api.model
-    def create(self, vals):
-        res = super().create(vals)
-        res.set_multicompany_taxes()
-        return res
+    @api.model_create_multi
+    def create(self, vals_list):
+        new_products = super().create(vals_list)
+        for product in new_products:
+            product.set_multicompany_taxes()
+        return new_products
 
 
 class ProductProduct(models.Model):
