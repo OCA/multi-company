@@ -4,3 +4,6 @@
   * Pedro M. Baeza
   * Vicent Cubells
   * Ernesto Tejeda
+
+* Loo <http://odooerp.cl/>`_:
+  * Carlos Lopez
