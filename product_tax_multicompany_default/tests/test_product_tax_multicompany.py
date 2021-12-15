@@ -2,15 +2,20 @@
 # Copyright 2018 Vicent Cubells - Tecnativa <vicent.cubells@tecnativa.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 
 
-class TestsProductTaxMulticompany(SavepointCase):
+class TestsProductTaxMulticompany(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super(TestsProductTaxMulticompany, cls).setUpClass()
-        cls.company_1 = cls.env["res.company"].create({"name": "Test company 1"})
-        cls.company_2 = cls.env["res.company"].create({"name": "Test company 2"})
+        default_country = cls.env.ref("base.cl")
+        cls.company_1 = cls.env["res.company"].create(
+            {"name": "Test company 1", "country_id": default_country.id}
+        )
+        cls.company_2 = cls.env["res.company"].create(
+            {"name": "Test company 2", "country_id": default_country.id}
+        )
         group_account_manager = cls.env.ref("account.group_account_manager")
         ResUsers = cls.env["res.users"]
         cls.user_1 = ResUsers.create(
