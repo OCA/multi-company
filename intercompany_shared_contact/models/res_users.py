@@ -21,7 +21,7 @@ class ResUsers(models.Model):
             # So we do not update in this case
             # For example, you can have Akretion user attached to the res.partner
             # Akretion, and this partner is not an address of a company
-            if not record.parent_id or record.parent_id in partner_companies:
+            if not record.parent_id or record.parent_id not in partner_companies:
                 record.parent_id = record.company_id.partner_id
 
     @api.model_create_multi
