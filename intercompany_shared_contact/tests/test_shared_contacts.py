@@ -1,14 +1,24 @@
 #  Copyright (c) Akretion 2021
 #  License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html)
 
+from odoo_test_helper import FakeModelLoader
+
 from odoo.exceptions import AccessError
 from odoo.tests import SavepointCase
 
 
-class IntercompanySharedContactCase(SavepointCase):
+class IntercompanySharedContactCase(SavepointCase, FakeModelLoader):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Load fake models ->/
+        cls.loader = FakeModelLoader(cls.env, cls.__module__)
+        cls.loader.backup_registry()
+        from .models import ResPartner
+
+        cls.loader.update_registry([ResPartner])
+        # ->/ Load fake models
+
         cls.company_x = cls.env["res.company"].create({"name": "x Company"})
         cls.partner_x = cls.company_x.partner_id
         cls.user_x = cls.env["res.users"].create(
@@ -33,6 +43,11 @@ class IntercompanySharedContactCase(SavepointCase):
 
         cls.partner_other = cls.env.ref("base.res_partner_12")
         cls.partner_other.company_id = cls.company_x
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.loader.restore_registry()
+        super().tearDownClass()
 
     def test_computed_fields(self):
         self.assertEqual(self.partner_x.res_company_id, self.company_x)
@@ -59,6 +74,15 @@ class IntercompanySharedContactCase(SavepointCase):
         """
         partner_y = self.partner_y.with_user(self.user_x)
         partner_y.barcode = "ça-fait-pas-boom"
+
+    def test_intercompany_update_commercial_company_dependent(self):
+        """
+        Commercial (field sync with children) Company dependent field of Company
+        contacts are modifiable by other companies
+        """
+        # We test with the field barcode because it's the only depenen
+        partner_y = self.partner_y.with_user(self.user_x)
+        partner_y.foo_company_dependent_field = "ça-fait-pas-boom"
 
     def test_intercompany_other(self):
         """

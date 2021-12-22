@@ -70,3 +70,6 @@ class ResPartner(models.Model):
                         % fields_name
                     )
         return res
+
+    def _commercial_sync_to_children(self):
+        return super(ResPartner, self.sudo())._commercial_sync_to_children()
