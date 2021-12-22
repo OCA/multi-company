@@ -23,7 +23,7 @@ addon | version | maintainers | summary
 [account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.0.3 |  | Intercompany invoice rules
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 14.0.1.0.0 |  | This module adds a wizard to create companies easily
 [company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 |  | Display company dependent attribute on fields
-[intercompany_shared_contact](intercompany_shared_contact/) | 14.0.1.0.1 |  | User of each company are contact of a company partner. All child address of a company are automatically shared
+[intercompany_shared_contact](intercompany_shared_contact/) | 14.0.1.1.0 |  | User of each company are contact of a company partner. All child address of a company are automatically shared
 [mail_multicompany](mail_multicompany/) | 14.0.0.1.0 |  | Email Gateway Multi company
 [partner_contact_company_propagation](partner_contact_company_propagation/) | 14.0.1.0.0 |  | Propagate company info to children contacts
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.1.0.0 |  | Intercompany PO/SO rules
