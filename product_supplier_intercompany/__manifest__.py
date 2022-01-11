@@ -8,7 +8,7 @@
     "category": "Generic Modules/Others",
     "license": "AGPL-3",
     "author": "Odoo Community Association (OCA), Akretion",
-    "website": "https://github.com/akretion/ak-odoo-incubator",
+    "website": "https://github.com/OCA/multi-company",
     "depends": [
         "sale_management",
         "purchase_sale_inter_company",
