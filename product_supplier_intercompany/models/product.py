@@ -1,8 +1,8 @@
 # © 2019 Akretion (http://www.akretion.com)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from openerp import _, api, fields, models
-from openerp.exceptions import Warning as UserError
+from odoo import _, api, fields, models
+from odoo.exceptions import Warning as UserError
 
 
 class ProductIntercompanySupplierMixin(models.AbstractModel):
@@ -141,7 +141,6 @@ class ProductSupplierinfo(models.Model):
 
     intercompany_pricelist_id = fields.Many2one(
         comodel_name="product.pricelist",
-        inverse_name="generated_supplier_info_ids",
     )
 
     pricelist_item_id = fields.Many2one(comodel_name="product.pricelist.item")
