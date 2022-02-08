@@ -39,7 +39,9 @@ class ResPartner(models.Model):
                 record.origin_company_id = False
 
     def _get_company_depend_fields(self):
-        return {key for key, field in self._fields.items() if field.company_dependent}
+        return {
+            key for key, field in self._fields.items() if field.company_dependent
+        } | {"bank_ids"}
 
     def check_field_access_rights(self, operation, fields):
         res = super().check_field_access_rights(operation, fields)
