@@ -189,3 +189,40 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         self.assertEquals(purchases.order_line.product_qty,
                           self.sale_company_b.order_line.product_uom_qty)
         self.assertEquals(purchases.notes, 'Test sale note')
+
+    def test_sale_purchase_inter_company_location_owner(self):
+        """Check taht created purchase order ships to
+        location owned by sale order's shipping address."""
+        self.company_b.so_from_po = False
+        self.company_a.po_from_so = True
+        warehouse_company_a = self.env.ref(
+            'purchase_sale_inter_company.warehouse_company_a')
+        self.company_a.po_picking_type_id = warehouse_company_a.in_type_id.id
+
+        # The partner receiving the goods owns a location
+        owned_location = self.env['stock.location'].create({
+            'name': "Test owned location",
+            'partner_id': self.sale_company_b.partner_shipping_id.id,
+            'company_id': self.company_a.id,
+        })
+        # There is a picking type shipping to the owned location
+        company_a_warehouse_id = self.company_a.warehouse_id
+        picking_type = self.env['stock.picking.type'].create({
+            'name': "Test owned picking type",
+            'code': 'internal',
+            'warehouse_id': company_a_warehouse_id.id,
+            'default_location_dest_id': owned_location.id,
+            'sequence_id': company_a_warehouse_id.in_type_id.sequence_id.copy().id,
+        })
+
+        intercompany_user_a = self.user_a.copy()
+        intercompany_user_a.company_ids |= self.company_b
+        self.company_a.intercompany_user_id = intercompany_user_a
+        self.sale_company_b.sudo(self.user_b).action_confirm()
+        purchase = self.env['purchase.order'].sudo(self.user_a).search([
+            ('auto_sale_order_id', '=', self.sale_company_b.id)
+        ])
+        self.assertEquals(len(purchase), 1)
+        # Check that the purchase order has the picking type shipping to the location
+        # owned by the sale order's shipping partner
+        self.assertEquals(purchase.picking_type_id, picking_type)

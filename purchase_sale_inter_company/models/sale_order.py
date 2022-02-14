@@ -144,9 +144,16 @@ class SaleOrder(models.Model):
         if self.note:
             new_order.notes = self.note
         if 'picking_type_id' in new_order:
-            new_order.picking_type_id = (
-                dest_company.po_picking_type_id.warehouse_id.company_id ==
-                dest_company and dest_company.po_picking_type_id or False)
+            picking_type_dest_owned = self.env['stock.picking.type'].search([
+                ('default_location_dest_id.partner_id', '=',
+                 self.partner_shipping_id.id),
+            ], limit=1)
+            if picking_type_dest_owned:
+                new_order.picking_type_id = picking_type_dest_owned
+            else:
+                new_order.picking_type_id = (
+                    dest_company.po_picking_type_id.warehouse_id.company_id ==
+                    dest_company and dest_company.po_picking_type_id or False)
         return new_order._convert_to_write(new_order._cache)
 
     @api.model
