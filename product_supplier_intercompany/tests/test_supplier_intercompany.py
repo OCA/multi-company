@@ -2,15 +2,33 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo.exceptions import Warning as UserError
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import SavepointCase
 
 
-class TestPricelist(TransactionCase):
+class TestIntercompanySupplierCase(SavepointCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        # configure multi company environment
+        cls.env["product.template"].search([]).write({"company_id": False})
+        cls.pricelist_intercompany = cls.env.ref(
+            "product_supplier_intercompany.pricelist_intercompany"
+        )
+        cls.pricelist_not_intercompany = cls.env.ref(
+            "product_supplier_intercompany.pricelist_not_intercompany"
+        )
+        cls.product_template_4 = cls.env.ref(
+            "product.product_product_4_product_template"
+        )
+        cls.sale_company = cls.env.ref("base.main_company")
+        cls.purchase_company = cls.env.ref(
+            "product_supplier_intercompany.purchaser_company"
+        )
+
+
+class TestIntercompanySupplier(TestIntercompanySupplierCase):
     def setUp(self):
         super().setUp()
-
-        # configure multi company environment
-        self.env["product.template"].search([]).write({"company_id": False})
 
         self.user = self.env.ref("base.user_demo")
         self.user.write(
@@ -18,15 +36,7 @@ class TestPricelist(TransactionCase):
         )
         self.env = self.env(user=self.user)
         ref = self.env.ref
-        self.pricelist_intercompany = ref(
-            "product_supplier_intercompany.pricelist_intercompany"
-        )
-        self.pricelist_not_intercompany = ref(
-            "product_supplier_intercompany.pricelist_not_intercompany"
-        )
         self.partner = ref("base.main_partner")
-
-        self.product_template_4 = ref("product.product_product_4_product_template")
         self.product_product_4b = ref("product.product_product_4b")
         self.product_product_4c = ref("product.product_product_4c")
 
@@ -39,9 +49,6 @@ class TestPricelist(TransactionCase):
         self.pricelist_item_4b = ref(
             "product_supplier_intercompany.pricelist_item_product_product_4b"
         )
-
-        self.sale_company = ref("base.main_company")
-        self.purchase_company = ref("product_supplier_intercompany.purchaser_company")
         self.supplier_info = self._get_supplier_info(self.product_template_1)
 
     def _get_supplier_info(self, record=None, sudo=True):
