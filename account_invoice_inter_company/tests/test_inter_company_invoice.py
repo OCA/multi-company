@@ -5,10 +5,10 @@
 
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
-from odoo.tests.common import Form, SavepointCase
+from odoo.tests.common import Form, TransactionCase
 
 
-class TestAccountInvoiceInterCompanyBase(SavepointCase):
+class TestAccountInvoiceInterCompanyBase(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -30,7 +30,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "invoice_auto_validation": True,
             }
         )
-        cls.chart.try_loading(cls.company_a)
+        cls.chart.try_loading(company=cls.company_a, install_demo=False)
         cls.partner_company_a = cls.env["res.partner"].create(
             {"name": cls.company_a.name, "is_company": True}
         )
@@ -44,7 +44,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "invoice_auto_validation": True,
             }
         )
-        cls.chart.try_loading(cls.company_b)
+        cls.chart.try_loading(company=cls.company_b, install_demo=False)
         cls.partner_company_b = cls.env["res.partner"].create(
             {"name": cls.company_b.name, "is_company": True}
         )
@@ -269,8 +269,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "code": "SAJ-A",
                 "type": "sale",
                 "secure_sequence_id": cls.sequence_sale_journal_company_a.id,
-                "payment_credit_account_id": cls.a_sale_company_a.id,
-                "payment_debit_account_id": cls.a_sale_company_a.id,
+                "default_account_id": cls.a_sale_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -280,8 +279,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Bank Journal - (Company A)",
                 "code": "BNK-A",
                 "type": "bank",
-                "payment_credit_account_id": cls.a_sale_company_a.id,
-                "payment_debit_account_id": cls.a_sale_company_a.id,
+                "default_account_id": cls.a_sale_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -300,8 +298,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "code": "EXJ-B",
                 "type": "purchase",
                 "secure_sequence_id": cls.sequence_purchase_journal_company_b.id,
-                "payment_credit_account_id": cls.a_expense_company_b.id,
-                "payment_debit_account_id": cls.a_expense_company_b.id,
+                "default_account_id": cls.a_expense_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -310,8 +307,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "name": "Bank Journal - (Company B)",
                 "code": "BNK-B",
                 "type": "bank",
-                "payment_credit_account_id": cls.a_sale_company_b.id,
-                "payment_debit_account_id": cls.a_sale_company_b.id,
+                "default_account_id": cls.a_sale_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
