@@ -32,7 +32,7 @@ class AccountMove(models.Model):
         return company or False
 
     def action_post(self):
-        """ Validated invoice generate cross invoice base on company rules """
+        """Validated invoice generate cross invoice base on company rules"""
         res = super().action_post()
         # Intercompany account entries or receipts aren't supported
         supported_types = {"out_invoice", "in_invoice", "out_refund", "in_refund"}
