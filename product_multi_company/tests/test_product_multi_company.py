@@ -8,7 +8,7 @@ from odoo.tests import common
 from .common import ProductMultiCompanyCommon
 
 
-class TestProductMultiCompany(ProductMultiCompanyCommon, common.SavepointCase):
+class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase):
     def test_create_product(self):
         product = self.env["product.product"].create({"name": "Test"})
         company = self.env.company
