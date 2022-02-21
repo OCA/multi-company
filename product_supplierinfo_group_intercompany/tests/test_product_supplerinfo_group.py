@@ -1,6 +1,7 @@
 # Copyright 2022 Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+
 from odoo.exceptions import UserError
 
 from odoo.addons.product_supplier_intercompany.tests.test_supplier_intercompany import (
@@ -80,3 +81,23 @@ class IntercompanySupplierinfoGroupTest(
         )
         user.company_ids = self.sale_company
         self.assertFalse(self.product_template_4.with_user(user).supplierinfo_group_ids)
+
+    def test_different_pricelists_different_groups(self):
+        """ Only one supplierinfo group per pricelist """
+        self.assertEqual(len(self.product_template_4.supplierinfo_group_ids), 2)
+        pricelist = self.env["product.pricelist"].create(
+            {
+                "name": "pricelist 2",
+                "company_id": self.sale_company.id,
+            }
+        )
+        self.env["product.pricelist.item"].create(
+            {
+                "pricelist_id": pricelist.id,
+                "product_tmpl_id": self.product_template_4.id,
+                "base": "list_price",
+                "fixed_price": 7,
+            }
+        )
+        pricelist.is_intercompany_supplier = True
+        self.assertEqual(len(self.product_template_4.supplierinfo_group_ids), 3)
