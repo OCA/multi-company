@@ -3,7 +3,6 @@
 
 
 from odoo import models
-from odoo.osv import expression
 
 
 class ProductSupplierinfo(models.Model):
@@ -24,18 +23,7 @@ class ProductSupplierinfo(models.Model):
                 to_unlink += rec
         to_unlink.with_context(automatic_intercompany_sync=True).unlink()
 
-    def _get_group_domain(self, vals):
-        result = expression.AND(
-            [
-                super()._get_group_domain(vals),
-                [
-                    (
-                        "intercompany_pricelist_id",
-                        "=",
-                        bool(self.intercompany_pricelist_id)
-                        and self.intercompany_pricelist_id.id,
-                    )
-                ],
-            ]
-        )
+    def _fields_for_group_match(self):
+        result = super()._fields_for_group_match()
+        result["intercompany_pricelist_id"] = "intercompany_pricelist_id"
         return result
