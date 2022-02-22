@@ -46,7 +46,7 @@ class AccountMove(models.Model):
                 0,
                 {
                     "name": line.name,
-                    "account_id": self.env.user.company_id.due_from_account_id.id,
+                    "account_id": self.env.company.due_from_account_id.id,
                     "partner_id": line.transfer_to_company_id.partner_id.id,
                     "debit": line.debit,
                     "credit": line.credit,
@@ -134,11 +134,8 @@ class AccountMove(models.Model):
                     lines_to_reconcile.append(line)
 
             # Create, post and reconcile the entries in the current company
-            if (
-                self.env.user.company_id.due_fromto_payment_journal_id
-                and transfer_lines
-            ):
-                journal_id = self.env.user.company_id.due_fromto_payment_journal_id.id
+            if self.env.company.due_fromto_payment_journal_id and transfer_lines:
+                journal_id = self.env.company.due_fromto_payment_journal_id.id
                 journal_entry_transfer = self.env["account.move"].create(
                     {
                         "date": move.date,
