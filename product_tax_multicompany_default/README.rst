@@ -81,10 +81,9 @@ Contributors
   * Vicent Cubells
   * Ernesto Tejeda
 
-* `Loo <https://odooerp.cl>`_:
-
+* Loo <http://odooerp.cl/>`_:
   * Carlos Lopez
-  
+
 Maintainers
 ~~~~~~~~~~~
 
