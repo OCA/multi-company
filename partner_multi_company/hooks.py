@@ -12,12 +12,14 @@ except ImportError:
 
 def post_init_hook(cr, registry):
     hooks.post_init_hook(
-        cr, "base.res_partner_rule", "res.partner",
+        cr,
+        "base.res_partner_rule",
+        "res.partner",
     )
 
 
 def uninstall_hook(cr, registry):
-    """ Restore product rule to base value.
+    """Restore product rule to base value.
 
     Args:
         cr (Cursor): Database cursor to use for operation.
