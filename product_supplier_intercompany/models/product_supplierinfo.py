@@ -29,14 +29,14 @@ class ProductSupplierinfo(models.Model):
 
     def write(self, vals):
         self._check_intercompany_supplier()
-        return super(ProductSupplierinfo, self).write(vals)
+        return super().write(vals)
 
     @api.model
     def create(self, vals):
-        record = super(ProductSupplierinfo, self).create(vals)
+        record = super().create(vals)
         record._check_intercompany_supplier()
         return record
 
     def unlink(self):
         self._check_intercompany_supplier()
-        return super(ProductSupplierinfo, self).unlink()
+        return super().unlink()

@@ -18,9 +18,7 @@ class ProductTemplate(models.Model):
         ]
 
     def _prepare_intercompany_supplier_info(self, pricelist):
-        vals = super(ProductTemplate, self)._prepare_intercompany_supplier_info(
-            pricelist
-        )
+        vals = super()._prepare_intercompany_supplier_info(pricelist)
         vals["product_tmpl_id"] = self.id
         return vals
 
@@ -39,5 +37,4 @@ class ProductTemplate(models.Model):
     def _compute_template_price(self):
         """We need the 'depends' in ordder to get the correct, updated price
         calculations when a pricelist item is added"""
-        res = super(ProductTemplate, self)._compute_template_price()
-        return res
+        return super()._compute_template_price()

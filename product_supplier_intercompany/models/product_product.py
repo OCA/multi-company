@@ -16,9 +16,7 @@ class ProductProduct(models.Model):
         ]
 
     def _prepare_intercompany_supplier_info(self, pricelist):
-        vals = super(ProductProduct, self)._prepare_intercompany_supplier_info(
-            pricelist
-        )
+        vals = super()._prepare_intercompany_supplier_info(pricelist)
         vals.update(
             {
                 "product_id": self.id,
@@ -42,7 +40,6 @@ class ProductProduct(models.Model):
 
     @api.depends("product_tmpl_id.pricelist_item_ids.fixed_price")
     def _compute_product_price(self):
-        """We need the 'depends' in ordder to get the correct, updated price
+        """We need the 'depends' in order to get the correct, updated price
         calculations when a pricelist item is added"""
-        res = super(ProductProduct, self)._compute_product_price()
-        return res
+        return super()._compute_product_price()

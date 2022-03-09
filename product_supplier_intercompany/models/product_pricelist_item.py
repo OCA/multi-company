@@ -48,7 +48,7 @@ class ProductPricelistItem(models.Model):
 
     @api.model
     def create(self, vals):
-        record = super(ProductPricelistItem, self).create(vals)
+        record = super().create(vals)
         record._init_supplier_info()
         return record
 
@@ -57,7 +57,7 @@ class ProductPricelistItem(models.Model):
         # we complete the todo before and after the write
         # as some product can be remove from the pricelist item
         self._add_product_to_synchronize(todo)
-        super(ProductPricelistItem, self).write(vals)
+        super().write(vals)
         self._add_product_to_synchronize(todo)
         self._process_product_to_synchronize(todo)
         return True
@@ -65,6 +65,6 @@ class ProductPricelistItem(models.Model):
     def unlink(self):
         todo = {}
         self._add_product_to_synchronize(todo)
-        super(ProductPricelistItem, self).unlink()
+        super().unlink()
         self._process_product_to_synchronize(todo)
         return True
