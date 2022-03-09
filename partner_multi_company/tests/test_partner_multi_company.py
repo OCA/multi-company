@@ -6,7 +6,7 @@ from odoo.exceptions import AccessError
 from odoo.tests import common, tagged
 
 
-@tagged('post_install', '-at_install')
+@tagged("post_install", "-at_install")
 class TestPartnerMultiCompany(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
