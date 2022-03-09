@@ -3,11 +3,10 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 from odoo.exceptions import AccessError
-from odoo.tests import common
+from odoo.tests import common, tagged
 
 
-@common.at_install(False)
-@common.post_install(True)
+@tagged('post_install', '-at_install')
 class TestPartnerMultiCompany(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
@@ -78,7 +77,8 @@ class TestPartnerMultiCompany(common.SavepointCase):
             {"name": "Test 2", "company_ids": [(4, self.company_1.id)]}
         )
         self.assertEqual(
-            partner.with_user(self.user_company_1).company_id.id, self.company_1.id,
+            partner.with_user(self.user_company_1).company_id.id,
+            self.company_1.id,
         )
         partner = self.env["res.partner"].create(
             {"name": "Test 2", "company_ids": [(5, False)]}
@@ -146,13 +146,15 @@ class TestPartnerMultiCompany(common.SavepointCase):
         self.user_company_1.company_id = self.company_2.id
         self.user_company_1 = self.user_company_1.with_user(self.user_company_2)
         self.assertEqual(
-            self.user_company_1.partner_id.company_id, self.company_2,
+            self.user_company_1.partner_id.company_id,
+            self.company_2,
         )
 
     def test_commercial_fields_implementation(self):
         """It should add company_ids to commercial fields."""
         self.assertIn(
-            "company_ids", self.env["res.partner"]._commercial_fields(),
+            "company_ids",
+            self.env["res.partner"]._commercial_fields(),
         )
 
     def test_commercial_fields_result(self):
@@ -161,7 +163,8 @@ class TestPartnerMultiCompany(common.SavepointCase):
             {"name": "Child test", "parent_id": self.partner_company_both.id}
         )
         self.assertEqual(
-            partner.company_ids, self.partner_company_both.company_ids,
+            partner.company_ids,
+            self.partner_company_both.company_ids,
         )
 
     def test_avoid_updating_company_ids_in_global_partners(self):
@@ -169,4 +172,4 @@ class TestPartnerMultiCompany(common.SavepointCase):
         user_partner = self.user_company_1.partner_id
         user_partner.write({"company_id": False, "company_ids": [(5, False)]})
         self.user_company_1.write({"company_id": self.company_2.id})
-        self.assertEquals(user_partner.company_ids.ids, [])
+        self.assertEqual(user_partner.company_ids.ids, [])

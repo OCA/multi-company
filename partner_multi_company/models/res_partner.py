@@ -12,7 +12,11 @@ class ResPartner(models.Model):
     # This is needed because after installation this field becomes
     # unsearchable and unsortable. Which is not explicitly changed in this
     # module and as such can be considered an undesired yield.
-    display_name = fields.Char(compute="_compute_display_name", store=True, index=True,)
+    display_name = fields.Char(
+        compute="_compute_display_name",
+        store=True,
+        index=True,
+    )
 
     @api.model
     def create(self, vals):
