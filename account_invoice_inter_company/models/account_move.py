@@ -334,6 +334,10 @@ class AccountMoveLine(models.Model):
             line_form.price_unit = self.price_unit
             line_form.discount = self.discount
             line_form.sequence = self.sequence
+            # Compatibility with module account_invoice_start_end_dates
+            if hasattr(self, "start_date") and hasattr(self, "end_date"):
+                line_form.start_date = self.start_date
+                line_form.end_date = self.end_date
         vals = dest_form._values_to_save(all_fields=True)["invoice_line_ids"][0][2]
         vals.update({"move_id": dest_move.id, "auto_invoice_line_id": self.id})
         if self.analytic_account_id and not self.analytic_account_id.company_id:
