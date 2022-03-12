@@ -7,7 +7,7 @@ from odoo.tests.common import TransactionCase
 
 class TestPricelist(TransactionCase):
     def setUp(self):
-        super(TestPricelist, self).setUp()
+        super().setUp()
 
         # configure multi company environment
         self.env["product.template"].search([]).write({"company_id": False})
