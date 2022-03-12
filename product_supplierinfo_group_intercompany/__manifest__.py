@@ -16,5 +16,6 @@
         "views/product_pricelist.xml",
     ],
     "demo": [],
-    "post_init_hook": "split_supplierinfo_groups_by_pricelist",
+    "post_init_hook": "post_init_hook",
+    "auto_install": True,
 }
