@@ -2,4 +2,4 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from . import models
-from .hook import split_supplierinfo_groups_by_pricelist
+from .hook import post_init_hook

@@ -7,21 +7,18 @@ from odoo import models
 
 class ProductSupplierinfo(models.Model):
     _inherit = "product.supplierinfo"
+    # we add the 'product_id' in the order see comment in product_supplierinfo_group.py
+    _order = "sequence, product_id, min_qty DESC, price, id"
 
     def unlink(self):
-        groups = self.supplierinfo_group_id.filtered(
-            lambda r: r.intercompany_pricelist_id
-        )
+        groups = self.group_id.filtered(lambda r: r.intercompany_pricelist_id)
         result = super().unlink()
-        self._cascade_unlink_to_group(groups)
-        return result
 
-    def _cascade_unlink_to_group(self, groups):
-        to_unlink = self.env["product.supplierinfo.group"]
-        for rec in groups:
-            if not rec.supplierinfo_ids:
-                to_unlink += rec
-        to_unlink.with_context(automatic_intercompany_sync=True).unlink()
+        # Remove empty groups
+        groups.filtered(lambda s: not s.supplierinfo_ids).with_context(
+            automatic_intercompany_sync=True
+        ).unlink()
+        return result
 
     def _fields_for_group_match(self):
         result = super()._fields_for_group_match()

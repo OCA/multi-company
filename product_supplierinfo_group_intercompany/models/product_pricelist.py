@@ -7,10 +7,21 @@ from odoo import fields, models
 class ProductPricelist(models.Model):
     _inherit = "product.pricelist"
 
-    intercompany_sequence = fields.Integer(
+    supplier_sequence = fields.Integer(
         default=-1,
-        help="Determines the order of automatically "
-        "generated supplier prices for other "
-        "companies. For correct behaviour, "
-        "values should always be negative",
+        help=(
+            "Force the supplier sequence, use a negative value if you want to "
+            "have this supplier in first position, use a big positif value "
+            "if you want to be the last"
+        ),
     )
+    supplier_group_ids = fields.One2many(
+        "product.supplierinfo.group", "intercompany_pricelist_id", "Supplier Group"
+    )
+
+    def write(self, vals):
+        super().write(vals)
+        if "supplier_sequence" in vals:
+            for record in self:
+                record.supplier_group_ids._sync_sequence()
+        return True
