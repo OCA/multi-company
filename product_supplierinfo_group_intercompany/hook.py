@@ -12,19 +12,19 @@ def split_supplierinfo_groups_by_pricelist(env, version):
     were used independently before installing this module,
     we need to ensure supplierinfo groups are split by pricelist
     """
+    matching_keys = env["product.supplierinfo"]._fields_for_group_match().keys()
 
-    def _reset_supplierinfo_group(supplierinfo_item):
-        vals = {}
-        for key in env["product.supplierinfo"]._fields_for_group_match().keys():
-            vals[key] = getattr(supplierinfo_item, key)
-        env["product.supplierinfo"]._set_group_id(vals)
-        supplierinfo_item.write(vals)
-
-    has_intercompany_pricelist = env["product.supplierinfo"].search(
+    supplierinfos = env["product.supplierinfo"].search(
         [("intercompany_pricelist_id", "!=", False)]
     )
-    supplierinfo_groups = has_intercompany_pricelist.supplierinfo_group_id
-    for group in supplierinfo_groups:
-        if len(group.supplierinfo_ids.intercompany_pricelist_id.ids) != 1:
+    for group in supplierinfos.group_id:
+        pricelists = group.supplierinfo_ids.intercompany_pricelist_id
+        if len(pricelists) == 1:
+            group.intercompany_pricelist_id = pricelists
+        else:
+            group.intercompany_pricelist_id = pricelists[0]
             for item in group.supplierinfo_ids:
-                _reset_supplierinfo_group(item)
+                vals = {item[key] for key in matching_keys}
+                new_group = env["product.supplierinfo"]._get_or_create_group(vals)
+                if new_group != group:
+                    item.group_id = new_group

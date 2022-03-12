@@ -15,10 +15,6 @@
                     name="intercompany_pricelist_id"
                     attrs="{'invisible': [('intercompany_pricelist_id', '=', False)]}"
                 />
-                <field
-                    name="intercompany_sequence"
-                    attrs="{'invisible': [('intercompany_pricelist_id', '=', False)]}"
-                />
             </field>
         </field>
     </record>

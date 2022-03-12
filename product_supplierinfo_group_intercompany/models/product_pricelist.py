@@ -7,10 +7,11 @@ from odoo import fields, models
 class ProductPricelist(models.Model):
     _inherit = "product.pricelist"
 
-    intercompany_sequence = fields.Integer(
+    supplier_sequence = fields.Integer(
         default=-1,
-        help="Determines the order of automatically "
-        "generated supplier prices for other "
-        "companies. For correct behaviour, "
-        "values should always be negative",
+        help=(
+            "Force the supplier sequence, use a negative value if you want to "
+            "have this supplier in first position, use a big positif value "
+            "if you want to be the last"
+        ),
     )
