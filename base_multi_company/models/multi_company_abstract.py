@@ -58,10 +58,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         # through company_id field we:
         # - Remove all companies, then add the provided one
         for record in self:
-            company = record.company_id
-            record.company_ids = [(5,)]
-            if company:
-                record.company_ids = [(4, company.id)]
+            record.company_ids = [(6, 0, record.company_id.ids)]
 
     def _search_company_id(self, operator, value):
         return [("company_ids", operator, value)]
