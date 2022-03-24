@@ -21,7 +21,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         comodel_name="res.company",
         default=lambda self: self._default_company_ids(),
     )
-
+    # TODO: Remove it following https://github.com/odoo/odoo/pull/81344
     no_company_ids = fields.Boolean(
         string="No Companies",
         compute="_compute_no_company_ids",

@@ -29,6 +29,8 @@ The following fields are provided by `multi.company.abstract`:
   records from this field against actual company records.
 * `company_id` - Passes through a singleton company based on the current user,
   and the allowed companies for the record.
+* `no_company_ids` - As there is a limitation in Odoo ORM to get real False values
+  in Many2many fields (solved on 2022-03-23 https://github.com/odoo/odoo/pull/81344).
 
 Hooks
 -----
