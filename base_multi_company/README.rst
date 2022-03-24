@@ -14,99 +14,42 @@ Multi Company Base
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/13.0/base_multi_company
+    :target: https://github.com/OCA/multi-company/tree/14.0/base_multi_company
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/multi-company-13-0/multi-company-13-0-base_multi_company
+    :target: https://translation.odoo-community.org/projects/multi-company-14-0/multi-company-14-0-base_multi_company
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runbot-Try%20me-875A7B.png
-    :target: https://runbot.odoo-community.org/runbot/133/13.0
+    :target: https://runbot.odoo-community.org/runbot/133/14.0
     :alt: Try me on Runbot
 
 |badge1| |badge2| |badge3| |badge4| |badge5| 
 
-This module provides an abstract model to be inherited by models that need
-to implement multi-company functionality.
+This module will provide a way to change the way Odoo manages a 'multi-company'
+implementation.
 
-No direct functionality is provided by this module.
+Abstract
+--------
+
+Odoo traditional implementation of multi-company:
+
+- Some models contain a field named Company (company_id) that allows to set one company or None
+  in order to:
+  - Limit access to that company if set.
+  - not limiting access to any company if not set.
+
+This module changes that in order to introduce a finer company access.
+e.g.: If you want to give record access to company A and B but not for C.
+
+This module is not doing anything by its own but provide a transversal implementation
+for further ones.
+e.g.: If you want to implement OCA multi-company behaviour for products, install
+also the 'product_multi_company' or 'partner_multi_company' modules.
 
 **Table of contents**
 
 .. contents::
    :local:
-
-Usage
-=====
-
-Implementation
-~~~~~~~~~~~~~~
-
-Multi Company Abstract
-----------------------
-
-The `multi.company.abstract` model is meant to be inherited by any model that
-wants to implement multi-company functionality. The logic does not require a
-pre-existing company field on the inheriting model, but will not be affected
-if one does exist.
-
-When inheriting the `multi.company.abstract` model, you must take care that
-it is the first model listed in the `_inherit` array
-
-.. code-block:: python
-
-   class ProductTemplate(models.Model):
-       _inherit = ["multi.company.abstract", "product.template"]
-       _name = "product.template"
-       _description = "Product Template (Multi-Company)"
-
-The following fields are provided by `multi.company.abstract`:
-
-* `company_ids` - All of the companies that this record belongs to. This is a
-  special `res.company.assignment` view, which allows for the circumvention of
-  standard cross-company security policies. These policies would normally
-  restrict a user from seeing another company unless it is currently operating
-  under that company. Be aware of apples to oranges issues when comparing the
-  records from this field against actual company records.
-* `company_id` - Passes through a singleton company based on the current user,
-  and the allowed companies for the record.
-
-Hooks
------
-
-A generic `post_init_hook` and `uninstall_hook` is provided, which will alter
-a pre-existing single-company security rule to be multi-company aware.
-
-These hooks will unfortunately not work in every circumstance, but they cut out
-significant boilerplate when relevant.
-
-.. code-block:: python
-
-   import logging
-
-   _logger = logging.getLogger(__name__)
-
-   try:
-       from odoo.addons.base_multi_company import hooks
-   except ImportError:
-       _logger.info('Cannot find `base_multi_company` module in addons path.')
-
-
-   def post_init_hook(cr, registry):
-       hooks.post_init_hook(
-           cr,
-           'product.product_comp_rule',
-           'product.template',
-       )
-
-
-   def uninstall_hook(cr, registry):
-       hooks.uninstall_hook(
-           cr,
-           'product.product_comp_rule',
-       )
-
-A module implementing these hooks would need to first identify the proper rule
-for the record (`product.product_comp_rule` in the above example).
 
 Bug Tracker
 ===========
@@ -114,7 +57,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us smashing it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20base_multi_company%0Aversion:%2013.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20base_multi_company%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -124,6 +67,7 @@ Credits
 Authors
 ~~~~~~~
 
+* ACSONE SA/NV
 * LasLabs
 * Tecnativa
 
@@ -136,6 +80,7 @@ Contributors
 * Cédric Pigeon <cedric.pigeon@acsone.eu>
 * Rodrigo Ferreira <rodrigosferreira91@gmail.com>
 * Florian da Costa <florian.dacosta@akretion.com>
+* Denis Roussel <denis.roussel@acsone.eu>
 
 Maintainers
 ~~~~~~~~~~~
@@ -158,6 +103,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-pedrobaeza| 
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/13.0/base_multi_company>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/14.0/base_multi_company>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
