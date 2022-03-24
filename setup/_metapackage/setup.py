@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo14-addon-account_invoice_consolidated',
         'odoo14-addon-account_invoice_inter_company',
         'odoo14-addon-account_multicompany_easy_creation',
+        'odoo14-addon-base_multi_company',
         'odoo14-addon-company_dependent_attribute',
         'odoo14-addon-intercompany_shared_contact',
         'odoo14-addon-mail_multicompany',
