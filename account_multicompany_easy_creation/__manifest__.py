@@ -5,7 +5,7 @@
     "summary": "This module adds a wizard to create companies easily",
     "version": "14.0.1.0.0",
     "category": "Multicompany",
-    "website": "https://github.com/OCA/multi-company"
+    "website": "https://github.com/OCA/multi-company/"
     "account_multicompany_easy_creation",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "license": "AGPL-3",
