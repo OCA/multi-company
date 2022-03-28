@@ -4,11 +4,11 @@
 
 from odoo.exceptions import UserError
 
-from odoo.addons.product_supplier_intercompany.tests.test_supplier_intercompany import (
-    TestIntercompanySupplierCase,
-)
 from odoo.addons.product_supplierinfo_group.tests.test_product_supplierinfo_group import (
     TestProductSupplierinfoGroup,
+)
+from odoo.addons.product_supplierinfo_intercompany.tests.test_supplier_intercompany import (
+    TestIntercompanySupplierCase,
 )
 
 

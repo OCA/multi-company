@@ -12,17 +12,17 @@ class TestIntercompanySupplierCase(SavepointCase):
         # configure multi company environment
         cls.env["product.template"].search([]).write({"company_id": False})
         cls.pricelist_intercompany = cls.env.ref(
-            "product_supplier_intercompany.pricelist_intercompany"
+            "product_supplierinfo_intercompany.pricelist_intercompany"
         )
         cls.pricelist_not_intercompany = cls.env.ref(
-            "product_supplier_intercompany.pricelist_not_intercompany"
+            "product_supplierinfo_intercompany.pricelist_not_intercompany"
         )
         cls.product_template_4 = cls.env.ref(
             "product.product_product_4_product_template"
         )
         cls.sale_company = cls.env.ref("base.main_company")
         cls.purchase_company = cls.env.ref(
-            "product_supplier_intercompany.purchaser_company"
+            "product_supplierinfo_intercompany.purchaser_company"
         )
 
 
@@ -44,10 +44,10 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         self.product_product_2 = ref("product.product_product_2")
 
         self.pricelist_item_4 = ref(
-            "product_supplier_intercompany.pricelist_item_product_template_4"
+            "product_supplierinfo_intercompany.pricelist_item_product_template_4"
         )
         self.pricelist_item_4b = ref(
-            "product_supplier_intercompany.pricelist_item_product_product_4b"
+            "product_supplierinfo_intercompany.pricelist_item_product_product_4b"
         )
         self.supplier_info = self._get_supplier_info(self.product_template_1)
 
@@ -89,7 +89,7 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         ref = self.env.ref
         pricelist_id = (
             pricelist_id
-            or ref("product_supplier_intercompany.pricelist_intercompany").id
+            or ref("product_supplierinfo_intercompany.pricelist_intercompany").id
         )
         self.assertIn(record._name, ["product.product", "product.template"])
         vals = {

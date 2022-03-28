@@ -9,7 +9,7 @@
     "license": "AGPL-3",
     "author": "Akretion,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
-    "depends": ["product_supplier_intercompany", "product_supplierinfo_group"],
+    "depends": ["product_supplierinfo_intercompany", "product_supplierinfo_group"],
     "data": [
         "security/ir_rule.xml",
         "views/product_supplierinfo_group.xml",

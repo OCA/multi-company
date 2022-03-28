@@ -8,7 +8,7 @@ def post_init_hook(cr, registry):
     """
     if the modules:
         * product_supplierinfo_group
-        * product_supplier_intercompany
+        * product_supplierinfo_intercompany
     were used independently before installing this module,
     we need to ensure supplierinfo groups are split by pricelist
     """
