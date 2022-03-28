@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="purchaser_company" model="res.company">
+            <field name="name">Purchaser company</field>
+        </record>
+
+        <record id="pricelist_intercompany" model="product.pricelist">
+            <field name="name">Pricelist Intercompany</field>
+            <field name="company_id" ref="base.main_company" />
+            <field name="is_intercompany_supplier" eval="True" />
+            <field
+                name="item_ids"
+                eval="[(0, 0, {
+                'product_tmpl_id': ref('product.product_product_1_product_template'),
+                'base': 'list_price',
+                'fixed_price': 5,
+            })]"
+            />
+        </record>
+
+        <record id="pricelist_not_intercompany" model="product.pricelist">
+            <field name="name">Pricelist Not Intercompany</field>
+            <field name="company_id" ref="base.main_company" />
+            <field name="is_intercompany_supplier" eval="False" />
+        </record>
+
+        <record id="pricelist_item_product_template_4" model="product.pricelist.item">
+            <field name="pricelist_id" ref="pricelist_intercompany" />
+            <field
+                name="product_tmpl_id"
+                ref="product.product_product_4_product_template"
+            />
+            <field name="base" eval="'list_price'" />
+            <field name="fixed_price">10</field>
+        </record>
+
+        <record id="pricelist_item_product_product_4b" model="product.pricelist.item">
+            <field name="pricelist_id" ref="pricelist_intercompany" />
+            <field
+                name="product_tmpl_id"
+                ref="product.product_product_4_product_template"
+            />
+            <field name="product_id" ref="product.product_product_4b" />
+            <field name="base" eval="'list_price'" />
+            <field name="fixed_price">15</field>
+        </record>
+
+        <record id="pricelist_item_product_product_2" model="product.pricelist.item">
+            <field name="pricelist_id" ref="pricelist_intercompany" />
+            <field
+                name="product_tmpl_id"
+                ref="product.product_product_2_product_template"
+            />
+            <field name="product_id" ref="product.product_product_2" />
+            <field name="base" eval="'list_price'" />
+            <field name="fixed_price">20</field>
+        </record>
+
+    </data>
+</odoo>
