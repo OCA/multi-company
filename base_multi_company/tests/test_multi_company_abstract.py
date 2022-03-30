@@ -7,7 +7,7 @@ from odoo_test_helper import FakeModelLoader
 from odoo.tests import common
 
 
-class TestMultiCompanyAbstract(common.SavepointCase):
+class TestMultiCompanyAbstract(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -46,7 +46,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
     @classmethod
     def tearDownClass(cls):
         cls.loader.restore_registry()
-        super().tearDownClass()
+        return super().tearDownClass()
 
     def add_company(self, company):
         """Add company to the test record."""
