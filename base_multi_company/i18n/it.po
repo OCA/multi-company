@@ -6,45 +6,47 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2022-03-30 16:17+0000\n"
+"Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
 msgid "Companies"
-msgstr ""
+msgstr "Aziende"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_id
 msgid "Company"
-msgstr ""
+msgstr "Azienda"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome Visualizzato"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
-msgstr ""
+msgstr "Multi-Azienda astratto"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__no_company_ids
 msgid "No Companies"
-msgstr ""
+msgstr "Nessuna Azienda"
