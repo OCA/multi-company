@@ -49,11 +49,11 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         super().tearDownClass()
 
     def add_company(self, company):
-        """ Add company to the test record. """
+        """Add company to the test record."""
         self.record_1.company_ids = [(4, company.id)]
 
     def switch_user_company(self, user, company):
-        """ Add a company to the user's allowed & set to current. """
+        """Add a company to the user's allowed & set to current."""
         user.write(
             {
                 "company_ids": [(6, 0, (company + user.company_ids).ids)],
@@ -62,7 +62,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         )
 
     def test_compute_company_id(self):
-        """ It should set company_id to the top of the company_ids stack. """
+        """It should set company_id to the top of the company_ids stack."""
         self.add_company(self.company_2)
         self.env.user.company_ids = [(4, self.company_2.id)]
         self.env.user.company_id = self.company_2.id
@@ -72,7 +72,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         )
 
     def test_search_company_id(self):
-        """ It should return correct record by searching company_id. """
+        """It should return correct record by searching company_id."""
         self.add_company(self.company_2)
         record = self.test_model.search(
             [
