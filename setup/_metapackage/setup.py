@@ -17,6 +17,7 @@ setuptools.setup(
         'odoo14-addon-mail_multicompany',
         'odoo14-addon-mail_template_multi_company',
         'odoo14-addon-partner_contact_company_propagation',
+        'odoo14-addon-product_multi_company',
         'odoo14-addon-purchase_sale_inter_company',
         'odoo14-addon-res_company_code',
     ],
