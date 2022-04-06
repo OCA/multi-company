@@ -200,7 +200,12 @@ class AccountMove(models.Model):
                 "auto_generated": True,
             }
         )
-        if self.partner_shipping_id and not self.partner_shipping_id.company_id:
+        # compatibility with sale module
+        if (
+            hasattr(self, "partner_shipping_id")
+            and self.partner_shipping_id
+            and not self.partner_shipping_id.company_id
+        ):
             # if shipping partner is shared you may want to propagate its value
             # to supplier invoice allowing to analyse invoices
             vals["partner_shipping_id"] = self.partner_shipping_id.id
@@ -309,6 +314,10 @@ class AccountMoveLine(models.Model):
             line_form.price_unit = self.price_unit
             line_form.discount = self.discount
             line_form.sequence = self.sequence
+            # Compatibility with module account_invoice_start_end_dates
+            if hasattr(self, "start_date") and hasattr(self, "end_date"):
+                line_form.start_date = self.start_date
+                line_form.end_date = self.end_date
         vals = dest_form._values_to_save(all_fields=True)["invoice_line_ids"][0][2]
         vals.update({"move_id": dest_move.id, "auto_invoice_line_id": self.id})
         if self.analytic_account_id and not self.analytic_account_id.company_id:
