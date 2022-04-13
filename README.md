@@ -21,6 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
+[base_multi_company](base_multi_company/) | 15.0.1.0.0 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 15.0.1.0.0 |  | Product Tax Multi Company Default
 
 [//]: # (end addons)
