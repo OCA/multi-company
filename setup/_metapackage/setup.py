@@ -8,6 +8,7 @@ setuptools.setup(
     description="Meta package for oca-multi-company Odoo addons",
     version=version,
     install_requires=[
+        'odoo-addon-base_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-product_tax_multicompany_default>=15.0dev,<15.1dev',
     ],
     classifiers=[
