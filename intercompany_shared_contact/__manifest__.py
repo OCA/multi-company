@@ -8,7 +8,7 @@
         "User of each company are contact of a company partner.\n"
         "All child address of a company are automatically shared"
     ),
-    "version": "14.0.1.1.0",
+    "version": "14.0.1.1.1",
     "category": "Partner",
     "website": "https://github.com/OCA/multi-company",
     "author": "Odoo Community Association (OCA), Akretion",
