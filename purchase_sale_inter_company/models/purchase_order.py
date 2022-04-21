@@ -127,7 +127,7 @@ class PurchaseOrder(models.Model):
                 "company_id": dest_company.id,
                 "client_order_ref": name,
                 "partner_id": partner.id,
-                "date_order": self.date_order,
+                "date_order": self.date_approve,
                 "auto_purchase_order_id": self.id,
             }
         )
