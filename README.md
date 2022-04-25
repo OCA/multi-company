@@ -1,6 +1,7 @@
 
 [![Runboat](https://img.shields.io/badge/runboat-Try%20me-875A7B.png)](https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=13.0)
-[![Build Status](https://travis-ci.com/OCA/multi-company.svg?branch=13.0)](https://travis-ci.com/OCA/multi-company)
+[![Pre-commit Status](https://github.com/OCA/multi-company/actions/workflows/pre-commit.yml/badge.svg?branch=13.0)](https://github.com/OCA/multi-company/actions/workflows/pre-commit.yml?query=branch%3A13.0)
+[![Build Status](https://github.com/OCA/multi-company/actions/workflows/test.yml/badge.svg?branch=13.0)](https://github.com/OCA/multi-company/actions/workflows/test.yml?query=branch%3A13.0)
 [![codecov](https://codecov.io/gh/OCA/multi-company/branch/13.0/graph/badge.svg)](https://codecov.io/gh/OCA/multi-company)
 [![Translation Status](https://translation.odoo-community.org/widgets/multi-company-13-0/-/svg-badge.svg)](https://translation.odoo-community.org/engage/multi-company-13-0/?utm_source=widget)
 
