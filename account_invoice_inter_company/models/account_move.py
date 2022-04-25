@@ -3,7 +3,7 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import Form
-from odoo.tools import float_compare
+from odoo.tools import clean_context, float_compare
 
 
 class AccountMove(models.Model):
@@ -46,9 +46,11 @@ class AccountMove(models.Model):
                 src_invoice = src_invoice.with_user(intercompany_user).sudo()
             else:
                 src_invoice = src_invoice.sudo()
-            src_invoice.with_context(
+            ctx = clean_context(src_invoice.env.context)
+            ctx.update(
                 force_company=dest_company.id, skip_check_amount_difference=True,
-            )._inter_company_create_invoice(dest_company)
+            )
+            src_invoice.with_context(ctx)._inter_company_create_invoice(dest_company)
         return res
 
     def _check_intercompany_product(self, dest_company):
