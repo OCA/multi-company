@@ -9,6 +9,7 @@ setuptools.setup(
     version=version,
     install_requires=[
         'odoo-addon-base_multi_company>=15.0dev,<15.1dev',
+        'odoo-addon-partner_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-product_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-product_tax_multicompany_default>=15.0dev,<15.1dev',
     ],
