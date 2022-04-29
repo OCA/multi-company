@@ -105,6 +105,10 @@ class AccountMove(models.Model):
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
         dest_move_line_data = []
+        form = Form(
+            dest_invoice.with_company(dest_company.id),
+            "account_invoice_inter_company.view_move_form",
+        )
         for src_line in self.invoice_line_ids.filtered(lambda x: not x.display_type):
             if not src_line.product_id:
                 raise UserError(
@@ -116,7 +120,7 @@ class AccountMove(models.Model):
                     % {"line_name": src_line.name}
                 )
             dest_move_line_data.append(
-                src_line._prepare_account_move_line(dest_invoice, dest_company)
+                src_line._prepare_account_move_line(dest_invoice, dest_company, form)
             )
         self.env["account.move.line"].create(dest_move_line_data)
         dest_invoice._move_autocomplete_invoice_lines_values()
@@ -304,7 +308,7 @@ class AccountMoveLine(models.Model):
     )
 
     @api.model
-    def _prepare_account_move_line(self, dest_move, dest_company):
+    def _prepare_account_move_line(self, dest_move, dest_company, form=False):
         """Generate invoice line values
         :param dest_move : the created invoice
         :rtype dest_move : account.move record
@@ -314,10 +318,12 @@ class AccountMoveLine(models.Model):
         self.ensure_one()
         # Use test.Form() class to trigger propper onchanges on the line
         product = self.product_id or False
-        dest_form = Form(
+        dest_form = form or Form(
             dest_move.with_company(dest_company.id),
             "account_invoice_inter_company.view_move_form",
         )
+        if dest_form.invoice_line_ids:
+            dest_form.invoice_line_ids.remove(0)
         with dest_form.invoice_line_ids.new() as line_form:
             # HACK: Related fields manually set due to Form() limitations
             line_form.company_id = dest_move.company_id
