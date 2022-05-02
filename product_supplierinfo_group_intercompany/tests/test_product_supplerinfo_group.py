@@ -29,12 +29,12 @@ class IntercompanySupplierinfoGroupTest(
         self.assertGreater(len(self.supplier_groups), 0)
 
     def test_raise_edit_supplierinfo_group_auto(self):
-        """ Automatic created supplierinfo groups: can not be edited """
+        """Automatic created supplierinfo groups: can not be edited"""
         with self.assertRaises(UserError):
             self.supplier_groups[0].product_name = "abc"
 
     def test_edit_supplierinfo_group_manual(self):
-        """ Manually created supplierinfo groups: can be edited """
+        """Manually created supplierinfo groups: can be edited"""
         sg = self.env["product.supplierinfo.group"].search(
             [("intercompany_pricelist_id", "=", False)], limit=1
         )

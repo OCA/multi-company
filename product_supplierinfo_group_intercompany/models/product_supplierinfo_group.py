@@ -44,10 +44,21 @@ class ProductSupplierinfoGroup(models.Model):
                     sync_sequence=True
                 ).sequence = record.intercompany_pricelist_id.supplier_sequence
 
+    def _get_changed_vals(self, vals):
+        changed_vals = {}
+        for key in vals:
+            value = self._fields[key].convert_to_write(self[key], self)
+            if value != vals[key]:
+                changed_vals[key] = vals[key]
+        return changed_vals
+
     def write(self, vals):
-        super().write(vals)
-        if "sequence" in vals:
-            self._sync_sequence()
+        for record in self:
+            changed_vals = self._get_changed_vals(vals)
+            if changed_vals:
+                super(ProductSupplierinfoGroup, record).write(changed_vals)
+                if "sequence" in vals:
+                    record._sync_sequence()
         return True
 
     @api.model
