@@ -13,5 +13,8 @@
     "license": "AGPL-3",
     "installable": True,
     "depends": ["sale", "purchase", "stock", "account_invoice_inter_company"],
-    "data": ["views/res_config_view.xml"],
+    "data": [
+        "views/res_config_view.xml",
+        "wizard/stock_backorder_confirmation_views.xml",
+    ],
 }
