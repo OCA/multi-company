@@ -16,3 +16,8 @@ class ResCompany(models.Model):
         help="Default value to set on Sale Orders that "
         "will be created based on Purchase Orders made to this company",
     )
+    sync_picking = fields.Boolean(
+        string="Sync the receipt with the delivery",
+        help="Sync the receipt from the destination company with the "
+        "delivery from the source company",
+    )
