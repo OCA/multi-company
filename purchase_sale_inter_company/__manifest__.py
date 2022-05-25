@@ -23,5 +23,6 @@
     ],
     'data': [
         'views/res_config_view.xml',
+        'wizard/stock_backorder_confirmation_views.xml',
     ],
 }
