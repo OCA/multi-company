@@ -23,7 +23,7 @@ Ir Actions Report Multi Company
     :target: https://runbot.odoo-community.org/runbot/133/12.0
     :alt: Try me on Runbot
 
-|badge1| |badge2| |badge3| |badge4| |badge5| 
+|badge1| |badge2| |badge3| |badge4| |badge5|
 
 Make Report Actions multi-company Aware.
 
@@ -60,6 +60,10 @@ Contributors
 
 * Jonathan Nemry <jonathan.nemry@acsone.eu>
 * Andrea Stirpe <a.stirpe@onestein.nl>
+* `XCG Consulting <https://xcg-consulting.fr/>`_:
+
+  * Étienne Ferrière
+  * Vincent Hatakeyama
 
 Maintainers
 ~~~~~~~~~~~
