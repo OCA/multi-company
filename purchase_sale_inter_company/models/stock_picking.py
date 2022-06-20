@@ -40,10 +40,16 @@ class StockPicking(models.Model):
                 elif not po_move_lines:
                     raise UserError(
                         _(
-                            "There's no corresponding line in PO %s for assigning "
-                            "qty from %s for product %s"
+                            "There's no corresponding line in PO %(po)s for assigning "
+                            "qty from %(pick_name)s for product %(product)s"
                         )
-                        % (purchase.name, pick.name, move_line.product_id.name)
+                        % (
+                            {
+                                "po": purchase.name,
+                                "pick_name": pick.name,
+                                "product": move_line.product_id.name,
+                            }
+                        )
                     )
         # Transfer dropship pickings
         for po_pick in po_picks.sudo():
