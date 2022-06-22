@@ -112,8 +112,6 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "code": "SAJ-B",
                 "type": "sale",
                 "secure_sequence_id": cls.sequence_sale_journal_company_b.id,
-                "payment_credit_account_id": cls.a_sale_company_b.id,
-                "payment_debit_account_id": cls.a_sale_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -123,8 +121,6 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "code": "PAJ-A",
                 "type": "purchase",
                 "secure_sequence_id": cls.sequence_purchase_journal_company_a.id,
-                "payment_credit_account_id": cls.a_expense_company_a.id,
-                "payment_debit_account_id": cls.a_expense_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -189,7 +185,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             sales.order_line.product_id,
             self.purchase_company_a.order_line.product_id,
         )
-        self.assertEqual(sales.note, "Test note")
+        self.assertEqual(sales.note, "<p>Test note</p>")
 
     def xxtest_date_planned(self):
         # Install sale_order_dates module
