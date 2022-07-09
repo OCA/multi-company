@@ -1,0 +1,86 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_supplierinfo_group_intercompany
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_intercompany_supplier_mixin__display_name
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist__display_name
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo__display_name
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,help:product_supplierinfo_group_intercompany.field_product_pricelist__supplier_sequence
+msgid ""
+"Force the supplier sequence, use a negative value if you want to have this "
+"supplier in first position, use a big positif value if you want to be the "
+"last"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_intercompany_supplier_mixin__id
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist__id
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo__id
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__id
+msgid "ID"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__intercompany_pricelist_id
+msgid "Intercompany Pricelist"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_intercompany_supplier_mixin
+msgid "Intercompany product mixin"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_intercompany_supplier_mixin____last_update
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist____last_update
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo____last_update
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_pricelist
+msgid "Pricelist"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.constraint,message:product_supplierinfo_group_intercompany.constraint_product_supplierinfo_group_intercopany_pricelist_uniq
+msgid "Product can have only one group per intercompany pricelist"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist__supplier_group_ids
+msgid "Supplier Group"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_supplierinfo
+msgid "Supplier Pricelist"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist__supplier_sequence
+msgid "Supplier Sequence"
+msgstr ""
+
+#. module: product_supplierinfo_group_intercompany
+#: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_supplierinfo_group
+msgid "Supplierinfo group"
+msgstr ""
