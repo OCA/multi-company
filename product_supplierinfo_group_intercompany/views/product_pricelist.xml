@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2022 Akretion
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="product_pricelist_view" model="ir.ui.view">
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view" />
+        <field name="arch" type="xml">
+            <field name="is_intercompany_supplier" position="after">
+                <field
+                    name="supplier_sequence"
+                    attrs="{'invisible': [('is_intercompany_supplier', '=', False)]}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
