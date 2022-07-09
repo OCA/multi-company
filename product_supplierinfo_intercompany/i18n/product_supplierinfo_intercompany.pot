@@ -8,7 +8,6 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
@@ -22,9 +21,6 @@ msgid ""
 "intercompany pricelist items are linked to either a product template or a "
 "product variant."
 msgstr ""
-"Au moins une des lignes de prix n'est pas suporté en intersociété.Veuillez "
-"vérifier que toutes les lignes de prix sont bien lié à un modèle de produit "
-"ou à une variante"
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_intercompany_supplierinfo_mixin__display_name
@@ -41,7 +37,7 @@ msgstr ""
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_pricelist__generated_supplierinfo_ids
 msgid "Generated Supplierinfo"
-msgstr "Prix Fournisseur Généré"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_intercompany_supplierinfo_mixin__id
@@ -58,13 +54,13 @@ msgstr ""
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_supplierinfo__intercompany_pricelist_id
 msgid "Intercompany Pricelist"
-msgstr "Liste de prix intersociété"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: code:addons/product_supplierinfo_intercompany/models/product_pricelist.py:0
 #, python-format
 msgid "Intercompany pricelist must belong to a company"
-msgstr "Une liste de prix intersociété doit appartenir à une société"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model,name:product_supplierinfo_intercompany.model_product_intercompany_supplier_mixin
@@ -74,7 +70,7 @@ msgstr ""
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_pricelist__is_intercompany_supplier
 msgid "Is Intercompany Supplier"
-msgstr "Liste intersociété"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_intercompany_supplierinfo_mixin____last_update
@@ -95,9 +91,8 @@ msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:product.pricelist,name:product_supplierinfo_intercompany.pricelist_intercompany
-#, fuzzy
 msgid "Pricelist Intercompany"
-msgstr "La liste %s n'est pas intersociété"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_product__pricelist_item_ids
@@ -108,9 +103,8 @@ msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:product.pricelist,name:product_supplierinfo_intercompany.pricelist_not_intercompany
-#, fuzzy
 msgid "Pricelist Not Intercompany"
-msgstr "La liste %s n'est pas intersociété"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model,name:product_supplierinfo_intercompany.model_product_pricelist_item
@@ -141,28 +135,23 @@ msgstr ""
 #: code:addons/product_supplierinfo_intercompany/models/product_pricelist.py:0
 #, python-format
 msgid "The company is required for intercompany pricelist"
-msgstr "Le champs société est requis pour les listes intersociété"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: code:addons/product_supplierinfo_intercompany/models/product_intercompany_supplier_mixin.py:0
 #, python-format
 msgid "The pricelist %s is not intercompany"
-msgstr "La liste %s n'est pas intersociété"
+msgstr ""
 
 #. module: product_supplierinfo_intercompany
 #: code:addons/product_supplierinfo_intercompany/models/product_supplierinfo.py:0
 #, python-format
 msgid ""
-"This supplier info can not be edited as it's linked to an intercompany "
-"'sale' pricelist.\n"
+"This supplier info can not be edited as it's linked to an intercompany 'sale' pricelist.\n"
 " Please modify the information on the 'sale' pricelist"
 msgstr ""
-"Ce prix fournisseur ne peut pas être édité car il est lié à une liste de "
-"prix de vente intersociété.\n"
-"Veuillez modifié les informations sur la liste de prix de vente si besoin"
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model,name:product_supplierinfo_intercompany.model_intercompany_supplierinfo_mixin
-#, fuzzy
 msgid "intercompany.supplierinfo.mixin"
-msgstr "Liste intersociété"
+msgstr ""
