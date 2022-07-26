@@ -274,8 +274,8 @@ class AccountMove(models.Model):
         for move in self.filtered("auto_invoice_id"):
             if (
                 float_compare(
-                    move.amount_total,
-                    move.sudo().auto_invoice_id.amount_total,
+                    move.amount_untaxed,
+                    move.sudo().auto_invoice_id.amount_untaxed,
                     precision_rounding=move.currency_id.rounding,
                 )
                 != 0
