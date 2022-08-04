@@ -21,7 +21,7 @@ class SaleOrder(models.Model):
             for line in order.order_line.sudo():
                 if line.auto_purchase_line_id:
                     line.auto_purchase_line_id.price_unit = line.price_unit
-        return super(SaleOrder, self).action_confirm()
+        return super().action_confirm()
 
 
 class SaleOrderLine(models.Model):

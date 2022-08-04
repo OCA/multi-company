@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-19 00:51+0000\n"
+"POT-Creation-Date: 2022-08-04 15:47+0000\n"
 "PO-Revision-Date: 2017-10-19 00:51+0000\n"
 "Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>, 2017\n"
 "Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
@@ -36,35 +36,12 @@ msgid "Create Sale Orders when buying to this company"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid ""
-"Default value to set on Sale Orders that will be created based on Purchase "
-"Orders made to this company"
-msgstr ""
-"Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
-"podlagi nabavnih nalogov za to družbo."
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid ""
-"Default value to set on Sale Orders that will be created based on Purchase "
-"Orders made to this company."
-msgstr ""
-"Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
-"podlagi nabavnih nalogov za to družbo."
-
-#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
 msgid ""
 "Generate a Sale Order when a Purchase Order with this company as supplier is "
 "created.\n"
 " The intercompany user must at least be Sale User."
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
-msgid "Intercompany Picking"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -75,7 +52,7 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_account_move
-msgid "Journal Entries"
+msgid "Journal Entry"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -122,22 +99,9 @@ msgid "Source Purchase Order Line"
 msgstr "Postavka izvornega prodajnega naloga"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
-#, python-format
-msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product "
-"%s"
-msgstr ""
-
-#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
-msgid "This vendor bill is related with: {}"
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
-msgid "Transfer"
+msgid "This vendor bill is related with: %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -146,17 +110,6 @@ msgid ""
 "User used to create the sales order arising from a purchase order in another "
 "company."
 msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid "Warehouse For Sale Orders"
-msgstr "Skladišče za prodajne naloge"
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-#, fuzzy
-msgid "Warehouse for Sale Orders"
-msgstr "Skladišče za prodajne naloge"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sale_auto_validation
@@ -192,15 +145,22 @@ msgstr ""
 "Prodajnega naloga ni mogoče ustvariti na osnovi nabavnega, ker je valuta "
 "prodajnega cenika drugačna od valute nabavnega."
 
-#~ msgid "Invoice"
-#~ msgstr "Račun"
+#~ msgid ""
+#~ "Default value to set on Sale Orders that will be created based on "
+#~ "Purchase Orders made to this company"
+#~ msgstr ""
+#~ "Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
+#~ "podlagi nabavnih nalogov za to družbo."
 
 #~ msgid ""
-#~ "Configure correct warehouse for company (%s) in Menu: Settings/companies/"
-#~ "companies"
+#~ "Default value to set on Sale Orders that will be created based on "
+#~ "Purchase Orders made to this company."
 #~ msgstr ""
-#~ "Nastavite pravilno skladišče za družbo (%s) v meniju: Nastavitve/Družbe/"
-#~ "Družbe"
+#~ "Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
+#~ "podlagi nabavnih nalogov za to družbo."
+
+#~ msgid "Invoice"
+#~ msgstr "Račun"
 
 #~ msgid "Output - A"
 #~ msgstr "Izhod - A"
@@ -210,12 +170,6 @@ msgstr ""
 
 #~ msgid "Sale Auto Validation"
 #~ msgstr "Samodejno overjanje prodaje"
-
-#~ msgid "Stock - A"
-#~ msgstr "Zaloga - A"
-
-#~ msgid "Stock - B"
-#~ msgstr "Zaloga - B"
 
 #~ msgid ""
 #~ "When a Sale Order is created by a multi company rule for this company, it "
