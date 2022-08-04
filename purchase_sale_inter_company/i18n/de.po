@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-22 02:48+0000\n"
+"POT-Creation-Date: 2022-08-04 15:47+0000\n"
 "PO-Revision-Date: 2017-04-22 02:48+0000\n"
 "Last-Translator: Rudolf Schnapka <rs@techno-flex.de>, 2017\n"
 "Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
@@ -35,31 +35,12 @@ msgid "Create Sale Orders when buying to this company"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid ""
-"Default value to set on Sale Orders that will be created based on Purchase "
-"Orders made to this company"
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid ""
-"Default value to set on Sale Orders that will be created based on Purchase "
-"Orders made to this company."
-msgstr ""
-
-#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
 msgid ""
 "Generate a Sale Order when a Purchase Order with this company as supplier is "
 "created.\n"
 " The intercompany user must at least be Sale User."
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
-msgid "Intercompany Picking"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -70,7 +51,7 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_account_move
-msgid "Journal Entries"
+msgid "Journal Entry"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -115,22 +96,9 @@ msgid "Source Purchase Order Line"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
-#, python-format
-msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product "
-"%s"
-msgstr ""
-
-#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
-msgid "This vendor bill is related with: {}"
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
-msgid "Transfer"
+msgid "This vendor bill is related with: %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -138,16 +106,6 @@ msgstr ""
 msgid ""
 "User used to create the sales order arising from a purchase order in another "
 "company."
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid "Warehouse For Sale Orders"
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid "Warehouse for Sale Orders"
 msgstr ""
 
 #. module: purchase_sale_inter_company
