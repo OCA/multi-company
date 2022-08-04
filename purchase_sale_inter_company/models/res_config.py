@@ -25,14 +25,6 @@ class InterCompanyRulesConfig(models.TransientModel):
         "this company, it will automatically validate it.",
         readonly=False,
     )
-    warehouse_id = fields.Many2one(
-        comodel_name="stock.warehouse",
-        related="company_id.warehouse_id",
-        string="Warehouse for Sale Orders",
-        help="Default value to set on Sale Orders that will be created "
-        "based on Purchase Orders made to this company.",
-        readonly=False,
-    )
     intercompany_sale_user_id = fields.Many2one(
         comodel_name="res.users",
         related="company_id.intercompany_sale_user_id",
