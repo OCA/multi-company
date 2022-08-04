@@ -17,47 +17,11 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     def setUpClass(cls):
         super().setUpClass()
 
-        cls.location_stock_company_a = cls.env["stock.location"].create(
-            {"name": "Stock - a", "usage": "internal", "company_id": cls.company_a.id}
-        )
-        cls.location_output_company_a = cls.env["stock.location"].create(
-            {"name": "Output - a", "usage": "internal", "company_id": cls.company_a.id}
-        )
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
             cls.partner_company_a.company_ids = [(6, 0, cls.company_a.ids)]
             cls.partner_company_b.company_ids = [(6, 0, cls.company_b.ids)]
-        cls.warehouse_company_a = cls.env["stock.warehouse"].create(
-            {
-                "name": "purchase warehouse - a",
-                "code": "CMPa",
-                "wh_input_stock_loc_id": cls.location_stock_company_a.id,
-                "lot_stock_id": cls.location_stock_company_a.id,
-                "wh_output_stock_loc_id": cls.location_output_company_a.id,
-                "partner_id": cls.partner_company_a.id,
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.location_stock_company_b = cls.env["stock.location"].create(
-            {"name": "Stock - b", "usage": "internal", "company_id": cls.company_b.id}
-        )
-        cls.location_output_company_b = cls.env["stock.location"].create(
-            {"name": "Output - b", "usage": "internal", "company_id": cls.company_b.id}
-        )
-        cls.warehouse_company_b = cls.env["stock.warehouse"].create(
-            {
-                "name": "purchase warehouse - b",
-                "code": "CMPb",
-                "wh_input_stock_loc_id": cls.location_stock_company_b.id,
-                "lot_stock_id": cls.location_stock_company_b.id,
-                "wh_output_stock_loc_id": cls.location_output_company_b.id,
-                "partner_id": cls.partner_company_b.id,
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.company_a.warehouse_id = cls.warehouse_company_a
         cls.company_a.sale_auto_validation = 1
-        cls.company_b.warehouse_id = cls.warehouse_company_b
         cls.company_b.sale_auto_validation = 1
 
         cls.user_company_a.groups_id = [
@@ -175,7 +139,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         else:
             self.assertEqual(sales.state, "draft")
         self.assertEqual(
-            sales.partner_id, self.purchase_company_a.company_id.partner_id
+            sales.partner_id,
+            self.purchase_company_a.company_id.partner_id,
         )
         self.assertEqual(
             sales.company_id.partner_id, self.purchase_company_a.partner_id
