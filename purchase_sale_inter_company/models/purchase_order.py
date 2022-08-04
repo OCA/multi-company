@@ -91,7 +91,7 @@ class PurchaseOrder(models.Model):
         )
         for purchase_line in self.order_line:
             sale_line_data = self._prepare_sale_order_line_data(
-                purchase_line, dest_company, sale_order
+                purchase_line, sale_order
             )
             self.env["sale.order.line"].with_user(intercompany_user.id).sudo().create(
                 sale_line_data
@@ -117,11 +117,7 @@ class PurchaseOrder(models.Model):
         :rtype direct_delivery_address : res.partner record
         """
         self.ensure_one()
-        delivery_address = (
-            direct_delivery_address
-            or self.picking_type_id.warehouse_id.partner_id
-            or False
-        )
+        delivery_address = direct_delivery_address or partner or False
         new_order = self.env["sale.order"].new(
             {
                 "company_id": dest_company.id,
@@ -138,21 +134,13 @@ class PurchaseOrder(models.Model):
             new_order.partner_shipping_id = delivery_address
         if self.notes:
             new_order.note = self.notes
-        if "warehouse_id" in new_order:
-            new_order.warehouse_id = (
-                dest_company.warehouse_id.company_id == dest_company
-                and dest_company.warehouse_id
-                or False
-            )
         new_order.commitment_date = self.date_planned
         return new_order._convert_to_write(new_order._cache)
 
-    def _prepare_sale_order_line_data(self, purchase_line, dest_company, sale_order):
+    def _prepare_sale_order_line_data(self, purchase_line, sale_order):
         """Generate the Sale Order Line values from the PO line
         :param purchase_line : the origin Purchase Order Line
         :rtype purchase_line : purchase.order.line record
-        :param dest_company : the company of the created SO
-        :rtype dest_company : res.company record
         :param sale_order : the Sale Order
         """
         new_line = self.env["sale.order.line"].new(
