@@ -21,16 +21,9 @@
                     />
                 </div>
                 <div
-                    id="inter_company_warehouse"
+                    id="inter_company_settings"
                     attrs="{'invisible':['|', ('company_id', '=', False), ('so_from_po', '=', False)]}"
                 >
-                    <label for="warehouse_id" class="o_light_label" />
-                    <field
-                        name="warehouse_id"
-                        attrs="{'required': [('so_from_po', '=', True)]}"
-                        class="oe_inline"
-                        domain="[('company_id', '=', company_id)]"
-                    />
                     <label for="intercompany_sale_user_id" class="o_light_label" />
                     <field
                         name="intercompany_sale_user_id"
