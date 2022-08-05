@@ -1,0 +1,163 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * purchase_sale_stock_inter_company
+#
+# Translators:
+# OCA Transbot <transbot@odoo-community.org>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-05 13:15+0000\n"
+"PO-Revision-Date: 2017-10-19 00:51+0000\n"
+"Last-Translator: OCA Transbot <transbot@odoo-community.org>, 2017\n"
+"Language-Team: French (France) (https://www.transifex.com/oca/teams/23907/"
+"fr_FR/)\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+"Valeur par défaut mise sur les commandes de vente créés à partir des "
+"commandes d'achat faite à cette société"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+"Valeur par défaut mise sur les commandes de vente créés à partir des "
+"commandes d'achat faite à cette société."
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr "Commande d'achat"
+
+#. module: purchase_sale_stock_inter_company
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"There's no corresponding line in PO %(po)s for assigning qty from "
+"%(pick_name)s for product %(product)s"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Sale Orders"
+msgstr "Entrepôt pour les commandes de vente"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+#, fuzzy
+msgid "Warehouse for Sale Orders"
+msgstr "Entrepôt pour les commandes de vente"
+
+#, fuzzy
+#~ msgid "Purchase/Sale"
+#~ msgstr "Achat vers Vente"
+
+#~ msgid "Sale Orders Auto Validation"
+#~ msgstr "Auto Validation des commandes de vente"
+
+#, fuzzy
+#~ msgid "Sales Order"
+#~ msgstr "Commandes de vente"
+
+#~ msgid "Sales Order Line"
+#~ msgstr "Ligne de commandes de vente"
+
+#~ msgid "Source Purchase Order"
+#~ msgstr "Commande d'achat source"
+
+#~ msgid "Source Purchase Order Line"
+#~ msgstr "Ligne de commande d'achat source"
+
+#~ msgid ""
+#~ "When a Sale Order is created by a multi company rule for this company, it "
+#~ "will automatically validate it."
+#~ msgstr ""
+#~ "Quand une commande de vente est créé en mode inter-société pour cette "
+#~ "société, elle sera automatiquement validé."
+
+#~ msgid ""
+#~ "You cannot create SO from PO because product '%s' is not intercompany"
+#~ msgstr ""
+#~ "Vous ne pouvez pas créer la SO à partir de la PO car le produit '%s' "
+#~ "n'est pas multi-société"
+
+#, fuzzy
+#~ msgid ""
+#~ "You cannot create SO from PO because sale price list currency is "
+#~ "different than purchase price list currency."
+#~ msgstr ""
+#~ "Vous ne pouvez pas créer la SO à partir de la PO car la devise sur la "
+#~ "liste de prix de vente est différente de la devise sur la liste de prix "
+#~ "d'achat."
+
+#~ msgid "Invoice"
+#~ msgstr "Facture"
+
+#~ msgid ""
+#~ "Configure correct warehouse for company (%s) in Menu: Settings/companies/"
+#~ "companies"
+#~ msgstr ""
+#~ "Configurez correctement l'entrepôt pour la société (%s) dans le Menu: "
+#~ "Configuration/sociétés/sociétés"
+
+#~ msgid "Output - A"
+#~ msgstr "Output - A"
+
+#~ msgid "Output - B"
+#~ msgstr "Output - B"
+
+#~ msgid "Sale Auto Validation"
+#~ msgstr "Auto Validation de la commande de vente"
+
+#~ msgid "Stock - A"
+#~ msgstr "Stock - A"
+
+#~ msgid "Stock - B"
+#~ msgstr "Stock - B"
+
+#~ msgid ""
+#~ "When a Sale Order is created by a multi company rule for this company, it "
+#~ "will automatically validate it"
+#~ msgstr ""
+#~ "Quand une commande de vente est créé en mode inter-société pour cette "
+#~ "société, elle sera automatiquement validé"
+
+#~ msgid ""
+#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
+#~ msgstr ""
+#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"

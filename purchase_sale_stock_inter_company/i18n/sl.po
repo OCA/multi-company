@@ -1,0 +1,162 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * purchase_sale_stock_inter_company
+#
+# Translators:
+# Matjaž Mozetič <m.mozetic@matmoz.si>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-05 13:15+0000\n"
+"PO-Revision-Date: 2017-10-19 00:51+0000\n"
+"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>, 2017\n"
+"Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n"
+"%100==4 ? 2 : 3);\n"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
+msgid "Companies"
+msgstr "Družbe"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+"Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
+"podlagi nabavnih nalogov za to družbo."
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+"Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
+"podlagi nabavnih nalogov za to družbo."
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr "Nabavni nalog"
+
+#. module: purchase_sale_stock_inter_company
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"There's no corresponding line in PO %(po)s for assigning qty from "
+"%(pick_name)s for product %(product)s"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Sale Orders"
+msgstr "Skladišče za prodajne naloge"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+#, fuzzy
+msgid "Warehouse for Sale Orders"
+msgstr "Skladišče za prodajne naloge"
+
+#, fuzzy
+#~ msgid "Purchase/Sale"
+#~ msgstr "Nabava v prodajo"
+
+#~ msgid "Sale Orders Auto Validation"
+#~ msgstr "Samodejno overjanje prodajnih nalogov"
+
+#, fuzzy
+#~ msgid "Sales Order"
+#~ msgstr "Prodajni nalog"
+
+#~ msgid "Sales Order Line"
+#~ msgstr "Postavka prodajnega naloga"
+
+#~ msgid "Source Purchase Order"
+#~ msgstr "Izvorni nabavni nalog"
+
+#~ msgid "Source Purchase Order Line"
+#~ msgstr "Postavka izvornega prodajnega naloga"
+
+#~ msgid ""
+#~ "When a Sale Order is created by a multi company rule for this company, it "
+#~ "will automatically validate it."
+#~ msgstr ""
+#~ "Ko se ustvari prodajni nalog iz pravila konsolidiranja za to družbo, se "
+#~ "le-ta samodejno overi."
+
+#~ msgid ""
+#~ "You cannot create SO from PO because product '%s' is not intercompany"
+#~ msgstr ""
+#~ "Prodajnega naloga ni mogoče ustvariti na osnovi nabavnega, ker proizvoda "
+#~ "'%s' ni v sklopu strukturiranih družb."
+
+#, fuzzy
+#~ msgid ""
+#~ "You cannot create SO from PO because sale price list currency is "
+#~ "different than purchase price list currency."
+#~ msgstr ""
+#~ "Prodajnega naloga ni mogoče ustvariti na osnovi nabavnega, ker je valuta "
+#~ "prodajnega cenika drugačna od valute nabavnega."
+
+#~ msgid "Invoice"
+#~ msgstr "Račun"
+
+#~ msgid ""
+#~ "Configure correct warehouse for company (%s) in Menu: Settings/companies/"
+#~ "companies"
+#~ msgstr ""
+#~ "Nastavite pravilno skladišče za družbo (%s) v meniju: Nastavitve/Družbe/"
+#~ "Družbe"
+
+#~ msgid "Output - A"
+#~ msgstr "Izhod - A"
+
+#~ msgid "Output - B"
+#~ msgstr "Izhod - B"
+
+#~ msgid "Sale Auto Validation"
+#~ msgstr "Samodejno overjanje prodaje"
+
+#~ msgid "Stock - A"
+#~ msgstr "Zaloga - A"
+
+#~ msgid "Stock - B"
+#~ msgstr "Zaloga - B"
+
+#~ msgid ""
+#~ "When a Sale Order is created by a multi company rule for this company, it "
+#~ "will automatically validate it"
+#~ msgstr ""
+#~ "Ko se ustvari prodajni nalog iz pravila konsolidiranja za to družbo, se "
+#~ "le-ta samodejno overi"
+
+#~ msgid ""
+#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
+#~ msgstr ""
+#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
+#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
