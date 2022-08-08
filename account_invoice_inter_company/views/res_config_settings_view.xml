@@ -26,7 +26,10 @@
                 </div>
             </xpath>
             <xpath expr="//div[@id='inter_company']" position="after">
-                <div class="col-12 col-lg-6 o_setting_box">
+                <div
+                    class="col-12 col-lg-6 o_setting_box"
+                    id="account_invoice_inter_company"
+                >
                     <div class="o_setting_left_pane" />
                     <div class="o_setting_right_pane">
                         <div class="o_form_label mt8">Invoicing</div>
