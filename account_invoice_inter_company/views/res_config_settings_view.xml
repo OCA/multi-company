@@ -51,6 +51,20 @@
                         </div>
                     </div>
                 </div>
+                    <div class="col-12 col-lg-6 o_setting_box" id="invoice_queued">
+                        <div class="o_setting_left_pane">
+                            <field name="module_account_invoice_inter_company_queued" />
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label
+                            string="Queued"
+                            for="module_account_invoice_inter_company_queued"
+                        />
+                            <div class="text-muted" id="invoice_queued_text">
+                                Queued invoices creation
+                            </div>
+                        </div>
+                    </div>
             </xpath>
             <xpath
                 expr="//div[@id='multi_company']//field[@name='module_account_inter_company_rules']"

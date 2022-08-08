@@ -34,6 +34,18 @@ class AccountMove(models.Model):
     def _post(self, soft=True):
         """Validated invoice generate cross invoice base on company rules"""
         res = super()._post(soft=soft)
+        use_job = self.env["ir.module.module"].search(
+            [
+                ("name", "=", "account_invoice_inter_company_queued"),
+                ("state", "=", "installed"),
+            ]
+        )
+        if len(use_job) == 0:
+            self.create_counterpart_invoices()
+        # else it will be queued in account_invoice_inter_company_queued
+        return res
+
+    def create_counterpart_invoices(self):
         # Intercompany account entries or receipts aren't supported
         supported_types = {"out_invoice", "in_invoice", "out_refund", "in_refund"}
         for src_invoice in self.filtered(lambda x: x.move_type in supported_types):
@@ -50,7 +62,6 @@ class AccountMove(models.Model):
             src_invoice.with_company(dest_company.id).with_context(
                 skip_check_amount_difference=True
             )._inter_company_create_invoice(dest_company)
-        return res
 
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()

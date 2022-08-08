@@ -30,6 +30,10 @@ class ResConfigSettings(models.TransientModel):
         "(product where company is defined). Product not related to a "
         "company are visible for all companies.",
     )
+    module_account_invoice_inter_company_queued = fields.Boolean(
+        "Queued Invoices Creation",
+        help="This will install account_invoice_inter_company_queued",
+    )
 
     @api.model
     def get_values(self):
