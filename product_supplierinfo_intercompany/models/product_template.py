@@ -32,6 +32,20 @@ class ProductTemplate(models.Model):
             ]
         ):
             return True
+        if self.env["product.pricelist.item"].search(
+            [
+                ("pricelist_id", "=", pricelist.id),
+                ("applied_on", "=", "2_product_category"),
+            ]
+        ):
+            return True
+        if self.env["product.pricelist.item"].search(
+            [
+                ("pricelist_id", "=", pricelist.id),
+                ("applied_on", "=", "3_global"),
+            ]
+        ):
+            return True
 
     @api.depends("pricelist_item_ids.fixed_price")
     def _compute_template_price(self):
