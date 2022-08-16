@@ -26,6 +26,19 @@ class ProductPricelistItem(models.Model):
                 todo[pricelist]["products"] |= record.product_id
             elif record.product_tmpl_id:
                 todo[pricelist]["templates"] |= record.product_tmpl_id
+            elif record.applied_on == "3_global":
+                product_tmpl_ids = self.env["product.template"].search(
+                    [("active", "=", True)]
+                )
+                todo[pricelist]["templates"] |= product_tmpl_ids
+            elif record.applied_on == "2_product_category":
+                product_tmpl_ids = self.env["product.template"].search(
+                    [
+                        ("active", "=", True),
+                        ("categ_id", "child_of", record.categ_id.ids),
+                    ]
+                )
+                todo[pricelist]["templates"] |= product_tmpl_ids
             else:
                 raise UserError(
                     _(
