@@ -2,7 +2,7 @@ from odoo import models
 
 
 class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     def _anglo_saxon_sale_move_lines(self, i_line):
         res = super(AccountInvoice, self)._anglo_saxon_sale_move_lines(i_line)

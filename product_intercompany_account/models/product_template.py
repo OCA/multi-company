@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import fields, models
 
 
 class ProductTemplate(models.Model):
@@ -17,7 +17,6 @@ class ProductTemplate(models.Model):
         help="Expense account used for intercompany transactions.",
     )
 
-    @api.multi
     def get_product_intercompany_accounts(self):
         return {
             "income": (
