@@ -6,58 +6,60 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2022-08-23 12:07+0000\n"
+"Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model,name:account_invoice_inter_company_queued.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
+msgstr "Impostazioni di configurazione"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_account_move__display_name
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_account_move__id
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: account_invoice_inter_company_queued
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company_queued.res_config_settings_view_form
 msgid "Invoices creation using queued jobs"
-msgstr ""
+msgstr "Creazione fatture usando le code"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model,name:account_invoice_inter_company_queued.model_account_move
 msgid "Journal Entry"
-msgstr ""
+msgstr "Registrazione contabile"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_account_move____last_update
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima Modifica il"
 
 #. module: account_invoice_inter_company_queued
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company_queued.res_config_settings_view_form
 msgid "Queued"
-msgstr ""
+msgstr "In coda"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings__module_account_invoice_inter_company_queued
 msgid "Queued Invoices Creation"
-msgstr ""
+msgstr "Creazione fatture in coda"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,help:account_invoice_inter_company_queued.field_res_config_settings__module_account_invoice_inter_company_queued
 msgid "This will install account_invoice_inter_company_queued"
-msgstr ""
+msgstr "Questo installerà il modulo account_invoice_inter_company_queued"
