@@ -36,7 +36,7 @@ addon | version | maintainers | summary
 [product_supplierinfo_intercompany](product_supplierinfo_intercompany/) | 14.0.1.0.1 | [![PierrickBrun](https://github.com/PierrickBrun.png?size=30px)](https://github.com/PierrickBrun) [![sebastienbeau](https://github.com/sebastienbeau.png?size=30px)](https://github.com/sebastienbeau) [![kevinkhao](https://github.com/kevinkhao.png?size=30px)](https://github.com/kevinkhao) | Product SupplierInfo Intercompany
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 14.0.1.0.0 |  | Product Tax Multi Company Default
 [purchase_quick_intercompany](purchase_quick_intercompany/) | 14.0.0.1.1 |  | Purchase Quick Intercompany
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.1.0.1 |  | Intercompany PO/SO rules
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.1.1.0 |  | Intercompany PO/SO rules
 [res_company_code](res_company_code/) | 14.0.1.0.1 |  | Add 'code' field on company model
 
 [//]: # (end addons)
