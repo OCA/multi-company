@@ -22,6 +22,7 @@ setuptools.setup(
         'odoo14-addon-product_supplierinfo_group_intercompany',
         'odoo14-addon-product_supplierinfo_intercompany',
         'odoo14-addon-product_tax_multicompany_default',
+        'odoo14-addon-purchase_quick_intercompany',
         'odoo14-addon-purchase_sale_inter_company',
         'odoo14-addon-res_company_code',
     ],
