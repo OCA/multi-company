@@ -31,7 +31,7 @@ addon | version | maintainers | summary
 [mail_multicompany](mail_multicompany/) | 14.0.0.1.0 |  | Email Gateway Multi company
 [mail_template_multi_company](mail_template_multi_company/) | 14.0.1.0.0 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [partner_contact_company_propagation](partner_contact_company_propagation/) | 14.0.1.0.0 |  | Propagate company info to children contacts
-[product_category_inter_company](product_category_inter_company/) | 14.0.1.0.0 |  | Product categories as company dependent
+[product_category_inter_company](product_category_inter_company/) | 14.0.1.0.1 |  | Product categories as company dependent
 [product_multi_company](product_multi_company/) | 14.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_supplierinfo_group_intercompany](product_supplierinfo_group_intercompany/) | 14.0.1.0.1 |  | Add sequence field on grouped pricelist items
 [product_supplierinfo_intercompany](product_supplierinfo_intercompany/) | 14.0.1.0.1 | [![PierrickBrun](https://github.com/PierrickBrun.png?size=30px)](https://github.com/PierrickBrun) [![sebastienbeau](https://github.com/sebastienbeau.png?size=30px)](https://github.com/sebastienbeau) [![kevinkhao](https://github.com/kevinkhao.png?size=30px)](https://github.com/kevinkhao) | Product SupplierInfo Intercompany
