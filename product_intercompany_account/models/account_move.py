@@ -1,25 +1,26 @@
 from odoo import models
 
 
-class AccountInvoice(models.Model):
+class AccountMove(models.Model):
     _inherit = "account.move"
 
-    def _anglo_saxon_sale_move_lines(self, i_line):
-        res = super(AccountInvoice, self)._anglo_saxon_sale_move_lines(i_line)
+    def _stock_account_prepare_anglo_saxon_out_lines_vals(self):
+        res = super()._stock_account_prepare_anglo_saxon_out_lines_vals()
         our_companies = self.env["res.company"].search(
             [("partner_id", "=", self.partner_id.id)]
         )
-        product_level = i_line.product_id.property_account_expense_intercompany
-        categ = i_line.product_id.categ_id.property_account_expense_categ_intercompany
-        if our_companies and (product_level or categ):
-            accounts = i_line.product_id.product_tmpl_id.get_product_accounts()
-            for item in res:
-                if item["account_id"] == accounts["expense"].id:
-                    item["account_id"] = product_level.id or categ.id
+        for i_line in res:
+            product_level = i_line.product_id.property_account_expense_intercompany
+            categ = i_line.product_id.categ_id.property_account_expense_categ_intercompany
+            if our_companies and (product_level or categ):
+                accounts = i_line.product_id.product_tmpl_id.get_product_accounts()
+                for item in res:
+                    if item["account_id"] == accounts["expense"].id:
+                        item["account_id"] = product_level.id or categ.id
         return res
 
-    def _prepare_invoice_line_from_po_line(self, line):
-        data = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(line)
+    def _prepare_account_move_line(self, line):
+        data = super(AccountMove, self)._prepare_account_move_line(line)
         is_intercompany = self.env["res.company"].search(
             [("partner_id", "=", self.partner_id.id,)]
         )

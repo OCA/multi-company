@@ -4,8 +4,8 @@ from odoo import models
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    def _prepare_invoice_line(self, qty):
-        res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
+    def _prepare_invoice_line(self):
+        res = super()._prepare_invoice_line()
 
         our_companies = self.env["res.company"].search(
             [("partner_id", "=", self.order_id.partner_id.id)]

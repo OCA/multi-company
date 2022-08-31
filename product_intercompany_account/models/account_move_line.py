@@ -1,7 +1,7 @@
 from odoo import models
 
 
-class AccountInvoiceLine(models.Model):
+class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
     def get_invoice_line_account(self, type, product, fpos, company):
