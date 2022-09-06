@@ -42,12 +42,6 @@ The module product_supplierinfo_group_intercompany is a glue module between this
 .. contents::
    :local:
 
-Known issues / Roadmap
-======================
-
-Currently the module only supports products pricelist items,
-in the future it will support managing categories and global items.
-
 Bug Tracker
 ===========
 
