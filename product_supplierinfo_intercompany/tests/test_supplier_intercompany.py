@@ -39,6 +39,22 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         self.partner = ref("base.main_partner")
         self.product_product_4b = ref("product.product_product_4b")
         self.product_product_4c = ref("product.product_product_4c")
+        self.product_global_id = self.env["product.template"].create(
+            {"name": "global product", "list_price": 100}
+        )
+
+        self.product_category_planes_id = self.env["product.category"].create(
+            {
+                "name": "Planes",
+            }
+        )
+        self.product_plane_id = self.env["product.template"].create(
+            {
+                "name": "Boeing 777",
+                "list_price": 1000,
+                "categ_id": self.product_category_planes_id.id,
+            }
+        )
 
         self.product_template_1 = ref("product.product_product_1_product_template")
         self.product_product_2 = ref("product.product_product_2")
@@ -248,3 +264,58 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
     def test_raise_error_required_company(self):
         with self.assertRaises(UserError):
             self.pricelist_intercompany.company_id = False
+
+    def test_category_rule(self):
+        vals = {
+            "name": "Category pricelist",
+            "is_intercompany_supplier": True,
+            "company_id": self.env.ref("base.main_company").id,
+            "item_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "product_tmpl_id": False,
+                        "base": "list_price",
+                        "fixed_price": 100000,
+                        "categ_id": self.product_category_planes_id.id,
+                        "applied_on": "2_product_category",
+                    },
+                )
+            ],
+        }
+        self.env["product.pricelist"].create(vals)
+        supplierinfo = (
+            self.env["product.supplierinfo"]
+            .sudo()
+            .search([("product_tmpl_id", "=", self.product_plane_id.id)])
+        )
+        self.assertEqual(len(supplierinfo.intercompany_pricelist_id), 1)
+        self.assertEqual(supplierinfo.price, 100000)
+
+    def test_global_rule(self):
+        vals = {
+            "name": "global pricelist",
+            "is_intercompany_supplier": True,
+            "company_id": self.env.ref("base.main_company").id,
+            "item_ids": [
+                (
+                    0,
+                    0,
+                    {
+                        "product_tmpl_id": False,
+                        "base": "list_price",
+                        "fixed_price": 10,
+                        "applied_on": "3_global",
+                    },
+                )
+            ],
+        }
+        self.env["product.pricelist"].create(vals)
+        supplierinfo = (
+            self.env["product.supplierinfo"]
+            .sudo()
+            .search([("product_tmpl_id", "=", self.product_global_id.id)])
+        )
+        self.assertEqual(len(supplierinfo.intercompany_pricelist_id), 1)
+        self.assertEqual(supplierinfo.price, 10)
