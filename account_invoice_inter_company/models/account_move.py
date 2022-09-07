@@ -23,6 +23,34 @@ class AccountMove(models.Model):
         copy=False,
         prefetch=False,
     )
+    related_bill_id = fields.Many2one(
+        "account.move",
+        compute="_compute_related_bill_info",
+        compute_sudo=False,
+    )
+    related_bill_ids = fields.One2many(
+        "account.move",
+        "auto_invoice_id",
+        string="Related Bill",
+        readonly=True,
+        copy=False,
+    )
+    related_bill_name = fields.Char(
+        compute="_compute_related_bill_info",
+    )
+    related_bill_company_id = fields.Many2one(
+        "res.company",
+        compute="_compute_related_bill_info",
+    )
+
+    def _compute_related_bill_info(self):
+        for rec in self:
+            rec.related_bill_name = rec.sudo().related_bill_ids[:1].display_name
+            rec.related_bill_company_id = rec.sudo().related_bill_ids[:1].company_id.id
+            if rec.related_bill_company_id.id not in self.env.companies.ids:
+                rec.related_bill_id = False
+            else:
+                rec.related_bill_id = rec.related_bill_ids[:1].id
 
     def _find_company_from_invoice_partner(self):
         self.ensure_one()
