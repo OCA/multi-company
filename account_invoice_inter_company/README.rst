@@ -88,6 +88,9 @@ Contributors
   * David Vidal
   * Pedro M. Baeza
 * Isaac Gallart <igallart@puntsistemes.es>
+* `Ooops404 <https://www.ooops404.com>`__:
+
+    * Ilyas <irazor147@gmail.com>
 
 Maintainers
 ~~~~~~~~~~~
