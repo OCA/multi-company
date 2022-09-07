@@ -38,6 +38,11 @@ msgid "Auto Generated Document"
 msgstr "Automatisch erstelltes Dokument"
 
 #. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.view_move_form_inherit
+msgid "Bill Info"
+msgstr ""
+
+#. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 msgid "Common Product Catalog"
 msgstr ""
@@ -85,6 +90,11 @@ msgid ""
 msgstr ""
 
 #. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.view_move_form_inherit
+msgid "Intercompany Info"
+msgstr ""
+
+#. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
 msgid "Intercompany user for invoices"
@@ -95,6 +105,11 @@ msgstr "Rechnungsstellung zwischen Unternehmen"
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 msgid "Invoice Auto Validation"
 msgstr "Automatische Rechnungsprüfung"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.view_move_form_inherit
+msgid "Invoice Info"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
@@ -136,6 +151,30 @@ msgstr "Es wurde keine Kontenplanvorlage definiert!"
 #, python-format
 msgid "Please define %s journal for this company: \"%s\" (id:%d)."
 msgstr "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_ids
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_ids
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_ids
+msgid "Related Bill"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_company_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_company_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_company_id
+msgid "Related Bill Company"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_name
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_name
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_name
+msgid "Related Bill Name"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
