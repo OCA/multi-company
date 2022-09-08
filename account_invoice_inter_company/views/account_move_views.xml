@@ -23,7 +23,8 @@
                 <page
                     string="Intercompany Info"
                     name="intercompany_info"
-                    attrs="{'invisible': [('related_bill_id', '=', False)]}"
+                    attrs="{'invisible': [('related_bill_id', '=', False),
+                                          ('auto_invoice_id', '=', False)]}"
                 >
                     <group>
                         <group
@@ -32,7 +33,10 @@
                         >
                             <field name="auto_invoice_id" />
                         </group>
-                        <group string="Bill Info">
+                        <group
+                            string="Bill Info"
+                            attrs="{'invisible': [('related_bill_id', '=', False)]}"
+                        >
                             <field name="related_bill_company_id" />
                             <field
                                 name="related_bill_name"
