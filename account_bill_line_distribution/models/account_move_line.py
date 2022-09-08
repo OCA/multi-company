@@ -44,11 +44,11 @@ class AccountMoveLine(models.Model):
                 "in_receipt",
             )
         )
-        if not invoice_line.distribution_ids:
-            invoice_line.write(
-                {"distribution_ids": [(0, 0, invoice_line.get_default_distribution())]}
+        for line in invoice_line.filtered(lambda l: not l.distribution_ids):
+            line.write(
+                {"distribution_ids": [(0, 0, line.get_default_distribution())]}
             )
-        invoice_line.distribution_ids._onchange_percent_total()
+            line.distribution_ids._onchange_percent_total()
         return lines
 
     def write(self, vals):
