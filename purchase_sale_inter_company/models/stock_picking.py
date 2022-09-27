@@ -142,15 +142,14 @@ class StockPicking(models.Model):
                 dest_picking.action_confirm()
 
     def check_all_done(self, picking):
-        qty_done = sum(picking.mapped(
-            "move_ids_without_package.quantity_done"
+        picking_lines = picking.move_ids_without_package.filtered(
+            lambda l: l.state != "cancel"
+        )
+        qty_done = sum(picking_lines.mapped("quantity_done"))
+        reserved = sum(picking_lines.mapped(
+            "reserved_availability"
         ))
-        reserved = sum(picking.mapped(
-            "move_ids_without_package.reserved_availability"
-        ))
-        available = sum(picking.mapped(
-            "move_ids_without_package.product_uom_qty"
-        ))
+        available = sum(picking_lines.mapped("product_uom_qty"))
         if qty_done == 0.0 and reserved == available:
             return True
         return False

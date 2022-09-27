@@ -17,7 +17,7 @@ class StockBackorderConfirmation(models.TransientModel):
         )
         sale_order = self.env["sale.order"]
         if picking.picking_type_code == "incoming":
-            sale_order = sale_order.search([(
+            sale_order = sale_order.sudo().search([(
                 'name', '=', picking.purchase_id.partner_ref
             )])
         if not picking or not sale_order:
