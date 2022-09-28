@@ -25,6 +25,19 @@ class ProductProduct(models.Model):
         )
         return vals
 
+    def _prepare_sellers(self, params):
+        sellers = super()._prepare_sellers(params)
+        sellers = sellers.filtered_domain(
+            [
+                "|",
+                ("intercompany_pricelist_id", "=", False),
+                "&",
+                ("intercompany_pricelist_id", "!=", False),
+                ("intercompany_pricelist_id.company_id", "!=", self.env.company),
+            ]
+        )
+        return sellers
+
     def _has_intercompany_price(self, pricelist):
         self.ensure_one()
         if (
