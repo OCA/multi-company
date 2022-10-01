@@ -8,6 +8,7 @@ setuptools.setup(
     description="Meta package for oca-multi-company Odoo addons",
     version=version,
     install_requires=[
+        'odoo-addon-account_invoice_inter_company>=15.0dev,<15.1dev',
         'odoo-addon-base_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-partner_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-product_multi_company>=15.0dev,<15.1dev',
