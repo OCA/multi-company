@@ -121,7 +121,7 @@ class TestAccountPaymentOrderInterCompany(TestAccountInvoiceInterCompanyBase):
         payment_order.open2generated()
         payment_order.generated2uploaded()
 
-    def test_customer_invoice_paid_after_create_customer_invoice(self):
+    def test_create_customer_invoice_and_pay_supplier_invoice(self):
         # Create intercompany supplier invoice in company B
         invoice_company_b = self._create_intercompany_supplier_invoice()
         # Pay supplier invoice in company B
@@ -137,7 +137,7 @@ class TestAccountPaymentOrderInterCompany(TestAccountInvoiceInterCompanyBase):
         # Check payment state of customer invoice in company A
         self.assertEqual(self.invoice_company_a.payment_state, "paid")
 
-    def test_supplier_invoice_paid_after_create_customer_invoice(self):
+    def test_create_customer_invoice_and_pay_customer_invoice(self):
         # Create intercompany supplier invoice in company B
         invoice_company_b = self._create_intercompany_supplier_invoice()
         # Pay customer invoice in company A
@@ -153,7 +153,7 @@ class TestAccountPaymentOrderInterCompany(TestAccountInvoiceInterCompanyBase):
         # Check payment state of supplier invoice in company B
         self.assertEqual(invoice_company_b.payment_state, "paid")
 
-    def test_customer_invoice_paid_after_create_supplier_invoice(self):
+    def test_create_supplier_invoice_and_pay_supplier_invoice(self):
         # Create intercompany customer invoice in company A
         invoice_company_a = self._create_intercompany_customer_invoice()
         # Pay supplier invoice in company B
@@ -169,7 +169,7 @@ class TestAccountPaymentOrderInterCompany(TestAccountInvoiceInterCompanyBase):
         # Check payment state of customer invoice in company A
         self.assertEqual(invoice_company_a.payment_state, "paid")
 
-    def test_supplier_invoice_paid_after_create_supplier_invoice(self):
+    def test_create_supplier_invoice_and_pay_customer_invoice(self):
         # Create intercompany customer invoice in company A
         invoice_company_a = self._create_intercompany_customer_invoice()
         # Pay customer invoice in company A
