@@ -34,6 +34,28 @@ class TestAccountPaymentOrderInterCompany(TestAccountInvoiceInterCompanyBase):
                 ).id,
             }
         )
+        # Banks for Company B
+        cls.partner_bank_company_b = cls.env["res.partner.bank"].create(
+            {
+                "acc_number": "123456789",
+                "partner_id": cls.company_b.partner_id.id,
+                "company_id": False,
+            }
+        )
+        cls.bank_journal_company_b.write(
+            {"bank_account_id": cls.partner_bank_company_b.id}
+        )
+        # Banks for Company A
+        cls.partner_bank_company_a = cls.env["res.partner.bank"].create(
+            {
+                "acc_number": "987654321",
+                "partner_id": cls.company_a.partner_id.id,
+                "company_id": False,
+            }
+        )
+        cls.bank_journal_company_a.write(
+            {"bank_account_id": cls.partner_bank_company_a.id}
+        )
         # Supplier Invoice in Company B
         cls.invoice_company_b = Form(
             cls.account_move_obj.with_company(cls.company_b.id).with_context(
