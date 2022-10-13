@@ -2,17 +2,16 @@
 # @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo.tests.common import TransactionCase
 from odoo.exceptions import ValidationError
+from odoo.tests.common import TransactionCase
 
 
 class TestModule(TransactionCase):
-
     def setUp(self):
         super(TestModule, self).setUp()
-        self.test_company = self.env.ref('res_company_active.company_test')
-        self.main_company = self.env.ref('base.main_company')
-        self.demo_user = self.env.ref('base.user_demo')
+        self.test_company = self.env.ref("res_company_active.company_test")
+        self.main_company = self.env.ref("base.main_company")
+        self.demo_user = self.env.ref("base.user_demo")
 
     # Test Section
     def test_01_disable_without_user(self):
