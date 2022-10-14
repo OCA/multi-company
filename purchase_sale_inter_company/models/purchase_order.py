@@ -16,11 +16,12 @@ class PurchaseOrder(models.Model):
         compute_sudo=True,
     )
 
+    @api.depends("state")
     def _compute_intercompany_sale_order_id(self):
         """A One2many would be simpler, but the record rules make unaccesible for
         regular users so the logic doesn't work properly"""
         ids_dict_list = self.env["sale.order"].search_read(
-            [("auto_purchase_order_id", "in", self.ids)],
+            [("auto_purchase_order_id", "in", self.ids), ("state", "!=", "cancel")],
             ["id", "auto_purchase_order_id"],
         )
         ids_dict = {d["auto_purchase_order_id"][0]: d["id"] for d in ids_dict_list}
@@ -192,16 +193,33 @@ class PurchaseOrder(models.Model):
         return new_line._convert_to_write(new_line._cache)
 
     def button_cancel(self):
-        sale_orders = (
-            self.env["sale.order"]
-            .sudo()
-            .search([("auto_purchase_order_id", "in", self.ids)])
-        )
-        for so in sale_orders:
-            if so.state not in ["draft", "sent", "cancel"]:
-                raise UserError(_("You can't cancel an order that is %s") % so.state)
-        sale_orders.action_cancel()
-        self.write({"partner_ref": False})
+        if self.intercompany_sale_order_id:
+            if self.intercompany_sale_order_id.sudo().state not in [
+                "draft",
+                "sent",
+                "cancel",
+            ]:
+                raise UserError(
+                    _(
+                        "You can not cancel your purchase order %s.\n"
+                        "The sale order %s at your supplier %s that is linked "
+                        "to your purchase order, is in the state %s.\n"
+                        "In order to cancel your purchase order, you must first "
+                        "ask your supplier to cancel his sale order."
+                    )
+                    % (
+                        self.name,
+                        self.intercompany_sale_order_id.sudo().name,
+                        self.partner_id.name,
+                        self.intercompany_sale_order_id.sudo().state,
+                    )
+                )
+            if self.intercompany_sale_order_id.sudo().state in [
+                "draft",
+                "sent",
+            ]:
+                self.intercompany_sale_order_id.sudo().action_cancel()
+            self.write({"partner_ref": False})
         return super().button_cancel()
 
 
@@ -214,11 +232,13 @@ class PurchaseOrderLine(models.Model):
         compute_sudo=True,
     )
 
+    @api.depends("state")
     def _compute_intercompany_sale_line_id(self):
         """A One2many would be simpler, but the record rules make unaccesible for
         regular users so the logic doesn't work properly"""
         ids_dict_list = self.env["sale.order.line"].search_read(
-            [("auto_purchase_line_id", "in", self.ids)], ["id", "auto_purchase_line_id"]
+            [("auto_purchase_line_id", "in", self.ids), ("state", "!=", "cancel")],
+            ["id", "auto_purchase_line_id"],
         )
         ids_dict = {d["auto_purchase_line_id"][0]: d["id"] for d in ids_dict_list}
         for line in self:
