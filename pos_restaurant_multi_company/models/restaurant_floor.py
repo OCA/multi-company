@@ -25,5 +25,4 @@ class RestaurantFloor(models.Model):
     def _check_company_pos_config(self):
         for floor in self.filtered(lambda x: x.company_id and x.pos_config_id):
             if floor.company_id != floor.pos_config_id.company_id:
-                raise UserError(_(
-                    "Incorrect values for company and pos config"))
+                raise UserError(_("Incorrect values for company and pos config"))
