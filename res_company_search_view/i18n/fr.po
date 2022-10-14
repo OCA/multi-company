@@ -1,0 +1,31 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * res_company_search_view
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-14 09:45+0000\n"
+"PO-Revision-Date: 2022-10-14 09:45+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: res_company_search_view
+#: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: res_company_search_view
+#: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
+msgid "Country"
+msgstr "Pays"
+
+#. module: res_company_search_view
+#: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
+msgid "Group By"
+msgstr "Regrouper par"
