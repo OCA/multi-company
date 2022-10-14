@@ -2,14 +2,12 @@
 # @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, api, fields, models
+from odoo import _, api, models
 from odoo.exceptions import ValidationError
 
 
 class ResCompany(models.Model):
     _inherit = "res.company"
-
-    active = fields.Boolean(string="Active", default=True)
 
     @api.constrains("active")
     def _check_active(self):
@@ -24,11 +22,12 @@ class ResCompany(models.Model):
                 if len(users):
                     raise ValidationError(
                         _(
-                            "You can not disable the company %s because it is the"
+                            "You can not disable the company %(company_name)s because it is the"
                             " current company for the following active users:\n\n"
-                            " - %s\n\n"
+                            " - %(user_names)s\n\n"
                             " Please change the company of these users, or disable"
-                            " them"
+                            " them",
+                            company_name=company.name,
+                            user_names="\n - ".join(users.mapped("name")),
                         )
-                        % (company.name, "\n - ".join(users.mapped("name")))
                     )

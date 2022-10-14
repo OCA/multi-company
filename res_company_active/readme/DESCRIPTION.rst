@@ -1,4 +1,4 @@
-This module adds ``active`` fields on company model.
+This module adds the possibility to archive companies by UI via the common "Action > Archive" button.
 
 .. figure:: ../static/description/res_company_form.png
 
