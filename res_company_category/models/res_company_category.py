@@ -9,24 +9,29 @@ class ResCompanyCategory(models.Model):
     _name = "res.company.category"
     _description = "Company Categories"
     _order = "complete_name"
+    _parent_name = "parent_id"
+    _parent_store = True
+    _rec_name = "complete_name"
+    _order = "complete_name"
 
     _TYPE_SELECTION = [
         ("normal", "Normal"),
         ("view", "View"),
     ]
 
-    # Fields Section
-    name = fields.Char(string="Name", required=True)
+    name = fields.Char(required=True)
 
-    type = fields.Selection(
-        string="Type", selection=_TYPE_SELECTION, required=True, default="normal"
-    )
+    active = fields.Boolean(default=True)
+
+    type = fields.Selection(selection=_TYPE_SELECTION, required=True, default="normal")
 
     parent_id = fields.Many2one(
         string="Parent Category",
         comodel_name="res.company.category",
         domain=[("type", "=", "view")],
     )
+
+    parent_path = fields.Char(index=True, unaccent=False)
 
     child_ids = fields.One2many(
         string="Category Childs",
@@ -39,11 +44,16 @@ class ResCompanyCategory(models.Model):
     )
 
     company_qty = fields.Integer(
-        string="Companies Quantity", compute="_compute_company_qty", store=True
+        string="Companies Quantity",
+        compute="_compute_company_qty",
+        store=True,
+        recursive=True,
     )
 
     complete_name = fields.Char(
-        string="Complete Name", compute="_compute_complete_name", store=True
+        compute="_compute_complete_name",
+        store=True,
+        recursive=True,
     )
 
     # Compute Section

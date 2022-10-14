@@ -4,17 +4,26 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 12.0\n"
+"Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-17 10:51+0000\n"
-"PO-Revision-Date: 2019-09-17 10:51+0000\n"
-"Last-Translator: <>\n"
+"POT-Creation-Date: 2022-10-14 11:55+0000\n"
+"PO-Revision-Date: 2022-10-14 11:55+0000\n"
+"Last-Translator: \n"
 "Language-Team: \n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__active
+msgid "Active"
+msgstr "active"
+
+#. module: res_company_category
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Archived"
+msgstr "Archivé"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company__category_id
@@ -27,8 +36,10 @@ msgid "Category Childs"
 msgstr "Catégories filles"
 
 #. module: res_company_category
+#: model:ir.actions.act_window,name:res_company_category.action_company_category_to_company
 #: model:ir.model,name:res_company_category.model_res_company
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_ids
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
 msgid "Companies"
 msgstr "Sociétés"
 
@@ -67,7 +78,7 @@ msgstr "Nom affiché"
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__id
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category____last_update
@@ -91,9 +102,9 @@ msgid "Name"
 msgstr "Nom"
 
 #. module: res_company_category
-#: selection:res.company.category,type:0
+#: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__normal
 msgid "Normal"
-msgstr "Normal"
+msgstr ""
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_id
@@ -102,11 +113,16 @@ msgid "Parent Category"
 msgstr "Catégorie mère"
 
 #. module: res_company_category
-#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__type
-msgid "Type"
-msgstr "Type"
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_path
+msgid "Parent Path"
+msgstr "Chemin parent"
 
 #. module: res_company_category
-#: selection:res.company.category,type:0
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__type
+msgid "Type"
+msgstr ""
+
+#. module: res_company_category
+#: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__view
 msgid "View"
-msgstr "Vue"
+msgstr ""

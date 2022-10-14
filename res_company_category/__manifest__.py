@@ -4,13 +4,15 @@
 
 {
     "name": "Company Categories",
-    "version": "12.0.1.0.0",
+    "version": "16.0.1.0.1",
     "category": "Tools",
     "author": "GRAP, Odoo Community Association (OCA)",
+    "maintainers": ["legalsylvain"],
     "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
     "depends": [
         "base",
+        "res_company_search_view",
     ],
     "data": [
         "security/ir.model.access.csv",
@@ -23,9 +25,4 @@
         "demo/res_company.xml",
     ],
     "installable": True,
-    "images": [
-        "static/description/res_company_category_form.png",
-        "static/description/res_company_category_tree.png",
-        "static/description/res_company_form.png",
-    ],
 }
