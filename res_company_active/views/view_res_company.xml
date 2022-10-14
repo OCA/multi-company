@@ -10,8 +10,16 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_form" />
         <field name="arch" type="xml">
+            <field name="logo" position="before">
+                <widget
+                    name="web_ribbon"
+                    title="Archived"
+                    bg_color="bg-danger"
+                    attrs="{'invisible': [('active', '=', True)]}"
+                />
+            </field>
             <field name="parent_id" position="after">
-                <field name="active" />
+                <field name="active" invisible="1" />
             </field>
         </field>
     </record>
