@@ -12,5 +12,8 @@ class RestaurantPrinter(models.Model):
         "res.company",
         string="Company",
         index=True,
-        default=lambda self: self.env.user.company_id,
+        default=lambda self: self._default_company_id(),
     )
+
+    def _default_company_id(self):
+        return self.env.company
