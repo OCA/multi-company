@@ -5,17 +5,22 @@
 {
     "name": "Company Code",
     "summary": "Add 'code' field on company model",
-    "version": "14.0.1.0.1",
+    "version": "16.0.1.0.0",
     "category": "Tools",
     "author": "GRAP, Odoo Community Association (OCA)",
+    "maintainers": ["legalsylvain"],
     "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
-    "depends": ["web"],
-    "data": ["views/view_res_company.xml"],
-    "demo": ["demo/res_groups.xml", "demo/res_company.xml"],
-    "images": [
-        "static/description/res_company_form.png",
-        "static/description/res_company_tree.png",
+    "depends": [
+        "web",
+        "res_company_search_view",
+    ],
+    "data": [
+        "views/view_res_company.xml",
+    ],
+    "demo": [
+        "demo/res_groups.xml",
+        "demo/res_company.xml",
     ],
     "installable": True,
 }
