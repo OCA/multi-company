@@ -1,10 +1,10 @@
 # Copyright 2021 Akretion
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 
 
-class TestResCompanyCode(SavepointCase):
+class TestResCompanyCode(TransactionCase):
     def _create_company(self, name, code):
         return self.env["res.company"].create({"name": name, "code": code})
 

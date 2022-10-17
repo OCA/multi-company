@@ -17,14 +17,20 @@ class Http(models.AbstractModel):
             user.has_group("base.group_multi_company") and len(user.company_ids) > 1
         )
 
-        # Replace company name by company complete name in the session
-        # The values are used in the switch_company_menu widget (web module)
-        result["user_companies"]["current_company"] = (
-            user.company_id.id,
-            user.company_id.complete_name,
-        )
+        # 1. Replace company name by company complete name in the session
+        #    The values are used in the switch_company_menu widget (web module)
+        # 2. Recompute sequence. (as the widget hardcod the order by sequence). See :
+        #    https://github.com/odoo/odoo/blob/16.0/addons/web/static/src/webclient/
+        #    switch_company_menu/switch_company_menu.xml#L10
         if display_switch_company_menu:
-            result["user_companies"]["allowed_companies"] = [
-                (comp.id, comp.complete_name) for comp in user.company_ids
-            ]
+            sequence = 0
+            for company_id in user.company_ids.ids:
+                company = user.company_ids.filtered(lambda x: x.id == company_id)
+                sequence += 1
+                result["user_companies"]["allowed_companies"].get(company_id).update(
+                    {
+                        "name": company.complete_name,
+                        "sequence": sequence,
+                    }
+                )
         return result
