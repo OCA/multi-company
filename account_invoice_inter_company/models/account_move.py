@@ -31,7 +31,7 @@ class AccountMove(models.Model):
     related_bill_ids = fields.One2many(
         "account.move",
         "auto_invoice_id",
-        string="Related Bill",
+        string="Related Bills",
         readonly=True,
         copy=False,
     )
