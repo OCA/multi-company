@@ -43,13 +43,13 @@ class AccountPayment(models.Model):
                     ).write(vals)
                 # or create a new one
                 else:
-                    #aml = self.env["account.move.line"].search(
+                    # aml = self.env["account.move.line"].search(
                     #    [
                     #        ("account_id", "=", rec.company_id.due_to_account_id.id),
                     #        ("payment_id", "=", rec.id),
                     #    ]
-                    #)
-                    #aml.partner_id = other_company.partner_id.id
+                    # )
+                    # aml.partner_id = other_company.partner_id.id
                     account_move = self.env["account.move"]
                     vals = rec._prepare_other_payment_values()
                     rec.other_move_id = (
@@ -67,6 +67,9 @@ class AccountPayment(models.Model):
 
     def _prepare_other_payment_values(self):
         other_journal = self.with_user(SUPERUSER_ID).other_journal_id
+        default_account_id = (
+            other_journal.company_id.due_fromto_payment_journal_id.default_account_id.id
+        )
         # Flip debit/credit for inbound
         if self.payment_type == "inbound":
             return {
@@ -81,7 +84,7 @@ class AccountPayment(models.Model):
                         0,
                         0,
                         {
-                            "account_id": other_journal.company_id.due_fromto_payment_journal_id.default_account_id.id,
+                            "account_id": default_account_id,
                             "partner_id": self.company_id.partner_id.id,
                             "credit": self.amount,
                         },
@@ -111,7 +114,7 @@ class AccountPayment(models.Model):
                         0,
                         0,
                         {
-                            "account_id": other_journal.company_id.due_fromto_payment_journal_id.default_account_id.id,
+                            "account_id": default_account_id,
                             "partner_id": self.company_id.partner_id.id,
                             "debit": self.amount,
                         },
