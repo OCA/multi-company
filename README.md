@@ -26,6 +26,7 @@ addon | version | maintainers | summary
 [account_invoice_inter_company_queued](account_invoice_inter_company_queued/) | 14.0.1.0.1 |  | Generate invoices using jobs
 [account_invoice_inter_company_sale](account_invoice_inter_company_sale/) | 14.0.1.0.0 |  | Show sale related fields
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 14.0.1.0.0 |  | This module adds a wizard to create companies easily
+[account_payment_other_company](account_payment_other_company/) | 14.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![osi-scampbell](https://github.com/osi-scampbell.png?size=30px)](https://github.com/osi-scampbell) | Create Payments for Other Companies
 [base_multi_company](base_multi_company/) | 14.0.1.1.1 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
 [company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 |  | Display company dependent attribute on fields
 [intercompany_shared_contact](intercompany_shared_contact/) | 14.0.1.1.1 |  | User of each company are contact of a company partner. All child address of a company are automatically shared
