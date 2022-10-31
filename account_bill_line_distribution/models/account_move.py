@@ -98,7 +98,7 @@ class AccountMove(models.Model):
         # account/models/account_invoice.py line 1536
         # clears the distributions in the original VB
         dist_obj = self.env["account.invoice.line.distribution"]
-        super().action_reverse()
+        return super().action_reverse()
         # REMOVE: Auto manage in move_type: refund
         index = 0
         for line in self.invoice_line_ids:
@@ -112,10 +112,10 @@ class AccountMove(models.Model):
                             "company_id": dist_line.company_id.id,
                             "percent": dist_line.percent,
                             "amount": dist_line.amount,
-                            "invoice_line_id": self.invoice_line_ids[index].id,
+                            "invoice_line_id": res.invoice_line_ids[index].id,
                         }
                     )
-                    self.invoice_line_ids[index]._onchange_distribution_ids_percent()
+                    res.invoice_line_ids[index]._onchange_distribution_ids_percent()
             index += 1
 
     def get_from_lines(
@@ -189,14 +189,7 @@ class AccountMove(models.Model):
                     },
                 )
             )
-            account = (
-                self.env["account.move.line"]
-                .search(
-                    [("name", "=", line["name"]), ("move_id", "=", invoice_id.id)],
-                    limit=1,
-                )
-                .account_id
-            )
+            account = self.env['account.move.line'].search([('name', '=', line['name']), ('move_id', '=', invoice_id.id)], limit=1).account_id
             # Debit Account of invoice line
             new_account = (
                 self.env["account.account"]
@@ -242,14 +235,7 @@ class AccountMove(models.Model):
                     },
                 )
             )
-            account = (
-                self.env["account.move.line"]
-                .search(
-                    [("name", "=", line["name"]), ("move_id", "=", invoice_id.id)],
-                    limit=1,
-                )
-                .account_id
-            )
+            account = self.env['account.move.line'].search([('name', '=', line['name']), ('move_id', '=', invoice_id.id)], limit=1).account_id
             # Debit Account of invoice line
             new_account = (
                 self.env["account.account"]
