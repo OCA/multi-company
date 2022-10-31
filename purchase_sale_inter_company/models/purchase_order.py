@@ -59,6 +59,7 @@ class PurchaseOrder(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
+        pricelist_obj = self.env["product.pricelist"]
         # Check intercompany user
         intercompany_user = dest_company.intercompany_sale_user_id
         if not intercompany_user:
@@ -68,20 +69,32 @@ class PurchaseOrder(models.Model):
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
         company_partner = self.company_id.partner_id
-        # check pricelist currency should be same with PO/SO document
-        if self.currency_id.id != (
-            company_partner.property_product_pricelist.currency_id.id
+        intercompany_so_pricelist = company_partner.property_product_pricelist
+        # pricelist currency should be same with PO/SO document
+        # if corresponding pricelist currency is not the same
+        # find or create propriate pricelist
+        if intercompany_so_pricelist and (
+            self.currency_id == intercompany_so_pricelist.currency_id
         ):
-            raise UserError(
-                _(
-                    "You cannot create SO from PO because "
-                    "sale price list currency is different than "
-                    "purchase price list currency."
-                )
+            related_pricelist = intercompany_so_pricelist
+        else:
+            related_pricelist = pricelist_obj.search(
+                [("currency_id", "=", self.currency_id.id)], limit=1
+            )
+        if not related_pricelist:
+            related_pricelist = pricelist_obj.create(
+                {
+                    "name": "Public pricelist",
+                    "currency_id": self.currency_id.id,
+                }
             )
         # create the SO and generate its lines from the PO lines
         sale_order_data = self._prepare_sale_order_data(
-            self.name, company_partner, dest_company, self.dest_address_id
+            self.name,
+            company_partner,
+            dest_company,
+            self.dest_address_id,
+            related_pricelist,
         )
         sale_order = (
             self.env["sale.order"]
@@ -104,7 +117,7 @@ class PurchaseOrder(models.Model):
             sale_order.with_user(intercompany_user.id).sudo().action_confirm()
 
     def _prepare_sale_order_data(
-        self, name, partner, dest_company, direct_delivery_address
+        self, name, partner, dest_company, direct_delivery_address, pricelist
     ):
         """Generate the Sale Order values from the PO
         :param name : the origin client reference
@@ -115,6 +128,8 @@ class PurchaseOrder(models.Model):
         :rtype dest_company : res.company record
         :param direct_delivery_address : the address of the SO
         :rtype direct_delivery_address : res.partner record
+        :param pricelist : SO pricelist with the same currency as corresponding PO
+        :rtype pricelist : product.pricelist record
         """
         self.ensure_one()
         delivery_address = direct_delivery_address or partner or False
@@ -135,6 +150,7 @@ class PurchaseOrder(models.Model):
         if self.notes:
             new_order.note = self.notes
         new_order.commitment_date = self.date_planned
+        new_order.pricelist_id = pricelist
         return new_order._convert_to_write(new_order._cache)
 
     def _prepare_sale_order_line_data(self, purchase_line, sale_order):
