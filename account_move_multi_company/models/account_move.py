@@ -57,7 +57,7 @@ class AccountMove(models.Model):
     def _post(self, soft=True):
         res = super()._post(soft)
         dedicated_companies_vals = {}
-        journal_entry_transfer = self.env["account.move"]
+        self.env["account.move"]
         transfer_lines = []
         lines_to_reconcile = []
         account_obj = self.env["account.account"]
@@ -136,15 +136,15 @@ class AccountMove(models.Model):
             # Create, post and reconcile the entries in the current company
             if self.env.company.due_fromto_payment_journal_id and transfer_lines:
                 journal_id = self.env.company.due_fromto_payment_journal_id.id
-                journal_entry_transfer = self.env["account.move"].create(
-                    {
-                        "date": move.date,
-                        "ref": move.ref,
-                        "journal_id": journal_id,
-                        "line_ids": transfer_lines,
-                        "partner_id": move.partner_id.id,
-                    }
-                )
+                # journal_entry_transfer = self.env["account.move"].create(
+                #     {
+                #         "date": move.date,
+                #         "ref": move.ref,
+                #         "journal_id": journal_id,
+                #         "line_ids": transfer_lines,
+                #         "partner_id": move.partner_id.id,
+                #     }
+                # )
                 # Do Not Automatically Post/Reconcile
                 # journal_entry_transfer._post()
 
