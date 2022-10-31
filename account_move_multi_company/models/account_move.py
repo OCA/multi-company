@@ -57,7 +57,6 @@ class AccountMove(models.Model):
     def _post(self, soft=True):
         res = super()._post(soft)
         dedicated_companies_vals = {}
-        self.env["account.move"]
         transfer_lines = []
         lines_to_reconcile = []
         account_obj = self.env["account.account"]
