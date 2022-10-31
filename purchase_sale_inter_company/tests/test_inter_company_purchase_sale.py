@@ -179,12 +179,6 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_approve()
 
-    def test_raise_currency(self):
-        currency = self.env.ref("base.USD")
-        self.purchase_company_a.currency_id = currency
-        with self.assertRaises(UserError):
-            self.purchase_company_a.with_user(self.user_company_a).button_approve()
-
     def test_purchase_invoice_relation(self):
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
         sales = (
