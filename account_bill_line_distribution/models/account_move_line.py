@@ -45,9 +45,7 @@ class AccountMoveLine(models.Model):
             )
         )
         for line in invoice_line.filtered(lambda l: not l.distribution_ids):
-            line.write(
-                {"distribution_ids": [(0, 0, line.get_default_distribution())]}
-            )
+            line.write({"distribution_ids": [(0, 0, line.get_default_distribution())]})
             line.distribution_ids._onchange_percent_total()
         return lines
 
