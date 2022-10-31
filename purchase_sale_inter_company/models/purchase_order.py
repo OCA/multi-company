@@ -16,7 +16,12 @@ class PurchaseOrder(models.Model):
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
-            dest_company = purchase_order.partner_id.ref_company_ids
+            po_partner = purchase_order.partner_id
+            # vendor can be a member of group company or it's child
+            # dest_company will be anyway member of group company
+            dest_company = (
+                po_partner.ref_company_ids or po_partner.parent_id.ref_company_ids
+            )
             if dest_company and dest_company.so_from_po:
                 purchase_order.with_company(
                     dest_company.id

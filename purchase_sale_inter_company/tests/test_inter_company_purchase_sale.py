@@ -121,16 +121,14 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # set all price list to EUR
         for pl in pricelists:
             pl.currency_id = currency_eur
+        cls.purchase_company_a_child = cls.purchase_company_a.copy()
+        cls.purchase_company_a_child.partner_id = cls.partner_company_b.child_ids
 
-    def test_purchase_sale_inter_company(self):
-        self.purchase_company_a.notes = "Test note"
-        # Confirm the purchase of company A
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        # Check sale order created in company B
+    def _check_inter_company_data(self, purchase_order):
         sales = (
             self.env["sale.order"]
             .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
+            .search([("auto_purchase_order_id", "=", purchase_order.id)])
         )
         self.assertNotEqual(sales, False)
         self.assertEqual(len(sales), 1)
@@ -140,17 +138,36 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self.assertEqual(sales.state, "draft")
         self.assertEqual(
             sales.partner_id,
-            self.purchase_company_a.company_id.partner_id,
+            purchase_order.company_id.partner_id,
         )
-        self.assertEqual(
-            sales.company_id.partner_id, self.purchase_company_a.partner_id
-        )
-        self.assertEqual(len(sales.order_line), len(self.purchase_company_a.order_line))
+        po_partner = purchase_order.partner_id
+        if po_partner.ref_company_ids:
+            vendor = po_partner.ref_company_ids
+            self.assertEqual(sales.note, "<p>Test note</p>")
+        if po_partner.parent_id.ref_company_ids:
+            vendor = po_partner.parent_id.ref_company_ids
+            self.assertEqual(sales.note, "<p>Test note child</p>")
+        self.assertEqual(sales.company_id.partner_id, vendor.partner_id)
+        self.assertEqual(len(sales.order_line), len(purchase_order.order_line))
         self.assertEqual(
             sales.order_line.product_id,
-            self.purchase_company_a.order_line.product_id,
+            purchase_order.order_line.product_id,
         )
-        self.assertEqual(sales.note, "<p>Test note</p>")
+
+    def test_purchase_sale_inter_company(self):
+        self.purchase_company_a.notes = "Test note"
+        # Confirm the purchase of company A
+        self.purchase_company_a.with_user(self.user_company_a).button_approve()
+        # Check sale order created in company B
+        # if Vendor is partner_company_b
+        self._check_inter_company_data(self.purchase_company_a)
+
+        self.purchase_company_a_child.notes = "Test note child"
+        # Confirm the purchase of company A
+        self.purchase_company_a_child.with_user(self.user_company_a).button_approve()
+        # Check sale order created in company B
+        # if Vendor is child of partner_company_b
+        self._check_inter_company_data(self.purchase_company_a_child)
 
     def xxtest_date_planned(self):
         # Install sale_order_dates module
