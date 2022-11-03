@@ -1,0 +1,1 @@
+This module checks company of invoices with a specific product, before assigning a new company to this product. If an invoice with a product is in a company, we don't allow to assign another company to this product.
