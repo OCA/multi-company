@@ -1,0 +1,1 @@
+This module checks company of related partner's invoices and sales before assigning a new company to this partner. If a sale or invoice of a partner is in a company, we don't allow to assign another company to this partner.
