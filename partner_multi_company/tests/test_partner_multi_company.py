@@ -146,7 +146,7 @@ class TestPartnerMultiCompany(common.SavepointCase):
         self.user_company_1.company_id = self.company_2.id
         self.user_company_1 = self.user_company_1.with_user(self.user_company_2)
         self.assertEqual(
-            self.user_company_1.partner_id.company_id,
+            self.user_company_1.company_id,
             self.company_2,
         )
 
