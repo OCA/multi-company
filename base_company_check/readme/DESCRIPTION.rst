@@ -1,0 +1,1 @@
+This module is a mixin for checking if some record are present or not in companies, before assigning a record to a specific company. If a record is in company A, we can not assigne the record to another company.

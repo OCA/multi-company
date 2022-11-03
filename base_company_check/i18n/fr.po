@@ -1,0 +1,49 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* base_company_check
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-11-03 14:06+0000\n"
+"PO-Revision-Date: 2022-11-03 15:09+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.2.1\n"
+
+#. module: base_company_check
+#: model:ir.model,name:base_company_check.model_company_check_mixin
+msgid "Base Company Check Mixin"
+msgstr ""
+
+#. module: base_company_check
+#: model:ir.model.fields,field_description:base_company_check.field_company_check_mixin__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: base_company_check
+#: model:ir.model.fields,field_description:base_company_check.field_company_check_mixin__id
+msgid "ID"
+msgstr ""
+
+#. module: base_company_check
+#: code:addons/base_company_check/models/company_check.py:0
+#, python-format
+msgid ""
+"It's not possible to set the company %(company_name)s to the record "
+"%(record_name)s as it have been used by %(incompatible_companies_name)s"
+msgstr ""
+"Il n'est pas possible d'attribuer la société %(company_name)s à "
+"l'enregistrement %(record_name)s car elle a été utilisée par "
+"%(incompatible_companies_name)s"
+
+#. module: base_company_check
+#: model:ir.model.fields,field_description:base_company_check.field_company_check_mixin____last_update
+msgid "Last Modified on"
+msgstr ""
