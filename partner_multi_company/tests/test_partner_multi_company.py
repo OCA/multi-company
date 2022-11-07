@@ -1,71 +1,67 @@
-# Copyright 2015 Oihane Crucelaegui
-# Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
-# License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
-
 from odoo.exceptions import AccessError
 from odoo.tests import common, tagged
 
 
 @tagged("post_install", "-at_install")
-class TestPartnerMultiCompany(common.SavepointCase):
-    @classmethod
-    def setUpClass(cls):
-        super(TestPartnerMultiCompany, cls).setUpClass()
+class TestPartnerMultiCompany(common.TransactionCase):
+
+    def setUp(self):
+        super(TestPartnerMultiCompany, self).setUp()
         # Avoid possible spam
-        cls.partner_model = cls.env["res.partner"].with_context(
+        self.partner_model = self.env["res.partner"].with_context(
             mail_create_nosubscribe=True,
         )
-        cls.company_1 = cls.env["res.company"].create({"name": "Test company 1"})
-        cls.company_2 = cls.env["res.company"].create({"name": "Test company 2"})
-        cls.partner_company_none = cls.partner_model.create(
+        self.company_1 = self.env["res.company"].create({"name": "Test company 1"})
+        self.company_2 = self.env["res.company"].create({"name": "Test company 2"})
+        self.partner_company_none = self.partner_model.create(
             {"name": "partner without company", "company_ids": False}
         )
-        cls.partner_company_1 = cls.partner_model.create(
+        self.partner_company_1 = self.partner_model.create(
             {
                 "name": "partner from company 1",
-                "company_ids": [(6, 0, cls.company_1.ids)],
+                "company_ids": [(6, 0, self.company_1.ids)],
             }
         )
-        cls.partner_company_2 = cls.partner_model.create(
+        self.partner_company_2 = self.partner_model.create(
             {
                 "name": "partner from company 2",
-                "company_ids": [(6, 0, cls.company_2.ids)],
+                "company_ids": [(6, 0, self.company_2.ids)],
             }
         )
-        cls.partner_company_both = cls.partner_model.create(
+        self.partner_company_both = self.partner_model.create(
             {
                 "name": "partner for both companies",
-                "company_ids": [(6, 0, (cls.company_1 + cls.company_2).ids)],
+                "company_ids": [(6, 0, (self.company_1 + self.company_2).ids)],
             }
         )
-        cls.user_company_1 = cls.env["res.users"].create(
+        self.user_company_1 = self.env["res.users"].create(
             {
                 "name": "User company 1",
                 "login": "user_company_1",
                 "email": "somebody@somewhere.com",
                 "groups_id": [
-                    (4, cls.env.ref("base.group_partner_manager").id),
-                    (4, cls.env.ref("base.group_user").id),
+                    (4, self.env.ref("base.group_partner_manager").id),
+                    (4, self.env.ref("base.group_user").id),
                 ],
-                "company_id": cls.company_1.id,
-                "company_ids": [(6, 0, cls.company_1.ids)],
+                "company_id": self.company_1.id,
+                "company_ids": [(6, 0, self.company_1.ids)],
             }
         )
-        cls.user_company_2 = cls.env["res.users"].create(
+        self.user_company_2 = self.env["res.users"].create(
             {
                 "name": "User company 2",
                 "login": "user_company_2",
                 "email": "somebody@somewhere.com",
                 "groups_id": [
-                    (4, cls.env.ref("base.group_partner_manager").id),
-                    (4, cls.env.ref("base.group_user").id),
+                    (4, self.env.ref("base.group_partner_manager").id),
+                    (4, self.env.ref("base.group_user").id),
                 ],
-                "company_id": cls.company_2.id,
-                "company_ids": [(6, 0, cls.company_2.ids)],
+                "company_id": self.company_2.id,
+                "company_ids": [(6, 0, self.company_2.ids)],
             }
         )
-        cls.partner_company_1 = cls.partner_company_1.with_user(cls.user_company_1)
-        cls.partner_company_2 = cls.partner_company_2.with_user(cls.user_company_2)
+        self.partner_company_1 = self.partner_company_1.with_user(self.user_company_1)
+        self.partner_company_2 = self.partner_company_2.with_user(self.user_company_2)
 
     def test_create_partner(self):
         partner = self.env["res.partner"].create(
@@ -146,7 +142,7 @@ class TestPartnerMultiCompany(common.SavepointCase):
         self.user_company_1.company_id = self.company_2.id
         self.user_company_1 = self.user_company_1.with_user(self.user_company_2)
         self.assertEqual(
-            self.user_company_1.company_id,
+            self.user_company_1.partner_id.company_id,
             self.company_2,
         )
 
