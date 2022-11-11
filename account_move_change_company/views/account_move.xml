@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 CreuBlanca
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="view_move_form">
+        <field name="name">account.move.form (in account_change_company)</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="show_name_warning" position="after">
+                <field name="allowed_company_ids" invisible="1" />
+            </field>
+        </field>
+    </record>
+
+
+
+</odoo>
