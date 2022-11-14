@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2022 CreuBlanca
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="res_partner_form_view">
+        <field name="name">res.partner.form (in multicompany_configuration)</field>
+        <field name="model">res.partner</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="multicompany_data" widget="multicompany_data" />
+                <footer>
+                    <button
+                        string="Apply"
+                        class="btn btn-primary"
+                        type="object"
+                        name="action_apply_multicompany_changes"
+                    />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="res_partner_form_multicompany_action" model="ir.actions.act_window">
+        <field name="name">Multicompany data</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_id" ref="res_partner_form_view" />
+        <field name="target">new</field>
+        <field name="view_mode">form</field>
+    </record>
+    <record model="ir.ui.view" id="view_partner_form">
+        <field name="name">res.partner.form (in multicompany_configuration)</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="groups_id" eval="[(4, ref('base.group_multi_company'))]" />
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button
+                    name="get_multicompany_action"
+                    type="object"
+                    string="Multicompany Data"
+                    icon="fa-building"
+                />
+            </div>
+        </field>
+    </record>
+
+</odoo>

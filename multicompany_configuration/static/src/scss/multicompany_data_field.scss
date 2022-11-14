@@ -1,0 +1,14 @@
+.o_form_view {
+    .o_multicompany_data {
+        width: 100%;
+        .o_multicompany_company_title {
+            padding: 0.4em;
+            background-color: $gray-300;
+        }
+        &.o_field_widget {
+            .o_field_widget {
+                margin-bottom: 5px;
+            }
+        }
+    }
+}
