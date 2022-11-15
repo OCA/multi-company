@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 14.0\n"
+"Project-Id-Version: Odoo Server 15.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -388,9 +388,4 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
 msgid "Wizard Account Multi-company Easy Creation"
-msgstr ""
-
-#. module: account_multicompany_easy_creation
-#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
-msgid "or"
 msgstr ""
