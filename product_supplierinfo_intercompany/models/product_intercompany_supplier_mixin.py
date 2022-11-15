@@ -43,7 +43,11 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
             ):
                 domain = record._get_intercompany_supplier_info_domain(pricelist)
                 supplierinfo = record.env["product.supplierinfo"].search(domain)
-                if record._has_intercompany_price(pricelist):
+                if (
+                    record._has_intercompany_price(pricelist)
+                    and record.sale_ok
+                    and record.purchase_ok
+                ):
                     vals = record._prepare_intercompany_supplier_info(pricelist)
                     if supplierinfo:
                         supplierinfo.write(vals)
