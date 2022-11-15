@@ -11,7 +11,7 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
     def button_approve(self, force=False):
-        """ Generate inter company sale order base on conditions."""
+        """Generate inter company sale order base on conditions."""
         res = super().button_approve(force)
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
