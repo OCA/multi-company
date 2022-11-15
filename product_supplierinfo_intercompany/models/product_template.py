@@ -56,3 +56,27 @@ class ProductTemplate(models.Model):
         """We need the 'depends' in ordder to get the correct, updated price
         calculations when a pricelist item is added"""
         return super()._compute_template_price()
+
+    @api.model
+    def create(self, vals):
+        res = super(ProductTemplate, self).create(vals)
+        if res.sale_ok and res.purchase_ok:
+            res.update_intercompany_prices()
+        return res
+
+    def write(self, vals):
+        res = super(ProductTemplate, self).write(vals)
+        for rec in self:
+            rec.update_intercompany_prices()
+        return res
+
+    def update_intercompany_prices(self):
+        pricelist_ids = (
+            self.env["product.pricelist"]
+            .sudo()
+            .search([("is_intercompany_supplier", "=", True)])
+        )
+        if len(pricelist_ids) > 0:
+            for pricelist_id in pricelist_ids:
+                for item in pricelist_id.item_ids:
+                    item._init_supplier_info()
