@@ -386,7 +386,9 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             self.set_global_properties()
 
     def action_res_company_form(self):
-        action = self.env.ref("base.action_res_company_form").read()[0]
+        action = self.env["ir.actions.act_window"]._for_xml_id(
+            "base.action_res_company_form"
+        )
         form = self.env.ref("base.view_company_form")
         action["views"] = [(form.id, "form")]
         action["res_id"] = self.new_company_id.id
