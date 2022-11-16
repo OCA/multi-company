@@ -61,14 +61,9 @@ class AccountMove(models.Model):
         )
         return company or False
 
-    def _post(self, soft=True):
+    def action_post(self):
         """Validated invoice generate cross invoice base on company rules"""
-        res = super()._post(soft=soft)
-        if not self.env.context.get("account_invoice_inter_company_queued"):
-            self.create_counterpart_invoices()
-        return res
-
-    def create_counterpart_invoices(self):
+        super().action_post()
         # Intercompany account entries or receipts aren't supported
         supported_types = {"out_invoice", "in_invoice", "out_refund", "in_refund"}
         for src_invoice in self.filtered(lambda x: x.move_type in supported_types):
