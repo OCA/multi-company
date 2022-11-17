@@ -153,7 +153,6 @@ class AccountMove(models.Model):
             dest_invoice_data["name"] = force_number
         dest_invoice = self.create(dest_invoice_data)
         # create invoice lines
-        dest_move_line_data = []
         form = Form(
             dest_invoice.with_company(dest_company.id),
             "account_invoice_inter_company.view_move_form",
@@ -168,10 +167,12 @@ class AccountMove(models.Model):
                     )
                     % src_line.name
                 )
-            dest_move_line_data.append(
-                src_line._prepare_account_move_line(dest_invoice, dest_company, form)
+            dm_data = src_line._prepare_account_move_line(
+                dest_invoice, dest_company, form
             )
-        self.env["account.move.line"].create(dest_move_line_data)
+            new_move_id = self.env["account.move.line"].create(dm_data)
+            new_move_id._onchange_product_id()
+            new_move_id.write(dm_data)
         dest_invoice._move_autocomplete_invoice_lines_values()
         # Validation of account invoice
         precision = self.env["decimal.precision"].precision_get("Account")
@@ -351,37 +352,40 @@ class AccountMoveLine(models.Model):
         :param dest_company : the company of the created invoice
         :rtype dest_company : res.company record
         """
-        self.ensure_one()
-        # Use test.Form() class to trigger propper onchanges on the line
-        product = self.product_id or False
-        dest_form = form or Form(
-            dest_move.with_company(dest_company.id),
-            "account_invoice_inter_company.view_move_form",
+        vals = {
+            "product_id": self.product_id.id,
+            "company_id": dest_move.company_id.id,
+            "display_type": self.display_type,
+            "name": self.name,
+            "product_uom_id": self.product_uom_id.id,
+            "quantity": self.quantity,
+            "price_unit": self.price_unit,
+            "discount": self.discount,
+            "sequence": self.sequence,
+            "move_id": dest_move.id,
+            "auto_invoice_line_id": self.id,
+            "is_anglo_saxon_line": self.is_anglo_saxon_line,
+            "is_rounding_line": self.is_rounding_line,
+            "recompute_tax_line": self.recompute_tax_line,
+            "tax_exigible": self.tax_exigible,
+            "tax_fiscal_country_id": self.tax_fiscal_country_id.id,
+        }
+        account_id = False
+        fiscal_position = dest_move.fiscal_position_id
+        accounts = self.product_id.product_tmpl_id.get_product_accounts(
+            fiscal_pos=fiscal_position
         )
-        if dest_form.invoice_line_ids:
-            dest_form.invoice_line_ids.remove(0)
-        with dest_form.invoice_line_ids.new() as line_form:
-            # HACK: Related fields manually set due to Form() limitations
-            line_form.company_id = dest_move.company_id
-            # Regular fields
-            line_form.display_type = self.display_type
-            line_form.product_id = product
-            line_form.name = self.name
-            if line_form.product_uom_id != self.product_uom_id:
-                line_form.product_uom_id = self.product_uom_id
-            line_form.quantity = self.quantity
-            # TODO: it's wrong to just copy the price_unit
-            # You have to check if the tax is price_include True or False
-            # in source and target companies
-            line_form.price_unit = self.price_unit
-            line_form.discount = self.discount
-            line_form.sequence = self.sequence
-            # Compatibility with module account_invoice_start_end_dates
-            if hasattr(self, "start_date") and hasattr(self, "end_date"):
-                line_form.start_date = self.start_date
-                line_form.end_date = self.end_date
-        vals = dest_form._values_to_save(all_fields=True)["invoice_line_ids"][0][2]
-        vals.update({"move_id": dest_move.id, "auto_invoice_line_id": self.id})
+        if dest_move.is_sale_document(include_receipts=True):
+            # Out invoice.
+            account_id = accounts["income"] or dest_move.account_id
+        elif dest_move.is_purchase_document(include_receipts=True):
+            # In invoice.
+            account_id = accounts["expense"] or dest_move.account_id
+        vals["account_id"] = account_id.id
+        # Compatibility with module account_invoice_start_end_dates
+        if hasattr(self, "start_date") and hasattr(self, "end_date"):
+            vals["start_date"] = self.start_date
+            vals["end_date"] = self.end_date
         if self.analytic_account_id and not self.analytic_account_id.company_id:
             vals["analytic_account_id"] = self.analytic_account_id.id
             analytic_tags = self.analytic_tag_ids.filtered(lambda x: not x.company_id)
