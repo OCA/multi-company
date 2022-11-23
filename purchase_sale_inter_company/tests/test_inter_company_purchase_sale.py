@@ -169,6 +169,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self._approve_po()
 
     def test_purchase_invoice_relation(self):
+        self.partner_company_a.company_id = False
+        self.partner_company_b.company_id = False
         sale = self._approve_po()
         sale_invoice = sale._create_invoices()[0]
         sale_invoice.action_post()
