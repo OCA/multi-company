@@ -4,7 +4,6 @@ from odoo.tests import common, tagged
 
 @tagged("post_install", "-at_install")
 class TestPartnerMultiCompany(common.TransactionCase):
-
     def setUp(self):
         super(TestPartnerMultiCompany, self).setUp()
         # Avoid possible spam
