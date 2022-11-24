@@ -30,8 +30,6 @@ class ProductSupplierinfo(models.Model):
         comodel_name="product.pricelist",
     )
 
-    pricelist_item_id = fields.Many2one(comodel_name="product.pricelist.item")
-
     def check_access_rule(self, operation):
         super().check_access_rule(operation)
         if operation in ("write", "create", "unlink"):

@@ -24,48 +24,32 @@ class TestIntercompanySupplierCase(SavepointCase):
         cls.purchase_company = cls.env.ref(
             "product_supplierinfo_intercompany.purchaser_company"
         )
+        cls.partner = cls.env.ref("base.main_partner")
 
-
-class TestIntercompanySupplier(TestIntercompanySupplierCase):
-    def setUp(self):
-        super().setUp()
-
-        self.user = self.env.ref("base.user_demo")
-        self.user.write(
-            {"groups_id": [(4, self.env.ref("sales_team.group_sale_manager").id)]}
-        )
-        self.env = self.env(user=self.user)
+    def _add_item(self, record, price, pricelist_id=None):
         ref = self.env.ref
-        self.partner = ref("base.main_partner")
-        self.product_product_4b = ref("product.product_product_4b")
-        self.product_product_4c = ref("product.product_product_4c")
-        self.product_global_id = self.env["product.template"].create(
-            {"name": "global product", "list_price": 100}
+        pricelist_id = (
+            pricelist_id
+            or ref("product_supplierinfo_intercompany.pricelist_intercompany").id
         )
-
-        self.product_category_planes_id = self.env["product.category"].create(
-            {
-                "name": "Planes",
-            }
-        )
-        self.product_plane_id = self.env["product.template"].create(
-            {
-                "name": "Boeing 777",
-                "list_price": 1000,
-                "categ_id": self.product_category_planes_id.id,
-            }
-        )
-
-        self.product_template_1 = ref("product.product_product_1_product_template")
-        self.product_product_2 = ref("product.product_product_2")
-
-        self.pricelist_item_4 = ref(
-            "product_supplierinfo_intercompany.pricelist_item_product_template_4"
-        )
-        self.pricelist_item_4b = ref(
-            "product_supplierinfo_intercompany.pricelist_item_product_product_4b"
-        )
-        self.supplier_info = self._get_supplier_info(self.product_template_1)
+        self.assertIn(record._name, ["product.product", "product.template"])
+        vals = {
+            "pricelist_id": pricelist_id,
+            "base": "list_price",
+            "price_discount": 0,
+            "fixed_price": price,
+        }
+        if record._name == "product.product":
+            vals.update(
+                {
+                    "product_id": record.id,
+                    "product_tmpl_id": record.product_tmpl_id.id,
+                }
+            )
+        else:
+            vals["product_tmpl_id"] = record.id
+        res = self.env["product.pricelist.item"].create(vals)
+        return res
 
     def _get_supplier_info(self, record=None, sudo=True):
         domain = [
@@ -101,30 +85,46 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         self.assertEqual(len(supplierinfo.intercompany_pricelist_id), 1)
         self.assertEqual(supplierinfo.price, price)
 
-    def _add_item(self, record, price, pricelist_id=None):
-        ref = self.env.ref
-        pricelist_id = (
-            pricelist_id
-            or ref("product_supplierinfo_intercompany.pricelist_intercompany").id
+
+class TestIntercompanySupplier(TestIntercompanySupplierCase):
+    def setUp(self):
+        super().setUp()
+
+        self.user = self.env.ref("base.user_demo")
+        self.user.write(
+            {"groups_id": [(4, self.env.ref("sales_team.group_sale_manager").id)]}
         )
-        self.assertIn(record._name, ["product.product", "product.template"])
-        vals = {
-            "pricelist_id": pricelist_id,
-            "base": "list_price",
-            "price_discount": 0,
-            "fixed_price": price,
-        }
-        if record._name == "product.product":
-            vals.update(
-                {
-                    "product_id": record.id,
-                    "product_tmpl_id": record.product_tmpl_id.id,
-                }
-            )
-        else:
-            vals["product_tmpl_id"] = record.id
-        res = self.env["product.pricelist.item"].create(vals)
-        return res
+        self.env = self.env(user=self.user)
+        ref = self.env.ref
+        self.product_product_4b = ref("product.product_product_4b")
+        self.product_product_4c = ref("product.product_product_4c")
+        self.product_global_id = self.env["product.template"].create(
+            {"name": "global product", "list_price": 100}
+        )
+
+        self.product_category_planes_id = self.env["product.category"].create(
+            {
+                "name": "Planes",
+            }
+        )
+        self.product_plane_id = self.env["product.template"].create(
+            {
+                "name": "Boeing 777",
+                "list_price": 1000,
+                "categ_id": self.product_category_planes_id.id,
+            }
+        )
+
+        self.product_template_1 = ref("product.product_product_1_product_template")
+        self.product_product_2 = ref("product.product_product_2")
+
+        self.pricelist_item_4 = ref(
+            "product_supplierinfo_intercompany.pricelist_item_product_template_4"
+        )
+        self.pricelist_item_4b = ref(
+            "product_supplierinfo_intercompany.pricelist_item_product_product_4b"
+        )
+        self.supplier_info = self._get_supplier_info(self.product_template_1)
 
     def _switch_user_to_purchase_company(self):
         self.user.write(
