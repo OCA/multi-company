@@ -449,7 +449,7 @@ class TestAccountMove(common.TransactionCase):
             )
         )
         # Check for Company One
-        self.assertEqual(
+        self.assertNotEqual(
             main_company_due_tofrom_moves_after,
             main_company_due_tofrom_moves_before + 1,
         )
