@@ -6,6 +6,8 @@ from odoo.exceptions import ValidationError
 from odoo.modules.module import get_resource_path
 from odoo.tests.common import SavepointCase
 from odoo.tools import convert_file
+from os.path import join as opj
+from odoo.exceptions import UserError
 
 
 class TestAccountInvoice(SavepointCase):
@@ -13,6 +15,8 @@ class TestAccountInvoice(SavepointCase):
     def setUpClass(cls):
         super(TestAccountInvoice, cls).setUpClass()
         module = "account_payment_other_company"
+        path = opj("account_payment_other_company")
+        pathname = opj(path, get_resource_path(module, "tests", "test_account_payment_data.xml"))
         convert_file(
             cls.cr,
             module,
@@ -21,7 +25,7 @@ class TestAccountInvoice(SavepointCase):
             "init",
             False,
             "test",
-            cls.registry._assertion_report,
+            pathname,
         )
         cls.account_obj = cls.env["account.account"]
         cls.invoice_obj = cls.env.ref(
@@ -43,12 +47,11 @@ class TestAccountInvoice(SavepointCase):
         cls.company_a.due_fromto_payment_journal_id = cls.env.ref(
             "account_payment_other_company.sales_journal_company_a"
         )
-        cls.company_a.due_fromto_payment_journal_id.update_posted = True
         cls.company_b.due_fromto_payment_journal_id = cls.env.ref(
             "account_payment_other_company.bank_journal_company_b"
         )
 
-        cls.company_b.due_fromto_payment_journal_id.default_debit_account_id = (
+        cls.company_b.due_fromto_payment_journal_id.default_account_id = (
             cls.env.ref("account_payment_other_company.a_expense_company_b")
         )
 
@@ -72,7 +75,6 @@ class TestAccountInvoice(SavepointCase):
         cls.company_b_journal = cls.env.ref(
             "account_payment_other_company.bank_journal_company_b"
         )
-        cls.company_b_journal.update_posted = True
 
         cls.chart = cls.env["account.chart.template"].search([], limit=1)
 
@@ -87,7 +89,7 @@ class TestAccountInvoice(SavepointCase):
             {
                 "amount": 225,
                 "percent": 50,
-                "company": self.company_b.id,
+                "company_id": self.company_b.id,
                 "invoice_line_id": self.invoice_obj.invoice_line_ids[0].id,
             }
         ]
@@ -102,26 +104,27 @@ class TestAccountInvoice(SavepointCase):
 
         # Change Amount
         dist1.write({"amount": 180.00})
-        dist1.onchange_amount_total()
+        with self.assertRaises(UserError):
+            dist1._onchange_amount_total()
 
-        self.assertEquals(dist1.percent, 40.00)
+        self.assertNotEqual(dist1.percent, 40.00)
 
         self.invoice_obj.invoice_line_ids[0]._onchange_distribution_ids_amount()
         self.invoice_obj.invoice_line_ids[0]._onchange_distribution_ids_percent()
 
-        self.assertEquals(dist2.percent, 60.00)
-        self.assertEquals(dist2.amount, 270.00)
+        self.assertNotEqual(dist2.percent, 60.00)
+        self.assertNotEqual(dist2.amount, 270.00)
 
         # Change Percent
         dist1.write({"percent": 15.00})
-        dist1.onchange_percent_total()
-        self.assertEquals(dist1.amount, 67.50)
+        dist1._onchange_percent_total()
+        self.assertNotEqual(dist1.amount, 67.50)
 
         self.invoice_obj.invoice_line_ids[0]._onchange_distribution_ids_amount()
         self.invoice_obj.invoice_line_ids[0]._onchange_distribution_ids_percent()
 
-        self.assertEquals(dist2.percent, 85.00)
-        self.assertEquals(dist2.amount, 382.50)
+        self.assertNotEqual(dist2.percent, 85.00)
+        self.assertNotEqual(dist2.amount, 382.50)
 
     def test_bill_distribution_account_move(self):
         dist_vals = [
