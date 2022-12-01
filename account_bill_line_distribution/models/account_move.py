@@ -18,11 +18,52 @@ class AccountMove(models.Model):
             "line_ids": False,
         }
 
+    def lines_action_post(self, from_lines, from_move_value, companies, inv):
+        account_move = self.env["account.move"]
+        if from_lines:
+            from_move = account_move.with_context(default_move_type="entry").create(
+                from_move_value
+            )
+            from_move.line_ids = from_lines
+            from_move.action_post()
+
+            # Due To's
+            for company in companies:
+                to_lines = []
+                # Skip the current company because that has been taken
+                # care of already
+                if company.id != inv.company_id.id:
+                    to_move_vals = {
+                        "date": inv.date,
+                        "journal_id": company.due_fromto_payment_journal_id.id,
+                        "state": "draft",
+                        "ref": inv.company_id.name + ": " + inv.name,
+                        "company_id": company.id,
+                    }
+                    # Credit company "Due_To" Account with debit
+                    # amount from its previous "Due from" Account entry
+                    for line in from_lines:
+                        line = line[2]
+                        if inv.move_type == "in_invoice":
+                            if line["partner_id"] == company.partner_id.id:
+                                self.get_to_lines(to_lines, line, company, inv, True)
+                        elif inv.move_type == "in_refund":
+                            if line["partner_id"] == company.partner_id.id:
+                                self.get_to_lines(to_lines, line, company, inv, False)
+                    # Create Journal Entries in the other companies
+                    if to_lines:
+                        to_move = (
+                            account_move.with_user(SUPERUSER_ID)
+                            .with_context(default_move_type="entry")
+                            .create(to_move_vals)
+                        )
+                        to_move.with_company(company).line_ids = to_lines
+                        to_move.action_post()
+
     def action_post(self):
         res = super(AccountMove, self).action_post()
         for inv in self:
             # Due From
-            account_move = self.env["account.move"]
             from_move_value = self.prepare_due_from_move_values()
             from_lines = []
             companies = []
@@ -47,50 +88,8 @@ class AccountMove(models.Model):
                             self.get_from_lines(
                                 from_lines, invoice_line, inv, amount, distrib, False
                             )
+            inv.lines_action_post(from_lines, from_move_value, companies, inv)
             # Create Journal Entry in the current company
-            if from_lines:
-                from_move = account_move.with_context(default_move_type="entry").create(
-                    from_move_value
-                )
-                from_move.line_ids = from_lines
-                from_move.action_post()
-
-                # Due To's
-                for company in companies:
-                    to_lines = []
-                    # Skip the current company because that has been taken
-                    # care of already
-                    if company.id != inv.company_id.id:
-                        to_move_vals = {
-                            "date": inv.date,
-                            "journal_id": company.due_fromto_payment_journal_id.id,
-                            "state": "draft",
-                            "ref": inv.company_id.name + ": " + inv.name,
-                            "company_id": company.id,
-                        }
-                        # Credit company "Due_To" Account with debit
-                        # amount from its previous "Due from" Account entry
-                        for line in from_lines:
-                            line = line[2]
-                            if inv.move_type == "in_invoice":
-                                if line["partner_id"] == company.partner_id.id:
-                                    self.get_to_lines(
-                                        to_lines, line, company, inv, True
-                                    )
-                            elif inv.move_type == "in_refund":
-                                if line["partner_id"] == company.partner_id.id:
-                                    self.get_to_lines(
-                                        to_lines, line, company, inv, False
-                                    )
-                        # Create Journal Entries in the other companies
-                        if to_lines:
-                            to_move = (
-                                account_move.with_user(SUPERUSER_ID)
-                                .with_context(default_move_type="entry")
-                                .create(to_move_vals)
-                            )
-                            to_move.with_company(company).line_ids = to_lines
-                            to_move.action_post()
         return res
 
     def action_reverse(self):
