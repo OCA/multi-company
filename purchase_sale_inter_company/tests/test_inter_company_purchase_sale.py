@@ -156,12 +156,20 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_purchase_sale_inter_company(self):
         self.purchase_company_a.notes = "Test note"
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a.ignore_exception = True
         # Confirm the purchase of company A
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
         # Check sale order created in company B
         # if Vendor is partner_company_b
         self._check_inter_company_data(self.purchase_company_a)
 
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a_child.ignore_exception = True
         self.purchase_company_a_child.notes = "Test note child"
         # Confirm the purchase of company A
         self.purchase_company_a_child.with_user(self.user_company_a).button_approve()
@@ -197,6 +205,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self.purchase_company_a.with_user(self.user_company_a).button_approve()
 
     def test_purchase_invoice_relation(self):
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a.ignore_exception = True
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
         sales = (
             self.env["sale.order"]
@@ -216,6 +228,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_cancel(self):
         self.company_b.sale_auto_validation = False
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a.ignore_exception = True
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
         sales = (
             self.env["sale.order"]
@@ -228,6 +244,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_cancel_confirmed_po_so(self):
         self.company_b.sale_auto_validation = True
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a.ignore_exception = True
         self.purchase_company_a.with_user(self.user_company_a).button_approve()
         self.env["sale.order"].with_user(self.user_company_b).search(
             [("auto_purchase_order_id", "=", self.purchase_company_a.id)]

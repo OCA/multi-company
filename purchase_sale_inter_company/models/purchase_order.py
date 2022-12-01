@@ -117,6 +117,10 @@ class PurchaseOrder(models.Model):
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
+        # set ignore_exception=True to confirm the order
+        # if sale_exception module is installed
+        if "ignore_exception" in self.env["sale.order"]:
+            sale_order.ignore_exception = True
         # Validation of sale order
         if dest_company.sale_auto_validation:
             sale_order.with_user(intercompany_user.id).sudo().action_confirm()
