@@ -153,6 +153,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             sales.order_line.product_id,
             purchase_order.order_line.product_id,
         )
+        self.assertEqual(sales.currency_id, purchase_order.currency_id)
 
     def test_purchase_sale_inter_company(self):
         self.purchase_company_a.notes = "Test note"
@@ -171,6 +172,54 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         if "ignore_exception" in self.env["purchase.order"]:
             self.purchase_company_a_child.ignore_exception = True
         self.purchase_company_a_child.notes = "Test note child"
+        # Confirm the purchase of company A
+        self.purchase_company_a_child.with_user(self.user_company_a).button_approve()
+        # Check sale order created in company B
+        # if Vendor is child of partner_company_b
+        self._check_inter_company_data(self.purchase_company_a_child)
+
+    def test_purchase_sale_inter_company_pricelist(self):
+        self.purchase_company_a.notes = "Test note"
+        # Confirm the purchase of company A
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a.ignore_exception = True
+        # change currency of partner sales pricelist to find
+        # related with currency from purchase order
+        currency_usd = self.env.ref("base.USD")
+        currency_aud = self.env.ref("base.AUD")
+        self.partner_company_a.property_product_pricelist.currency_id = currency_aud
+        self.Pricelist = self.env["product.pricelist"].sudo()
+        self.Pricelist.create(
+            {
+                "name": "Pricelist diff",
+                "currency_id": currency_usd.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        fake_pricelist = self.Pricelist.create(
+            {
+                "name": "Pricelist fake",
+                "currency_id": currency_usd.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        self.purchase_company_a.currency_id = currency_usd
+        with self.assertRaises(UserError):
+            self.purchase_company_a.with_user(self.user_company_a).button_approve()
+        fake_pricelist.unlink()
+        self.purchase_company_a.with_user(self.user_company_a).button_approve()
+        # Check sale order created in company B
+        # if Vendor is partner_company_b
+        self._check_inter_company_data(self.purchase_company_a)
+
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        if "ignore_exception" in self.env["purchase.order"]:
+            self.purchase_company_a_child.ignore_exception = True
+        self.purchase_company_a_child.notes = "Test note child"
+        self.purchase_company_a_child.currency_id = self.env.ref("base.CHF")
         # Confirm the purchase of company A
         self.purchase_company_a_child.with_user(self.user_company_a).button_approve()
         # Check sale order created in company B
