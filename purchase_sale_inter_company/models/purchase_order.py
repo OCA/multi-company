@@ -84,12 +84,23 @@ class PurchaseOrder(models.Model):
             related_pricelist = intercompany_so_pricelist
         else:
             related_pricelist = pricelist_obj.search(
-                [("currency_id", "=", self.currency_id.id)], limit=1
+                [
+                    ("currency_id", "=", self.currency_id.id),
+                    ("company_id", "=", dest_company.id),
+                ]
             )
+            if len(related_pricelist) > 1:
+                raise UserError(
+                    _(
+                        "There is more than one pricelist for this vendor "
+                        "with the same currency"
+                    )
+                )
         if not related_pricelist:
             related_pricelist = pricelist_obj.create(
                 {
                     "name": "Public pricelist",
+                    "company_id": dest_company.id,
                     "currency_id": self.currency_id.id,
                 }
             )
