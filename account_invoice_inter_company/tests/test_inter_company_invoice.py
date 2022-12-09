@@ -5,9 +5,11 @@
 
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
+from odoo.tests import tagged
 from odoo.tests.common import Form, SavepointCase
 
 
+@tagged("post_install", "-at_install")
 class TestAccountInvoiceInterCompanyBase(SavepointCase):
     @classmethod
     def setUpClass(cls):
