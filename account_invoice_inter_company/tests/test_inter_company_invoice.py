@@ -414,6 +414,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
         ).property_account_expense_id = cls.a_expense_company_b.id
 
 
+@tagged("post_install", "-at_install")
 class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
     def test01_user(self):
         # Check user of company B (company of destination)
