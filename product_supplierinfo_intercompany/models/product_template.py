@@ -79,4 +79,10 @@ class ProductTemplate(models.Model):
         if len(pricelist_ids) > 0:
             for pricelist_id in pricelist_ids:
                 for item in pricelist_id.item_ids:
-                    item._init_supplier_info()
+                    todo = {
+                        pricelist_id: {
+                            "templates": self,
+                            "products": self.env["product.product"].browse(False),
+                        }
+                    }
+                    item._process_product_to_synchronize(todo)
