@@ -13,5 +13,4 @@
     "application": False,
     "development_status": "Production/Stable",
     "maintainers": ["pedrobaeza"],
-    "external_dependencies": {"python": ["odoo-test-helper"]},
 }
