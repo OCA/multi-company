@@ -4,7 +4,7 @@
 {
     "name": "Multi Company Base",
     "summary": "Provides a base for adding multi-company support to models.",
-    "version": "15.0.1.0.0",
+    "version": "15.0.1.0.1",
     "author": "ACSONE SA/NV, LasLabs, Tecnativa, Odoo Community Association (OCA)",
     "category": "base",
     "website": "https://github.com/OCA/multi-company",
@@ -13,5 +13,4 @@
     "application": False,
     "development_status": "Production/Stable",
     "maintainers": ["pedrobaeza"],
-    "external_dependencies": {"python": ["odoo-test-helper"]},
 }
