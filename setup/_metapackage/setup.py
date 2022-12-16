@@ -12,6 +12,7 @@ setuptools.setup(
         'odoo14-addon-account_invoice_inter_company',
         'odoo14-addon-account_invoice_inter_company_queued',
         'odoo14-addon-account_invoice_inter_company_sale',
+        'odoo14-addon-account_move_change_company',
         'odoo14-addon-account_multicompany_easy_creation',
         'odoo14-addon-account_payment_other_company',
         'odoo14-addon-base_multi_company',
