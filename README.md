@@ -34,6 +34,7 @@ addon | version | maintainers | summary
 [mail_multicompany](mail_multicompany/) | 14.0.0.1.0 |  | Email Gateway Multi company
 [mail_template_multi_company](mail_template_multi_company/) | 14.0.1.0.0 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [partner_contact_company_propagation](partner_contact_company_propagation/) | 14.0.1.0.0 |  | Propagate company info to children contacts
+[partner_multi_company](partner_multi_company/) | 14.0.1.0.0 |  | Select individually the partner visibility on each company
 [product_category_inter_company](product_category_inter_company/) | 14.0.1.0.1 |  | Product categories as company dependent
 [product_multi_company](product_multi_company/) | 14.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_supplierinfo_group_intercompany](product_supplierinfo_group_intercompany/) | 14.0.1.0.1 |  | Add sequence field on grouped pricelist items
