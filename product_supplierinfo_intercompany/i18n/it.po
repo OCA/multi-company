@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-10-18 18:43+0000\n"
+"PO-Revision-Date: 2022-12-21 12:44+0000\n"
 "Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -88,7 +88,7 @@ msgstr "E' un Fornitore Interaziendale"
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_template____last_update
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_purchase_order____last_update
 msgid "Last Modified on"
-msgstr "Ultima Modifica il"
+msgstr "Ultima modifica il"
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model,name:product_supplierinfo_intercompany.model_product_pricelist
