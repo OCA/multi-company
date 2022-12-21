@@ -319,3 +319,19 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         )
         self.assertEqual(len(supplierinfo.intercompany_pricelist_id), 1)
         self.assertEqual(supplierinfo.price, 10)
+
+    def test_getting_supplier_with_sudo(self):
+        # The company that have sell the product should not buy to itself
+        partner = self.env["res.partner"].create({"name": "FOO"})
+        self.env["product.supplierinfo"].sudo().create(
+            {
+                "product_id": self.product_product_4b.id,
+                "product_tmpl_id": self.product_template_4.id,
+                "name": partner.id,
+                "sequence": 2,
+                "company_id": self.sale_company.id,
+            }
+        )
+        # Select using sudo (as some native odoo code do it)
+        supplier = self.product_product_4b.sudo()._select_seller()
+        self.assertEqual(supplier.name, partner)
