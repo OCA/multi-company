@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <template
+        id="assets_backend"
+        name="multicompany assets"
+        inherit_id="web.assets_backend"
+    >
+        <xpath expr="." position="inside">
+            <script
+                type="text/javascript"
+                src="/multicompany_configuration/static/src/js/multicompany_data_field.js"
+            />
+            <link
+                rel="stylesheet"
+                type="text/scss"
+                href="/multicompany_configuration/static/src/scss/multicompany_data_field.scss"
+            />
+        </xpath>
+    </template>
+</odoo>
