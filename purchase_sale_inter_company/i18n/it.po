@@ -102,9 +102,9 @@ msgstr "Riga ordine d'acquisto di origine"
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
-#, fuzzy, python-format
-msgid "This vendor bill is related with: %s"
-msgstr "Questa fattura fornitore è relativa a: %s"
+#, python-format
+msgid "This vendor bill is related with: {}"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
@@ -146,6 +146,10 @@ msgid ""
 msgstr ""
 "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
 "valuta del listino di vendita è diversa dalla valuta del listino d'acquisto."
+
+#, fuzzy, python-format
+#~ msgid "This vendor bill is related with: %s"
+#~ msgstr "Questa fattura fornitore è relativa a: %s"
 
 #~ msgid ""
 #~ "Default value to set on Sale Orders that will be created based on "
