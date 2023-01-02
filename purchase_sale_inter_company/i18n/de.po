@@ -98,7 +98,7 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
-msgid "This vendor bill is related with: %s"
+msgid "This vendor bill is related with: {}"
 msgstr ""
 
 #. module: purchase_sale_inter_company
