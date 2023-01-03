@@ -22,14 +22,11 @@ class PurchaseOrder(models.Model):
         )
         if delivery_address:
             new_order.update({"partner_shipping_id": delivery_address.id})
-        if "warehouse_id" in new_order:
-            new_order.update(
-                {
-                    "warehouse_id": (
-                        dest_company.warehouse_id.company_id == dest_company
-                        and dest_company.warehouse_id.id
-                        or False
-                    )
-                }
-            )
+        warehouse = (
+            dest_company.warehouse_id.company_id == dest_company
+            and dest_company.warehouse_id
+            or False
+        )
+        if warehouse:
+            new_order.update({"warehouse_id": warehouse.id})
         return new_order

@@ -12,60 +12,57 @@ from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_s
 
 class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
     @classmethod
+    def _create_warehouse(cls, code, company):
+        address = cls.env["res.partner"].create({"name": f"{code} address"})
+        return cls.env["stock.warehouse"].create(
+            {
+                "name": f"Warehouse {code}",
+                "code": code,
+                "partner_id": address.id,
+                "company_id": company.id,
+            }
+        )
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.StockLocation = cls.env["stock.location"]
-        cls.StockWarehouse = cls.env["stock.warehouse"]
-        cls.location_stock_company_a = cls.StockLocation.create(
-            {"name": "Stock - a", "usage": "internal", "company_id": cls.company_a.id}
+        # Configure 2 Warehouse per company
+        cls.warehouse_a = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_a.id)]
         )
-        cls.location_output_company_a = cls.StockLocation.create(
-            {"name": "Output - a", "usage": "internal", "company_id": cls.company_a.id}
+        cls.warehouse_b = cls._create_warehouse("CA-WB", cls.company_a)
+
+        cls.warehouse_c = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_b.id)]
         )
-        cls.warehouse_company_a = cls.StockWarehouse.create(
-            {
-                "name": "purchase warehouse - a",
-                "code": "CMPa",
-                "wh_input_stock_loc_id": cls.location_stock_company_a.id,
-                "lot_stock_id": cls.location_stock_company_a.id,
-                "wh_output_stock_loc_id": cls.location_output_company_a.id,
-                "partner_id": cls.partner_company_a.id,
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.location_stock_company_b = cls.StockLocation.create(
-            {"name": "Stock - b", "usage": "internal", "company_id": cls.company_b.id}
-        )
-        cls.location_output_company_b = cls.StockLocation.create(
-            {"name": "Output - b", "usage": "internal", "company_id": cls.company_b.id}
-        )
-        cls.warehouse_company_b = cls.StockWarehouse.create(
-            {
-                "name": "purchase warehouse - b",
-                "code": "CMPb",
-                "wh_input_stock_loc_id": cls.location_stock_company_b.id,
-                "lot_stock_id": cls.location_stock_company_b.id,
-                "wh_output_stock_loc_id": cls.location_output_company_b.id,
-                "partner_id": cls.partner_company_b.id,
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.company_a.warehouse_id = cls.warehouse_company_a
-        cls.company_b.warehouse_id = cls.warehouse_company_b
+        cls.warehouse_d = cls._create_warehouse("CB-WD", cls.company_b)
+        cls.company_b.warehouse_id = cls.warehouse_c
+
+    def test_deliver_to_warehouse_a(self):
+        self.purchase_company_a.picking_type_id = self.warehouse_a.in_type_id
+        sale = self._approve_po()
+        self.assertEqual(self.warehouse_a.partner_id, sale.partner_shipping_id)
+
+    def test_deliver_to_warehouse_b(self):
+        self.purchase_company_a.picking_type_id = self.warehouse_b.in_type_id
+        sale = self._approve_po()
+        self.assertEqual(self.warehouse_b.partner_id, sale.partner_shipping_id)
+
+    def test_send_from_warehouse_c(self):
+        self.company_b.warehouse_id = self.warehouse_c
+        sale = self._approve_po()
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
+
+    def test_send_from_warehouse_d(self):
+        self.company_b.warehouse_id = self.warehouse_d
+        sale = self._approve_po()
+        self.assertEqual(sale.warehouse_id, self.warehouse_d)
 
     def test_purchase_sale_stock_inter_company(self):
         self.purchase_company_a.notes = "Test note"
-        # Confirm the purchase of company A
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
-        # Check sale order created in company B
-        sales = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
-        )
+        sale = self._approve_po()
         self.assertEqual(
-            sales.partner_shipping_id,
+            sale.partner_shipping_id,
             self.purchase_company_a.picking_type_id.warehouse_id.partner_id,
         )
-        warehouse_b = self.StockWarehouse.search([("name", "=", "Company B")])
-        self.assertEqual(sales.warehouse_id, warehouse_b)
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
