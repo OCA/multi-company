@@ -17,16 +17,18 @@ msgstr ""
 "X-Generator: Weblate 4.3.2\n"
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "%s - Canceled Invoice: %s"
-msgstr "%s - Factura cancelada: %s"
+msgid "%(company_name)s - Canceled Invoice: %(invoice_name)s"
+msgstr ""
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "%s - Invoice: %s"
-msgstr "%s - Factura: %s"
+msgid "%(company_name)s - Invoice: %(invoice_name)s"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_generated
@@ -49,22 +51,6 @@ msgstr "Compañías"
 #: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
 msgid "Config Settings"
 msgstr "Ajustes Configuración"
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__display_name
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__display_name
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__display_name
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__display_name
-msgid "Display Name"
-msgstr "Nombre mostrado"
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__id
-msgid "ID"
-msgstr "ID"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
@@ -118,24 +104,20 @@ msgid "Journal Item"
 msgstr "Apunte contable"
 
 #. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move____last_update
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line____last_update
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company____last_update
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings____last_update
-msgid "Last Modified on"
-msgstr "Última modificación el"
-
-#. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:0
 #, python-format
 msgid "No Chart of Account Template has been defined !"
 msgstr "¡No se ha definido una plantilla de plan contable!"
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s journal for this company: \"%s\" (id:%d)."
-msgstr "Por favor defina %s diario para esta compañía: \"%s\" (id:%d)."
+msgid ""
+"Please define %(dest_journal_type)s journal for this company: "
+"\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
@@ -156,12 +138,18 @@ msgstr ""
 "transacción"
 
 #. module: account_invoice_inter_company
+#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
+msgid "Service Multi Company"
+msgstr ""
+
+#. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__company_share_product
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__company_share_product
 msgid "Share product to all companies"
 msgstr "Compartir producto en todas las compañías"
 
 #. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__company_share_product
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__company_share_product
 msgid ""
 "Share your product to all companies defined in your instance.\n"
@@ -191,16 +179,16 @@ msgid "Source Invoice Line"
 msgstr "Línea de factura origen"
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
-"The invoice line '%s' doesn't have a product. All invoice lines should have "
-"a product for inter-company invoices."
+"The invoice line '%(line_name)s' doesn't have a product. All invoice lines "
+"should have a product for inter-company invoices."
 msgstr ""
-"La línea de factura '%s' no tiene producto. Todas las líenas de factura "
-"deben tener un producto para facturas intercompañía."
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
@@ -209,16 +197,15 @@ msgid ""
 msgstr ""
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
-"total amount of this invoice is %s but the total amount of the invoice %s in "
-"the company %s is %s"
+"total amount of this invoice is %(dest_amount_total)s but the total amount "
+"of the invoice %(invoice_name)s in the company %(company_name)s is "
+"%(amount_total)s"
 msgstr ""
-"AVISO!!!!!! Fallo en el proceso de creación de factura intercompañía: el "
-"total de esta factura es %s pero el total de la factura %s en la compañía %s "
-"es %s"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
@@ -239,20 +226,67 @@ msgstr ""
 "la validará automáticamente."
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
 "You can't modify this invoice as it has an inter company invoice that's in "
 "posted state.\n"
-"Invoice %s to %s"
+"Invoice %(invoice_name)s to %(partner_name)s"
 msgstr ""
 
 #. module: account_invoice_inter_company
+#. odoo-python
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
-"You cannot create invoice in company '%s' with product '%s' because it is "
-"not multicompany"
+"You cannot create invoice in company '%(dest_company_name)s' with product "
+"'%(product_name)s' because it is not multicompany"
 msgstr ""
-"No puede crear una factura en la compañía '%s' con el producto '%s' porque "
-"no es multicompañía"
+
+#, python-format
+#~ msgid "%s - Canceled Invoice: %s"
+#~ msgstr "%s - Factura cancelada: %s"
+
+#, python-format
+#~ msgid "%s - Invoice: %s"
+#~ msgstr "%s - Factura: %s"
+
+#~ msgid "Display Name"
+#~ msgstr "Nombre mostrado"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Última modificación el"
+
+#, python-format
+#~ msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+#~ msgstr "Por favor defina %s diario para esta compañía: \"%s\" (id:%d)."
+
+#, python-format
+#~ msgid ""
+#~ "The invoice line '%s' doesn't have a product. All invoice lines should "
+#~ "have a product for inter-company invoices."
+#~ msgstr ""
+#~ "La línea de factura '%s' no tiene producto. Todas las líenas de factura "
+#~ "deben tener un producto para facturas intercompañía."
+
+#, python-format
+#~ msgid ""
+#~ "WARNING!!!!! Failure in the inter-company invoice creation process: the "
+#~ "total amount of this invoice is %s but the total amount of the invoice %s "
+#~ "in the company %s is %s"
+#~ msgstr ""
+#~ "AVISO!!!!!! Fallo en el proceso de creación de factura intercompañía: el "
+#~ "total de esta factura es %s pero el total de la factura %s en la compañía "
+#~ "%s es %s"
+
+#, python-format
+#~ msgid ""
+#~ "You cannot create invoice in company '%s' with product '%s' because it is "
+#~ "not multicompany"
+#~ msgstr ""
+#~ "No puede crear una factura en la compañía '%s' con el producto '%s' "
+#~ "porque no es multicompañía"
