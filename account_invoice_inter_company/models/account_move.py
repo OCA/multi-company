@@ -4,7 +4,6 @@ import logging
 
 from odoo import _, api, fields, models
 from odoo.exceptions import AccessError, UserError
-from odoo.tests.common import Form
 from odoo.tools import float_compare
 from odoo.tools.misc import clean_context
 
@@ -83,6 +82,27 @@ class AccountMove(models.Model):
                     }
                 ) from e
 
+    def _check_dest_journal(self, dest_company):
+        self.ensure_one()
+        dest_journal_type = self._get_destination_journal_type()
+        # find the correct journal
+        dest_journal = self.env["account.journal"].search(
+            [("type", "=", dest_journal_type), ("company_id", "=", dest_company.id)],
+            limit=1,
+        )
+        if not dest_journal:
+            raise UserError(
+                _(
+                    "Please define %(dest_journal_type)s journal for "
+                    'this company: "%(dest_company_name)s" (id:%(dest_company_id)d).'
+                )
+                % {
+                    "dest_journal_type": dest_journal_type,
+                    "dest_company_name": dest_company.name,
+                    "dest_company_id": dest_company.id,
+                }
+            )
+
     def _inter_company_create_invoice(self, dest_company):
         """create an invoice for the given company : it will copy
             the invoice lines in the new invoice.
@@ -102,33 +122,16 @@ class AccountMove(models.Model):
         if inter_invoice and inter_invoice.state in ["draft", "cancel"]:
             force_number = inter_invoice.name
             inter_invoice.with_context(force_delete=True).unlink()
-        # create invoice
+        # create destination invoice
         dest_invoice_data = self._prepare_invoice_data(dest_company)
         if force_number:
             dest_invoice_data["name"] = force_number
         dest_invoice = self.create(dest_invoice_data)
-        # create invoice lines
-        dest_move_line_data = []
-        form = Form(
-            dest_invoice.with_company(dest_company.id),
-            "account_invoice_inter_company.view_move_form",
-        )
-        for src_line in self.invoice_line_ids.filtered(lambda x: not x.display_type):
-            if not src_line.product_id:
-                raise UserError(
-                    _(
-                        "The invoice line '%(line_name)s' doesn't have a product. "
-                        "All invoice lines should have a product for "
-                        "inter-company invoices."
-                    )
-                    % {"line_name": src_line.name}
-                )
-            dest_move_line_data.append(
-                src_line._prepare_account_move_line(dest_invoice, dest_company, form)
-            )
-        self.env["account.move.line"].create(dest_move_line_data)
-        dest_invoice._move_autocomplete_invoice_lines_values()
-        # Validation of account invoice
+        if dest_invoice.currency_id != self.currency_id:
+            dest_invoice.currency_id = self.currency_id
+        # create destination invoice lines
+        self._create_destination_account_move_line(dest_invoice, dest_company)
+        # Validation of destination invoice
         precision = self.env["decimal.precision"].precision_get("Account")
         if dest_company.invoice_auto_validation and not float_compare(
             self.amount_total, dest_invoice.amount_total, precision_digits=precision
@@ -153,6 +156,25 @@ class AccountMove(models.Model):
                 }
                 dest_invoice.message_post(body=body)
         return {"dest_invoice": dest_invoice}
+
+    def _create_destination_account_move_line(self, dest_invoice, dest_company):
+        dest_move_line_data = []
+        for src_line in self.invoice_line_ids.filtered(
+            lambda x: x.display_type == "product"
+        ):
+            if not src_line.product_id:
+                raise UserError(
+                    _(
+                        "The invoice line '%(line_name)s' doesn't have a product. "
+                        "All invoice lines should have a product for "
+                        "inter-company invoices."
+                    )
+                    % {"line_name": src_line.name}
+                )
+            dest_move_line_data.append(
+                src_line._prepare_account_move_line(dest_invoice, dest_company)
+            )
+        self.env["account.move.line"].create(dest_move_line_data)
 
     def _get_destination_invoice_type(self):
         self.ensure_one()
@@ -181,48 +203,18 @@ class AccountMove(models.Model):
         """
         self.ensure_one()
         self = self.with_context(**clean_context(self.env.context))
-        dest_inv_type = self._get_destination_invoice_type()
-        dest_journal_type = self._get_destination_journal_type()
-        # find the correct journal
-        dest_journal = self.env["account.journal"].search(
-            [("type", "=", dest_journal_type), ("company_id", "=", dest_company.id)],
-            limit=1,
-        )
-        if not dest_journal:
-            raise UserError(
-                _(
-                    "Please define %(dest_journal_type)s journal for "
-                    'this company: "%(dest_company_name)s" (id:%(dest_company_id)d).'
-                )
-                % {
-                    "dest_journal_type": dest_journal_type,
-                    "dest_company_name": dest_company.name,
-                    "dest_company_id": dest_company.id,
-                }
-            )
-        # Use test.Form() class to trigger propper onchanges on the invoice
-        dest_invoice_data = Form(
-            self.env["account.move"]
-            .with_company(dest_company.id)
-            .with_context(
-                default_move_type=dest_inv_type,
-            )
-        )
-        dest_invoice_data.journal_id = dest_journal
-        dest_invoice_data.partner_id = self.company_id.partner_id
-        dest_invoice_data.ref = self.name
-        dest_invoice_data.invoice_date = self.invoice_date
-        dest_invoice_data.narration = self.narration
-        dest_invoice_data.currency_id = self.currency_id
-        vals = dest_invoice_data._values_to_save(all_fields=True)
-        vals.update(
-            {
-                "invoice_origin": _("%(company_name)s - Invoice: %(invoice_name)s")
-                % {"company_name": self.company_id.name, "invoice_name": self.name},
-                "auto_invoice_id": self.id,
-                "auto_generated": True,
-            }
-        )
+        # check if the journal is define in dest company
+        self._check_dest_journal(dest_company)
+        vals = {
+            "move_type": self._get_destination_invoice_type(),
+            "partner_id": self.company_id.partner_id.id,
+            "ref": self.name,
+            "invoice_date": self.invoice_date,
+            "invoice_origin": _("%(company_name)s - Invoice: %(invoice_name)s")
+            % {"company_name": self.company_id.name, "invoice_name": self.name},
+            "auto_invoice_id": self.id,
+            "auto_generated": True,
+        }
         # CHECK ME: This field is created by module sale, maybe we need add dependency?
         if (
             hasattr(self, "partner_shipping_id")
@@ -312,7 +304,7 @@ class AccountMoveLine(models.Model):
     )
 
     @api.model
-    def _prepare_account_move_line(self, dest_move, dest_company, form=False):
+    def _prepare_account_move_line(self, dest_move, dest_company):
         """Generate invoice line values
         :param dest_move : the created invoice
         :rtype dest_move : account.move record
@@ -320,39 +312,17 @@ class AccountMoveLine(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        # Use test.Form() class to trigger propper onchanges on the line
-        product = self.product_id or False
-        dest_form = form or Form(
-            dest_move.with_company(dest_company.id),
-            "account_invoice_inter_company.view_move_form",
-        )
-        if dest_form.invoice_line_ids:
-            dest_form.invoice_line_ids.remove(0)
-        with dest_form.invoice_line_ids.new() as line_form:
-            # HACK: Related fields manually set due to Form() limitations
-            line_form.company_id = dest_move.company_id
-            # Regular fields
-            line_form.display_type = self.display_type
-            line_form.product_id = product
-            line_form.name = self.name
-            if line_form.product_uom_id != self.product_uom_id:
-                line_form.product_uom_id = self.product_uom_id
-            line_form.quantity = self.quantity
-            # TODO: it's wrong to just copy the price_unit
-            # You have to check if the tax is price_include True or False
-            # in source and target companies
-            line_form.price_unit = self.price_unit
-            line_form.discount = self.discount
-            line_form.sequence = self.sequence
-            # Compatibility with module account_invoice_start_end_dates
-            if hasattr(self, "start_date") and hasattr(self, "end_date"):
-                line_form.start_date = self.start_date
-                line_form.end_date = self.end_date
-        vals = dest_form._values_to_save(all_fields=True)["invoice_line_ids"][0][2]
-        vals.update({"move_id": dest_move.id, "auto_invoice_line_id": self.id})
-        if self.analytic_account_id and not self.analytic_account_id.company_id:
-            vals["analytic_account_id"] = self.analytic_account_id.id
-            analytic_tags = self.analytic_tag_ids.filtered(lambda x: not x.company_id)
-            if analytic_tags:
-                vals["analytic_tag_ids"] = [(4, x) for x in analytic_tags.ids]
+        vals = {
+            "product_id": self.product_id.id or False,
+            "price_unit": self.price_unit,
+            "quantity": self.quantity,
+            "discount": self.discount,
+            "move_id": dest_move.id,
+            "sequence": self.sequence,
+            "auto_invoice_line_id": self.id,
+        }
+        # Compatibility with module account_invoice_start_end_dates
+        if hasattr(self, "start_date") and hasattr(self, "end_date"):
+            vals["start_date"] = self.start_date
+            vals["end_date"] = self.end_date
         return vals
