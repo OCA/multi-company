@@ -76,6 +76,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                         [
                             cls.env.ref("base.group_partner_manager").id,
                             cls.env.ref("account.group_account_manager").id,
+                            cls.env.ref("account.group_account_readonly").id,
                         ],
                     )
                 ],
@@ -194,73 +195,67 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
 
         cls.a_sale_company_a = cls.account_obj.create(
             {
-                "code": "X2001-A",
+                "code": "X2001.A",
                 "name": "Product Sales - (company A)",
-                "internal_type": "other",
-                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+                "account_type": "income_other",
                 "company_id": cls.company_a.id,
             }
         )
         cls.a_expense_company_a = cls.account_obj.create(
             {
-                "code": "X2110-A",
+                "code": "X2110.A",
                 "name": "Expenses - (company A)",
-                "internal_type": "other",
-                "user_type_id": cls.env.ref("account.data_account_type_expenses").id,
+                "account_type": "income_other",
                 "company_id": cls.company_a.id,
             }
         )
         cls.a_bank_company_a = cls.account_obj.create(
             {
-                "code": "512001-A",
+                "code": "512001.A",
                 "name": "Bank - (company A)",
-                "user_type_id": cls.env.ref("account.data_account_type_liquidity").id,
+                "account_type": "asset_cash",
                 "company_id": cls.company_a.id,
             }
         )
         cls.a_recv_company_b = cls.account_obj.create(
             {
-                "code": "X11002-B",
+                "code": "X11002.B",
                 "name": "Debtors - (company B)",
-                "internal_type": "receivable",
+                "account_type": "asset_receivable",
                 "reconcile": "True",
-                "user_type_id": cls.env.ref("account.data_account_type_receivable").id,
                 "company_id": cls.company_b.id,
             }
         )
         cls.a_pay_company_b = cls.account_obj.create(
             {
-                "code": "X1111-B",
+                "code": "X1111.B",
                 "name": "Creditors - (company B)",
-                "internal_type": "payable",
+                "account_type": "liability_payable",
                 "reconcile": "True",
-                "user_type_id": cls.env.ref("account.data_account_type_payable").id,
                 "company_id": cls.company_b.id,
             }
         )
         cls.a_sale_company_b = cls.account_obj.create(
             {
-                "code": "X2001-B",
+                "code": "X2001.B",
                 "name": "Product Sales - (company B)",
-                "internal_type": "other",
-                "user_type_id": cls.env.ref("account.data_account_type_revenue").id,
+                "account_type": "income_other",
                 "company_id": cls.company_b.id,
             }
         )
         cls.a_expense_company_b = cls.account_obj.create(
             {
-                "code": "X2110-B",
+                "code": "X2110.B",
                 "name": "Expenses - (company B)",
-                "internal_type": "other",
-                "user_type_id": cls.env.ref("account.data_account_type_expenses").id,
+                "account_type": "expense",
                 "company_id": cls.company_b.id,
             }
         )
         cls.a_bank_company_b = cls.account_obj.create(
             {
-                "code": "512001-B",
+                "code": "512001.B",
                 "name": "Bank - (company B)",
-                "user_type_id": cls.env.ref("account.data_account_type_liquidity").id,
+                "account_type": "asset_cash",
                 "company_id": cls.company_b.id,
             }
         )
@@ -322,15 +317,8 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "company_id": cls.company_b.id,
             }
         )
-
-        cls.product_consultant_multi_company = cls.env["product.product"].create(
-            {
-                "name": "Service Multi Company",
-                "uom_id": cls.env.ref("uom.product_uom_hour").id,
-                "uom_po_id": cls.env.ref("uom.product_uom_hour").id,
-                "categ_id": cls.env.ref("product.product_category_3").id,
-                "type": "service",
-            }
+        cls.product_consultant_multi_company = cls.env.ref(
+            "account_invoice_inter_company.product_consultant_multi_company"
         )
         # if product_multi_company is installed
         if "company_ids" in cls.env["product.template"]._fields:
@@ -348,30 +336,26 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             {
                 "name": "Internal Transfers",
                 "code": "X58",
-                "user_type_id": cls.env.ref(
-                    "account.data_account_type_current_assets"
-                ).id,
+                "account_type": "asset_current",
                 "reconcile": True,
             }
         )
 
         cls.a_recv_company_a = cls.account_obj.create(
             {
-                "code": "X11002-A",
+                "code": "X11002.A",
                 "name": "Debtors - (company A)",
-                "internal_type": "receivable",
+                "account_type": "asset_receivable",
                 "reconcile": "True",
-                "user_type_id": cls.env.ref("account.data_account_type_receivable").id,
                 "company_id": cls.company_a.id,
             }
         )
         cls.a_pay_company_a = cls.account_obj.create(
             {
-                "code": "X1111-A",
+                "code": "X1111.A",
                 "name": "Creditors - (company A)",
-                "internal_type": "payable",
+                "account_type": "liability_payable",
                 "reconcile": "True",
-                "user_type_id": cls.env.ref("account.data_account_type_payable").id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -383,7 +367,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.partner_company_b.property_account_payable_id = cls.a_pay_company_b.id
 
         cls.invoice_company_a = Form(
-            cls.account_move_obj.with_company(cls.company_a.id).with_context(
+            cls.account_move_obj.with_user(cls.user_company_a.id).with_context(
                 default_move_type="out_invoice",
             )
         )
@@ -404,8 +388,8 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.company_a.invoice_auto_validation = True
 
         cls.product_a = cls.invoice_line_a.product_id
-        cls.product_a.with_company(
-            cls.company_b.id
+        cls.product_a.with_user(
+            cls.user_company_b.id
         ).property_account_expense_id = cls.a_expense_company_b.id
 
 
@@ -431,20 +415,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         # ensure the catalog is shared
         self.env.ref("product.product_comp_rule").write({"active": False})
         # Make sure there are no taxes in target company for the used product
-        self.product_a.with_company(self.user_company_b.id).supplier_taxes_id = False
-        # Put some analytic data for checking its propagation
-        analytic_account = self.env["account.analytic.account"].create(
-            {"name": "Test analytic account", "company_id": False}
-        )
-        analytic_tag = self.env["account.analytic.tag"].create(
-            {"name": "Test analytic tag", "company_id": False}
-        )
-        self.invoice_line_a.analytic_account_id = analytic_account.id
-        self.invoice_line_a.analytic_tag_ids = [(4, analytic_tag.id)]
-        # Give user A permission to analytic
-        self.user_company_a.groups_id = [
-            (4, self.env.ref("analytic.group_analytic_accounting").id)
-        ]
+        self.product_a.with_user(self.user_company_b.id).supplier_taxes_id = False
         # Confirm the invoice of company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
@@ -470,13 +441,6 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(
             invoice_line.product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id,
-        )
-        self.assertEqual(
-            invoice_line.analytic_account_id,
-            self.invoice_line_a.analytic_account_id,
-        )
-        self.assertEqual(
-            invoice_line.analytic_tag_ids, self.invoice_line_a.analytic_tag_ids
         )
         # Cancel the invoice of company A
         invoice_origin = ("%s - Canceled Invoice: %s") % (

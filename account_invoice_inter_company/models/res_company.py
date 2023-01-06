@@ -11,6 +11,12 @@ class ResCompany(models.Model):
         "Share product to all companies",
         compute="_compute_share_product",
         compute_sudo=True,
+        help="Share your product to all companies defined in your instance.\n"
+        " * Checked : Product are visible for every company, "
+        "even if a company is defined on the partner.\n"
+        " * Unchecked : Each company can see only its product "
+        "(product where company is defined). Product not related to a "
+        "company are visible for all companies.",
     )
     invoice_auto_validation = fields.Boolean(
         help="When an invoice is created by a multi company rule "
