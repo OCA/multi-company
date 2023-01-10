@@ -102,9 +102,9 @@ msgstr "Línea pedido de compra origen"
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
-#, fuzzy, python-format
-msgid "This vendor bill is related with: %s"
-msgstr "Esta factura de proveedor está relacionada con: %s"
+#, python-format
+msgid "This vendor bill is related with: {}"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
@@ -148,6 +148,10 @@ msgid ""
 msgstr ""
 "No puede crear pedido de venta desde pedido de compra porque la moneda de la "
 "tarifa de venta es distinta de la moneda de la tarifa de compra."
+
+#, fuzzy, python-format
+#~ msgid "This vendor bill is related with: %s"
+#~ msgstr "Esta factura de proveedor está relacionada con: %s"
 
 #~ msgid ""
 #~ "Default value to set on Sale Orders that will be created based on "
