@@ -1,4 +1,5 @@
 # Copyright 2021-2022 Tecnativa - Víctor Martínez
+# Copyright 2022 Moduon - Eduardo de Miguel
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
 
 from odoo.tests import Form, common, new_test_user
@@ -11,13 +12,23 @@ class TestEasyCreation(common.TransactionCase):
         super().setUpClass()
         cls.env.ref("base.user_admin").write(
             {
-                "groups_id": [(4, cls.env.ref("account.group_account_user").id)],
+                "groups_id": [
+                    (4, cls.env.ref("account.group_account_manager").id),
+                    (4, cls.env.ref("account.group_account_user").id),
+                ],
             }
         )
         new_test_user(
             cls.env,
             login="test-user",
-            groups="account.group_account_user,base.group_system,base.group_partner_manager",
+            groups=",".join(
+                [
+                    "account.group_account_manager",
+                    "account.group_account_user",
+                    "base.group_system",
+                    "base.group_partner_manager",
+                ]
+            ),
         )
         cls.chart_template_id = cls.env["account.chart.template"].search([], limit=1)
         cls.sale_tax_template = cls.env["account.tax.template"].search(
@@ -39,12 +50,12 @@ class TestEasyCreation(common.TransactionCase):
             )
         )
         wizard_form.name = "test_company"
-        wizard_form.default_purchase_tax_id = self.purchase_tax_template
         wizard_form.chart_template_id = self.chart_template_id
-        wizard_form.update_default_taxes = True
         wizard_form.smart_search_product_tax = True
+        wizard_form.update_default_taxes = True
         wizard_form.force_sale_tax = True
         wizard_form.force_purchase_tax = True
+        wizard_form.default_purchase_tax_id = self.purchase_tax_template
         wizard_form.default_sale_tax_id = self.sale_tax_template
         for user in self.env["res.users"].search([]):
             wizard_form.user_ids.add(user)
