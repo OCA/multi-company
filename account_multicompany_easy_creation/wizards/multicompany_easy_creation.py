@@ -1,7 +1,8 @@
 # Copyright 2018 Tecnativa - Carlos Dauden
+# Copyright 2022 Moduon - Eduardo de Miguel
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.tools import ormcache
 from odoo.tools.safe_eval import safe_eval
@@ -128,6 +129,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     def create_bank_journals(self):
         AccountJournal = self.env["account.journal"].sudo()
         AccountAccount = self.env["account.account"].sudo()
+        ResPartnerBank = self.env["res.partner.bank"].sudo()
         bank_journals = AccountJournal.search(
             [("type", "=", "bank"), ("company_id", "=", self.new_company_id.id)]
         )
@@ -135,27 +137,38 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             "type": "bank",
             "company_id": self.new_company_id.id,
         }
-        for i, bank in enumerate(self.bank_ids):
-            vals.update({"name": bank.acc_number, "bank_acc_number": bank.acc_number})
+        for i, bank_wiz in enumerate(self.bank_ids):
+            bank = ResPartnerBank.create(
+                {
+                    "acc_number": bank_wiz.acc_number,
+                    "bank_id": bank_wiz.bank_id.id,
+                    "partner_id": self.new_company_id.partner_id.id,
+                    "company_id": self.new_company_id.id,
+                    "allow_out_payment": bank_wiz.allow_out_payment,
+                }
+            )
+            vals.update(
+                {
+                    "name": bank.acc_number,
+                    "bank_acc_number": bank.acc_number,
+                }
+            )
             if i < len(bank_journals):
                 bank_journals[i].update(vals)
             else:
                 account_account = AccountAccount.create(
                     {
-                        "code": "57200X",
+                        "code": f"57200{i + 1}",
                         "name": vals["name"],
-                        "user_type_id": self.env.ref(
-                            "account.data_account_type_liquidity"
-                        ).id,
+                        "account_type": "asset_cash",
                         "company_id": vals["company_id"],
                     }
                 )
                 vals.update(
                     {
-                        "code": False,
-                        "sequence_id": False,
-                        "default_debit_account_id": account_account.id,
-                        "default_credit_account_id": account_account.id,
+                        "code": f"BNK{i + 1}",
+                        "sequence": bank_journals[0].sequence or i,
+                        "default_account_id": account_account.id,
                     }
                 )
                 AccountJournal.create(vals)
@@ -166,7 +179,11 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     def create_company(self):
         self.new_company_id = self.env["res.company"].create(
-            {"name": self.name, "user_ids": [(6, 0, self.user_ids.ids)]}
+            {
+                "name": self.name,
+                "user_ids": [(6, 0, self.user_ids.ids)],
+                "currency_id": self.currency_id.id,
+            }
         )
         allowed_company_ids = (
             self.env.context.get("allowed_company_ids", []) + self.new_company_id.ids
@@ -190,7 +207,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 continue
             module, ref = xml_id.split(".", 1)
             _company, name = ref.split("_", 1)
-            record = self.env.ref("{}.{}_{}".format(module, company_id, name), False)
+            record = self.env.ref(f"{module}.{company_id}_{name}", False)
             if record:
                 record_ids.append(record.id)
         return record_ids
@@ -216,9 +233,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 % tax_template.name
             )
         module, name = xml_id.split(".", 1)
-        return self.sudo().env.ref(
-            "{}.{}_{}".format(module, self.new_company_id.id, name)
-        )
+        return self.sudo().env.ref(f"{module}.{self.new_company_id.id}_{name}")
 
     def set_product_taxes(self):
         user_company = self.env.user.company_id
@@ -262,20 +277,24 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     def update_taxes(self):
         if self.update_default_taxes:
             IrDefault = self.env["ir.default"].sudo()
+            default_sale_tax = self.match_tax(self.default_sale_tax_id)
+            default_purchase_tax = self.match_tax(self.default_purchase_tax_id)
             if self.default_sale_tax_id:
                 IrDefault.set(
                     model_name="product.template",
                     field_name="taxes_id",
-                    value=self.match_tax(self.default_sale_tax_id).ids,
+                    value=default_sale_tax.ids,
                     company_id=self.new_company_id.id,
                 )
             if self.default_purchase_tax_id:
                 IrDefault.set(
                     model_name="product.template",
                     field_name="supplier_taxes_id",
-                    value=self.match_tax(self.default_purchase_tax_id).ids,
+                    value=default_purchase_tax.ids,
                     company_id=self.new_company_id.id,
                 )
+            self.new_company_id.account_sale_tax_id = default_sale_tax.id
+            self.new_company_id.account_purchase_tax_id = default_purchase_tax.id
         self.set_product_taxes()
 
     def set_specific_properties(self, model, match_field):
@@ -288,7 +307,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 ("company_id", "=", user_company.id),
                 ("type", "=", "many2one"),
                 ("res_id", "!=", False),
-                ("value_reference", "=like", "{},%".format(model)),
+                ("value_reference", "=like", f"{model},%"),
             ]
         )
         Model = self_sudo.env[model]
@@ -304,7 +323,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 prop.copy(
                     {
                         "company_id": new_company_id,
-                        "value_reference": "{},{}".format(model, new_ref.id),
+                        "value_reference": f"{model},{new_ref.id}",
                         "value_float": False,
                         "value_integer": False,
                     }
@@ -367,7 +386,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 "name": record[0],
                 "company_id": new_company.id,
                 "fields_id": field.id,
-                "value": "{},{}".format(record[2], record[3]),
+                "value": f"{record[2]},{record[3]}",
             }
             properties = IrProperty.search(
                 [("name", "=", record[0]), ("company_id", "=", new_company.id)]
@@ -400,9 +419,19 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.update_properties()
         return self.action_res_company_form()
 
+    @api.onchange("chart_template_id")
+    def onchange_chart_template_id(self):
+        if self.chart_template_id:
+            self.currency_id = (
+                self.chart_template_id.currency_id
+                if self.chart_template_id.currency_id != self.currency_id
+                else self.currency_id
+            )
+
 
 class AccountMulticompanyBankWiz(models.TransientModel):
-    _inherit = "res.partner.bank"
+    """Wizard used to create res.partner.bank records"""
+
     _name = "account.multicompany.bank.wiz"
     _order = "id"
     _description = "Wizard Account Multi-company Bank"
@@ -410,6 +439,15 @@ class AccountMulticompanyBankWiz(models.TransientModel):
     wizard_id = fields.Many2one(
         comodel_name="account.multicompany.easy.creation.wiz",
     )
-    partner_id = fields.Many2one(
-        required=False,
+    acc_number = fields.Char(
+        string="Account Number",
+        required=True,
+    )
+    bank_id = fields.Many2one(
+        comodel_name="res.bank",
+        string="Bank",
+    )
+    allow_out_payment = fields.Boolean(
+        string="Allow Out Payments",
+        default=True,
     )
