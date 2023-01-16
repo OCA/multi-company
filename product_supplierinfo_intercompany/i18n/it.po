@@ -102,7 +102,6 @@ msgstr "Listino Prezzi Interaziendale"
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_product__pricelist_item_ids
-#: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_supplierinfo__pricelist_item_id
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_template__pricelist_item_ids
 msgid "Pricelist Item"
 msgstr "Articolo di Listino"
@@ -153,7 +152,8 @@ msgstr "Il Listino prezzi %s non è interaziendale"
 #: code:addons/product_supplierinfo_intercompany/models/product_supplierinfo.py:0
 #, python-format
 msgid ""
-"This supplier info can not be edited as it's linked to an intercompany 'sale' pricelist.\n"
+"This supplier info can not be edited as it's linked to an intercompany "
+"'sale' pricelist.\n"
 " Please modify the information on the 'sale' pricelist"
 msgstr ""
 "Queste informazioni sul fornitore non possono essere modificate poiché sono "

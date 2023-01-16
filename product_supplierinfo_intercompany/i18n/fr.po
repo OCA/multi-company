@@ -101,7 +101,6 @@ msgstr "La liste %s n'est pas intersociété"
 
 #. module: product_supplierinfo_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_product__pricelist_item_ids
-#: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_supplierinfo__pricelist_item_id
 #: model:ir.model.fields,field_description:product_supplierinfo_intercompany.field_product_template__pricelist_item_ids
 msgid "Pricelist Item"
 msgstr ""
