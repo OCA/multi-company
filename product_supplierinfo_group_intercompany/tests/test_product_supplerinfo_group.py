@@ -64,3 +64,10 @@ class IntercompanySupplierinfoGroupTest(
         )
         user.company_ids = self.sale_company
         self.assertFalse(self.product_template_4.with_user(user).supplierinfo_group_ids)
+
+    def test_add_and_update_product_item(self):
+        product = self.env.ref("product.product_product_3")
+        item = self._add_item(product, 22)
+        self._check_supplier_info_for(product, 22)
+        item.fixed_price = 30
+        self._check_supplier_info_for(product, 30)

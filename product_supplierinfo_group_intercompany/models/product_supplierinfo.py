@@ -2,13 +2,18 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
-from odoo import models
+from odoo import fields, models
 
 
 class ProductSupplierinfo(models.Model):
     _inherit = "product.supplierinfo"
     # we add the 'product_id' in the order see comment in product_supplierinfo_group.py
     _order = "sequence, product_id, min_qty DESC, price, id"
+
+    intercompany_pricelist_id = fields.Many2one(
+        related="group_id.intercompany_pricelist_id",
+        store=True,
+    )
 
     def unlink(self):
         groups = self.group_id.filtered(lambda r: r.intercompany_pricelist_id)
