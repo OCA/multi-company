@@ -44,6 +44,7 @@ msgid "ID"
 msgstr "ID"
 
 #. module: product_supplierinfo_group_intercompany
+#: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo__intercompany_pricelist_id
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__intercompany_pricelist_id
 msgid "Intercompany Pricelist"
 msgstr "Listino Prezzi Interaziendale"
