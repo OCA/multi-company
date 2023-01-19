@@ -11,8 +11,7 @@ from .common import ProductMultiCompanyCommon
 class TestProductMultiCompany(ProductMultiCompanyCommon, common.SavepointCase):
     def test_create_product(self):
         product = self.env["product.product"].create({"name": "Test"})
-        company = self.env.company
-        self.assertTrue(company.id in product.company_ids.ids)
+        self.assertFalse(product.company_ids)
 
     def test_company_none(self):
         self.assertFalse(self.product_company_none.company_id)
