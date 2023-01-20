@@ -6,7 +6,7 @@
     'name': 'Product Tax Multi Company Default',
     'version': '12.0.1.0.0',
     'category': 'Account',
-    'website': 'https://www.tecnativa.com',
+    'website': 'https://github.com/OCA/multi-company',
     'author': 'Tecnativa, '
               'Odoo Community Association (OCA)',
     'license': 'AGPL-3',

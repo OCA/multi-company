@@ -8,7 +8,7 @@
     'summary': 'Intercompany PO/SO rules',
     'version': '12.0.1.2.0',
     'category': 'Purchase Management',
-    'website': 'http://www.github.com/OCA/multi-company',
+    'website': 'https://github.com/OCA/multi-company',
     'author': 'Odoo SA, '
               'Akretion, '
               'Tecnativa, '

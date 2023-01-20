@@ -5,6 +5,7 @@
     'version': '12.0.1.0.1',
     'summary': 'Change the income and COGS accounts in intercompany transactions',
     'author': 'ForgeFlow S.L., Odoo Community Association (OCA)',
+    'website': 'https://github.com/OCA/multi-company',
     'license': 'LGPL-3',
     'depends': ['sale_stock', 'account'],
     "data": [
