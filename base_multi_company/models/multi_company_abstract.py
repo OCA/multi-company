@@ -19,7 +19,6 @@ class MultiCompanyAbstract(models.AbstractModel):
     company_ids = fields.Many2many(
         string="Companies",
         comodel_name="res.company",
-        default=lambda self: self._default_company_ids(),
     )
     # TODO: Remove it following https://github.com/odoo/odoo/pull/81344
     no_company_ids = fields.Boolean(
@@ -37,9 +36,6 @@ class MultiCompanyAbstract(models.AbstractModel):
                 record.no_company_ids = False
             else:
                 record.no_company_ids = True
-
-    def _default_company_ids(self):
-        return self.browse(self.env.company.ids)
 
     @api.depends("company_ids")
     @api.depends_context("company")
