@@ -2,7 +2,7 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
 {
     'name': 'Product Intercompany Account',
-    'version': '12.0.1.0.1',
+    'version': '12.0.1.0.2',
     'summary': 'Change the income and COGS accounts in intercompany transactions',
     'author': 'ForgeFlow S.L., Odoo Community Association (OCA)',
     'website': 'https://github.com/OCA/multi-company',
