@@ -5,7 +5,7 @@
     'name': 'Res Partner Industry Multi Company',
     'summary': """
         This module add multi-company management to res partner industry""",
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'license': 'AGPL-3',
     'author': 'ACSONE SA/NV,Odoo Community Association (OCA)',
     'website': 'https://github.com/OCA/multi-company',
