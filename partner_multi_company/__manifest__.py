@@ -12,6 +12,7 @@
     ],
     "author": "Tecnativa, "
               "Odoo Community Association (OCA)",
+    "website": "https://github.com/OCA/multi-company",
     "category": "Partner Management",
     "data": [
         "views/res_partner_view.xml",
