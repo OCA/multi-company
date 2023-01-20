@@ -4,7 +4,7 @@
 
 {
     'name': 'Product Tax Multi Company Default',
-    'version': '12.0.1.0.0',
+    'version': '12.0.1.0.1',
     'category': 'Account',
     'website': 'https://github.com/OCA/multi-company',
     'author': 'Tecnativa, '
