@@ -156,11 +156,8 @@ msgstr "Merci de créer un journal de type %s dans la société: \"%s\" (id:%d).
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_ids
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_ids
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_ids
 msgid "Related Bill"
 msgstr ""
 
@@ -176,6 +173,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_name
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_name
 msgid "Related Bill Name"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__related_bill_ids
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_ids
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_ids
+msgid "Related Bills"
 msgstr ""
 
 #. module: account_invoice_inter_company
