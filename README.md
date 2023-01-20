@@ -22,7 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [account_bill_line_distribution](account_bill_line_distribution/) | 12.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![osi-scampbell](https://github.com/osi-scampbell.png?size=30px)](https://github.com/osi-scampbell) | Distribute AP Invoices across multiple companies
-[account_invoice_consolidated](account_invoice_consolidated/) | 12.0.1.1.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![swapnesh-serpentcs](https://github.com/swapnesh-serpentcs.png?size=30px)](https://github.com/swapnesh-serpentcs) | Consolidate your invoices across companies
+[account_invoice_consolidated](account_invoice_consolidated/) | 12.0.1.1.1 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![swapnesh-serpentcs](https://github.com/swapnesh-serpentcs.png?size=30px)](https://github.com/swapnesh-serpentcs) | Consolidate your invoices across companies
 [account_invoice_inter_company](account_invoice_inter_company/) | 12.0.2.1.3 |  | Intercompany invoice rules
 [account_move_multi_company](account_move_multi_company/) | 12.0.1.0.3 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) | Allow to transfer amount to other companies
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 12.0.1.0.1 |  | This module adds a wizard to create companies easily
@@ -36,17 +36,17 @@ addon | version | maintainers | summary
 [crm_stage_multi_company](crm_stage_multi_company/) | 12.0.1.0.0 |  | This module adds support for multi company on crm stage.
 [ir_filters_multi_company](ir_filters_multi_company/) | 12.0.1.0.0 |  | This module add multi-company management to user-defined filters
 [mail_template_multi_company](mail_template_multi_company/) | 12.0.1.0.1 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
-[partner_multi_company](partner_multi_company/) | 12.0.2.0.0 |  | Select individually the partner visibility on each company
+[partner_multi_company](partner_multi_company/) | 12.0.2.0.1 |  | Select individually the partner visibility on each company
 [pos_restaurant_multi_company](pos_restaurant_multi_company/) | 12.0.1.0.0 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | This module adds support for multi company on PoS Restaurant.
-[product_intercompany_account](product_intercompany_account/) | 12.0.1.0.1 |  | Change the income and COGS accounts in intercompany transactions
+[product_intercompany_account](product_intercompany_account/) | 12.0.1.0.2 |  | Change the income and COGS accounts in intercompany transactions
 [product_multi_company](product_multi_company/) | 12.0.1.0.0 |  | Select individually the product template visibility on each company
-[product_tax_multicompany_default](product_tax_multicompany_default/) | 12.0.1.0.0 |  | Product Tax Multi Company Default
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 12.0.1.2.0 |  | Intercompany PO/SO rules
+[product_tax_multicompany_default](product_tax_multicompany_default/) | 12.0.1.0.1 |  | Product Tax Multi Company Default
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 12.0.1.2.1 |  | Intercompany PO/SO rules
 [res_company_active](res_company_active/) | 12.0.1.0.0 |  | Add the 'active' feature on company model
 [res_company_category](res_company_category/) | 12.0.1.0.0 |  | Company Categories
 [res_company_code](res_company_code/) | 12.0.1.0.0 |  | Add 'code' field on company model
 [res_partner_category_multi_company](res_partner_category_multi_company/) | 12.0.1.0.0 |  | This module add multi-company management to partner categories
-[res_partner_industry_multi_company](res_partner_industry_multi_company/) | 12.0.1.0.0 |  | This module add multi-company management to res partner industry
+[res_partner_industry_multi_company](res_partner_industry_multi_company/) | 12.0.1.0.1 |  | This module add multi-company management to res partner industry
 [stock_move_line_multi_company_security](stock_move_line_multi_company_security/) | 12.0.1.0.1 |  | Adds security to Stock Move Lines across companies
 [stock_production_lot_multi_company](stock_production_lot_multi_company/) | 12.0.1.0.0 |  | Make serial numbers multi-company aware
 [utm_medium_multi_company](utm_medium_multi_company/) | 12.0.1.0.0 |  | This module add multi-company management to utm medium
