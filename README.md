@@ -28,7 +28,7 @@ addon | version | maintainers | summary
 [account_move_change_company](account_move_change_company/) | 14.0.1.0.0 |  | Allow to change company of account moves
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 14.0.1.0.0 |  | This module adds a wizard to create companies easily
 [account_payment_other_company](account_payment_other_company/) | 14.0.1.0.0 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![osi-scampbell](https://github.com/osi-scampbell.png?size=30px)](https://github.com/osi-scampbell) | Create Payments for Other Companies
-[base_multi_company](base_multi_company/) | 14.0.1.1.1 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
+[base_multi_company](base_multi_company/) | 14.0.1.1.2 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
 [company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 |  | Display company dependent attribute on fields
 [intercompany_shared_contact](intercompany_shared_contact/) | 14.0.1.1.1 |  | User of each company are contact of a company partner. All child address of a company are automatically shared
 [mail_multicompany](mail_multicompany/) | 14.0.0.1.0 |  | Email Gateway Multi company
@@ -37,7 +37,7 @@ addon | version | maintainers | summary
 [partner_contact_company_propagation](partner_contact_company_propagation/) | 14.0.1.0.0 |  | Propagate company info to children contacts
 [partner_multi_company](partner_multi_company/) | 14.0.1.0.0 |  | Select individually the partner visibility on each company
 [product_category_inter_company](product_category_inter_company/) | 14.0.1.0.1 |  | Product categories as company dependent
-[product_multi_company](product_multi_company/) | 14.0.1.0.0 |  | Select individually the product template visibility on each company
+[product_multi_company](product_multi_company/) | 14.0.1.0.1 |  | Select individually the product template visibility on each company
 [product_supplierinfo_group_intercompany](product_supplierinfo_group_intercompany/) | 14.0.1.1.1 |  | Add sequence field on grouped pricelist items
 [product_supplierinfo_intercompany](product_supplierinfo_intercompany/) | 14.0.1.0.3 | [![PierrickBrun](https://github.com/PierrickBrun.png?size=30px)](https://github.com/PierrickBrun) [![sebastienbeau](https://github.com/sebastienbeau.png?size=30px)](https://github.com/sebastienbeau) [![kevinkhao](https://github.com/kevinkhao.png?size=30px)](https://github.com/kevinkhao) | Product SupplierInfo Intercompany
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 14.0.1.0.0 |  | Product Tax Multi Company Default
