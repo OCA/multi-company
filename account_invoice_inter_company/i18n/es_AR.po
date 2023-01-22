@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-09-17 21:07+0000\n"
+"PO-Revision-Date: 2023-01-23 03:21+0000\n"
 "Last-Translator: Ignacio Buioli <ibuioli@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es_AR\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
@@ -178,7 +178,7 @@ msgstr "Nombre de la Factura Relacionada"
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__related_bill_ids
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__related_bill_ids
 msgid "Related Bills"
-msgstr ""
+msgstr "Facturas Relacionadas"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
