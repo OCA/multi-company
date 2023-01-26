@@ -31,6 +31,7 @@ setuptools.setup(
         'odoo14-addon-purchase_quick_intercompany',
         'odoo14-addon-purchase_sale_inter_company',
         'odoo14-addon-res_company_code',
+        'odoo14-addon-stock_intercompany',
     ],
     classifiers=[
         'Programming Language :: Python',
