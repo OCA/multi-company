@@ -7,3 +7,7 @@
 
 * Loo <http://odooerp.cl/>`_:
   * Carlos Lopez
+
+* `Moduon <https://www.moduon.team>`_:
+
+  * Eduardo de Miguel
