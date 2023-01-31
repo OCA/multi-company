@@ -38,8 +38,8 @@ class AccountPayment(models.Model):
                     rec.other_move_id.with_user(SUPERUSER_ID).line_ids.unlink()
                     # Update the move with new lines
                     vals = rec._prepare_other_payment_values()
-                    rec.other_move_id.with_user(SUPERUSER_ID).with_context(
-                        force_company=other_company.id
+                    rec.other_move_id.with_user(SUPERUSER_ID).with_company(
+                        other_company.id
                     ).write(vals)
                 # or create a new one
                 else:
