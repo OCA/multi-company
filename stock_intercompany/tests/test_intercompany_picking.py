@@ -7,7 +7,17 @@ from odoo.tests.common import TransactionCase
 class TestIntercompanyDelivery(TransactionCase):
     def setUp(self):
         super().setUp()
-        self.user_demo = self.env.ref("base.user_demo")
+        self.user_demo = self.env["res.users"].create(
+            {
+                "login": "firstnametest",
+                "name": "User Demo",
+                "email": "firstnametest@example.org",
+                "groups_id": [
+                    (4, self.env.ref("base.group_user").id),
+                    (4, self.env.ref("stock.group_stock_user").id),
+                ],
+            }
+        )
         company_obj = self.env["res.company"]
         # Create 2 companies and configure intercompany picking type param on them
         self.company1 = company_obj.create({"name": "Company A"})
@@ -50,6 +60,7 @@ class TestIntercompanyDelivery(TransactionCase):
                 "qty_available": 100,
             }
         )
+        self.product1.company_id = self.company1.id
         self.stock_location = (
             self.env["stock.location"]
             .sudo()
