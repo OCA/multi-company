@@ -25,7 +25,7 @@ addon | version | maintainers | summary
 [account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.3.2 |  | Intercompany invoice rules
 [account_invoice_inter_company_queued](account_invoice_inter_company_queued/) | 14.0.1.0.1 |  | Generate invoices using jobs
 [account_invoice_inter_company_sale](account_invoice_inter_company_sale/) | 14.0.1.0.0 |  | Show sale related fields
-[account_move_change_company](account_move_change_company/) | 14.0.1.0.0 |  | Allow to change company of account moves
+[account_move_change_company](account_move_change_company/) | 14.0.1.0.1 |  | Allow to change company of account moves
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 14.0.1.0.0 |  | This module adds a wizard to create companies easily
 [account_payment_other_company](account_payment_other_company/) | 14.0.1.0.1 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![osi-scampbell](https://github.com/osi-scampbell.png?size=30px)](https://github.com/osi-scampbell) | Create Payments for Other Companies
 [base_multi_company](base_multi_company/) | 14.0.1.1.2 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
