@@ -335,6 +335,11 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             # We have to do that because the default method added a company
             cls.product_consultant_multi_company.company_ids = False
 
+        # if purchase_sale_stock_inter_company is installed
+        if "purchase_line_warn" in cls.env["product.template"]._fields:
+            # null value in column "purchase_line_warn" violates not-null constraint is raised
+            cls.env["product.template"].search([]).purchase_line_warn = "no-message"
+
         cls.env["ir.sequence"].create(
             {
                 "name": "Account Sales Journal Company A",
