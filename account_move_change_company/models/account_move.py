@@ -17,6 +17,7 @@ class AccountMove(models.Model):
         "res.company", compute="_compute_allowed_companies"
     )
 
+    @api.depends("company_id")
     def _compute_allowed_companies(self):
         for record in self:
             record.allowed_company_ids = self.env.companies
