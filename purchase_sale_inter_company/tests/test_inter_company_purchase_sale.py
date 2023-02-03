@@ -44,7 +44,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # no job: avoid issue if account_invoice_inter_company_queued is installed
         cls.env = cls.env(context={"test_queue_job_no_delay": 1})
 
-        cls.product = cls.product_consultant_multi_company
+        cls.product = cls.env.ref(
+            "account_invoice_inter_company.product_consultant_multi_company"
+        )
 
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
@@ -95,18 +97,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         sale = self._approve_po()
         self.assertEqual(sale.state, "draft")
 
-    # TODO FIXME
-    def xxtest_date_planned(self):
-        # Install sale_order_dates module
-        module = self.env["ir.module.module"].search(
-            [("name", "=", "sale_order_dates")]
-        )
-        if not module:
-            return False
-        module.button_install()
+    def test_commitment_date(self):
         self.purchase_company_a.date_planned = "2070-12-31"
         sale = self._approve_po()
-        self.assertEqual(sale.requested_date, "2070-12-31")
+        self.assertEqual(str(sale.commitment_date.date()), "2070-12-31")
 
     def test_raise_product_access(self):
         product_rule = self.env.ref("product.product_comp_rule")
@@ -167,3 +161,15 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(len(sale), 1)
         self.assertEqual(sale.state, "sale")
         self.assertEqual(sale.partner_id, self.partner_company_a)
+
+    def test_purchase_sale_with_sale_purchase_inter_company_installed(self):
+        # Install sale_purchase_inter_company module
+        module = self.env["ir.module.module"].search(
+            [("name", "=", "sale_purchase_inter_company")]
+        )
+        if not module:
+            return False
+        module.button_install()
+        sale = self._approve_po()
+        po = self.env["purchase.order"].search([("auto_sale_order_id", "=", sale.id)])
+        self.assertEqual(len(po), 0)

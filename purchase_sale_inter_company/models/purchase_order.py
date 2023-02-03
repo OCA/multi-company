@@ -14,6 +14,13 @@ class PurchaseOrder(models.Model):
         """Generate inter company sale order base on conditions."""
         res = super().button_approve(force)
         for purchase_order in self.sudo():
+            # check if 'sale_purchase_inter_company' is installed
+            # that the purchase order is not created from an inter company sale order
+            if (
+                "auto_sale_order_id" in self._fields
+                and purchase_order.auto_sale_order_id
+            ):
+                continue
             # get the company from partner then trigger action of
             # intercompany relation
             dest_company = (
@@ -165,14 +172,24 @@ class PurchaseOrder(models.Model):
         return new_line._convert_to_write(new_line._cache)
 
     def button_cancel(self):
-        sale_orders = (
-            self.env["sale.order"]
-            .sudo()
-            .search([("auto_purchase_order_id", "in", self.ids)])
-        )
-        for so in sale_orders:
-            if so.state not in ["draft", "sent", "cancel"]:
-                raise UserError(_("You can't cancel an order that is %s") % so.state)
-        sale_orders.action_cancel()
-        self.write({"partner_ref": False})
+        for purchase_order in self:
+            # check if 'sale_purchase_inter_company' is installed
+            # that the purchase order is not created from an inter company sale order
+            if (
+                "auto_sale_order_id" in self._fields
+                and purchase_order.auto_sale_order_id
+            ):
+                continue
+            sale_orders = (
+                self.env["sale.order"]
+                .sudo()
+                .search([("auto_purchase_order_id", "=", purchase_order.id)])
+            )
+            for so in sale_orders:
+                if so.state not in ["draft", "sent", "cancel"]:
+                    raise UserError(
+                        _("You can't cancel an order that is %s") % so.state
+                    )
+            sale_orders.action_cancel()
+            self.write({"partner_ref": False})
         return super().button_cancel()
