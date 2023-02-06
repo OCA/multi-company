@@ -54,7 +54,7 @@ class ProductSupplierinfoGroup(models.Model):
 
     def write(self, vals):
         for record in self:
-            changed_vals = self._get_changed_vals(vals)
+            changed_vals = record._get_changed_vals(vals)
             if changed_vals:
                 super(ProductSupplierinfoGroup, record).write(changed_vals)
                 if "sequence" in vals:
