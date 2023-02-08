@@ -40,7 +40,8 @@ class AccountMove(models.Model):
         if not self.is_invoice():
             self.line_ids = [(5, 0, 0)]
             return
-        # Forcing recalculation of change of partner
+        # Forcing recalculation of change of partner and journal
+        self._onchange_journal()
         self._onchange_partner_id()
         for line in self.invoice_line_ids:
             line.account_id = line._get_computed_account()
