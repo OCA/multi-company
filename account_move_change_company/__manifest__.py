@@ -5,7 +5,7 @@
     "name": "Account Change Company",
     "summary": """
         Allow to change company of account moves""",
-    "version": "14.0.1.0.1",
+    "version": "14.0.1.0.2",
     "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
     "author": "CreuBlanca,Odoo Community Association (OCA)",
