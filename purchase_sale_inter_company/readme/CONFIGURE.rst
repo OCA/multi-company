@@ -1,4 +1,4 @@
-TTo configure this module, you need to:
+To configure this module, you need to:
 #. go to the menu *General Settings > Companies > Companies*.
 #. Select one of the companies.
 #. Go to the tab *Inter-Company* then the group *Purchase To Sale*.
