@@ -56,13 +56,51 @@ class SaleOrder(models.Model):
                     if line.auto_purchase_line_id:
                         line.auto_purchase_line_id.price_unit = line.price_unit
         res = super(SaleOrder, self).action_confirm()
-        for sale_order in self.sudo().filtered(lambda s: not s.auto_purchase_order_id):
+        for sale_order in self.sudo():
             # Do not consider SO created from intercompany PO
             dest_company = sale_order.partner_id.ref_company_ids
-            if dest_company and dest_company.po_from_so:
-                sale_order.with_context(
-                    force_company=dest_company.id
-                )._inter_company_create_purchase_order(dest_company)
+            if not sale_order.auto_purchase_order_id:
+                if dest_company and dest_company.po_from_so:
+                    sale_order.with_context(
+                        force_company=dest_company.id
+                    )._inter_company_create_purchase_order(dest_company)
+            if sale_order.auto_purchase_order_id and dest_company and dest_company.sync_picking:
+                pickings = sale_order.picking_ids
+                purchase_picking = sale_order.auto_purchase_order_id.sudo().picking_ids
+
+                if len(pickings) == len(purchase_picking) == 1:
+                    purchase_picking.sudo().write({'intercompany_picking_id': pickings[0].id})
+                    pickings[0].write({'intercompany_picking_id': purchase_picking.id})
+                if len(pickings) > 1 and len(purchase_picking) == 1:
+                    # If there are `n` pickings in the sale order and one in the purchase order, split the receipt
+                    assigned_moves = []
+                    assigned_move_lines = []
+                    for pick in pickings:
+                        assigned = purchase_picking.sudo().move_ids_without_package.filtered(
+                            lambda m: m.product_id.id in pick.mapped('move_ids_without_package.product_id.id'))
+                        assigned_lines = purchase_picking.sudo().move_line_ids_without_package.filtered(
+                            lambda m: m.product_id.id in pick.mapped('move_line_ids_without_package.product_id.id'))
+                        assigned_moves.append(assigned)
+                        assigned_move_lines.append(assigned_lines)
+
+                    for i in range(len(assigned_moves)):
+                        if i == 0:
+                            purchase_picking.write({
+                                'move_ids_without_package': [(6, False, assigned_moves[i].ids)],
+                                'move_line_ids_without_package': [(6, False, assigned_move_lines[i].ids)],
+                                'intercompany_picking_id': pickings[i].id,
+                            })
+                            pickings[i].write({'intercompany_picking_id': purchase_picking.id})
+                            purchase_picking.action_assign()
+                        else:
+                            new = purchase_picking.copy({
+                                'move_ids_without_package': [(6, False, assigned_moves[i].ids)],
+                                'move_line_ids_without_package': [(6, False, assigned_move_lines[i].ids)],
+                                'intercompany_picking_id': pickings[i].id,
+                            })
+                            new.action_assign()
+                            pickings[i].write({'intercompany_picking_id': new.id})
+
         return res
 
     @api.multi
