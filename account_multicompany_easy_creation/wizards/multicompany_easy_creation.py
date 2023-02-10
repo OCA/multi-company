@@ -154,8 +154,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     {
                         "code": False,
                         "sequence_id": False,
-                        "default_debit_account_id": account_account.id,
-                        "default_credit_account_id": account_account.id,
+                        "default_account_id": account_account.id,
                     }
                 )
                 AccountJournal.create(vals)
