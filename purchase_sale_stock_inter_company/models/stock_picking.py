@@ -11,7 +11,7 @@ class StockPicking(models.Model):
 
     intercompany_picking_id = fields.Many2one(comodel_name="stock.picking")
 
-    def action_done(self):
+    def _action_done(self):
         # Only DropShip pickings
         po_picks = self.browse()
         for pick in self.filtered(
@@ -53,5 +53,5 @@ class StockPicking(models.Model):
                     )
         # Transfer dropship pickings
         for po_pick in po_picks.sudo():
-            po_pick.with_company(po_pick.company_id.id).action_done()
-        return super(StockPicking, self).action_done()
+            po_pick.with_company(po_pick.company_id.id)._action_done()
+        return super()._action_done()
