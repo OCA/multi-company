@@ -105,12 +105,10 @@ class PurchaseOrder(models.Model):
                 }
             )
         # create the SO and generate its lines from the PO lines
-        sale_order_data = self._prepare_sale_order_data(
-            self.name,
-            company_partner,
-            dest_company,
-            self.dest_address_id,
-            related_pricelist,
+        sale_order_data = self.with_context(
+            pricelist=related_pricelist
+        )._prepare_sale_order_data(
+            self.name, company_partner, dest_company, self.dest_address_id
         )
         sale_order = (
             self.env["sale.order"]
@@ -137,7 +135,7 @@ class PurchaseOrder(models.Model):
             sale_order.with_user(intercompany_user.id).sudo().action_confirm()
 
     def _prepare_sale_order_data(
-        self, name, partner, dest_company, direct_delivery_address, pricelist
+        self, name, partner, dest_company, direct_delivery_address
     ):
         """Generate the Sale Order values from the PO
         :param name : the origin client reference
@@ -148,8 +146,6 @@ class PurchaseOrder(models.Model):
         :rtype dest_company : res.company record
         :param direct_delivery_address : the address of the SO
         :rtype direct_delivery_address : res.partner record
-        :param pricelist : SO pricelist with the same currency as corresponding PO
-        :rtype pricelist : product.pricelist record
         """
         self.ensure_one()
         delivery_address = direct_delivery_address or partner or False
@@ -170,7 +166,8 @@ class PurchaseOrder(models.Model):
         if self.notes:
             new_order.note = self.notes
         new_order.commitment_date = self.date_planned
-        new_order.pricelist_id = pricelist
+        if self.env.context.get("pricelist"):
+            new_order.pricelist_id = self.env.context.get("pricelist")
         return new_order._convert_to_write(new_order._cache)
 
     def _prepare_sale_order_line_data(self, purchase_line, sale_order):
