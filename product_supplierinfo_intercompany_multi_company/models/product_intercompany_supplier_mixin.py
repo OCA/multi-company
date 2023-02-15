@@ -1,32 +1,12 @@
-# © 2019 Akretion (http://www.akretion.com)
-# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
-
 from odoo import _, models
 from odoo.exceptions import Warning as UserError
 
 
 class ProductIntercompanySupplierMixin(models.AbstractModel):
-    _name = "product.intercompany.supplier.mixin"
-    _description = "Intercompany product mixin"
-
-    def _has_intercompany_price(self, pricelist):
-        raise NotImplementedError
-
-    def _get_intercompany_supplier_info_domain(self, pricelist):
-        raise NotImplementedError
-
-    def _prepare_intercompany_supplier_info(self, pricelist):
-        self.ensure_one()
-        price = self.uom_id._compute_price(self.price, self.uom_po_id)
-        res = {
-            "intercompany_pricelist_id": pricelist.id,
-            "name": pricelist.company_id.partner_id.id,
-            "company_id": False,
-            "price": price,
-        }
-        return res
+    _inherit = "product.intercompany.supplier.mixin"
 
     def _synchronise_supplier_info(self, pricelists=None):
+        # replaced to add company_ids condition
         if not pricelists:
             pricelists = self.env["product.pricelist"].search(
                 [("is_intercompany_supplier", "=", True)]
@@ -47,6 +27,13 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
                     record._has_intercompany_price(pricelist)
                     and record.sale_ok
                     and record.purchase_ok
+                    and (
+                        (
+                            pricelist.company_id.id in record.company_ids.ids
+                            and record.company_id.id in record.company_ids.ids
+                        )
+                        or (len(record.company_ids) == 0)
+                    )
                 ):
                     vals = record._prepare_intercompany_supplier_info(pricelist)
                     if supplierinfo:
@@ -54,4 +41,10 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
                     else:
                         supplierinfo.create(vals)
                 elif supplierinfo:
+                    supplierinfo.sudo().unlink()
+                if (
+                    record._has_intercompany_price(pricelist)
+                    and pricelist.company_id.id in record.company_ids.ids
+                    and record.company_id.id == pricelist.company_id.id
+                ):
                     supplierinfo.sudo().unlink()
