@@ -17,6 +17,11 @@ msgstr ""
 "X-Generator: Weblate 4.14.1\n"
 
 #. module: product_supplierinfo_intercompany
+#: model:res.groups,name:product_supplierinfo_intercompany.group_all_supplierinfo
+msgid "Access to all supplier info"
+msgstr ""
+
+#. module: product_supplierinfo_intercompany
 #: code:addons/product_supplierinfo_intercompany/models/product_pricelist_item.py:0
 #, python-format
 msgid ""
