@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-01-02 12:45+0000\n"
+"PO-Revision-Date: 2023-02-16 16:50+0000\n"
 "Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -19,7 +19,7 @@ msgstr ""
 #. module: product_supplierinfo_intercompany
 #: model:res.groups,name:product_supplierinfo_intercompany.group_all_supplierinfo
 msgid "Access to all supplier info"
-msgstr ""
+msgstr "Accesso a tutte le righe listini fornitore"
 
 #. module: product_supplierinfo_intercompany
 #: code:addons/product_supplierinfo_intercompany/models/product_pricelist_item.py:0
