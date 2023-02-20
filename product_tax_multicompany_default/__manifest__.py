@@ -11,4 +11,5 @@
     "license": "AGPL-3",
     "depends": ["account", "product"],
     "data": ["views/product_template_view.xml"],
+    "maintainers": ["Shide"],
 }
