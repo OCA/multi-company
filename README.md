@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[product_tax_multicompany_default](product_tax_multicompany_default/) | 16.0.1.0.0 |  | Product Tax Multi Company Default
+[product_tax_multicompany_default](product_tax_multicompany_default/) | 16.0.1.0.0 | [![Shide](https://github.com/Shide.png?size=30px)](https://github.com/Shide) | Product Tax Multi Company Default
 
 [//]: # (end addons)
 
