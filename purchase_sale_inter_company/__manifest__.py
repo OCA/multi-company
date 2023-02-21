@@ -13,5 +13,5 @@
     "license": "AGPL-3",
     "installable": True,
     "depends": ["sale", "purchase", "account_invoice_inter_company"],
-    "data": ["views/res_config_view.xml"],
+    "data": ["views/purchase_order_views.xml", "views/res_config_view.xml"],
 }

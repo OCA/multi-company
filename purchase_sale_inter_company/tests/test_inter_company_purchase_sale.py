@@ -33,6 +33,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
         with po.order_line.new() as line_form:
             line_form.product_id = cls.product
+            line_form.account_analytic_id = cls.analytic_account_sale
             line_form.product_qty = 3.0
             line_form.name = "Service Multi Company"
             line_form.price_unit = 450.0
@@ -49,6 +50,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
 
         cls.product = cls.product_consultant_multi_company
+        cls.analytic_account_sale = cls.env["account.analytic.account"].create(
+            {"name": "Project for selling timesheet - AA1", "code": "AA-20301"}
+        )
 
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
@@ -210,3 +214,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self._approve_po()
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+
+    # def test_reconfirm_canceled_po_so(self):
+    #     self.company_b.sale_auto_validation = True
+    #     self._set_ignore_exception()
+    #     self._approve_po()
+    #     with self.assertRaises(UserError):
+    #         self.purchase_company_a.with_user(self.user_company_a).button_cancel()
