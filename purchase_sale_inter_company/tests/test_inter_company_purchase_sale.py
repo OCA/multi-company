@@ -210,3 +210,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self._approve_po()
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+
+    # def test_reconfirm_canceled_po_so(self):
+    #     self.company_b.sale_auto_validation = True
+    #     self._set_ignore_exception()
+    #     self._approve_po()
+    #     with self.assertRaises(UserError):
+    #         self.purchase_company_a.with_user(self.user_company_a).button_cancel()

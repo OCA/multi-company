@@ -3,12 +3,33 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
+
+    auto_sale_order_info = fields.Html(compute="_compute_auto_sale_order_info")
+
+    def _compute_auto_sale_order_info(self):
+        for purchase_order in self.sudo():
+            auto_sale_order_id = (
+                self.env["sale.order"]
+                .sudo()
+                .search([("auto_purchase_order_id", "=", purchase_order.id)])
+            )
+            info_message = (
+                _(
+                    "Sale order '%s' is already generated for this purchase order "
+                    "You can confirm/cancel this purchase order and "
+                    "related sale order will be also confirmed/canceled"
+                )
+                % auto_sale_order_id.display_name
+            )
+            purchase_order.auto_sale_order_info = (
+                info_message if auto_sale_order_id.exists() else False
+            )
 
     def button_approve(self, force=False):
         """Generate inter company sale order base on conditions."""
@@ -22,10 +43,36 @@ class PurchaseOrder(models.Model):
             dest_company = (
                 po_partner.ref_company_ids or po_partner.parent_id.ref_company_ids
             )
+            intercompany_user = dest_company.intercompany_sale_user_id
+            if not intercompany_user:
+                intercompany_user = self.env.user
             if dest_company and dest_company.so_from_po:
-                purchase_order.with_company(
-                    dest_company.id
-                )._inter_company_create_sale_order(dest_company)
+                # one sale order is expected to be created when confirm purchase order
+                # so we check for existing sale order with auto_purchase_order_id set
+                # we don't need extra sale orders if purchase order was confirmed again
+                auto_sale_order_id = (
+                    self.env["sale.order"]
+                    .sudo()
+                    .search([("auto_purchase_order_id", "=", purchase_order.id)])
+                )
+                # if len(auto_sale_order_id) > 1:
+                #     raise UserError(
+                #         _(
+                #             "You can have only one auto-generated sale order "
+                #             "but following orders were found '%s' "
+                #         )
+                #         % ",".join([order.display_name for order in auto_sale_order_id])
+                #     )
+                if auto_sale_order_id and (
+                    auto_sale_order_id.state not in ("sale", "done")
+                ):
+                    auto_sale_order_id.with_user(
+                        intercompany_user.id
+                    ).sudo().action_confirm()
+                else:
+                    purchase_order.with_company(
+                        dest_company.id
+                    )._inter_company_create_sale_order(dest_company)
         return res
 
     def _get_user_domain(self, dest_company):
