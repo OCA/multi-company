@@ -97,7 +97,7 @@ class AccountMove(models.Model):
         # account/models/account_invoice.py line 1536
         # clears the distributions in the original VB
         dist_obj = self.env["account.invoice.line.distribution"]
-        super().action_reverse()
+        res = super().action_reverse()
         # REMOVE: Auto manage in move_type: refund
         index = 0
         for line in self.invoice_line_ids:
@@ -116,6 +116,7 @@ class AccountMove(models.Model):
                     )
                     self.invoice_line_ids[index]._onchange_distribution_ids_percent()
             index += 1
+        return res
 
     def get_from_lines(
         self, from_lines, invoice_line_id, invoice_id, amount, distribution, is_invoice
