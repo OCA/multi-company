@@ -1,13 +1,13 @@
 # Copyright (C) 2020 Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from os.path import join as opj
+
 from odoo import _
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 from odoo.modules.module import get_resource_path
 from odoo.tests.common import SavepointCase
 from odoo.tools import convert_file
-from os.path import join as opj
-from odoo.exceptions import UserError
 
 
 class TestAccountInvoice(SavepointCase):
@@ -16,7 +16,9 @@ class TestAccountInvoice(SavepointCase):
         super(TestAccountInvoice, cls).setUpClass()
         module = "account_payment_other_company"
         path = opj("account_payment_other_company")
-        pathname = opj(path, get_resource_path(module, "tests", "test_account_payment_data.xml"))
+        pathname = opj(
+            path, get_resource_path(module, "tests", "test_account_payment_data.xml")
+        )
         convert_file(
             cls.cr,
             module,
@@ -51,8 +53,8 @@ class TestAccountInvoice(SavepointCase):
             "account_payment_other_company.bank_journal_company_b"
         )
 
-        cls.company_b.due_fromto_payment_journal_id.default_account_id = (
-            cls.env.ref("account_payment_other_company.a_expense_company_b")
+        cls.company_b.due_fromto_payment_journal_id.default_account_id = cls.env.ref(
+            "account_payment_other_company.a_expense_company_b"
         )
 
         cls.company_a.due_from_account_id = cls.env.ref(
