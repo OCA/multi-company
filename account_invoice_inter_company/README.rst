@@ -88,6 +88,7 @@ Contributors
   * Jairo Llopis
   * David Vidal
   * Pedro M. Baeza
+* Isaac Gallart <igallart@puntsistemes.es>
 
 Maintainers
 ~~~~~~~~~~~
