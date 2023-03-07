@@ -131,7 +131,7 @@ class TestPartnerMultiCompany(common.TransactionCase):
             "['|', '|',"
             "('partner_share', '=', False),"
             "('no_company_ids', '=', True),"
-            "('company_ids', 'in', company_ids)]"
+            "('company_ids', 'in', user.company_ids.ids)]"
         )
         self.assertEqual(rule.domain_force, domain)
         self.assertFalse(rule.active)

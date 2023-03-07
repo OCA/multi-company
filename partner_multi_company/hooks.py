@@ -18,7 +18,7 @@ def post_init_hook(cr, registry):
                     "['|', '|',"
                     "('partner_share', '=', False),"
                     "('no_company_ids', '=', True),"
-                    "('company_ids', 'in', company_ids)]"
+                    "('company_ids', 'in', user.company_ids.ids)]"
                 ),
             }
         )
