@@ -128,10 +128,9 @@ class TestPartnerMultiCompany(common.TransactionCase):
         uninstall_hook(self.env.cr, None)
         rule = self.env.ref("base.res_partner_rule")
         domain = (
-            "['|', '|',"
-            "('partner_share', '=', False),"
-            "('no_company_ids', '=', True),"
-            "('company_ids', 'in', user.company_ids.ids)]"
+            "['|', '|', ('partner_share', '=', False), "
+            "('company_id', 'in', company_ids), "
+            "('company_id', '=', False)]"
         )
         self.assertEqual(rule.domain_force, domain)
         self.assertFalse(rule.active)
