@@ -36,9 +36,8 @@ def uninstall_hook(cr, registry):
             {
                 "active": False,
                 "domain_force": (
-                    "['|','|',('company_id.child_ids','child_of',"
-                    "[user.company_id.id]),('company_id','child_of',"
-                    "[user.company_id.id]),('company_id','=',False)]"
+                    "['|', '|', ('partner_share', '=', False), ('company_id', 'in', company_ids), "
+                    "('company_id', '=', False)]"
                 ),
             }
         )
