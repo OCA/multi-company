@@ -15,8 +15,10 @@ def post_init_hook(cr, registry):
             {
                 "active": True,
                 "domain_force": (
-                    "['|', '|', ('partner_share', '=', False), ('no_company_ids', '=', True),"
-                    " ('company_ids', 'in', company_ids)]"
+                    "['|', '|',"
+                    "('partner_share', '=', False),"
+                    "('no_company_ids', '=', True),"
+                    "('company_ids', 'in', company_ids)]"
                 ),
             }
         )
