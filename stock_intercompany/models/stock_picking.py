@@ -1,62 +1,18 @@
-from odoo import models
+from odoo import fields, models
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    def _check_company_consistency(self, company):
-        # Replace company_id by the right one to create the counterpart picking
-        move_lines = [
-            (0, 0, line.with_company(company).copy_data()[0])
-            for line in self.move_lines
-        ]
-        for move in move_lines:
-            move[2]["company_id"] = company.id
-            move[2]["location_id"] = self.env.ref("stock.stock_location_suppliers").id
-
-        move_line_ids = [
-            (0, 0, line.with_company(company).copy_data()[0])
-            for line in self.move_line_ids
-        ]
-        for move_line in move_line_ids:
-            move_line[2]["company_id"] = company.id
-            move_line[2]["move_id"] = False
-            move_line[2]["location_id"] = self.env.ref(
-                "stock.stock_location_suppliers"
-            ).id
-        return move_lines, move_line_ids
+    counterpart_of_picking_id = fields.Many2one("stock.picking", check_company=False)
 
     def _create_counterpart_picking(self):
         companies = self.env["res.company"].sudo().search([])
         partners = {cp.partner_id: cp for cp in companies}
+        picking = self.env["stock.picking"]
         if self.partner_id in partners:
             company = partners[self.partner_id]
-            warehouse = False
-            if company.intercompany_in_type_id.warehouse_id:
-                warehouse = company.intercompany_in_type_id.warehouse_id
-            else:
-                warehouse = (
-                    self.env["stock.warehouse"]
-                    .sudo()
-                    .search([("company_id", "=", company.id)], limit=1)
-                )
-            vals = {
-                "partner_id": self.env.user.company_id.partner_id.id,
-                "company_id": company.id,
-                "origin": self.name,
-                "picking_type_id": company.intercompany_in_type_id.id
-                or warehouse.in_type_id.id,
-                "state": "draft",
-                "location_id": self.env.ref("stock.stock_location_suppliers").id,
-                "location_dest_id": warehouse.lot_stock_id.id,
-            }
-            move_lines, move_line_ids = self._check_company_consistency(company)
-            vals.update(
-                {
-                    "move_lines": move_lines or False,
-                    "move_line_ids": move_line_ids or False,
-                }
-            )
+            vals = self._get_counterpart_picking_vals(company)
             new_picking_vals = self.sudo().copy_data(default=vals)
             picking = (
                 self.env["stock.picking"]
@@ -65,7 +21,59 @@ class StockPicking(models.Model):
                 .create(new_picking_vals)
             )
             picking.action_confirm()
-            return picking
+        return picking
+
+    def _get_counterpart_picking_vals(self, company):
+        if company.intercompany_in_type_id.warehouse_id:
+            warehouse = company.intercompany_in_type_id.warehouse_id
+        else:
+            warehouse = (
+                self.env["stock.warehouse"]
+                .sudo()
+                .search([("company_id", "=", company.id)], limit=1)
+            )
+        ptype = company.intercompany_in_type_id or warehouse.in_type_id
+        move_lines, move_line_ids = self._check_company_consistency(company)
+        return {
+            "partner_id": self.env.user.company_id.partner_id.id,
+            "company_id": company.id,
+            "origin": self.name,
+            "picking_type_id": ptype.id,
+            "state": "draft",
+            "location_id": self.env.ref("stock.stock_location_suppliers").id,
+            "location_dest_id": warehouse.lot_stock_id.id,
+            "counterpart_of_picking_id": self.id,
+            "move_lines": move_lines,
+            "move_line_ids": move_line_ids,
+        }
+
+    def _check_company_consistency(self, company):
+        # Replace company_id by the right one to create the counterpart picking
+        common_vals = {
+            "company_id": company.id,
+            "location_id": self.env.ref("stock.stock_location_suppliers").id,
+        }
+        move_lines = [
+            (
+                0,
+                0,
+                sm.with_company(company).copy_data(
+                    dict(common_vals, counterpart_of_move_id=sm.id)
+                )[0],
+            )
+            for sm in self.move_lines
+        ]
+        move_line_ids = [
+            (
+                0,
+                0,
+                ln.with_company(company).copy_data(
+                    dict(common_vals, move_id=False, counterpart_of_line_id=ln.id)
+                )[0],
+            )
+            for ln in self.move_line_ids
+        ]
+        return move_lines, move_line_ids
 
     # override of method from stock module
     def _action_done(self):
