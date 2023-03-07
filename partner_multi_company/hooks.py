@@ -9,8 +9,6 @@ def post_init_hook(cr, registry):
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
         rule = env.ref("base.res_partner_rule")
-        if not rule:  # safeguard if it's deleted
-            return
         rule.write(
             {
                 "active": True,
