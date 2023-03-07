@@ -4,17 +4,19 @@ from odoo import SUPERUSER_ID, api
 
 _logger = logging.getLogger(__name__)
 
-try:
-    from odoo.addons.base_multi_company import hooks
-except ImportError:
-    _logger.info("Cannot find `base_multi_company` module in addons path.")
-
 
 def post_init_hook(cr, registry):
-    hooks.post_init_hook(
-        cr,
-        "base.res_partner_rule",
-        "res.partner",
+    rule = env.ref("base.res_partner_rule")
+    if not rule:  # safeguard if it's deleted
+        return
+    rule.write(
+        {
+            "active": True,
+            "domain_force": (
+                "['|', '|', ('partner_share', '=', False), ('no_company_ids', '=', True), ('company_ids', "
+                "'in', company_ids)]"
+            ),
+        }
     )
 
 
