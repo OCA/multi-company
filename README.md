@@ -24,6 +24,7 @@ addon | version | maintainers | summary
 [account_invoice_inter_company](account_invoice_inter_company/) | 15.0.1.0.0 |  | Intercompany invoice rules
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 15.0.1.0.0 |  | This module adds a wizard to create companies easily
 [base_multi_company](base_multi_company/) | 15.0.1.0.1 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
+[mail_template_multi_company](mail_template_multi_company/) | 15.0.1.0.0 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [partner_multi_company](partner_multi_company/) | 15.0.1.0.0 |  | Select individually the partner visibility on each company
 [product_multi_company](product_multi_company/) | 15.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 15.0.1.0.1 | [![Shide](https://github.com/Shide.png?size=30px)](https://github.com/Shide) | Product Tax Multi Company Default
