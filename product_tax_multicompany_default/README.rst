@@ -44,6 +44,7 @@ Configuration
 Usage
 =====
 
+#. User must have group Full Accounting Features (account.group_account_user)
 #. Go to Invoicing > Customers > Products.
 #. Create a new product and save it.
 #. Switching user company you will see that the product has the default taxes
@@ -81,6 +82,10 @@ Contributors
   * Vicent Cubells
   * Ernesto Tejeda
 
+* `Moduon <https://www.moduon.team>`_:
+
+  * Eduardo de Miguel
+
 Maintainers
 ~~~~~~~~~~~
 
@@ -93,6 +98,14 @@ This module is maintained by the OCA.
 OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
+
+.. |maintainer-Shide| image:: https://github.com/Shide.png?size=40px
+    :target: https://github.com/Shide
+    :alt: Shide
+
+Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
+
+|maintainer-Shide| 
 
 This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/14.0/product_tax_multicompany_default>`_ project on GitHub.
 
