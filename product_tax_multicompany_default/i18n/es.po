@@ -20,13 +20,31 @@ msgstr ""
 "X-Generator: Weblate 4.3.2\n"
 
 #. module: product_tax_multicompany_default
-#: model:ir.model,name:product_tax_multicompany_default.model_product_template
-msgid "Product Template (Multi-Company)"
-msgstr "Plantilla de producto (multi-compañía)"
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__display_name
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__id
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__id
+msgid "ID"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product____last_update
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template____last_update
+msgid "Last Modified on"
+msgstr ""
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_product
-msgid "Product Variant (Multi-Company)"
+msgid "Product"
+msgstr "Producto"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model,name:product_tax_multicompany_default.model_product_template
+msgid "Product Template"
 msgstr ""
 
 #. module: product_tax_multicompany_default
@@ -34,5 +52,5 @@ msgstr ""
 msgid "Propagate Taxes"
 msgstr "Propagar impuestos"
 
-#~ msgid "Product"
-#~ msgstr "Producto"
+#~ msgid "Product Template (Multi-Company)"
+#~ msgstr "Plantilla de producto (multi-compañía)"
