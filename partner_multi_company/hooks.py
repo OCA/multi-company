@@ -6,18 +6,20 @@ _logger = logging.getLogger(__name__)
 
 
 def post_init_hook(cr, registry):
-    rule = env.ref("base.res_partner_rule")
-    if not rule:  # safeguard if it's deleted
-        return
-    rule.write(
-        {
-            "active": True,
-            "domain_force": (
-                "['|', '|', ('partner_share', '=', False), ('no_company_ids', '=', True), ('company_ids', "
-                "'in', company_ids)]"
-            ),
-        }
-    )
+    with api.Environment.manage():
+        env = api.Environment(cr, SUPERUSER_ID, {})
+        rule = env.ref("base.res_partner_rule")
+        if not rule:  # safeguard if it's deleted
+            return
+        rule.write(
+            {
+                "active": True,
+                "domain_force": (
+                    "['|', '|', ('partner_share', '=', False), ('no_company_ids', '=', True),"
+                    " ('company_ids', 'in', company_ids)]"
+                ),
+            }
+        )
 
 
 def uninstall_hook(cr, registry):
@@ -36,7 +38,8 @@ def uninstall_hook(cr, registry):
             {
                 "active": False,
                 "domain_force": (
-                    "['|', '|', ('partner_share', '=', False), ('company_id', 'in', company_ids), "
+                    "['|', '|', ('partner_share', '=', False), "
+                    "('company_id', 'in', company_ids), "
                     "('company_id', '=', False)]"
                 ),
             }
