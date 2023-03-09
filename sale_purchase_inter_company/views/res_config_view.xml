@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="model">res.config.settings</field>
+        <field
+            name="inherit_id"
+            ref="account_invoice_inter_company.res_config_settings_view_form"
+        />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//div[@id='inter_company_invoice_validation']"
+                position='after'
+            >
+                <div class="o_form_label mt8">Sale/Purchase</div>
+                <div id="inter_company_po_from_so">
+                    <field name="po_from_so" class="oe_inline" />
+                    <label
+                        string="Purchase from sale"
+                        class="o_light_label"
+                        for="po_from_so"
+                    />
+                </div>
+                <div
+                    id="po_from_so_settings"
+                    attrs="{'invisible':['|', ('company_id', '=', False), ('po_from_so', '=', False)]}"
+                >
+                    <label for="intercompany_purchase_user_id" class="o_light_label" />
+                    <field
+                        name="intercompany_purchase_user_id"
+                        attrs="{'required': [('po_from_so', '=', True)]}"
+                        class="oe_inline"
+                    />
+                    <br />
+                    <field name="purchase_auto_validation" class="oe_inline" />
+                    <label
+                        for="purchase_auto_validation"
+                        class="oe_inline o_light_label"
+                    />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
