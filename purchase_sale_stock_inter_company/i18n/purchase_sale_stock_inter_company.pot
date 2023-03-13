@@ -1,0 +1,71 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_sale_stock_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"There's no corresponding line in PO %(po)s for assigning qty from "
+"%(pick_name)s for product %(product)s"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Sale Orders"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid "Warehouse for Sale Orders"
+msgstr ""
