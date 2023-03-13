@@ -19,27 +19,7 @@ class MultiCompanyAbstract(models.AbstractModel):
     company_ids = fields.Many2many(
         string="Companies",
         comodel_name="res.company",
-        default=lambda self: self._default_company_ids(),
     )
-    # TODO: Remove it following https://github.com/odoo/odoo/pull/81344
-    no_company_ids = fields.Boolean(
-        string="No Companies",
-        compute="_compute_no_company_ids",
-        compute_sudo=True,
-        store=True,
-        index=True,
-    )
-
-    @api.depends("company_ids")
-    def _compute_no_company_ids(self):
-        for record in self:
-            if record.company_ids:
-                record.no_company_ids = False
-            else:
-                record.no_company_ids = True
-
-    def _default_company_ids(self):
-        return self.browse(self.env.company.ids)
 
     @api.depends("company_ids")
     @api.depends_context("company")
@@ -47,7 +27,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         for record in self:
             # Give the priority of the current company of the user to avoid
             # multi company incompatibility errors.
-            company_id = self.env.context.get("force_company") or self.env.company.id
+            company_id = self.env.company.id
             if company_id in record.company_ids.ids:
                 record.company_id = company_id
             else:
