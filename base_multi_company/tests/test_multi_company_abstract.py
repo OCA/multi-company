@@ -143,7 +143,7 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         for company in user.company_ids:
             user.write({"company_id": company.id})
             # Force recompute
-            tester.invalidate_cache()
+            tester.invalidate_model()
             # Ensure that the current user is on the right company
             self.assertEqual(user.company_id, company)
             self.assertEqual(tester.company_id, company)
@@ -152,7 +152,7 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         # Switch to a company not in tester.company_ids
         self.switch_user_company(user, company4)
         # Force recompute
-        tester.invalidate_cache()
+        tester.invalidate_model()
         self.assertNotEqual(user.company_id.id, tester.company_ids.ids)
         self.assertTrue(bool(tester.company_id.id))
         self.assertTrue(bool(tester.company_id.name))
@@ -191,6 +191,41 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         )
         # Check if all companies have been added
         self.assertEqual(tester.sudo().company_ids, companies)
+
+    def test_company_id_create_false(self):
+        """
+        Test a creation with only company_id == False
+        """
+
+        user_obj = self.env["res.users"]
+        company_obj = self.env["res.company"]
+        company1 = self.env.ref("base.main_company")
+        # Create companies
+        company2 = company_obj.create({"name": "High salaries"})
+        company3 = company_obj.create({"name": "High salaries, twice more!"})
+        companies = company1 + company2 + company3
+        # Create a "normal" user (not the admin)
+        user = user_obj.create(
+            {
+                "name": "Best employee",
+                "login": "best-emplyee@example.com",
+                "company_id": company1.id,
+                "company_ids": [(6, False, companies.ids)],
+            }
+        )
+        tester_obj = self.test_model.with_user(user)
+        # We add both values
+        tester = tester_obj.create(
+            {
+                "name": "My tester",
+                "company_id": False,
+            }
+        )
+        # Check company_ids is False too
+        self.assertFalse(tester.sudo().company_ids)
+
+        # Check company_id is False also when changing current one
+        self.assertFalse(tester.with_company(company2).company_id)
 
     def test_set_company_id(self):
         """
