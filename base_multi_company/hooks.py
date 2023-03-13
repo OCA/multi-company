@@ -21,10 +21,7 @@ def set_security_rule(env, rule_ref):
     rule.write(
         {
             "active": True,
-            "domain_force": (
-                "['|', ('no_company_ids', '=', True), ('company_ids', "
-                "'in', company_ids)]"
-            ),
+            "domain_force": ("[('company_ids', 'in', [False] + company_ids)]"),
         }
     )
 
@@ -39,25 +36,25 @@ def post_init_hook(cr, rule_ref, model_name):
         model_name (string): Name of Odoo model object to search for
             existing records.
     """
-    with api.Environment.manage():
-        env = api.Environment(cr, SUPERUSER_ID, {})
-        set_security_rule(env, rule_ref)
-        # Copy company values
-        model = env[model_name]
-        table_name = model._fields["company_ids"].relation
-        column1 = model._fields["company_ids"].column1
-        column2 = model._fields["company_ids"].column2
-        SQL = """
-            INSERT INTO {}
-            ({}, {})
-            SELECT id, company_id FROM {} WHERE company_id IS NOT NULL
-        """.format(
-            table_name,
-            column1,
-            column2,
-            model._table,
-        )
-        env.cr.execute(SQL)
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    set_security_rule(env, rule_ref)
+    # Copy company values
+    model = env[model_name]
+    table_name = model._fields["company_ids"].relation
+    column1 = model._fields["company_ids"].column1
+    column2 = model._fields["company_ids"].column2
+    SQL = """
+        INSERT INTO {}
+        ({}, {})
+        SELECT id, company_id FROM {} WHERE company_id IS NOT NULL
+        ON CONFLICT DO NOTHING
+    """.format(
+        table_name,
+        column1,
+        column2,
+        model._table,
+    )
+    env.cr.execute(SQL)
 
 
 def uninstall_hook(cr, rule_ref):
@@ -68,16 +65,12 @@ def uninstall_hook(cr, rule_ref):
         rule_ref (string): XML ID of security rule to remove the
             `domain_force` from.
     """
-    with api.Environment.manage():
-        env = api.Environment(cr, SUPERUSER_ID, {})
-        # Change access rule
-        rule = env.ref(rule_ref)
-        rule.write(
-            {
-                "active": False,
-                "domain_force": (
-                    " ['|', ('company_id', '=', user.company_id.id),"
-                    " ('company_id', '=', False)]"
-                ),
-            }
-        )
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    # Change access rule
+    rule = env.ref(rule_ref)
+    rule.write(
+        {
+            "active": False,
+            "domain_force": (" [('company_id', 'in', [False, user.company_id.id])]"),
+        }
+    )
