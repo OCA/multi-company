@@ -18,14 +18,15 @@ class ResPartner(models.Model):
         index=True,
     )
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Neutralize the default value applied to company_id that can't be
         removed in the inheritance, and that will activate the inverse method,
         overwriting our company_ids field desired value.
         """
-        vals = self._amend_company_id(vals)
-        return super().create(vals)
+        for vals in vals_list:
+            self._amend_company_id(vals)
+        return super().create(vals_list)
 
     @api.model
     def _commercial_fields(self):
