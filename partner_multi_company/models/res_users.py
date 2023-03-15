@@ -7,7 +7,7 @@ from odoo import api, models
 class ResUsers(models.Model):
     _inherit = "res.users"
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
         res = super(ResUsers, self).create(vals)
         if "company_ids" in vals:
