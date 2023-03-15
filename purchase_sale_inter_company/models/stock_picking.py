@@ -82,12 +82,18 @@ class StockPicking(models.Model):
             raise UserError(_("PO does not exist or has no receipts"))
         if self.intercompany_picking_id:
             dest_picking = self.intercompany_picking_id.sudo(intercompany_user.id)
-            for picking_line in self.move_ids_without_package:
-                picking_line.write(
+            for picking_move in self.move_ids_without_package:
+                dest_picking_move = (
+                    dest_picking.sudo().move_ids_without_package.filtered(
+                        lambda l: l.product_id.id == picking_move.product_id.id
+                    )
+                )
+                dest_picking_move.sudo().write(
                     {
-                        "qty_done": picking_line.reserved_availability,
+                        "quantity_done": picking_move.quantity_done,
                     }
                 )
+            for picking_line in self.move_line_ids_without_package:
                 dest_picking_line = (
                     dest_picking.sudo().move_line_ids_without_package.filtered(
                         lambda l: l.product_id.id == picking_line.product_id.id
@@ -95,7 +101,7 @@ class StockPicking(models.Model):
                 )
                 dest_picking_line.sudo().write(
                     {
-                        "qty_done": picking_line.reserved_availability,
+                        "qty_done": picking_line.qty_done,
                     }
                 )
 
