@@ -341,6 +341,7 @@ class AccountMoveLine(models.Model):
         readonly=True,
         copy=False,
         prefetch=False,
+        index=True,
     )
 
     @api.model
