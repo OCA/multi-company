@@ -1,0 +1,82 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_sale_stock_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-05 13:15+0000\n"
+"PO-Revision-Date: 2020-04-07 18:19+0000\n"
+"Last-Translator: Dong <dong@freshoo.cn>\n"
+"Language-Team: none\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 3.10\n"
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model,name:sale_purchase_stock_inter_company.model_res_company
+msgid "Companies"
+msgstr "公司"
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model,name:sale_purchase_stock_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "配置设定"
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model.fields,help:sale_purchase_stock_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Purchase Orders that will be created based on Sale "
+"Orders made to this company"
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model.fields,help:sale_purchase_stock_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Purchase Orders that will be created based on Sale "
+"Orders made to this company."
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_stock_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model,name:sale_purchase_stock_inter_company.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_stock_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"There's no corresponding line in SO %(so)s for assigning qty from "
+"%(pick_name)s for product %(product)s"
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model,name:sale_purchase_stock_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_stock_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Purchase Orders"
+msgstr ""
+
+#. module: sale_purchase_stock_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_stock_inter_company.field_res_config_settings__warehouse_id
+msgid "Warehouse for Purchase Orders"
+msgstr ""
+
+#~ msgid "Create Sale Orders when buying to this company"
+#~ msgstr "当关联公司向该公司采购时自动创建销售订单"
+
+#~ msgid "Purchase/Sale"
+#~ msgstr "公司间交易"
