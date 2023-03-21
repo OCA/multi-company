@@ -15,8 +15,24 @@ class TestsProductTaxMulticompany(TransactionCase):
     def setUpClass(cls):
         super(TestsProductTaxMulticompany, cls).setUpClass()
         default_country = cls.env.ref("base.cl")
-        cls.company_1 = cls.env["res.company"].create(
-            {"name": "Test company 1", "country_id": default_country.id}
+        cls.company_1 = cls.env["res.company"].create({"name": "Test company 1"})
+        cls.company_2 = cls.env["res.company"].create({"name": "Test company 2"})
+        cls.alien_companies = cls.env["res.company"].search(
+            [("id", "not in", (cls.company_1 | cls.company_2).ids)]
+        )
+        group_account_manager = cls.env.ref("account.group_account_manager")
+        group_account_user = cls.env.ref("account.group_account_user")
+        group_multi_company = cls.env.ref("base.group_multi_company")
+        ResUsers = cls.env["res.users"]
+        cls.user_1 = ResUsers.create(
+            {
+                "name": "User not admin 1",
+                "login": "user_1",
+                "email": "test1@test.com",
+                "groups_id": [(6, 0, group_account_manager.ids)],
+                "company_id": cls.company_1.id,
+                "company_ids": [(6, 0, cls.company_1.ids)],
+            }
         )
         cls.company_2 = cls.env["res.company"].create(
             {"name": "Test company 2", "country_id": default_country.id}
