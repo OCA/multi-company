@@ -3,10 +3,13 @@
 # Copyright 2023 Eduardo de Miguel - Moduon Team <edu@moduon.team>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.tests import Form
+import logging
+
+from odoo.tests import Form, tagged
 from odoo.tests.common import TransactionCase, new_test_user, users
 
 
+@tagged("post_install", "-at_install")
 class TestsProductTaxMulticompany(TransactionCase):
     @classmethod
     def setUpClass(cls):
@@ -142,6 +145,15 @@ class TestsProductTaxMulticompany(TransactionCase):
 
     @users("user_12")
     def test_set_multicompany_taxes(self):
+        # If purchase module is installed
+        # add purchase manager group to user_12
+        # to access the supplier_taxes_id field in the product view
+        try:
+            self.env.ref(
+                "purchase.group_purchase_manager", raise_if_not_found=True
+            ).sudo().users = [(4, self.user_12.id)]
+        except ValueError as e:
+            logging.info(e)  # Skipping configuration of purchase module
         # Create product with empty taxes
         pf_u3_c1 = Form(self.env["product.product"].with_company(self.company_1))
         pf_u3_c1.name = "Testing Empty Taxes"
