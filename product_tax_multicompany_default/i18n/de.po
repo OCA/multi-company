@@ -19,6 +19,20 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: product_tax_multicompany_default
+#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product__divergent_company_taxes
+#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_template__divergent_company_taxes
+msgid ""
+"Does this product have divergent cross-company taxes? (Only for multi-"
+"company products)"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__divergent_company_taxes
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__divergent_company_taxes
+msgid "Has divergent cross-company taxes"
+msgstr ""
+
+#. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_template
 msgid "Product"
 msgstr ""
@@ -29,6 +43,7 @@ msgid "Product Variant"
 msgstr ""
 
 #. module: product_tax_multicompany_default
+#: model:ir.actions.server,name:product_tax_multicompany_default.action_set_multicompany_taxes
 #: model_terms:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
 msgid "Propagate Taxes"
 msgstr ""
