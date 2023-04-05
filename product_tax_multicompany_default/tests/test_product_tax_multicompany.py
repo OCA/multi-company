@@ -18,6 +18,9 @@ class TestsProductTaxMulticompany(TransactionCase):
         cls.company_2 = cls.env["res.company"].create(
             {"name": "Test company 2", "country_id": default_country.id}
         )
+        cls.alien_companies = cls.env["res.company"].search(
+            [("id", "not in", (cls.company_1 | cls.company_2).ids)]
+        )
         cls.user_1 = new_test_user(
             cls.env,
             login="user_1",
@@ -201,3 +204,52 @@ class TestsProductTaxMulticompany(TransactionCase):
             self.tax_40_cc2,
             "Incorrect taxes when changing it in Company 2",
         )
+
+    def test_divergent_taxes_detection_single_company_product(self):
+        """Divergency detection is skipped in single-company products."""
+        product = (
+            self.env["product.template"]
+            .with_user(self.user_1)
+            .with_context(ignored_company_ids=self.alien_companies.ids)
+            .create(
+                {
+                    "name": "test product",
+                    "supplier_taxes_id": [(6, 0, self.tax_20_sc1.ids)],
+                    "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
+                }
+            )
+        ).sudo()
+        self.assertTrue(product.taxes_id)
+        self.assertTrue(product.supplier_taxes_id)
+        self.assertFalse(product.divergent_company_taxes)
+
+    def test_divergent_taxes_detection_multi_company_product(self):
+        """Divergency detection works as expected in multi-company products."""
+        product = (
+            self.env["product.template"]
+            .with_user(self.user_1)
+            .with_context(ignored_company_ids=self.alien_companies.ids)
+            .create(
+                {
+                    "company_id": False,
+                    "name": "test product",
+                    "supplier_taxes_id": [(6, 0, self.tax_20_sc1.ids)],
+                    "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
+                }
+            )
+        ).sudo()
+        # By default, taxes are propagated
+        self.assertTrue(product.taxes_id)
+        self.assertTrue(product.supplier_taxes_id)
+        self.assertFalse(product.divergent_company_taxes)
+        # Somebody changes taxes in other company
+        product.taxes_id -= self.tax_20_cc2
+        self.assertTrue(product.divergent_company_taxes)
+        # Somebody fixes that again
+        product.set_multicompany_taxes()
+        self.assertFalse(product.divergent_company_taxes)
+        # Same flow with supplier taxes
+        product.supplier_taxes_id -= self.tax_20_sc2
+        self.assertTrue(product.divergent_company_taxes)
+        product.set_multicompany_taxes()
+        self.assertFalse(product.divergent_company_taxes)
