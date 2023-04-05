@@ -5,11 +5,57 @@
 
 from typing import List
 
-from odoo import api, models
+from odoo import api, fields, models
 
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
+
+    divergent_company_taxes = fields.Boolean(
+        string="Has divergent cross-company taxes",
+        compute="_compute_divergent_company_taxes",
+        compute_sudo=True,
+        store=True,
+        help=(
+            "Does this product have divergent cross-company taxes? "
+            "(Only for multi-company products)"
+        ),
+    )
+
+    @api.depends("company_id", "taxes_id", "supplier_taxes_id")
+    def _compute_divergent_company_taxes(self):
+        """Know if this product has divergent taxes across companies."""
+        all_companies = self.env["res.company"].search(
+            [
+                # Useful for tests, to avoid pollution
+                ("id", "not in", self.env.context.get("ignored_company_ids", []))
+            ]
+        )
+        for one in self:
+            one.divergent_company_taxes = False
+            # Skip single-company products
+            if one.company_id:
+                continue
+            # A unique constraint in account.tax makes it impossible to have
+            # duplicated tax names by company
+            customer_taxes = {
+                frozenset(tax.name for tax in one.taxes_id if tax.company_id == company)
+                for company in all_companies
+            }
+            if len(customer_taxes) > 1:
+                one.divergent_company_taxes = True
+                continue
+            supplier_taxes = {
+                frozenset(
+                    tax.name
+                    for tax in one.supplier_taxes_id
+                    if tax.company_id == company
+                )
+                for company in all_companies
+            }
+            if len(supplier_taxes) > 1:
+                one.divergent_company_taxes = True
+                continue
 
     def taxes_by_company(self, field, company, match_tax_ids=None):
         taxes_ids = []
