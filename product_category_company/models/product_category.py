@@ -22,7 +22,7 @@ class ProductCategory(models.Model):
         for record in self:
             if (
                 record.parent_id.company_id
-                and not record.parent_id.company_id != record.company_id
+                and record.parent_id.company_id != record.company_id
             ):
                 raise UserError(
                     _(
@@ -34,18 +34,8 @@ class ProductCategory(models.Model):
             if record.company_id:
                 for child in record.child_id:
                     if record.company_id != child.company_id:
-                        if child.company_id:
-                            msg = _(
-                                "The category %(category)s must be shared as the "
-                                "child %(child)s belong to company %(company)s."
-                            ) % {
-                                "category": record.name,
-                                "child": child.name,
-                                "company": child.company_id.name,
-                            }
-                        else:
-                            msg = _(
-                                "The category %(category)s must be shared as the "
-                                "child %(child)s is shared."
-                            ) % {"category": record.name, "child": child.name}
+                        msg = _(
+                            "The category %(category)s must be shared as the "
+                            "child %(child)s is shared."
+                        ) % {"category": record.name, "child": child.name}
                         raise UserError(msg)

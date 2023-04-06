@@ -2,6 +2,7 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -60,3 +61,10 @@ class TestProductCategoryMultiCompany(TransactionCase):
             .search([("id", "in", new_categories)])
         )
         self.assertEqual(len(categ_list_2), 1)
+
+    def test_different_company_id(self):
+        self.categ_2.parent_id = self.categ_1
+        with self.assertRaises(UserError):
+            self.categ_2.company_id = self.company2
+        with self.assertRaises(UserError):
+            self.categ_1.company_id = self.company2
