@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (C) 2022 Akretion (<http://www.akretion.com>).
+     @author Kévin Roche <kevin.roche@akretion.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="product_category_form_view" model="ir.ui.view">
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <field name="parent_id" position="after">
+                <field name="company_id" />
+            </field>
+            <field name="parent_id" position="attributes">
+                <attribute
+                    name="domain"
+                >['|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
