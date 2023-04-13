@@ -109,7 +109,8 @@ class SaleOrder(models.Model):
             self.name, company_partner, dest_company)
         purchase_order = self.env['purchase.order'].sudo(
             intercompany_user.id).create(purchase_order_data)
-        for sale_line in self.order_line:
+        for sale_line in self.order_line.filtered(
+                lambda x: not x.display_type):
             purchase_line_data = self._prepare_purchase_order_line_data(
                 sale_line, purchase_order)
             self.env['purchase.order.line'].sudo(
