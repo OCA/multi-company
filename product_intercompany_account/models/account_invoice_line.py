@@ -10,7 +10,7 @@ class AccountInvoiceLine(models.Model):
             partner = self.invoice_id.partner_id.id
         else:
             partner = self.partner_id.id
-        is_intercompany = self.env['res.company'].search(
+        is_intercompany = self.env['res.company'].sudo().search(
             [('partner_id', '=', partner)]
         )
         if is_intercompany:

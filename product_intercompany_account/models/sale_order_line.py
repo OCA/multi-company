@@ -8,7 +8,7 @@ class SaleOrderLine(models.Model):
     def _prepare_invoice_line(self, qty):
         res = super(SaleOrderLine, self)._prepare_invoice_line(qty)
 
-        our_companies = self.env['res.company'].search(
+        our_companies = self.env['res.company'].sudo().search(
             [('partner_id', '=', self.order_id.partner_id.id)]
         )
         product = self.product_id.with_context(force_company=self.company_id.id)
