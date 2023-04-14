@@ -67,4 +67,8 @@ class TestProductCategoryMultiCompany(TransactionCase):
         with self.assertRaises(UserError):
             self.categ_2.company_id = self.company2
         with self.assertRaises(UserError):
+            self.categ_2.company_id = False
+        with self.assertRaises(UserError):
             self.categ_1.company_id = self.company2
+        with self.assertRaises(UserError):
+            self.categ_1.company_id = False
