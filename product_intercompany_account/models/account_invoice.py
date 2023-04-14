@@ -6,7 +6,7 @@ class AccountInvoice(models.Model):
 
     def _anglo_saxon_sale_move_lines(self, i_line):
         res = super(AccountInvoice, self)._anglo_saxon_sale_move_lines(i_line)
-        our_companies = self.env['res.company'].search(
+        our_companies = self.env['res.company'].sudo().search(
             [('partner_id', '=', self.partner_id.id)]
         )
         product_level = i_line.product_id.property_account_expense_intercompany
@@ -20,7 +20,7 @@ class AccountInvoice(models.Model):
 
     def _prepare_invoice_line_from_po_line(self, line):
         data = super(AccountInvoice, self)._prepare_invoice_line_from_po_line(line)
-        is_intercompany = self.env['res.company'].search([(
+        is_intercompany = self.env['res.company'].sudo().search([(
             'partner_id', '=', self.partner_id.id,
         )])
 
