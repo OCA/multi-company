@@ -2,8 +2,7 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo import fields, models
 
 
 class ProductCategory(models.Model):
@@ -16,26 +15,4 @@ class ProductCategory(models.Model):
         index=True,
     )
     parent_id = fields.Many2one(check_company=True)
-
-    @api.constrains("parent_id", "company_id")
-    def check_company_restriction(self):
-        for record in self:
-            if (
-                record.parent_id.company_id
-                and record.parent_id.company_id != record.company_id
-            ):
-                raise UserError(
-                    _(
-                        "The parent category and your category %s "
-                        "must belong to the same company."
-                    )
-                    % record.name
-                )
-            if record.company_id:
-                for child in record.child_id:
-                    if record.company_id != child.company_id:
-                        msg = _(
-                            "The category %(category)s must be shared as the "
-                            "child %(child)s is shared."
-                        ) % {"category": record.name, "child": child.name}
-                        raise UserError(msg)
+    child_id = fields.One2many(check_company=True)
