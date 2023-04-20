@@ -20,7 +20,7 @@ class AccountInvoice(models.Model):
         'account.invoice',
         string='Source Invoice',
         readonly=True, copy=False,
-        prefetch=False)
+        prefetch=False, index=True)
 
     @api.multi
     def _find_company_from_invoice_partner(self):
@@ -217,7 +217,7 @@ class AccountInvoiceLine(models.Model):
         'account.invoice.line',
         string='Source Invoice Line',
         readonly=True, copy=False,
-        prefetch=False)
+        prefetch=False, index=True)
 
     @api.model
     def _prepare_invoice_line_data(self, dest_invoice, dest_company):
