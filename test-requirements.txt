@@ -1,0 +1,1 @@
+odoo-addon-base_multi_company @ git+https://github.com/OCA/multi-company.git@refs/pull/458/head#subdirectory=setup/base_multi_company
