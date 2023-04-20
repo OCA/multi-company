@@ -62,7 +62,7 @@ class TestProductCategoryMultiCompany(TransactionCase):
         )
         self.assertEqual(len(categ_list_2), 1)
 
-    def test_different_company_id(self):
+    def test_categ_different_company_id(self):
         self.categ_2.parent_id = self.categ_1
         with self.assertRaises(UserError):
             self.categ_2.company_id = self.company2
@@ -72,3 +72,14 @@ class TestProductCategoryMultiCompany(TransactionCase):
             self.categ_1.company_id = self.company2
         with self.assertRaises(UserError):
             self.categ_1.company_id = False
+
+    def test_product_different_categ_id(self):
+        product = self.env["product.template"].create(
+            {
+                "name": "Test product",
+                "categ_id": self.categ_1.id,
+                "company_id": self.company1.id,
+            }
+        )
+        with self.assertRaises(UserError):
+            product.categ_id = self.categ_3
