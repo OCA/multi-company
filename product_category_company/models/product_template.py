@@ -12,3 +12,7 @@ class ProductTemplate(models.Model):
     categ_id = fields.Many2one(
         check_company=True,
     )
+    company_id = fields.Many2one(
+        # This seems like it should be in upstream Odoo.
+        default=lambda self: self.env.company,
+    )
