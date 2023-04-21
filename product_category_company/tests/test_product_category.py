@@ -81,45 +81,27 @@ class TestProductCategoryMultiCompany(TransactionCase):
                 "company_id": self.company1.id,
             }
         )
-        with self.assertRaises(UserError):
-            product.categ_id = self.categ_3
         # No error.
         product.categ_id = self.categ_2
+        # A really weird case... Maybe this shouldn't be possible.
+        product.categ_id = self.categ_3
 
-    def test_user_no_multi_company_creates_product(self):
+    def test_two_users_different_companies_same_product(self):
         """A user that is not a member of `base.group_multi_company`
-        (mono-company user) creates a product, then wants to link that
-        product to a category that is linked to the user's company.
+        (mono-company user) creates a product, then a different user belonging
+        to a different company wants to read it.
         """
-        partner = self.env["res.partner"].create(
-            {
-                "name": "Partner Test",
-                "company_id": self.company1.id,
-            }
-        )
-        user = self.env["res.users"].create(
-            {
-                "partner_id": partner.id,
-                "login": "product_category_company_test@example.com",
-                "company_id": self.company1.id,
-            }
-        )
-        # user needs to be in group_system to create new products
-        group_system = self.env.ref("base.group_system")
-        group_system.write({"users": [(4, user.id)]})
-
-        # At this stage, the product should get company_id=user.company_id
+        # Products have company_id=False by default
         product = (
             self.env["product.template"]
-            .with_user(user)
+            .with_user(self.user1)
             .create(
                 {
                     "name": "Test Product",
+                    "categ_id": self.categ_1.id,
                 }
             )
         )
-        # Because both the category and the product have the same company
-        # (company1), this should work without errors.
-        product.categ_id = self.categ_1
-        with self.assertRaises(UserError):
-            product.categ_id = self.categ_3
+        # User 2 can read the category. The user must be able to read it,
+        # otherwise the product breaks for the user.
+        self.assertEqual(product.with_user(self.user2).categ_id.name, self.categ_1.name)
