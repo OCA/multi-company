@@ -83,3 +83,43 @@ class TestProductCategoryMultiCompany(TransactionCase):
         )
         with self.assertRaises(UserError):
             product.categ_id = self.categ_3
+        # No error.
+        product.categ_id = self.categ_2
+
+    def test_user_no_multi_company_creates_product(self):
+        """A user that is not a member of `base.group_multi_company`
+        (mono-company user) creates a product, then wants to link that
+        product to a category that is linked to the user's company.
+        """
+        partner = self.env["res.partner"].create(
+            {
+                "name": "Partner Test",
+                "company_id": self.company1.id,
+            }
+        )
+        user = self.env["res.users"].create(
+            {
+                "partner_id": partner.id,
+                "login": "product_category_company_test@example.com",
+                "company_id": self.company1.id,
+            }
+        )
+        # user needs to be in group_system to create new products
+        group_system = self.env.ref("base.group_system")
+        group_system.write({"users": [(4, user.id)]})
+
+        # At this stage, the product should get company_id=user.company_id
+        product = (
+            self.env["product.template"]
+            .with_user(user)
+            .create(
+                {
+                    "name": "Test Product",
+                }
+            )
+        )
+        # Because both the category and the product have the same company
+        # (company1), this should work without errors.
+        product.categ_id = self.categ_1
+        with self.assertRaises(UserError):
+            product.categ_id = self.categ_3
