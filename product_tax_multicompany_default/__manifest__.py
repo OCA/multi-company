@@ -9,7 +9,7 @@
     "website": "https://github.com/OCA/multi-company",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "depends": ["account", "product"],
+    "depends": ["account"],
     "data": ["views/product_template_view.xml"],
     "maintainers": ["Shide"],
 }
