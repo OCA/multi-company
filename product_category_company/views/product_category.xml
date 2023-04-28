@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (C) 2022 Akretion (<http://www.akretion.com>).
+     @author Kévin Roche <kevin.roche@akretion.com>
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="product_category_form_view" model="ir.ui.view">
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="inside">
+                <!--
+                    We will move the parent_id and company_id field into this div
+                    later.
+                -->
+                <div name="parent_row" />
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_category_form_view_self" model="ir.ui.view">
+        <field name="name">product.category form view of self</field>
+        <field name="model">product.category</field>
+        <field
+            name="inherit_id"
+            ref="product_category_company.product_category_form_view"
+        />
+        <field name="arch" type="xml">
+            <!--
+                This xpath expression doesn't work when inheriting from the
+                product module, so we create a second record inheriting from our
+                own module.
+            -->
+            <xpath expr="//div[@name='parent_row']" position="inside">
+                <field name="parent_id" position="move" />
+            </xpath>
+            <xpath expr="//div[@name='parent_row']" position="before">
+                <label for="parent_id" />
+            </xpath>
+            <field name="parent_id" position="after">
+                <label for="company_id" />
+                <field name="company_id" class="oe_inline" colspan="1" />
+            </field>
+            <field name="parent_id" position="attributes">
+                <attribute name="colspan">1</attribute>
+                <attribute
+                    name="domain"
+                >['|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="product_category_list_view" model="ir.ui.view">
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_list_view" />
+        <field name="arch" type="xml">
+            <field name="display_name" position="after">
+                <field name="company_id" />
+            </field>
+        </field>
+    </record>
+</odoo>

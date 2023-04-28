@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="res_product_category_multicompany" model="ir.rule">
+        <field name="name">Product Category in multi-company</field>
+        <field name="model_id" ref="model_product_category" />
+        <field eval="True" name="global" />
+        <field name="perm_read" eval="False" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="domain_force">
+            ['|',('company_id','=',False),('company_id','in',company_ids)]
+        </field>
+    </record>
+</odoo>
