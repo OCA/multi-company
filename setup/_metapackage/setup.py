@@ -17,6 +17,7 @@ setuptools.setup(
         'odoo-addon-product_tax_multicompany_default>=15.0dev,<15.1dev',
         'odoo-addon-purchase_sale_inter_company>=15.0dev,<15.1dev',
         'odoo-addon-purchase_sale_stock_inter_company>=15.0dev,<15.1dev',
+        'odoo-addon-stock_intercompany>=15.0dev,<15.1dev',
     ],
     classifiers=[
         'Programming Language :: Python',
