@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="intercompany_res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">intercompany.res.config.settings.view.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='operations_setting_container']" position="inside">
+                <div
+                    class="col-12 col-lg-6 o_setting_box"
+                    id="intercompany_delivery_sbox"
+                >
+                    <div class="o_setting_right_pane">
+                        <label for="intercompany_in_type_id" />
+                        <span
+                            class="fa fa-lg fa-building-o"
+                            title="Values set here are company-specific."
+                            groups="base.group_multi_company"
+                        />
+                        <div class="content-group">
+                            <field name="intercompany_in_type_id" />
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
