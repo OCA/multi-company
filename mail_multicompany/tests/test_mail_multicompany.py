@@ -1,10 +1,31 @@
 # Copyright 2018 ACSONE SA/NV
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
+from odoo import Command
 from odoo.tests.common import TransactionCase
 
 
 class TestMailMultiCompany(TransactionCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user_demo = cls.env.ref("base.user_demo")
+        company_obj = cls.env["res.company"]
+        server_obj = cls.env["ir.mail_server"]
+        cls.company1 = company_obj.create({"name": "Company 1"})
+        cls.company2 = company_obj.create({"name": "Company 2"})
+        cls.user_demo.write(
+            {
+                "company_id": cls.company1.id,
+                "company_ids": [
+                    Command.link(cls.company1.id),
+                    Command.link(cls.company2.id),
+                ],
+            }
+        )
+        cls.server1 = server_obj.create({"name": "server 1", "smtp_host": "teset.smtp"})
+        cls.server2 = server_obj.create({"name": "server 1", "smtp_host": "test.smtp"})
+
     def _create_message(self):
         return (
             self.env["mail.message"]
@@ -18,32 +39,13 @@ class TestMailMultiCompany(TransactionCase):
             )
         )
 
-    def setUp(self):
-        super().setUp()
-        self.user_demo = self.env.ref("base.user_demo")
-        company_obj = self.env["res.company"]
-        server_obj = self.env["ir.mail_server"]
-        self.company1 = company_obj.create({"name": "Company 1"})
-        self.company2 = company_obj.create({"name": "Company 2"})
-        self.user_demo.write(
-            {
-                "company_id": self.company1.id,
-                "company_ids": [(4, self.company1.id), (4, self.company2.id)],
-            }
-        )
-        self.server1 = server_obj.create(
-            {"name": "server 1", "smtp_host": "teset.smtp"}
-        )
-        self.server2 = server_obj.create({"name": "server 1", "smtp_host": "test.smtp"})
-
-    def test_mail_message_no_company_restriction(self):
+    def test_01_mail_message_no_company_restriction(self):
         # no company_id set on server, so no one should be set on message
 
         msg = self._create_message()
-
         self.assertFalse(msg.mail_server_id)
 
-    def test_mail_message_company_restriction(self):
+    def test_02_mail_message_company_restriction(self):
         # set company 1 on server 1
         # server on message should be server 1
         self.server1.write({"company_id": self.company1.id})

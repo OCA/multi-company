@@ -10,8 +10,8 @@ class MailMessage(models.Model):
     company_id = fields.Many2one("res.company", "Company")
 
     @api.model_create_multi
-    def create(self, values_list):
-        for vals in values_list:
+    def create(self, vals_list):
+        for vals in vals_list:
             if vals.get("model") and vals.get("res_id"):
                 current_object = self.env[vals["model"]].browse(vals["res_id"])
                 if hasattr(current_object, "company_id") and current_object.company_id:
