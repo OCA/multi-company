@@ -22,7 +22,7 @@ class ProductCategory(models.Model):
         for record in self:
             if (
                 record.parent_id.company_id
-                and not record.parent_id.company_id != record.company_id
+                and record.parent_id.company_id != record.company_id
             ):
                 raise UserError(
                     _(
