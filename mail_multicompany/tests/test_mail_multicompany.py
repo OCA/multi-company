@@ -8,7 +8,7 @@ class TestMailMultiCompany(TransactionCase):
     def _create_message(self):
         return (
             self.env["mail.message"]
-            .with_user(self.user_demo)
+            .sudo(self.user_demo)
             .create(
                 {
                     "reply_to": "test.reply@example.com",
