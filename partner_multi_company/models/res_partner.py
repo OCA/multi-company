@@ -2,13 +2,13 @@
 # Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html.html
 
+
 from odoo import api, fields, models
 
 
 class ResPartner(models.Model):
     _inherit = ["multi.company.abstract", "res.partner"]
     _name = "res.partner"
-
     # This is needed because after installation this field becomes
     # unsearchable and unsortable. Which is not explicitly changed in this
     # module and as such can be considered an undesired yield.
@@ -22,6 +22,18 @@ class ResPartner(models.Model):
         """
         vals = self._amend_company_id(vals)
         return super().create(vals)
+
+    def _inverse_company_id(self):
+        if self.env.context.get("from_res_users"):
+            # due to the fact that Partner Companies > User Companies,
+            # we do not delete all partner company_ids when the user's
+            # related company_id is modified.
+            for record in self:
+                company = record.company_id
+                if company:
+                    record.company_ids = [(4, company.id)]
+        else:
+            super()._inverse_company_id()
 
     @api.model
     def _commercial_fields(self):
