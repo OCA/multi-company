@@ -2,11 +2,12 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
-    TestPurchaseSaleInterCompany,
+from odoo.addons.purchase_sale_inter_company.tests.common import (
+    BasePurchaseSaleInterCompany,
 )
 
-class TestPurchaseSaleLotIntercompany(TestPurchaseSaleInterCompany):
+
+class TestPurchaseSaleLotIntercompany(BasePurchaseSaleInterCompany):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -21,9 +22,9 @@ class TestPurchaseSaleLotIntercompany(TestPurchaseSaleInterCompany):
         cls.purchase_company_a.order_line[0].lot_id = cls.lot_test
 
     def test_with_propagated_serial_number(self):
-        self.company_b.so_from_po = True
+        self.company_b.propagated_serial_number = True
         sale = self._approve_po()
-        self.assertEqual(sale.order_line[0].lot_id,self.lot_test)
+        self.assertEqual(sale.order_line[0].lot_id.name, "lot_test")
 
     def test_without_propagated_serial_number(self):
         sale = self._approve_po()
