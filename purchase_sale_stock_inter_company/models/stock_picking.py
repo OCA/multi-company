@@ -28,12 +28,12 @@ class StockPicking(models.Model):
                     "move_line_ids"
                 )
                 for po_move_line in po_move_lines:
-                    if po_move_line.product_qty >= qty_done:
+                    if po_move_line.reserved_qty >= qty_done:
                         po_move_line.qty_done = qty_done
                         qty_done = 0.0
                     else:
-                        po_move_line.qty_done = po_move_line.product_qty
-                        qty_done -= po_move_line.product_qty
+                        po_move_line.qty_done = po_move_line.reserved_qty
+                        qty_done -= po_move_line.reserved_qty
                     po_picks |= po_move_line.picking_id
                 if qty_done and po_move_lines:
                     po_move_lines[-1:].qty_done += qty_done
