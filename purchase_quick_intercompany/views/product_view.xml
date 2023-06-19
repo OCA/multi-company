@@ -7,7 +7,26 @@
         <field name="priority">1000</field>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='qty_available']" position="replace">
-                <field name="quick_stock_level" />
+                <field
+                    name="quick_intercompany_stock_level"
+                    invisible="not context.get('show_intercompany_qty')"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="product_search_view4purchase" model="ir.ui.view">
+        <field name="name">product.product.search</field>
+        <field name="model">product.product</field>
+        <field name="mode">primary</field>
+        <field name="inherit_id" ref="purchase_quick.product_search_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//filter[last()]" position="after">
+                <separator />
+                <filter
+                    name="filter_positive_stock"
+                    string="In Stock"
+                    domain="[('quick_intercompany_stock_level','>', 0.0)]"
+                />
             </xpath>
         </field>
     </record>
