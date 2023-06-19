@@ -67,7 +67,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         self.partner_other = self.env.ref("base.res_partner_12")
         self.product = self.env.ref("product.product_product_8")
 
-    def test_quick_stock_level(self):
+    def test_quick_intercompany_stock_level(self):
         """
         Simplest scenario (x->y):
         set stock levels for company y,
@@ -77,11 +77,15 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         self._set_y_stock_to(47.0)
         po = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
         product = self.product.with_user(self.user_x).with_context(
-            {"parent_model": "purchase.order", "parent_id": po.id}
+            {
+                "parent_model": "purchase.order",
+                "parent_id": po.id,
+                "show_intercompany_qty": True,
+            }
         )
-        self.assertAlmostEqual(float(product.quick_stock_level), 47.0)
+        self.assertAlmostEqual(float(product.quick_intercompany_stock_level), 47.0)
 
-    def test_quick_stock_level_2(self):
+    def test_quick_intercompany_stock_level_2(self):
         """
         Same as previous test, but check both ways (x->y and y->x)
         """
@@ -90,17 +94,25 @@ class TestPurchaseQuickIntercompany(SavepointCase):
 
         po_y = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
         product = self.product.with_user(self.user_x).with_context(
-            {"parent_model": "purchase.order", "parent_id": po_y.id}
+            {
+                "parent_model": "purchase.order",
+                "parent_id": po_y.id,
+                "show_intercompany_qty": True,
+            }
         )
-        self.assertAlmostEqual(float(product.quick_stock_level), 47.0)
+        self.assertAlmostEqual(float(product.quick_intercompany_stock_level), 47.0)
 
         po_x = self.env["purchase.order"].create({"partner_id": self.partner_x.id})
         product = self.product.with_user(self.user_y).with_context(
-            {"parent_model": "purchase.order", "parent_id": po_x.id}
+            {
+                "parent_model": "purchase.order",
+                "parent_id": po_x.id,
+                "show_intercompany_qty": True,
+            }
         )
-        self.assertAlmostEqual(float(product.quick_stock_level), 61.0)
+        self.assertAlmostEqual(float(product.quick_intercompany_stock_level), 61.0)
 
-    def test_quick_stock_level_change_uom(self):
+    def test_quick_intercompany_stock_level_change_uom(self):
         """
         Changing UoM on the fly -> we should get updated stock levels
         """
@@ -108,9 +120,15 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         po = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
         self.product.quick_uom_id = self.env.ref("uom.product_uom_dozen")
         product = self.product.with_user(self.user_x).with_context(
-            {"parent_model": "purchase.order", "parent_id": po.id}
+            {
+                "parent_model": "purchase.order",
+                "parent_id": po.id,
+                "show_intercompany_qty": True,
+            }
         )
-        self.assertAlmostEqual(float(product.quick_stock_level), 3.92)  # 47/12 ~=3.916
+        self.assertAlmostEqual(
+            float(product.quick_intercompany_stock_level), 3.92
+        )  # 47/12 ~=3.916
 
     def test_quick_stock_no_company(self):
         """
@@ -120,6 +138,26 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         self._set_x_stock_to(61.0)
         po = self.env["purchase.order"].create({"partner_id": self.partner_other.id})
         product = self.product.with_user(self.user_y).with_context(
-            {"parent_model": "purchase.order", "parent_id": po.id}
+            {
+                "parent_model": "purchase.order",
+                "parent_id": po.id,
+                "show_intercompany_qty": True,
+            }
         )
-        self.assertEqual(product.quick_stock_level, "N/A")
+        self.assertEqual(product.quick_intercompany_stock_level, 0.0)
+
+    def test_search_quick_intercompany_stock_level(self):
+        self._set_y_stock_to(47.0)
+        self._set_x_stock_to(33.0)
+        po = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
+
+        product = self.product.with_user(self.user_x).with_context(
+            {
+                "parent_model": "purchase.order",
+                "parent_id": po.id,
+                "show_intercompany_qty": True,
+            }
+        )
+        search_result = product._search_quick_intercompany_stock_level("!=", 0.0)
+        self.assertTrue(len(search_result), 1)
+        self.assertIn(product.id, search_result[0][2])
