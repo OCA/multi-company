@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-05-29 13:09+0000\n"
+"PO-Revision-Date: 2023-06-22 08:10+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -82,7 +82,7 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
 msgid "Purchase Order"
-msgstr "Ordine d'acquisto"
+msgstr "Ordine di acquisto"
 
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
