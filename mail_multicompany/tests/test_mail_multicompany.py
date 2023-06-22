@@ -32,16 +32,15 @@ class TestMailMultiCompany(TransactionCase):
             }
         )
         self.server1 = server_obj.create(
-            {"name": "server 1", "smtp_host": "teset.smtp"}
+            {"name": "server 1", "smtp_host": "test.smtp1", "sequence": 1}
         )
-        self.server2 = server_obj.create({"name": "server 1", "smtp_host": "test.smtp"})
+        self.server2 = server_obj.create(
+            {"name": "server 2", "smtp_host": "test.smtp2", "sequence": 2})
 
     def test_mail_message_no_company_restriction(self):
-        # no company_id set on server, so no one should be set on message
-
+        # no company_id set on server, so it's should be the first on list
         msg = self._create_message()
-
-        self.assertFalse(msg.mail_server_id)
+        self.assertEqual(msg.mail_server_id.id, self.server1.id)
 
     def test_mail_message_company_restriction(self):
         # set company 1 on server 1
@@ -50,10 +49,11 @@ class TestMailMultiCompany(TransactionCase):
         msg = self._create_message()
         self.assertEqual(msg.mail_server_id.id, self.server1.id)
 
-        # Set company 2 on server 1
-        # Server on message should be empty as the copany on user is still
+        # Set company 2 on server 1 and server 2
+        # Server on message should be empty as the company on user is still
         # Company 1
         self.server1.write({"company_id": self.company2.id})
+        self.server2.write({"company_id": self.company2.id})
         msg = self._create_message()
         self.assertFalse(msg.mail_server_id)
 
