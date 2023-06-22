@@ -18,12 +18,14 @@ class MailMessage(models.Model):
                     vals["company_id"] = current_object.company_id.id
             if not vals.get("company_id"):
                 vals["company_id"] = self.env.user.company_id.id
+            # Search SMTP server with company_id or shared SMTP server
             if not vals.get("mail_server_id"):
                 vals["mail_server_id"] = (
                     self.sudo()
                     .env["ir.mail_server"]
                     .search(
-                        [("company_id", "=", vals.get("company_id", False))],
+                        ['|', ("company_id", "=", vals.get("company_id", False)),
+                            ("company_id", "=", False)],
                         order="sequence",
                         limit=1,
                     )
