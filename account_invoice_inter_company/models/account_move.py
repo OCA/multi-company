@@ -44,7 +44,16 @@ class AccountMove(models.Model):
             # do not consider invoices that have already been auto-generated,
             # nor the invoices that were already validated in the past
             dest_company = src_invoice._find_company_from_invoice_partner()
-            if not dest_company or src_invoice.auto_generated:
+            # We want to avoid creating a new invoice if the destination one was already
+            # posted
+            inter_invoice = self.search(
+                [
+                    ("auto_invoice_id", "=", src_invoice.id),
+                    ("company_id", "=", dest_company.id),
+                    ("state", "=", "posted"),
+                ]
+            )
+            if not dest_company or src_invoice.auto_generated or inter_invoice:
                 continue
             intercompany_user = dest_company.intercompany_invoice_user_id
             if intercompany_user:
