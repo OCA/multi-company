@@ -97,9 +97,7 @@ class AccountInvoiceConsolidation(models.Model):
         tracking=True,
     )
 
-    invoice_line_ids = fields.One2many(
-        "account.move.line", "consolidated_by_id", string="Invoice Line Ids"
-    )
+    invoice_line_ids = fields.One2many("account.move.line", "consolidated_by_id")
 
     @api.constrains("name")
     def _check_name_duplication(self):
@@ -210,10 +208,8 @@ class AccountInvoiceConsolidation(models.Model):
                     or not company.due_fromto_payment_journal_id
                 ):
                     raise ValidationError(
-                        _(
-                            "Intercompany Payment Configuration is missing for"
-                            " %s." % (company.display_name)
-                        )
+                        _("Intercompany Payment Configuration is missing for %s.")
+                        % company.display_name
                     )
             invoice_consolidated_seq = self.env["ir.sequence"].next_by_code(
                 "consolidated.invoice"
