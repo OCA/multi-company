@@ -314,7 +314,8 @@ class AccountInvoiceConsolidation(models.Model):
             "amount": invoice.amount_residual,
             "journal_id": journal_id.id,
             "payment_type": "inbound",
-            "payment_method_id": journal_id.inbound_payment_method_ids[0].id,
+            "payment_method_line_id": journal_id.inbound_payment_method_line_ids
+            and journal_id.inbound_payment_method_line_ids[0].id,
             "date": fields.Datetime.now(),
             "consolidation_id": self.id,
             "company_id": invoice.company_id.id,

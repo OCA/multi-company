@@ -88,7 +88,7 @@
     <record id="pcg_X58" model="account.account.template">
       <field name="name">Internal Transfers</field>
       <field name="code">X58</field>
-      <field name="user_type_id" ref="account.data_account_type_current_assets" />
+      <field name="account_type">asset_current</field>
       <field name="reconcile" eval="True" />
     </record>
 
@@ -96,83 +96,75 @@
         Create account account for each company (A and B)
         -->
     <record id="a_recv_company_a" model="account.account">
-        <field name="code">X11002-A</field>
+        <field name="code">11002</field>
         <field name="name">Debtors - (company A)</field>
-        <field name="internal_type">receivable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_receivable" />
+        <field name="account_type">asset_receivable</field>
         <field name="company_id" ref="company_a" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_pay_company_a" model="account.account">
-        <field name="code">X1111-A</field>
+        <field name="code">1111</field>
         <field name="name">Creditors - (company A)</field>
-        <field name="internal_type">payable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_payable" />
+        <field name="account_type">liability_payable</field>
         <field name="company_id" ref="company_a" />
     </record>
     <record id="a_sale_company_a" model="account.account">
-        <field name="code">X2001-A</field>
+        <field name="code">2001</field>
         <field name="name">Product Sales - (company A)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_revenue" />
+        <field name="account_type">income</field>
         <field name="company_id" ref="company_a" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_expense_company_a" model="account.account">
-        <field name="code">X2110-A</field>
+        <field name="code">2110</field>
         <field name="name">Expenses - (company A)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="account_type">expense</field>
         <field name="company_id" ref="company_a" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_bank_company_a" model="account.account">
-        <field name="code">512001-A</field>
+        <field name="code">512001</field>
         <field name="name">Bank - (company A)</field>
-        <field name="user_type_id" ref="account.data_account_type_liquidity" />
+        <field name="account_type">asset_cash</field>
         <field name="company_id" ref="company_a" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_recv_company_b" model="account.account">
-        <field name="code">X11002-B</field>
+        <field name="code">11002</field>
         <field name="name">Debtors - (company B)</field>
-        <field name="internal_type">receivable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_receivable" />
+        <field name="account_type">asset_receivable</field>
         <field name="company_id" ref="company_b" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_pay_company_b" model="account.account">
-        <field name="code">X1111-B</field>
+        <field name="code">1112</field>
         <field name="name">Creditors - (company B)</field>
-        <field name="internal_type">payable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_payable" />
+        <field name="account_type">liability_payable</field>
         <field name="company_id" ref="company_b" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_sale_company_b" model="account.account">
-        <field name="code">X2001-B</field>
+        <field name="code">20012</field>
         <field name="name">Product Sales - (company B)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_revenue" />
+        <field name="account_type">income</field>
         <field name="company_id" ref="company_b" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_expense_company_b" model="account.account">
-        <field name="code">X2110-B</field>
+        <field name="code">21102</field>
         <field name="name">Expenses - (company B)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_expenses" />
+        <field name="account_type">expense</field>
         <field name="company_id" ref="company_b" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_bank_company_b" model="account.account">
-        <field name="code">512001-B</field>
+        <field name="code">5120012</field>
         <field name="name">Bank - (company B)</field>
-        <field name="user_type_id" ref="account.data_account_type_liquidity" />
+        <field name="account_type">asset_cash</field>
         <field name="company_id" ref="company_b" />
         <field name="currency_id" ref="base.USD" />
     </record>
@@ -213,17 +205,14 @@
         <field name="code">SAJ-A</field>
         <field name="type">sale</field>
         <field name="secure_sequence_id" ref="sequence_sale_journal_company_a" />
-        <field name="payment_credit_account_id" ref="a_sale_company_a" />
-        <field name="payment_debit_account_id" ref="a_sale_company_a" />
+        <!-- <field name="payment_credit_account_id" ref="a_sale_company_a" />
+        <field name="payment_debit_account_id" ref="a_sale_company_a" /> -->
         <field
-            name="inbound_payment_method_ids"
+            name="inbound_payment_method_line_ids"
             eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
         />
-<!--         <field name="update_posted" eval="True"/>
- -->        <field
-            name="company_id"
-            ref="company_a"
-        />
+        <!-- <field name="update_posted" eval="True"/> -->
+        <field name="company_id" ref="company_a" />
     </record>
 
     <record id="sales_journal_company_b" model="account.journal">
@@ -231,8 +220,8 @@
         <field name="code">SAJ-B</field>
         <field name="type">sale</field>
         <field name="secure_sequence_id" ref="sequence_sale_journal_company_b" />
-        <field name="payment_credit_account_id" ref="a_sale_company_b" />
-        <field name="payment_debit_account_id" ref="a_sale_company_b" />
+        <!-- <field name="payment_credit_account_id" ref="a_sale_company_b" />
+        <field name="payment_debit_account_id" ref="a_sale_company_b" /> -->
 <!--         <field name="update_posted" eval="True"/>
  -->        <field
             name="company_id"
@@ -244,8 +233,8 @@
         <field name="name">Bank Journal - (Company A)</field>
         <field name="code">BNK-A</field>
         <field name="type">bank</field>
-        <field name="payment_credit_account_id" ref="a_sale_company_a" />
-        <field name="payment_debit_account_id" ref="a_sale_company_a" />
+        <!-- <field name="payment_credit_account_id" ref="a_sale_company_a" />
+        <field name="payment_debit_account_id" ref="a_sale_company_a" /> -->
         <field name="company_id" ref="company_a" />
     </record>
 
@@ -254,8 +243,8 @@
         <field name="code">EXJ-B</field>
         <field name="type">purchase</field>
         <field name="secure_sequence_id" ref="sequence_purchase_journal_company_b" />
-        <field name="payment_credit_account_id" ref="a_expense_company_b" />
-        <field name="payment_debit_account_id" ref="a_expense_company_b" />
+        <!-- <field name="payment_credit_account_id" ref="a_expense_company_b" />
+        <field name="payment_debit_account_id" ref="a_expense_company_b" /> -->
 <!--         <field name="update_posted" eval="True"/>
  -->        <field
             name="company_id"
@@ -267,10 +256,10 @@
         <field name="name">Bank Journal - (Company B)</field>
         <field name="code">BNK-B</field>
         <field name="type">bank</field>
-        <field name="payment_credit_account_id" ref="a_sale_company_b" />
-        <field name="payment_debit_account_id" ref="a_sale_company_b" />
+        <!-- <field name="payment_credit_account_id" ref="a_sale_company_b" />
+        <field name="payment_debit_account_id" ref="a_sale_company_b" /> -->
         <field
-            name="inbound_payment_method_ids"
+            name="inbound_payment_method_line_ids"
             eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
         />
         <field name="company_id" ref="company_b" />
@@ -432,6 +421,22 @@
         <field name="journal_id" ref="sales_journal_company_b" />
         <field name="company_id" ref="company_b" />
         <field name="state">draft</field>
+    </record>
+
+    <record id="company_a" model="res.company">
+        <field
+            name="account_journal_payment_credit_account_id"
+            ref="a_sale_company_a"
+        />
+        <field name="account_journal_payment_debit_account_id" ref="a_sale_company_a" />
+    </record>
+
+    <record id="company_b" model="res.company">
+        <field
+            name="account_journal_payment_credit_account_id"
+            ref="a_sale_company_b"
+        />
+        <field name="account_journal_payment_debit_account_id" ref="a_sale_company_b" />
     </record>
 
 </odoo>
