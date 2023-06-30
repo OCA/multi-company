@@ -51,6 +51,7 @@ def post_init_hook(cr, rule_ref, model_name):
             INSERT INTO {}
             ({}, {})
             SELECT id, company_id FROM {} WHERE company_id IS NOT NULL
+            ON CONFLICT DO NOTHING
         """.format(
             table_name,
             column1,
