@@ -104,8 +104,8 @@ class TestIntercompanyDelivery(TransactionCase):
         counterpart_picking = rc.records
         self.assertEqual(len(counterpart_picking), 1)
         self.assertEqual(counterpart_picking.counterpart_of_picking_id, picking)
-        self.assertEqual(len(counterpart_picking.move_lines), len(picking.move_lines))
-        for cp_move, move in zip(counterpart_picking.move_lines, picking.move_lines):
+        self.assertEqual(len(counterpart_picking.move_ids), len(picking.move_ids))
+        for cp_move, move in zip(counterpart_picking.move_ids, picking.move_ids):
             self.assertEqual(cp_move.counterpart_of_move_id, move)
         self.assertEqual(
             len(counterpart_picking.move_line_ids), len(picking.move_line_ids)

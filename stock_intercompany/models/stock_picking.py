@@ -33,7 +33,7 @@ class StockPicking(models.Model):
                 .search([("company_id", "=", company.id)], limit=1)
             )
         ptype = company.intercompany_in_type_id or warehouse.in_type_id
-        move_lines, move_line_ids = self._check_company_consistency(company)
+        move_ids, move_line_ids = self._check_company_consistency(company)
         return {
             "partner_id": self.env.user.company_id.partner_id.id,
             "company_id": company.id,
@@ -43,7 +43,7 @@ class StockPicking(models.Model):
             "location_id": self.env.ref("stock.stock_location_suppliers").id,
             "location_dest_id": warehouse.lot_stock_id.id,
             "counterpart_of_picking_id": self.id,
-            "move_lines": move_lines,
+            "move_ids": move_ids,
             "move_line_ids": move_line_ids,
         }
 
@@ -53,7 +53,7 @@ class StockPicking(models.Model):
             "company_id": company.id,
             "location_id": self.env.ref("stock.stock_location_suppliers").id,
         }
-        move_lines = [
+        move_ids = [
             (
                 0,
                 0,
@@ -61,7 +61,7 @@ class StockPicking(models.Model):
                     dict(common_vals, counterpart_of_move_id=sm.id)
                 )[0],
             )
-            for sm in self.move_lines
+            for sm in self.move_ids
         ]
         move_line_ids = [
             (
@@ -73,7 +73,7 @@ class StockPicking(models.Model):
             )
             for ln in self.move_line_ids
         ]
-        return move_lines, move_line_ids
+        return move_ids, move_line_ids
 
     # override of method from stock module
     def _action_done(self):
