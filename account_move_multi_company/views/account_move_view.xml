@@ -7,10 +7,13 @@
     <record id="view_move_form_inherit" model="ir.ui.view">
         <field name="name">account.move.form.inherit</field>
         <field name="model">account.move</field>
-        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
-            <xpath expr="//form/sheet/notebook/page[1]/field[@name='line_ids']/tree/field[@name='account_id']"  position="after">
-                    <field name="transfer_to_company_id"/>
+            <xpath
+                expr="//form/sheet/notebook/page[2]/field[@name='line_ids']/tree/field[@name='analytic_distribution']"
+                position="before"
+            >
+                    <field name="transfer_to_company_id" />
             </xpath>
         </field>
     </record>
