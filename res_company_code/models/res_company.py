@@ -9,11 +9,8 @@ class ResCompany(models.Model):
     _inherit = "res.company"
     _order = "code, name"
 
-    code = fields.Char(string="Code")
-
-    complete_name = fields.Char(
-        string="Complete Name", compute="_compute_complete_name", store=True
-    )
+    code = fields.Char()
+    complete_name = fields.Char(compute="_compute_complete_name", store=True)
 
     _sql_constraints = [
         ("code_uniq", "unique (code)", "The company code must be unique !")

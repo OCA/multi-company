@@ -5,7 +5,7 @@
 {
     "name": "Company Code",
     "summary": "Add 'code' field on company model",
-    "version": "14.0.1.0.1",
+    "version": "15.0.1.0.0",
     "category": "Tools",
     "author": "GRAP, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
