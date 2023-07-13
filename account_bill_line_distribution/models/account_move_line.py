@@ -50,9 +50,10 @@ class AccountMoveLine(models.Model):
         return lines
 
     def write(self, vals):
-        super(AccountMoveLine, self).write(vals)
+        res = super(AccountMoveLine, self).write(vals)
         if "price_unit" in vals or "quantity" in vals:
             self.distribution_ids._onchange_percent_total()
+        return res
 
     @api.constrains("distribution_ids")
     def _check_percentage(self):
@@ -66,7 +67,7 @@ class AccountMoveLine(models.Model):
                 "out_receipt",
                 "in_receipt",
             )
-            and not line.tax_exigible
+            and not line.move_id.always_tax_exigible
         ):
             total = sum(line.distribution_ids.mapped("percent"))
             if total != 100.00:

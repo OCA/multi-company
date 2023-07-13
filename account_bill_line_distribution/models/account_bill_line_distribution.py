@@ -12,7 +12,7 @@ class AccountInvoiceLineDistribution(models.Model):
 
     @api.model
     def _get_default_company_id(self):
-        company_id = self.env.company_id
+        company_id = self.env.company
         return (
             company_id
             or self.invoice_line_id.company_id.id
@@ -21,7 +21,7 @@ class AccountInvoiceLineDistribution(models.Model):
         )
 
     percent = fields.Float(string="Percentage", default=100.0)
-    amount = fields.Float(string="Amount")
+    amount = fields.Float()
     invoice_line_id = fields.Many2one(
         "account.move.line", string="Bill Line", ondelete="cascade", check_company=True
     )
@@ -64,7 +64,6 @@ class AccountInvoiceLineDistribution(models.Model):
         for dist in self:
             dist.amount = (dist.invoice_line_id.price_subtotal * dist.percent) / 100
 
-    #
     @api.onchange("amount")
     def _onchange_amount_total(self):
         for dist in self:

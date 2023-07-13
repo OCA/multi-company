@@ -62,9 +62,18 @@ class AccountMove(models.Model):
 
     def action_post(self):
         res = super(AccountMove, self).action_post()
+        for company in self.mapped("invoice_line_ids.distribution_ids.company_id"):
+            if not company.due_fromto_payment_journal_id:
+                raise UserError(
+                    _(
+                        "You should configure the Due From/To Journal\
+                     in '%(company)s' settings"
+                    )
+                    % {"company": company.name}
+                )
         for inv in self:
             # Due From
-            from_move_value = self.prepare_due_from_move_values()
+            from_move_value = inv.prepare_due_from_move_values()
             from_lines = []
             companies = []
             amount = 0.00
@@ -210,10 +219,10 @@ class AccountMove(models.Model):
                 raise UserError(
                     _(
                         "No corresponding \
-                                Account for code %s\
-                                in Company %s"
+                                Account for code %(code)\
+                                in Company %(name)s"
                     )
-                    % (account.code, company.name)
+                    % {"code": account.code, "name": company.name}
                 )
             to_lines.append(
                 (
@@ -263,10 +272,10 @@ class AccountMove(models.Model):
                 raise UserError(
                     _(
                         "No corresponding \
-                                Account for code %s\
-                                in Company %s"
+                                Account for code %(code)s\
+                                in Company %(name)s"
                     )
-                    % (account.code, company.name)
+                    % {"code": account.code, "name": company.name}
                 )
             to_lines.append(
                 (

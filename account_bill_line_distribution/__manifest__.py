@@ -3,7 +3,7 @@
 
 {
     "name": "Account Bill Line Distribution",
-    "version": "14.0.1.0.0",
+    "version": "16.0.1.0.0",
     "summary": "Distribute AP Invoices across multiple companies",
     "author": "Open Source Integrators, " "Odoo Community Association (OCA)",
     "category": "Invoicing Management",

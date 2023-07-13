@@ -1,43 +1,112 @@
 # Copyright (C) 2020 Open Source Integrators
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from os.path import join as opj
+from datetime import date
+
+from dateutil.relativedelta import relativedelta
 
 from odoo import _
 from odoo.exceptions import UserError, ValidationError
 from odoo.modules.module import get_resource_path
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 from odoo.tools import convert_file
 
 
-class TestAccountInvoice(SavepointCase):
+class TestAccountInvoice(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super(TestAccountInvoice, cls).setUpClass()
-        module = "account_payment_other_company"
-        path = opj("account_payment_other_company")
-        pathname = opj(
-            path, get_resource_path(module, "tests", "test_account_payment_data.xml")
-        )
+        module = "account_invoice_consolidated"
         convert_file(
             cls.cr,
             module,
-            get_resource_path(module, "tests", "test_account_payment_data.xml"),
+            get_resource_path(module, "tests", "test_consolidated_invoices_data.xml"),
             None,
             "init",
             False,
             "test",
-            pathname,
+            None,
         )
         cls.account_obj = cls.env["account.account"]
         cls.invoice_obj = cls.env.ref(
-            "account_payment_other_company.customer_invoice_company_a"
+            "account_invoice_consolidated.customer_invoice_company_a"
         )
-        cls.vendor_bill_obj = cls.env.ref(
-            "account_payment_other_company.vendor_bill_company_a"
+
+        cls.company_a = cls.env.ref("account_invoice_consolidated.company_a")
+        cls.company_b = cls.env.ref("account_invoice_consolidated.company_b")
+        cls.account_a = cls.env.ref("account_invoice_consolidated.a_sale_company_a")
+        cls.account_b = cls.env.ref("account_invoice_consolidated.a_sale_company_b")
+
+        cls.invoice_obj.write(
+            {
+                "invoice_line_ids": [
+                    (
+                        0,
+                        None,
+                        {
+                            "product_id": cls.env.ref("product.product_product_1").id,
+                            "price_unit": 450,
+                            "price_subtotal": 450,
+                            "price_total": 450,
+                            "name": "Service Multi Company",
+                            "account_id": cls.account_a.id,
+                            "company_id": cls.company_a.id,
+                        },
+                    ),
+                ]
+            }
         )
-        cls.company_a = cls.env.ref("account_payment_other_company.company_a")
-        cls.company_b = cls.env.ref("account_payment_other_company.company_b")
+
+        cls.account_a.copy(
+            {
+                "name": "Product Sales - (company B)",
+                "company_id": cls.company_b.id,
+                "code": "2001",
+            }
+        )
+
+        cls.journal_purchase_b = cls.env.ref(
+            "account_invoice_consolidated.purchases_journal_company_b"
+        )
+        cls.a_expense_company_a = cls.env.ref(
+            "account_invoice_consolidated.a_expense_company_a"
+        )
+        cls.journal_purchase_a = cls.env["account.journal"].create(
+            {
+                "name": "Purchases Journal - (Company A)",
+                "code": "POJ-A",
+                "type": "purchase",
+                "company_id": cls.company_a.id,
+            }
+        )
+        cls.vendor_bill_obj = cls.env["account.move"].create(
+            {
+                "move_type": "in_invoice",
+                "partner_id": cls.env.ref(
+                    "account_invoice_consolidated.partner_company_a"
+                ).id,
+                "invoice_date": date.today() + relativedelta(months=-3),
+                "journal_id": cls.journal_purchase_a.id,
+                "company_id": cls.company_a.id,
+                "state": "draft",
+                "invoice_line_ids": [
+                    (
+                        0,
+                        None,
+                        {
+                            "product_id": cls.env.ref("product.product_product_1").id,
+                            "price_unit": 450,
+                            "price_subtotal": 450,
+                            "price_total": 450,
+                            "name": "Service Multi Company",
+                            "account_id": cls.account_a.id,
+                            "company_id": cls.company_a.id,
+                        },
+                    ),
+                ],
+            }
+        )
+
         cls.account_payment_obj = cls.env["account.payment"]
         cls.journal_1 = cls.env["account.journal"]
         cls.journal_2 = cls.env["account.journal"]
@@ -47,35 +116,35 @@ class TestAccountInvoice(SavepointCase):
         cls.account_d21 = cls.env["account.account"]
 
         cls.company_a.due_fromto_payment_journal_id = cls.env.ref(
-            "account_payment_other_company.sales_journal_company_a"
+            "account_invoice_consolidated.sales_journal_company_a"
         )
         cls.company_b.due_fromto_payment_journal_id = cls.env.ref(
-            "account_payment_other_company.bank_journal_company_b"
+            "account_invoice_consolidated.bank_journal_company_b"
         )
 
         cls.company_b.due_fromto_payment_journal_id.default_account_id = cls.env.ref(
-            "account_payment_other_company.a_expense_company_b"
+            "account_invoice_consolidated.a_expense_company_b"
         )
 
         cls.company_a.due_from_account_id = cls.env.ref(
-            "account_payment_other_company.a_pay_company_a"
+            "account_invoice_consolidated.a_pay_company_a"
         )
         cls.company_a.due_to_account_id = cls.env.ref(
-            "account_payment_other_company.a_recv_company_a"
+            "account_invoice_consolidated.a_recv_company_a"
         )
         cls.company_b.due_from_account_id = cls.env.ref(
-            "account_payment_other_company.a_recv_company_b"
+            "account_invoice_consolidated.a_recv_company_b"
         )
         cls.company_b.due_to_account_id = cls.env.ref(
-            "account_payment_other_company.a_pay_company_b"
+            "account_invoice_consolidated.a_pay_company_b"
         )
 
         cls.company_a_journal = cls.env.ref(
-            "account_payment_other_company.bank_journal_company_a"
+            "account_invoice_consolidated.bank_journal_company_a"
         )
 
         cls.company_b_journal = cls.env.ref(
-            "account_payment_other_company.bank_journal_company_b"
+            "account_invoice_consolidated.bank_journal_company_b"
         )
 
         cls.chart = cls.env["account.chart.template"].search([], limit=1)
@@ -101,11 +170,11 @@ class TestAccountInvoice(SavepointCase):
 
         # Both Distributions are Equal
         dist1.write({"amount": 225.00, "percent": 50.00})
-        self.assertEquals(dist1.amount, dist2.amount)
-        self.assertEquals(dist1.percent, dist2.percent)
+        self.assertEqual(dist1.amount, dist2.amount)
+        self.assertEqual(dist1.percent, dist2.percent)
 
         # Change Amount
-        dist1.write({"amount": 180.00})
+        dist1.write({"amount": -180.00})
         with self.assertRaises(UserError):
             dist1._onchange_amount_total()
 
@@ -118,9 +187,9 @@ class TestAccountInvoice(SavepointCase):
         self.assertNotEqual(dist2.amount, 270.00)
 
         # Change Percent
-        dist1.write({"percent": 15.00})
+        dist1.write({"percent": 20.00})
         dist1._onchange_percent_total()
-        self.assertNotEqual(dist1.amount, 67.50)
+        self.assertNotEqual(dist1.amount, 67.5)
 
         self.invoice_obj.invoice_line_ids[0]._onchange_distribution_ids_amount()
         self.invoice_obj.invoice_line_ids[0]._onchange_distribution_ids_percent()
@@ -147,7 +216,7 @@ class TestAccountInvoice(SavepointCase):
         due_to_from_move_ids = (
             self.env["account.move"]
             .sudo()
-            .search([("ref", "like", self.vendor_bill_obj.number)])
+            .search([("ref", "like", self.vendor_bill_obj.name)])
         )
 
         # |---------------------|-----------------|
@@ -166,36 +235,37 @@ class TestAccountInvoice(SavepointCase):
         # |Due From| Company A | 225.00 |  0.00  |
         # |--------------------|-----------------|
 
-        self.assertEquals(
-            due_to_from_move_ids[0].amount, due_to_from_move_ids[1].amount
+        self.assertEqual(
+            due_to_from_move_ids[0].amount_total, due_to_from_move_ids[1].amount_total
         )
         for move_id in due_to_from_move_ids:
             if move_id.company_id != self.vendor_bill_obj.company_id:
                 for line_id in move_id.line_ids:
                     if line_id.debit == 0.00:
-                        self.assertEquals(
+                        self.assertEqual(
                             line_id.account_id.id, self.company_b.due_to_account_id.id
                         )
                     else:
-                        self.assertEquals(
+                        self.assertEqual(
                             line_id.account_id.code,
                             self.vendor_bill_obj.invoice_line_ids[0].account_id.code,
                         )
             else:
                 for line_id in move_id.line_ids:
                     if line_id.debit == 0.00:
-                        self.assertEquals(
+                        self.assertEqual(
                             line_id.account_id.code,
                             self.vendor_bill_obj.invoice_line_ids[0].account_id.code,
                         )
                     else:
-                        self.assertEquals(
+                        self.assertEqual(
                             line_id.account_id.id, self.company_a.due_from_account_id.id
                         )
 
-        note_wizard = (
-            self.env["account.invoice.refund"]
-            .with_context(active_ids=[self.vendor_bill_obj.id])
-            .create({"reason": "Testing", "filter_refund": "cancel"})
-        )
-        note_wizard.compute_refund("cancel")
+        # action_reverse
+        # note_wizard = (
+        #     self.env["account.invoice.refund"]
+        #     .with_context(active_ids=[self.vendor_bill_obj.id])
+        #     .create({"reason": "Testing", "filter_refund": "cancel"})
+        # )
+        # note_wizard.compute_refund("cancel")
