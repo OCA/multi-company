@@ -7,6 +7,7 @@ from odoo.exceptions import Warning as UserError
 
 class IntercompanySupplierinfoMixin(models.AbstractModel):
     _name = "intercompany.supplierinfo.mixin"
+    _description = "Intercompany supplier info mixin"
 
     def check_intercompany_pricelist(self):
         if not self._context.get("automatic_intercompany_sync"):
@@ -31,6 +32,7 @@ class ProductSupplierinfo(models.Model):
     )
 
     def check_access_rule(self, operation):
-        super().check_access_rule(operation)
+        res = super().check_access_rule(operation)
         if operation in ("write", "create", "unlink"):
             self.check_intercompany_pricelist()
+        return res

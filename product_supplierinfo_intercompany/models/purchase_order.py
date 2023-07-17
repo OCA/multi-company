@@ -20,15 +20,12 @@ class PurchaseOrder(models.Model):
                 ]
             )
             if len(pricelist) == 0:
-                raise UserError(
-                    _(
-                        (
-                            "The Company {} do not have an intercompany pricelist "
-                            "configured.\nPlease contact them and ask them to "
-                            "active the option on the pricelist"
-                        ).format(dest_company.name)
-                    )
+                msg = _(
+                    "The Company %s do not have an intercompany pricelist "
+                    "configured.\nPlease contact them and ask them to "
+                    "active the option on the pricelist"
                 )
+                raise UserError(msg % dest_company.name)
             else:
                 # Note in case that there is several pricelist that match we take
                 # the first one and the user will change it manually if needed
