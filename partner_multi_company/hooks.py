@@ -19,24 +19,22 @@ def post_init_hook(cr, registry):
 
 
 def uninstall_hook(cr, registry):
-    """Restore product rule to base value.
+    """
+    Restore original domain for base.res_partner_rule
 
     Args:
         cr (Cursor): Database cursor to use for operation.
-        rule_ref (string): XML ID of security rule to remove the
-            `domain_force` from.
     """
     with api.Environment.manage():
         env = api.Environment(cr, SUPERUSER_ID, {})
-        # Change access rule
         rule = env.ref("base.res_partner_rule")
         rule.write(
             {
                 "active": False,
                 "domain_force": (
-                    "['|','|',('company_id.child_ids','child_of',"
-                    "[user.company_id.id]),('company_id','child_of',"
-                    "[user.company_id.id]),('company_id','=',False)]"
+                    "['|', '|', ('partner_share', '=', False), "
+                    "('company_id', 'in', company_ids), "
+                    "('company_id', '=', False)]"
                 ),
             }
         )
