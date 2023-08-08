@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* res_company_active
+# 	* res_company_active
 #
 msgid ""
 msgstr ""
@@ -13,14 +13,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
-"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 3.8\n"
 
 #. module: res_company_active
-#: model:ir.model.fields,field_description:res_company_active.field_res_company__active
-msgid "Active"
-msgstr "Aktivan"
+#: model_terms:ir.ui.view,arch_db:res_company_active.view_res_company_form
+msgid "Archived"
+msgstr ""
 
 #. module: res_company_active
 #: model:ir.model,name:res_company_active.model_res_company
@@ -28,29 +28,24 @@ msgid "Companies"
 msgstr "Tvrtke"
 
 #. module: res_company_active
-#: model:res.company,overdue_msg:res_company_active.company_test
-msgid "Dear Sir/Madam,\n"
-"\n"
-"Our records indicate that some payments on your account are still due. Please find details below.\n"
-"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
-"If you have any queries regarding your account, Please contact us.\n"
-"\n"
-"Thank you in advance for your cooperation.\n"
-"Best Regards,"
-msgstr ""
-
-#. module: res_company_active
-#: code:addons/res_company_active/models/res_company.py:26
+#. odoo-python
+#: code:addons/res_company_active/models/res_company.py:0
 #, python-format
-msgid "You can not disable the company %s because it is the current company for the following active users:\n"
+msgid ""
+"You can not disable the company %(company_name)s because it is the current "
+"company for the following active users:\n"
 "\n"
-" - %s\n"
+" - %(user_names)s\n"
 "\n"
 " Please change the company of these users, or disable them"
 msgstr ""
 
 #. module: res_company_active
-#: code:addons/res_company_active/models/res_company.py:21
+#. odoo-python
+#: code:addons/res_company_active/models/res_company.py:0
 #, python-format
 msgid "You can not disable the current company."
 msgstr "Nije moguće ugasiti trenutnu tvrtku."
+
+#~ msgid "Active"
+#~ msgstr "Aktivan"
