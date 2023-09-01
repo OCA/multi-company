@@ -6,13 +6,13 @@ from odoo import fields, models
 
 class CalendarEvent(models.Model):
 
-    _inherit = 'calendar.event'
+    _inherit = "calendar.event"
 
     company_id = fields.Many2one(
-        'res.company',
-        'Company',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'calendar.event'
+        "res.company",
+        "Company",
+        default=lambda self: self.env["res.company"]._company_default_get(
+            "calendar.event"
         ),
-        ondelete='cascade',
+        ondelete="cascade",
     )
