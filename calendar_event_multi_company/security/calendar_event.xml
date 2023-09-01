@@ -6,7 +6,7 @@
         <field name="name">Calendar Event multi company rule</field>
         <field name="model_id" ref="calendar.model_calendar_event" />
         <field name="domain_force">
-            ['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]
+            ['|',('company_id','=',False),('company_id','in',company_ids)]
         </field>
     </record>
 </odoo>
