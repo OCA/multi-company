@@ -150,3 +150,7 @@ class StockPicking(models.Model):
             "res_id": wiz.id,
             "context": self.env.context,
         }
+
+    def _update_extra_data_in_picking(self, picking):
+        if hasattr(self, "_cal_weight"):  # from delivery module
+            self._cal_weight()
