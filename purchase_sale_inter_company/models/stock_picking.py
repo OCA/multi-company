@@ -77,13 +77,15 @@ class StockPicking(models.Model):
         if self.intercompany_picking_id:
             dest_picking = self.intercompany_picking_id.sudo(intercompany_user.id)
             for picking_move in self.move_ids_without_package:
-                dest_picking_move = dest_picking.sudo().move_ids_without_package.filtered(
+                dest_picking_move = dest_picking.sudo(
+                ).move_ids_without_package.filtered(
                     lambda l: l.product_id.id == picking_move.product_id.id)
                 dest_picking_move.sudo().write({
                     'quantity_done': picking_move.quantity_done,
                 })
             for picking_line in self.move_line_ids_without_package:
-                dest_picking_line = dest_picking.sudo().move_line_ids_without_package.filtered(
+                dest_picking_line = dest_picking.sudo(
+                ).move_line_ids_without_package.filtered(
                     lambda l: l.product_id.id == picking_line.product_id.id)
                 dest_picking_line.sudo().write({
                     'qty_done': picking_line.qty_done,
@@ -106,3 +108,7 @@ class StockPicking(models.Model):
             'res_id': wiz.id,
             'context': self.env.context,
         }
+
+    def _update_extra_data_in_picking(self, picking):
+        if hasattr(self, "_cal_weight"):  # from delivery module
+            self._cal_weight()
