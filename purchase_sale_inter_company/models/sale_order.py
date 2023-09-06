@@ -41,66 +41,117 @@ class SaleOrder(models.Model):
                 and dest_company.sync_picking
             ):
                 pickings = sale_order.picking_ids
-                purchase_picking = sale_order.auto_purchase_order_id.sudo().picking_ids
+                po_company = sale_order.sudo().auto_purchase_order_id.company_id
+                purchase_picking = sale_order.auto_purchase_order_id.sudo(
+                    po_company.intercompany_user_id.id
+                ).picking_ids
 
                 if len(pickings) == len(purchase_picking) == 1:
-                    purchase_picking.sudo().write(
-                        {"intercompany_picking_id": pickings[0].id}
-                    )
-                    pickings[0].write({"intercompany_picking_id": purchase_picking.id})
+                    # thus they have the same moves and move lines with same quantities
+                    purchase_picking.write({"intercompany_picking_id": pickings.id})
+                    pickings.write({"intercompany_picking_id": purchase_picking.id})
                 if len(pickings) > 1 and len(purchase_picking) == 1:
-                    # If there are `n` pickings in the sale order
-                    # and one in the purchase order, split the receipt
-                    assigned_moves = []
-                    assigned_move_lines = []
-                    for pick in pickings:
-                        assigned = (
-                            purchase_picking.sudo().move_ids_without_package.filtered(
-                                lambda m: m.product_id.id
-                                in pick.mapped("move_ids_without_package.product_id.id")
-                            )
+                    # If there are several pickings in the sale order and one
+                    # in the purchase order, then split the receipt
+                    # thus we need to recreate new moves and moves lines, as they differ
+                    purchase_moves = purchase_picking.move_ids_without_package
+                    purchase_move_lines = purchase_picking.move_line_ids_without_package
+                    new_pickings = self.env["stock.picking"].sudo(
+                        po_company.intercompany_user_id.id
+                    )
+                    for i, pick in enumerate(pickings):
+                        moves = pick.move_ids_without_package
+                        new_moves = self.env["stock.move"].sudo(
+                            po_company.intercompany_user_id.id
                         )
-                        lines = purchase_picking.sudo().move_line_ids_without_package
-                        assigned_lines = lines.filtered(
-                            lambda m: m.product_id.id
-                            in pick.mapped(
-                                "move_line_ids_without_package.product_id.id"
-                            )
+                        new_move_lines = self.env["stock.move.line"].sudo(
+                            po_company.intercompany_user_id.id
                         )
-                        assigned_moves.append(assigned)
-                        assigned_move_lines.append(assigned_lines)
-
-                    for i in range(len(assigned_moves)):
+                        for move in moves:
+                            purchase_move = purchase_moves.filtered(
+                                lambda m: m.product_id.id == move.product_id.id
+                            )
+                            new_move = purchase_move.sudo(
+                                po_company.intercompany_user_id.id
+                            ).copy(
+                                {
+                                    "picking_id": purchase_picking.id
+                                    if i == 0
+                                    else False,
+                                    "name": move.name,
+                                    "product_uom_qty": move.product_uom_qty,
+                                    "product_uom": move.product_uom.id,
+                                    "price_unit": -move.price_unit,
+                                    "note": move.note,
+                                    "create_date": move.create_date,
+                                    "date": move.date,
+                                    "date_expected": move.date_expected,
+                                    "state": move.state,
+                                }
+                            )
+                            new_move._update_extra_data_in_move(move)
+                            new_moves |= new_move
+                            for move_line in move.move_line_ids.filtered(
+                                lambda l: l.package_level_id
+                                and not l.picking_type_entire_packs
+                            ):
+                                purchase_move_line = purchase_move_lines.filtered(
+                                    lambda l: l.product_id.id == move_line.product_id.id
+                                )[:1]
+                                new_move_line = purchase_move_line.sudo(
+                                    po_company.intercompany_user_id.id
+                                ).copy(
+                                    {
+                                        "picking_id": purchase_picking.id
+                                        if i == 0
+                                        else False,
+                                        "move_id": new_move.id,
+                                        "product_uom_qty": move_line.product_uom_qty,
+                                        "product_uom_id": move_line.product_uom_id.id,
+                                        "create_date": move_line.create_date,
+                                        "date": move_line.date,
+                                        "state": move_line.state,
+                                    }
+                                )
+                                new_move_line._update_extra_data_in_move_line(move_line)
+                                new_move_lines |= new_move_line
                         if i == 0:
-                            purchase_picking.write(
+                            purchase_picking.sudo(
+                                purchase_picking.company_id.intercompany_user_id.id
+                            ).write(
                                 {
-                                    "move_ids_without_package": [
-                                        (6, False, assigned_moves[i].ids)
-                                    ],
-                                    "move_line_ids_without_package": [
-                                        (6, False, assigned_move_lines[i].ids)
-                                    ],
-                                    "intercompany_picking_id": pickings[i].id,
+                                    "intercompany_picking_id": pick.id,
+                                    "note": pick.note,
+                                    "create_date": pick.create_date,
+                                    "state": pick.state,
                                 }
                             )
-                            pickings[i].write(
-                                {"intercompany_picking_id": purchase_picking.id}
-                            )
-                            purchase_picking.action_assign()
+                            new_pick = purchase_picking
                         else:
-                            new = purchase_picking.copy(
+                            new_pick = purchase_picking.sudo(
+                                po_company.intercompany_user_id.id
+                            ).copy(
                                 {
                                     "move_ids_without_package": [
-                                        (6, False, assigned_moves[i].ids)
+                                        (6, False, new_moves.ids)
                                     ],
                                     "move_line_ids_without_package": [
-                                        (6, False, assigned_move_lines[i].ids)
+                                        (6, False, new_move_lines.ids)
                                     ],
-                                    "intercompany_picking_id": pickings[i].id,
+                                    "intercompany_picking_id": pick.id,
+                                    "note": pick.note,
+                                    "create_date": pick.create_date,
+                                    "state": pick.state,
                                 }
                             )
-                            new.action_assign()
-                            pickings[i].write({"intercompany_picking_id": new.id})
+                            new_pick._update_extra_data_in_picking(pick)
+                        pick.write({"intercompany_picking_id": new_pick.id})
+                        new_pickings |= new_pick
+                    purchase_move_lines.unlink()
+                    purchase_moves._action_cancel()
+                    purchase_moves.unlink()
+                    purchase_picking._update_extra_data_in_picking(pickings[:1])
+                    new_pickings.action_assign()
 
         return res
 
