@@ -9,7 +9,7 @@ from odoo.exceptions import UserError
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    intercompany_picking_id = fields.Many2one(comodel_name='stock.picking')
+    intercompany_picking_id = fields.Many2one(comodel_name='stock.picking', copy=False)
 
     @api.multi
     def do_transfer(self):
@@ -46,3 +46,69 @@ class StockPicking(models.Model):
                 force_company=po_pick.company_id.id,
             ).action_done()
         return super(StockPicking, self).do_transfer()
+
+    def button_validate(self):
+        is_intercompany = self.env["res.company"].search(
+            [("partner_id", "=", self.partner_id.id)]
+        ) or self.env["res.company"].search(
+            [("partner_id", "=", self.partner_id.parent_id.id)]
+        )
+        if is_intercompany and self.company_id.sync_picking \
+                and self.picking_type_code == "outgoing":
+            sale_order = self.sale_id
+            dest_company = sale_order.partner_id.ref_company_ids
+            for rec in self:
+                if rec.intercompany_picking_id:
+                    rec._sync_receipt_with_delivery(
+                        dest_company,
+                        sale_order,
+                    )
+        return super().button_validate()
+
+    def _sync_receipt_with_delivery(self, dest_company, sale_order):
+        self.ensure_one()
+        intercompany_user = dest_company.intercompany_user_id
+        purchase_order = sale_order.auto_purchase_order_id.sudo()
+        if (
+            not purchase_order
+            or not purchase_order.sudo(intercompany_user.id).picking_ids
+        ):
+            raise UserError(_("PO does not exist or has no receipts"))
+        if self.intercompany_picking_id:
+            dest_picking = self.intercompany_picking_id.sudo(intercompany_user.id)
+            for picking_move in self.move_ids_without_package:
+                dest_picking_move = dest_picking.sudo(
+                ).move_ids_without_package.filtered(
+                    lambda l: l.product_id.id == picking_move.product_id.id)
+                dest_picking_move.sudo().write({
+                    'quantity_done': picking_move.quantity_done,
+                })
+            for picking_line in self.move_line_ids_without_package:
+                dest_picking_line = dest_picking.sudo(
+                ).move_line_ids_without_package.filtered(
+                    lambda l: l.product_id.id == picking_line.product_id.id)
+                dest_picking_line.sudo().write({
+                    'qty_done': picking_line.qty_done,
+                })
+
+    def action_generate_backorder_wizard(self):
+        view = self.env.ref('stock.view_backorder_confirmation')
+        wiz = self.env['stock.backorder.confirmation'].with_context(
+            picking_id=self.id
+        ).create({'pick_ids': [(4, p.id) for p in self]})
+        return {
+            'name': _('Create Backorder?'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'stock.backorder.confirmation',
+            'views': [(view.id, 'form')],
+            'view_id': view.id,
+            'target': 'new',
+            'res_id': wiz.id,
+            'context': self.env.context,
+        }
+
+    def _update_extra_data_in_picking(self, picking):
+        if hasattr(self, "_cal_weight"):  # from delivery module
+            self._cal_weight()
