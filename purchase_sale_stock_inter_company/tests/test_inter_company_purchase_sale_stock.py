@@ -114,3 +114,51 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         sale_picking.sudo().button_validate()
         self.assertEqual(len(self.purchase_company_a.picking_ids), 1)
         self.assertEqual(len(self.purchase_company_a.picking_ids.move_line_ids), 2)
+
+    def test_sync_picking(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        sale = self._approve_po(purchase)
+
+        self.assertTrue(purchase.picking_ids)
+        self.assertTrue(sale.picking_ids)
+
+        # validate the SO picking
+        po_picking_id = purchase.picking_ids
+        so_picking_id = sale.picking_ids
+
+        so_picking_id.move_lines.quantity_done = 2
+
+        self.assertNotEqual(po_picking_id, so_picking_id)
+        self.assertNotEqual(
+            po_picking_id.move_lines.quantity_done,
+            so_picking_id.move_lines.quantity_done,
+        )
+        self.assertEqual(
+            po_picking_id.move_lines.product_qty,
+            so_picking_id.move_lines.product_qty,
+        )
+
+        so_picking_id.state = "done"
+        wizard_data = so_picking_id.with_user(self.user_company_b).button_validate()
+        wizard = (
+            self.env["stock.backorder.confirmation"]
+            .with_context(**wizard_data.get("context"))
+            .create({})
+        )
+        wizard.process()
+
+        # Quantities should have been synced
+        self.assertNotEqual(po_picking_id, so_picking_id)
+        self.assertEqual(
+            po_picking_id.move_lines.quantity_done,
+            so_picking_id.move_lines.quantity_done,
+        )
+
+        # A backorder should have been made for both
+        self.assertTrue(len(sale.picking_ids) > 1)
+        self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
