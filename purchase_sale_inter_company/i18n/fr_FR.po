@@ -20,6 +20,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_backorder_confirmation
+msgid "Backorder Confirmation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_company
 msgid "Companies"
 msgstr "Sociétés"
@@ -27,6 +32,12 @@ msgstr "Sociétés"
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_config_settings
 msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:100
+#, python-format
+msgid "Create Backorder?"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -71,6 +82,16 @@ msgstr ""
 #: code:addons/purchase_sale_inter_company/models/sale_order.py:45
 #, python-format
 msgid "Error. The following lines do not match on the remote order: %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation__force_no_backorder
+msgid "Force No backorder"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation__force_backorder
+msgid "Force backorder"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -131,6 +152,12 @@ msgid "Invoice"
 msgstr "Facture"
 
 #. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:76
+#, python-format
+msgid "PO does not exist or has no receipts"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/sale_order.py:36
 #, python-format
 msgid "PO line %s with price %s is not equal to SO line %s with price %s \n"
@@ -140,6 +167,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__po_picking_type_id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__po_picking_type_id
 msgid "Picking type for Purchase Orders"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -206,6 +238,34 @@ msgid "Source Sale Order Line"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_move
+msgid "Stock Move"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Sync picking"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__sync_picking
+msgid "Sync the receipt from the destination company with the delivery"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sync_picking
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__sync_picking
+msgid ""
+"Sync the receipt from the destination company with the delivery from the "
+"source company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sync_picking
+msgid "Sync the receipt with the delivery"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_overwrite_purchase_price
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_overwrite_purchase_price
 msgid "Synchronise prices on SO confirmation"
@@ -261,13 +321,13 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:171
-#: code:addons/purchase_sale_inter_company/models/sale_order.py:178
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:274
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/sale_order.py:88
+#: code:addons/purchase_sale_inter_company/models/sale_order.py:184
 #, python-format
 msgid "You cannot create PO from SO because product '%s' is not intercompany"
 msgstr ""
