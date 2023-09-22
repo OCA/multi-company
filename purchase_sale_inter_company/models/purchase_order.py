@@ -1,14 +1,26 @@
 # Copyright 2013-Today Odoo SA
 # Copyright 2016-2019 Chafique DELLI @ Akretion
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
+# Copyright 2023 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
+
+    auto_sale_order_ids = fields.One2many(
+        comodel_name="sale.order",
+        inverse_name="auto_purchase_order_id",
+        string="IC Sale Orders",
+        readonly=True,
+        copy=False,
+    )
+    is_intercompany_po = fields.Boolean(
+        string="Is Inter Company PO?", compute="_compute_is_intercompany_po", store=True
+    )
 
     def button_approve(self, force=False):
         """ Generate inter company sale order base on conditions."""
@@ -178,3 +190,22 @@ class PurchaseOrder(models.Model):
         sale_orders.action_cancel()
         self.write({"partner_ref": False})
         return super().button_cancel()
+
+    @api.depends("auto_sale_order_ids")
+    def _compute_is_intercompany_po(self):
+        for purchase in self:
+            purchase.is_intercompany_po = bool(purchase.auto_sale_order_ids)
+
+
+class PurchaseOrderLine(models.Model):
+    _inherit = "purchase.order.line"
+
+    def _prepare_stock_moves(self, picking):
+        """
+        If the Transfer is to a Company Partner, mark the move as Inter Company
+        """
+        res = super(PurchaseOrderLine, self)._prepare_stock_moves(picking)
+        if picking.partner_id.commercial_partner_id.ref_company_ids:
+            for re in res:
+                re["is_intercompany_move"] = True
+        return res
