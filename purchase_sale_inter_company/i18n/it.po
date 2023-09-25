@@ -100,6 +100,7 @@ msgid "Source Purchase Order Line"
 msgstr "Riga ordine d'acquisto di origine"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -123,12 +124,14 @@ msgstr ""
 "questa azienda, verrà automaticamente validato."
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr "Impossibile annullare un ordine che è %s"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
@@ -137,6 +140,7 @@ msgstr ""
 "prodotto '%s' non è interaziendale"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid ""
@@ -145,37 +149,3 @@ msgid ""
 msgstr ""
 "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
 "valuta del listino di vendita è diversa dalla valuta del listino d'acquisto."
-
-#, fuzzy, python-format
-#~ msgid "This vendor bill is related with: %s"
-#~ msgstr "Questa fattura fornitore è relativa a: %s"
-
-#~ msgid ""
-#~ "Default value to set on Sale Orders that will be created based on "
-#~ "Purchase Orders made to this company"
-#~ msgstr ""
-#~ "Valore predefinito da impostare sugli ordini di vendita che verranno "
-#~ "creati sulla base degli ordini di acquisto fatti a questa azienda"
-
-#~ msgid ""
-#~ "Default value to set on Sale Orders that will be created based on "
-#~ "Purchase Orders made to this company."
-#~ msgstr ""
-#~ "Valore predefinito da impostare sugli ordini di vendita che verranno "
-#~ "creati sulla base degli ordini di acquisto fatti a questa azienda."
-
-#~ msgid "Intercompany Picking"
-#~ msgstr "Prelievo interaziendale"
-
-#~ msgid ""
-#~ "There's no corresponding line in PO %s for assigning qty from %s for "
-#~ "product %s"
-#~ msgstr ""
-#~ "Non c'è una riga corrisponde nell'ordine d'acquisto %s per assegnare la "
-#~ "quantità da %s per il prodotto %s"
-
-#~ msgid "Transfer"
-#~ msgstr "Trasferire"
-
-#~ msgid "Invoice"
-#~ msgstr "Fattura"

@@ -99,6 +99,7 @@ msgid "Source Purchase Order Line"
 msgstr "Postavka izvornega prodajnega naloga"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -122,12 +123,14 @@ msgstr ""
 "ta samodejno overi."
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
@@ -136,6 +139,7 @@ msgstr ""
 "'%s' ni v sklopu strukturiranih družb."
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, fuzzy, python-format
 msgid ""
@@ -144,43 +148,3 @@ msgid ""
 msgstr ""
 "Prodajnega naloga ni mogoče ustvariti na osnovi nabavnega, ker je valuta "
 "prodajnega cenika drugačna od valute nabavnega."
-
-#~ msgid ""
-#~ "Default value to set on Sale Orders that will be created based on "
-#~ "Purchase Orders made to this company"
-#~ msgstr ""
-#~ "Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
-#~ "podlagi nabavnih nalogov za to družbo."
-
-#~ msgid ""
-#~ "Default value to set on Sale Orders that will be created based on "
-#~ "Purchase Orders made to this company."
-#~ msgstr ""
-#~ "Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
-#~ "podlagi nabavnih nalogov za to družbo."
-
-#~ msgid "Invoice"
-#~ msgstr "Račun"
-
-#~ msgid "Output - A"
-#~ msgstr "Izhod - A"
-
-#~ msgid "Output - B"
-#~ msgstr "Izhod - B"
-
-#~ msgid "Sale Auto Validation"
-#~ msgstr "Samodejno overjanje prodaje"
-
-#~ msgid ""
-#~ "When a Sale Order is created by a multi company rule for this company, it "
-#~ "will automatically validate it"
-#~ msgstr ""
-#~ "Ko se ustvari prodajni nalog iz pravila konsolidiranja za to družbo, se "
-#~ "le-ta samodejno overi"
-
-#~ msgid ""
-#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
-#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
-#~ msgstr ""
-#~ "{'invisible':['|', ('invoice_method','in', ['picking', 'manual', "
-#~ "'intercompany']), '|', ('state','!=', 'approved'), ('invoiced','=',True)]}"
