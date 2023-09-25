@@ -135,6 +135,3 @@ msgid ""
 "You cannot create SO from PO because sale price list currency is different "
 "than purchase price list currency."
 msgstr ""
-
-#~ msgid "Invoice"
-#~ msgstr "Rechnung"
