@@ -15,6 +15,7 @@ setuptools.setup(
         'odoo-addon-product_account_multicompany_default>=16.0dev,<16.1dev',
         'odoo-addon-product_category_company>=16.0dev,<16.1dev',
         'odoo-addon-product_tax_multicompany_default>=16.0dev,<16.1dev',
+        'odoo-addon-purchase_sale_inter_company>=16.0dev,<16.1dev',
         'odoo-addon-res_company_active>=16.0dev,<16.1dev',
         'odoo-addon-res_company_search_view>=16.0dev,<16.1dev',
     ],
