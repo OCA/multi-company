@@ -3,6 +3,8 @@
 
 import logging
 
+from odoo import SUPERUSER_ID, api
+
 _logger = logging.getLogger(__name__)
 
 try:
@@ -12,10 +14,16 @@ except ImportError:
 
 
 def post_init_hook(cr, registry):
-    hooks.post_init_hook(
-        cr,
-        "product.product_comp_rule",
-        "product.template",
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    # Change access rule
+    rule = env.ref("product.product_comp_rule")
+    rule.write(
+        {
+            "domain_force": (
+                "['|', ('company_ids', 'in', company_ids),"
+                "('company_ids', '=', False)]"
+            ),
+        }
     )
 
 
