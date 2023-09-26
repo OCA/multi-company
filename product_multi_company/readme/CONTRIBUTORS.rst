@@ -4,3 +4,8 @@
 
   * Vicent Cubells <vicent.cubells@tecnativa.com>
 * Denis Roussel <denis.roussel@acsone.eu>
+
+* `Sodexis <https://sodexis.com>`_:
+
+  * Prabakaran <prabakaran@sodexis.com>
+  * Karthik <karthik@sodexis.com>

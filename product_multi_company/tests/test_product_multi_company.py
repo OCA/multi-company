@@ -11,8 +11,7 @@ from .common import ProductMultiCompanyCommon
 class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase):
     def test_create_product(self):
         product = self.env["product.product"].create({"name": "Test"})
-        company = self.env.company
-        self.assertTrue(company.id in product.company_ids.ids)
+        self.assertFalse(product.company_ids)
 
     def test_company_none(self):
         self.assertFalse(self.product_company_none.company_id)
@@ -65,8 +64,5 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
 
         uninstall_hook(self.env.cr, None)
         rule = self.env.ref("product.product_comp_rule")
-        domain = (
-            " ['|', ('company_id', '=', user.company_id.id), "
-            "('company_id', '=', False)]"
-        )
+        domain = " [('company_id', 'in', [False, user.company_id.id])]"
         self.assertEqual(rule.domain_force, domain)
