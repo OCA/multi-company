@@ -74,6 +74,34 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.company_b.warehouse_id = cls.warehouse_company_b
         cls.company_b.sale_auto_validation = 1
 
+        cls.user_company_a.group_ids = [
+            (
+                6,
+                0,
+                [
+                    cls.env.ref("account.group_account_manager"),
+                    cls.env.ref("base.group_partner_manager"),
+                    cls.env.ref("sales_team.group_sale_manager"),
+                    cls.env.ref("purchase.group_purchase_user"),
+                ],
+            )
+        ]
+        # User from Company A needs to have access to both companies when confirming the
+        # PO
+        cls.user_company_a.company_ids = [(6, 0, [cls.company_a.id, cls.company_b.id])]
+        cls.user_company_b.group_ids = [
+            (
+                6,
+                0,
+                [
+                    cls.env.ref("account.group_account_manager"),
+                    cls.env.ref("base.group_partner_manager"),
+                    cls.env.ref("sales_team.group_sale_manager"),
+                    cls.env.ref("purchase.group_purchase_user"),
+                ],
+            )
+        ]
+
         cls.purchase_company_a = Form(cls.env["purchase.order"])
         cls.purchase_company_a.company_id = cls.company_a
         cls.purchase_company_a.partner_id = cls.partner_company_b
@@ -84,6 +112,17 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             line_form.name = "Service Multi Company"
             line_form.price_unit = 450.0
         cls.purchase_company_a = cls.purchase_company_a.save()
+
+        cls.purchase_company_a_2 = Form(cls.env["purchase.order"])
+        cls.purchase_company_a_2.company_id = cls.company_a
+        cls.purchase_company_a_2.partner_id = cls.partner_company_b
+
+        with cls.purchase_company_a_2.order_line.new() as line_form:
+            line_form.product_id = cls.product_product_multi_company
+            line_form.product_qty = 1.0
+            line_form.name = "Product Multi Company"
+            line_form.price_unit = 450.0
+        cls.purchase_company_a_2 = cls.purchase_company_a_2.save()
 
         cls.sequence_purchase_journal_company_a = cls.env["ir.sequence"].create(
             {
@@ -232,3 +271,37 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self._approve_po(self.purchase_company_a)
         with self.assertRaises(UserError):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+
+    def test_is_intercompany_fields(self):
+        self.company_b.sale_auto_validation = True
+        purchase = self.purchase_company_a_2.with_user(self.user_company_a)
+        purchase.button_approve()
+        self.assertTrue(
+            purchase.is_intercompany_po,
+            "The PO should have been marked as Inter Company.",
+        )
+        sale = (
+            self.env["sale.order"]
+            .with_user(self.user_company_b)
+            .search(
+                [("auto_purchase_order_id", "=", self.purchase_company_a_2.id)], limit=1
+            )
+        )
+        self.assertTrue(sale.is_intercompany_so)
+        self.assertTrue(purchase.picking_ids)
+        self.assertEqual(
+            len(purchase.picking_ids), 1, "There should only be one Transfer created."
+        )
+        sale.action_confirm()
+        self.assertEqual(
+            sale.state, "sale", "The Sale Order should have been confirmed."
+        )
+        self.assertTrue(sale.picking_ids)
+        self.assertEqual(
+            len(sale.picking_ids), 1, "There should only be one Transfer created."
+        )
+        self.assertTrue(
+            all([move.is_intercompany_move for move in sale.picking_ids.move_lines]),
+            "All the Moves related to the Sales Order Transfer should be marked as "
+            "Inter Company.",
+        )
