@@ -342,6 +342,19 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             cls.product_consultant_multi_company.company_ids = False
             cls.product_consultant_multi_company.product_tmpl_id.company_ids = False
 
+        cls.product_product_multi_company = cls.env["product.product"].create(
+            {
+                "name": "Product Multi Company",
+                "uom_id": cls.env.ref("uom.product_uom_unit").id,
+                "uom_po_id": cls.env.ref("uom.product_uom_unit").id,
+                "categ_id": cls.env.ref("product.product_category_2").id,
+                "type": "product",
+            }
+        )
+        if "company_ids" in cls.env["product.template"]._fields:
+            cls.product_product_multi_company.company_ids = False
+            cls.product_product_multi_company.product_tmpl_id.company_ids = False
+
         cls.env["ir.sequence"].create(
             {
                 "name": "Account Sales Journal Company A",
