@@ -22,11 +22,10 @@ class Base(models.AbstractModel):
         ]
         for field_name in cpny_dep_fields:
             for field in arch.xpath(f"//field[@name='{field_name}']"):
-                fa = self._get_company_dependent_css_class()
-                field.attrib[
-                    "class"
-                ] = f"{fa} {field.attrib.get('class') or ''}".strip()
+                classes = field.attrib.get("class", "").split(" ")
+                classes += self._get_company_dependent_css_class()
+                field.attrib["class"] = " ".join(set(classes))
 
     def _get_company_dependent_css_class(self):
         """Inherit to apply your own class"""
-        return "fa fa-building-o"
+        return ["fa", "fa-building-o"]
