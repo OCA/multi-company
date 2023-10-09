@@ -69,8 +69,8 @@ msgstr ""
 "Características de OCA entre compañías\n"
 "                                                   <span class=\"fa fa-lg fa-"
 "building-o\" title=\"Values set here are company-specific.\" aria-label="
-"\"Values set here are company-specific.\" groups=\"base.group_multi_company\""
-" role=\"img\"/>"
+"\"Values set here are company-specific.\" groups=\"base.group_multi_company"
+"\" role=\"img\"/>"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
@@ -118,8 +118,8 @@ msgid ""
 "Please define %(dest_journal_type)s journal for this company: "
 "\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
 msgstr ""
-"Defina el diario %(dest_journal_type)s para esta empresa: \""
-"%(dest_company_name)s\" (id:%(dest_company_id)d)."
+"Defina el diario %(dest_journal_type)s para esta empresa: "
+"\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
