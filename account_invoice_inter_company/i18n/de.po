@@ -21,14 +21,14 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "%s - Canceled Invoice: %s"
-msgstr "%s Stornierte Rechnung: %s"
+msgid "%(company_name)s - Canceled Invoice: %(invoice_name)s"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "%s - Invoice: %s"
-msgstr "%s - Rechnung: %s"
+msgid "%(company_name)s - Invoice: %(invoice_name)s"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_generated
@@ -50,22 +50,6 @@ msgstr "Unternehmen"
 #. module: account_invoice_inter_company
 #: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__display_name
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__display_name
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__display_name
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__display_name
-msgid "Display Name"
-msgstr ""
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__id
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__id
-msgid "ID"
 msgstr ""
 
 #. module: account_invoice_inter_company
@@ -118,14 +102,6 @@ msgid "Journal Item"
 msgstr ""
 
 #. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move____last_update
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line____last_update
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company____last_update
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings____last_update
-msgid "Last Modified on"
-msgstr ""
-
-#. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:0
 #, python-format
 msgid "No Chart of Account Template has been defined !"
@@ -134,8 +110,10 @@ msgstr "Es wurde keine Kontenplanvorlage definiert!"
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
-msgid "Please define %s journal for this company: \"%s\" (id:%d)."
-msgstr "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
+msgid ""
+"Please define %(dest_journal_type)s journal for this company: "
+"\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
@@ -182,11 +160,9 @@ msgstr "Quellrechnungszeile"
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
-"The invoice line '%s' doesn't have a product. All invoice lines should have "
-"a product for inter-company invoices."
+"The invoice line '%(line_name)s' doesn't have a product. All invoice lines "
+"should have a product for inter-company invoices."
 msgstr ""
-"Die Rechnungszeile '%s' hat kein Produkt. Alle Rechnungszeilen sollten ein "
-"Produkt für zwischenbetriebliche Rechnungen haben."
 
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
@@ -201,13 +177,10 @@ msgstr ""
 #, python-format
 msgid ""
 "WARNING!!!!! Failure in the inter-company invoice creation process: the "
-"total amount of this invoice is %s but the total amount of the invoice %s in "
-"the company %s is %s"
+"total amount of this invoice is %(dest_amount_total)s but the total amount "
+"of the invoice %(invoice_name)s in the company %(company_name)s is "
+"%(amount_total)s"
 msgstr ""
-"WARNUNG!!!!!\n"
-" Fehler beim Erstellen der Rechnung zwischen Unternehmen: Der Gesamtbetrag "
-"dieser Rechnung ist %s, aber der Gesamtbetrag der Rechnung %s in der Firma "
-"%s ist %s"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
@@ -233,16 +206,48 @@ msgstr ""
 msgid ""
 "You can't modify this invoice as it has an inter company invoice that's in "
 "posted state.\n"
-"Invoice %s to %s"
+"Invoice %(invoice_name)s to %(partner_name)s"
 msgstr ""
 
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
 #, python-format
 msgid ""
-"You cannot create invoice in company '%s' with product '%s' because it is "
-"not multicompany"
+"You cannot create invoice in company '%(dest_company_name)s' with product "
+"'%(product_name)s' because it is not multicompany"
 msgstr ""
+
+#, python-format
+#~ msgid "%s - Canceled Invoice: %s"
+#~ msgstr "%s Stornierte Rechnung: %s"
+
+#, python-format
+#~ msgid "%s - Invoice: %s"
+#~ msgstr "%s - Rechnung: %s"
+
+#, python-format
+#~ msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+#~ msgstr ""
+#~ "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
+
+#, python-format
+#~ msgid ""
+#~ "The invoice line '%s' doesn't have a product. All invoice lines should "
+#~ "have a product for inter-company invoices."
+#~ msgstr ""
+#~ "Die Rechnungszeile '%s' hat kein Produkt. Alle Rechnungszeilen sollten "
+#~ "ein Produkt für zwischenbetriebliche Rechnungen haben."
+
+#, python-format
+#~ msgid ""
+#~ "WARNING!!!!! Failure in the inter-company invoice creation process: the "
+#~ "total amount of this invoice is %s but the total amount of the invoice %s "
+#~ "in the company %s is %s"
+#~ msgstr ""
+#~ "WARNUNG!!!!!\n"
+#~ " Fehler beim Erstellen der Rechnung zwischen Unternehmen: Der "
+#~ "Gesamtbetrag dieser Rechnung ist %s, aber der Gesamtbetrag der Rechnung "
+#~ "%s in der Firma %s ist %s"
 
 #~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
 #~ msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
