@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_invoice_consolidated
+# 	* account_invoice_consolidated
 #
 msgid ""
 msgstr ""
@@ -253,7 +253,8 @@ msgstr ""
 #. module: account_invoice_consolidated
 #: code:addons/account_invoice_consolidated/models/account_invoice_consolidated.py:102
 #, python-format
-msgid "Draft Consolidated Invoice exists for selected Customer/Date Range.\n"
+msgid ""
+"Draft Consolidated Invoice exists for selected Customer/Date Range.\n"
 " Please add the invoice there."
 msgstr ""
 
@@ -542,7 +543,9 @@ msgstr ""
 
 #. module: account_invoice_consolidated
 #: model_terms:ir.ui.view,arch_db:account_invoice_consolidated.report_template_consolidated_inv
-msgid "Prices reflect a 3% cash discount for payment by cash, Wire, ACH, Debit ACH, or Check."
+msgid ""
+"Prices reflect a 3% cash discount for payment by cash, Wire, ACH, Debit ACH, "
+"or Check."
 msgstr ""
 
 #. module: account_invoice_consolidated
@@ -577,7 +580,8 @@ msgstr ""
 
 #. module: account_invoice_consolidated
 #: model:ir.model.fields,help:account_invoice_consolidated.field_account_invoice_consolidated__activity_state
-msgid "Status based on activities\n"
+msgid ""
+"Status based on activities\n"
 "Overdue: Due date is already passed\n"
 "Today: Activity date is today\n"
 "Planned: Future activities."
