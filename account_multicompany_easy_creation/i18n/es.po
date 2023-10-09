@@ -35,7 +35,6 @@ msgstr "Cuenta"
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__partner_id
 #, fuzzy
-#| msgid "Account"
 msgid "Account Holder"
 msgstr "Cuenta"
 
@@ -47,14 +46,12 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__journal_id
 #, fuzzy
-#| msgid "Account"
 msgid "Account Journal"
 msgstr "Cuenta"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_number
 #, fuzzy
-#| msgid "Account"
 msgid "Account Number"
 msgstr "Cuenta"
 
@@ -78,7 +75,6 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_id
 #, fuzzy
-#| msgid "Banks"
 msgid "Bank"
 msgstr "Bancos"
 
@@ -181,12 +177,6 @@ msgid "Default Sales Tax"
 msgstr "Impuesto por defecto en ventas"
 
 #. module: account_multicompany_easy_creation
-#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:191
-#, python-format
-msgid "Description not set in tax template: '%s'"
-msgstr "Descripción no establecida en plantilla del impuesto: '%s'"
-
-#. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__display_name
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__display_name
 msgid "Display Name"
@@ -278,7 +268,6 @@ msgstr ""
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__sequence
 #, fuzzy
-#| msgid "Sequences"
 msgid "Sequence"
 msgstr "Secuencias"
 
@@ -365,6 +354,12 @@ msgid "The accounting journal corresponding to this bank account."
 msgstr ""
 
 #. module: account_multicompany_easy_creation
+#: code:addons/account_multicompany_easy_creation/wizards/multicompany_easy_creation.py:0
+#, python-format
+msgid "This tax template can't be match without xml_id: '%s'"
+msgstr ""
+
+#. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_type
 msgid "Type"
 msgstr ""
@@ -415,18 +410,24 @@ msgid "Wizard"
 msgstr "Asistente"
 
 #. module: account_multicompany_easy_creation
-#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
-#, fuzzy
-#| msgid "account.multicompany.easy.creation.wiz"
-msgid "Wizard Account Multi-company Easy Creation"
-msgstr "'account.multicompany.easy.creation.wiz'"
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
+msgid "Wizard Account Multi-company Bank"
+msgstr ""
 
 #. module: account_multicompany_easy_creation
-#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
-msgid "account.multicompany.bank.wiz"
-msgstr "'account.multicompany.bank.wiz'"
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
+#, fuzzy
+msgid "Wizard Account Multi-company Easy Creation"
+msgstr "'account.multicompany.easy.creation.wiz'"
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "or"
 msgstr "o"
+
+#, python-format
+#~ msgid "Description not set in tax template: '%s'"
+#~ msgstr "Descripción no establecida en plantilla del impuesto: '%s'"
+
+#~ msgid "account.multicompany.bank.wiz"
+#~ msgstr "'account.multicompany.bank.wiz'"
