@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* account_invoice_inter_company
+# 	* account_invoice_inter_company
 #
 msgid ""
 msgstr ""
@@ -30,7 +30,10 @@ msgstr "%s - fatura: %s"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-msgid "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-specific.\" aria-label=\"Values set here are company-specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" aria-label=\"Values set here are company-specific.\" groups="
+"\"base.group_multi_company\" role=\"img\"/>"
 msgstr ""
 "<span class=\"fa fa-lg fa-building-o\" title=\"Os valores atribuídos aqui "
 "são específicos para a empresa.\" aria-label=\"Os valores atribuídos aqui "
@@ -54,7 +57,9 @@ msgstr "Parâmetros de Configuração"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-msgid "Configure company rules to automatically create SO/PO when one of your company sells/buys to another of your company."
+msgid ""
+"Configure company rules to automatically create SO/PO when one of your "
+"company sells/buys to another of your company."
 msgstr ""
 "Configure as regras da empresa para criar automaticamente EV/EC quando uma "
 "das suas empresas vende/compra a outra."
@@ -115,7 +120,9 @@ msgstr "Linha de Fatura de Origem"
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_invoice.py:99
 #, python-format
-msgid "The invoice line '%s' doesn't have a product. All invoice lines should have a product for inter-company invoices."
+msgid ""
+"The invoice line '%s' doesn't have a product. All invoice lines should have "
+"a product for inter-company invoices."
 msgstr ""
 "A linha de fatura '%s' não tem um produto. Todas as linhas de fatura devem "
 "ter um produto para faturas inter empresas."
@@ -123,21 +130,28 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_invoice.py:123
 #, python-format
-msgid "WARNING!!!!! Failure in the inter-company invoice creation process: the total amount of this invoice is %s but the total amount of the invoice %s in the company %s is %s"
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %s but the total amount of the invoice %s in "
+"the company %s is %s"
 msgstr ""
 "AVISO!!!!! Falha no processo de criação da fatura inter empresas: o valor "
 "total desta fatura é %s mas o valor total da fatura %s na empresa %s é %s"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
-msgid "When an invoice is created by a multi company rule for this company, it will automatically validate it"
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it"
 msgstr ""
 "Quando uma fatura é criada por uma regra multi-empresa para esta empresa, "
 "esta será automaticamente validada"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
-msgid "When an invoice is created by a multi company rule for this company, it will automatically validate it."
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it."
 msgstr ""
 "Quando uma fatura é criada por uma regra multi-empresa para esta empresa, "
 "esta será automaticamente validada."
@@ -145,7 +159,9 @@ msgstr ""
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_invoice.py:63
 #, python-format
-msgid "You cannot create invoice in company '%s' with product '%s' because it is not multicompany"
+msgid ""
+"You cannot create invoice in company '%s' with product '%s' because it is "
+"not multicompany"
 msgstr ""
 "Não pode criar a fatura na empresa '%s' com o produto '%s' porque ela não é "
 "multi-empresa"
