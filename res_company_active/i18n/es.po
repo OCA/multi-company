@@ -31,7 +31,8 @@ msgstr "Compañías"
 #: code:addons/res_company_active/models/res_company.py:0
 #, python-format
 msgid ""
-"You can not disable the company %(company_name)s because it is the current company for the following active users:\n"
+"You can not disable the company %(company_name)s because it is the current "
+"company for the following active users:\n"
 "\n"
 " - %(user_names)s\n"
 "\n"
