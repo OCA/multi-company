@@ -101,6 +101,7 @@ msgid "Source Purchase Order Line"
 msgstr "Línea pedido de compra origen"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -126,12 +127,14 @@ msgstr ""
 "compañía, este sera confirmado automáticamente."
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr "No puede cancelar un pedido que es %s"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
@@ -140,6 +143,7 @@ msgstr ""
 "'%s' no es intercompañía"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid ""
