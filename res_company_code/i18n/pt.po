@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* res_company_code
+# 	* res_company_code
 #
 msgid ""
 msgstr ""
@@ -33,10 +33,13 @@ msgstr "Nome Completo"
 
 #. module: res_company_code
 #: model:res.company,overdue_msg:res_company_code.company_test
-msgid "Dear Sir/Madam,\n"
+msgid ""
+"Dear Sir/Madam,\n"
 "\n"
-"Our records indicate that some payments on your account are still due. Please find details below.\n"
-"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
+"Our records indicate that some payments on your account are still due. "
+"Please find details below.\n"
+"If the amount has already been paid, please disregard this notice. "
+"Otherwise, please forward us the total amount stated below.\n"
 "If you have any queries regarding your account, Please contact us.\n"
 "\n"
 "Thank you in advance for your cooperation.\n"
