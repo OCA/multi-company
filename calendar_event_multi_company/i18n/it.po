@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* calendar_event_multi_company
+# 	* calendar_event_multi_company
 #
 msgid ""
 msgstr ""
