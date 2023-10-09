@@ -99,6 +99,7 @@ msgid "Source Purchase Order Line"
 msgstr "Postavka izvornega prodajnega naloga"
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -122,12 +123,14 @@ msgstr ""
 "ta samodejno overi."
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
@@ -136,6 +139,7 @@ msgstr ""
 "'%s' ni v sklopu strukturiranih družb."
 
 #. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, fuzzy, python-format
 msgid ""
