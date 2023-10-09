@@ -51,6 +51,17 @@ msgstr ""
 "sulla base degli ordini di acquisto fatti a questa azienda."
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
 msgid ""
@@ -61,6 +72,17 @@ msgstr ""
 "Generare un ordine di vendita quando un ordine d'acquisto viene creato con "
 "questa azienda come fornitore.\n"
 " L'utente interaziendale deve essere almeno un utente vendite."
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__id
+msgid "ID"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
@@ -75,8 +97,19 @@ msgstr "Utente vendite interaziendali"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_account_move
-msgid "Journal Entries"
-msgstr "Registrazioni contabili"
+msgid "Journal Entry"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking____last_update
+msgid "Last Modified on"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
@@ -192,6 +225,9 @@ msgid ""
 msgstr ""
 "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
 "valuta del listino di vendita è diversa dalla valuta del listino d'acquisto."
+
+#~ msgid "Journal Entries"
+#~ msgstr "Registrazioni contabili"
 
 #~ msgid "Invoice"
 #~ msgstr "Fattura"
