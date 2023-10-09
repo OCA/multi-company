@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* stock_move_line_multi_company_security
+# 	* stock_move_line_multi_company_security
 #
 msgid ""
 msgstr ""
