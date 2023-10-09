@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* product_tax_multicompany_default
+# 	* product_tax_multicompany_default
 #
 msgid ""
 msgstr ""
