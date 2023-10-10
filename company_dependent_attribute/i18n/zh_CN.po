@@ -22,6 +22,21 @@ msgid "Company Dependent"
 msgstr "依附于公司"
 
 #. module: company_dependent_attribute
+#: model:ir.model.fields,field_description:company_dependent_attribute.field_ir_model_fields__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: company_dependent_attribute
 #: model:ir.model,name:company_dependent_attribute.model_ir_model_fields
 msgid "Fields"
 msgstr "字段"
+
+#. module: company_dependent_attribute
+#: model:ir.model.fields,field_description:company_dependent_attribute.field_ir_model_fields__id
+msgid "ID"
+msgstr ""
+
+#. module: company_dependent_attribute
+#: model:ir.model.fields,field_description:company_dependent_attribute.field_ir_model_fields____last_update
+msgid "Last Modified on"
+msgstr ""
