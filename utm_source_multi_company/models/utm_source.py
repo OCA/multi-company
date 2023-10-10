@@ -6,13 +6,11 @@ from odoo import fields, models
 
 class UtmSource(models.Model):
 
-    _inherit = 'utm.source'
+    _inherit = "utm.source"
 
     company_id = fields.Many2one(
-        'res.company',
-        'Company',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'utm.source'
-        ),
-        ondelete='cascade',
+        "res.company",
+        "Company",
+        default=lambda self: self.env["res.company"]._company_default_get("utm.source"),
+        ondelete="cascade",
     )
