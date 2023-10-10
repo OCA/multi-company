@@ -11,6 +11,6 @@ class UtmSource(models.Model):
     company_id = fields.Many2one(
         "res.company",
         "Company",
-        default=lambda self: self.env["res.company"]._company_default_get("utm.source"),
+        default=lambda self: self.env.company,
         ondelete="cascade",
     )
