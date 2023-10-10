@@ -19,13 +19,41 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_ids
+msgid "Companies"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_id
+msgid "Company"
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_partner
 msgid "Contact"
 msgstr ""
 
 #. module: partner_multi_company
 #: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__display_name
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_users__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__id
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_users__id
+msgid "ID"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner____last_update
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_users____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__no_company_ids
+msgid "No Companies"
 msgstr ""
 
 #. module: partner_multi_company
