@@ -6,7 +6,7 @@
         <field name="name">Utm Source multi company rule</field>
         <field name="model_id" ref="utm.model_utm_source" />
         <field name="domain_force">
-            ['|',('company_id','=',False),('company_id','child_of',[user.company_id.id])]
+            ['|',('company_id','=',False),('company_id','in',company_ids)]
         </field>
     </record>
 </odoo>
