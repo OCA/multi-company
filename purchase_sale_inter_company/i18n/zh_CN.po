@@ -50,7 +50,8 @@ msgstr ""
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
 msgid ""
-"Generate a Sale Order when a Purchase Order with this company as supplier is created.\n"
+"Generate a Sale Order when a Purchase Order with this company as supplier is "
+"created.\n"
 " The intercompany user must at least be Sale User."
 msgstr ""
 
@@ -115,8 +116,8 @@ msgstr ""
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
 msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product"
-" %s"
+"There's no corresponding line in PO %s for assigning qty from %s for product "
+"%s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -133,8 +134,8 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
 msgid ""
-"User used to create the sales order arising from a purchase order in another"
-" company."
+"User used to create the sales order arising from a purchase order in another "
+"company."
 msgstr ""
 
 #. module: purchase_sale_inter_company
