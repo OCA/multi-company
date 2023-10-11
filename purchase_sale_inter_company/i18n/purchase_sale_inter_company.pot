@@ -14,6 +14,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_backorder_confirmation
+msgid "Backorder Confirmation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_company
 msgid "Companies"
 msgstr ""
@@ -50,8 +55,21 @@ msgstr ""
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move_line__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation__force_no_backorder
+msgid "Force No backorder"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation__force_backorder
+msgid "Force backorder"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -69,6 +87,9 @@ msgstr ""
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move_line__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__id
 msgid "ID"
 msgstr ""
@@ -96,8 +117,22 @@ msgstr ""
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_backorder_confirmation____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move_line____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking____last_update
 msgid "Last Modified on"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
+msgid "PO does not exist or has no receipts"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -139,6 +174,34 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order_line__auto_purchase_line_id
 msgid "Source Purchase Order Line"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_stock_move
+msgid "Stock Move"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Sync picking"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__sync_picking
+msgid "Sync the receipt from the destination company with the delivery"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sync_picking
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__sync_picking
+msgid ""
+"Sync the receipt from the destination company with the delivery from the "
+"source company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sync_picking
+msgid "Sync the receipt with the delivery"
 msgstr ""
 
 #. module: purchase_sale_inter_company
