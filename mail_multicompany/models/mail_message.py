@@ -29,4 +29,4 @@ class MailMessage(models.Model):
                     )
                     .id
                 )
-        return super(MailMessage, self).create(vals)
+        return super(MailMessage, self).create(vals_list)
