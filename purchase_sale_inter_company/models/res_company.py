@@ -32,3 +32,8 @@ class ResCompany(models.Model):
         comodel_name="res.users",
         string="Intercompany Sale User",
     )
+    sync_picking = fields.Boolean(
+        string="Sync the receipt with the delivery",
+        help="Sync the receipt from the destination company with the "
+        "delivery from the source company",
+    )

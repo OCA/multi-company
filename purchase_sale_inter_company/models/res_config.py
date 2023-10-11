@@ -41,3 +41,10 @@ class InterCompanyRulesConfig(models.TransientModel):
         "order in another company.",
         readonly=False,
     )
+    sync_picking = fields.Boolean(
+        related="company_id.sync_picking",
+        string="Sync the receipt from the destination company with the delivery",
+        help="Sync the receipt from the destination company with "
+        "the delivery from the source company",
+        readonly=False,
+    )

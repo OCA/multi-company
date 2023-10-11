@@ -33,10 +33,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             }
         )
         cls.chart.try_loading(cls.company_a)
-        cls.partner_company_a = cls.env["res.partner"].create(
-            {"name": cls.company_a.name, "is_company": True}
-        )
-        cls.company_a.partner_id = cls.partner_company_a
+        cls.partner_company_a = cls.company_a.partner_id
         cls.company_b = cls.env["res.company"].create(
             {
                 "name": "Company B",
@@ -47,9 +44,7 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             }
         )
         cls.chart.try_loading(cls.company_b)
-        cls.partner_company_b = cls.env["res.partner"].create(
-            {"name": cls.company_b.name, "is_company": True}
-        )
+        cls.partner_company_b = cls.company_b.partner_id
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
                 "name": "Child, Company B",
@@ -58,8 +53,6 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
                 "parent_id": cls.partner_company_b.id,
             }
         )
-        cls.company_b.partner_id = cls.partner_company_b
-        # cls.partner_company_b = cls.company_b.parent_id.partner_id
         cls.user_company_a = cls.env["res.users"].create(
             {
                 "name": "User A",
