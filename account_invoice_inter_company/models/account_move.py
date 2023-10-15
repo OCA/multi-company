@@ -92,7 +92,11 @@ class AccountMove(models.Model):
         supplier_invoice = self.auto_invoice_id
         if not supplier_invoice:
             supplier_invoice = self.search([("auto_invoice_id", "=", self.id)], limit=1)
-        pdf = self.env.ref("account.account_invoices")._render_qweb_pdf([self.id])[0]
+        pdf = (
+            self.env.ref("account.account_invoices")
+            .with_company(self.company_id)
+            ._render_qweb_pdf([self.id])[0]
+        )
         self.env["ir.attachment"].create(
             {
                 "name": self.name + ".pdf",
