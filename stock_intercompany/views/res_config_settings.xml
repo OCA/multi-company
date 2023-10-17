@@ -12,14 +12,47 @@
                     id="intercompany_delivery_sbox"
                 >
                     <div class="o_setting_right_pane">
-                        <label for="intercompany_in_type_id" />
+                        <span class="o_form_label">Intercompany Operations</span>
                         <span
                             class="fa fa-lg fa-building-o"
                             title="Values set here are company-specific."
                             groups="base.group_multi_company"
                         />
+
+                        <div class="text-muted">
+                            Create intercompany counterpart stock operations.
+                        </div>
+
                         <div class="content-group">
+                            <label
+                                string="Creation Mode"
+                                for="intercompany_picking_creation_mode"
+                                class="col-lg-4 o_light_label"
+                            />
+                            <field name="intercompany_picking_creation_mode" />
+                        </div>
+
+                        <div
+                            class="content-group"
+                            attrs="{'invisible': [('intercompany_picking_creation_mode', 'in', ['out', False])]}"
+                        >
+                            <label
+                                string="Reception Type"
+                                for="intercompany_in_type_id"
+                                class="col-lg-4 o_light_label"
+                            />
                             <field name="intercompany_in_type_id" />
+                        </div>
+                        <div
+                            class="content-group"
+                            attrs="{'invisible': [('intercompany_picking_creation_mode', 'in', ['in', False])]}"
+                        >
+                            <label
+                                string="Delivery Type"
+                                for="intercompany_out_type_id"
+                                class="col-lg-4 o_light_label"
+                            />
+                            <field name="intercompany_out_type_id" />
                         </div>
                     </div>
                 </div>
