@@ -4,6 +4,7 @@
 
 from odoo_test_helper import FakeModelLoader
 
+from odoo.exceptions import UserError
 from odoo.tests import common
 
 
@@ -16,10 +17,14 @@ class TestMultiCompanyAbstract(common.SavepointCase):
 
         # The fake class is imported here !! After the backup_registry
         from .multi_company_abstract_tester import MultiCompanyAbstractTester
+        from .multi_company_relation_tester import MultiCompanyRelationTester
 
-        cls.loader.update_registry((MultiCompanyAbstractTester,))
+        cls.loader.update_registry(
+            (MultiCompanyAbstractTester, MultiCompanyRelationTester)
+        )
 
         cls.test_model = cls.env["multi.company.abstract.tester"]
+        cls.test_relation_model = cls.env["multi.company.relation.tester"]
 
         cls.tester_model = cls.env["ir.model"].search(
             [("model", "=", "multi.company.abstract.tester")]
@@ -41,6 +46,9 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         cls.company_1 = cls.env.company
         cls.company_2 = cls.env["res.company"].create(
             {"name": "Test Co 2", "email": "base_multi_company@test.com"}
+        )
+        cls.company_3 = cls.env["res.company"].create(
+            {"name": "Test Co 3", "email": "base_multi_company3@test.com"}
         )
 
     @classmethod
@@ -266,3 +274,48 @@ class TestMultiCompanyAbstract(common.SavepointCase):
         tester.company_id = False
 
         self.assertFalse(tester.sudo().company_ids)
+
+    def test_check_company_relation(self):
+        relation = self.test_relation_model.create(
+            {
+                "name": "Test partner",
+                "company_id": self.company_1.id,
+            }
+        )
+        self.record_1.relation_id = relation.id
+
+        self.add_company(self.company_2)
+
+        # Having two records related, with two different
+        # companies should raise an error
+        with self.assertRaises(UserError):
+            self.record_1._check_company()
+
+        # now partner's companies is a subset of the record's companies
+        # so this should not raise an error
+        self.add_company(self.company_1)
+        self.record_1._check_company()
+        self.company_1._check_company()
+
+        # inverse of the current situation
+        self.record_1.company_ids = [(6, 0, self.company_1.ids)]
+        relation.company_ids = [(6, 0, [self.company_1.id, self.company_2.id])]
+        self.record_1._check_company()
+
+        # no company set on one of the records makes
+        # it available to everything
+        relation.company_ids = False
+        self.record_1._check_company()
+
+        relation.company_ids = [(6, 0, [self.company_1.id, self.company_2.id])]
+        self.record_1.company_ids = False
+        self.record_1._check_company()
+
+        # Test also 'company_dependent' field's behaviour
+        test_partner = self.env["res.partner"].create(
+            {"name": "Test Partner", "company_id": self.company_2.id}
+        )
+        self.record_1.partner_id = test_partner.id
+        with self.assertRaises(UserError):
+            self.record_1.with_company(self.company_1.id)._check_company()
+        self.record_1.with_company(self.company_2.id)._check_company()

@@ -10,3 +10,9 @@ class MultiCompanyAbstractTester(models.Model):
     _description = "Multi Company Abstract Tester"
 
     name = fields.Char()
+    relation_id = fields.Many2one(
+        comodel_name="multi.company.relation.tester", check_company=True
+    )
+    partner_id = fields.Many2one(
+        comodel_name="res.partner", check_company=True, company_dependent=True
+    )

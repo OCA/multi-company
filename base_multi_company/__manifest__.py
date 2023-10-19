@@ -14,4 +14,5 @@
     "development_status": "Production/Stable",
     "maintainers": ["pedrobaeza"],
     "external_dependencies": {"python": ["odoo-test-helper"]},
+    "post_load": "post_load",
 }
