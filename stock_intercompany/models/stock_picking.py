@@ -83,7 +83,7 @@ class StockPicking(models.Model):
     ):
         """Prepare the values to create the counterpart picking"""
         vals = {
-            "partner_id": self.env.user.company_id.partner_id.id,
+            "partner_id": self.company_id.partner_id.id,
             "company_id": company.id,
             "picking_type_id": intercompany_type.id,
             "state": "draft",
@@ -132,6 +132,21 @@ class StockPicking(models.Model):
 
         for picking, counterpart in counterparts:
             picking._finalize_counterpart_picking(counterpart)
+
+        return rv
+
+    def action_cancel(self):
+        """
+        Override to cancel counterpart pickings when the initial picking is
+        cancelled.
+        """
+        rv = super(StockPicking, self).action_cancel()
+        if not rv:
+            return rv
+
+        # Cancel counterpart pickings
+        for picking in self:
+            picking.intercompany_child_ids.action_cancel()
 
         return rv
 

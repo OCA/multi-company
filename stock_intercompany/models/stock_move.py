@@ -9,8 +9,7 @@ class StockMove(models.Model):
         Override to create counterpart pickings after moves are assigned.
         """
         res = super()._action_assign()
-
-        counterparts = self.mapped("picking_id")._create_counterpart_pickings("out")
+        counterparts = self.picking_id._create_counterpart_pickings("out")
 
         for picking, counterpart in counterparts:
             picking._finalize_counterpart_picking(counterpart)

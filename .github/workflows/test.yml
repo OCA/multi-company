@@ -50,10 +50,17 @@ jobs:
             name: test with OCB
             makepot: "true"
           - container: ghcr.io/oca/oca-ci/py3.6-odoo14.0:latest
-            exclude: "product_tax_multicompany_default,stock_intercompany"
+            include: "purchase_sale_inter_company_stock_intercompany"
             name: test with Odoo
           - container: ghcr.io/oca/oca-ci/py3.6-ocb14.0:latest
-            exclude: "product_tax_multicompany_default,stock_intercompany"
+            include: "purchase_sale_inter_company_stock_intercompany"
+            name: test with OCB
+            makepot: "true"
+          - container: ghcr.io/oca/oca-ci/py3.6-odoo14.0:latest
+            exclude: "product_tax_multicompany_default,stock_intercompany,purchase_sale_inter_company_stock_intercompany"
+            name: test with Odoo
+          - container: ghcr.io/oca/oca-ci/py3.6-ocb14.0:latest
+            exclude: "product_tax_multicompany_default,stock_intercompany,purchase_sale_inter_company_stock_intercompany"
             name: test with OCB
             makepot: "true"
     services:
@@ -84,5 +91,9 @@ jobs:
         run: oca_run_tests
       - uses: codecov/codecov-action@v1
       - name: Update .pot files
-        run: oca_export_and_push_pot https://x-access-token:${{ secrets.GIT_PUSH_TOKEN }}@github.com/${{ github.repository }}
-        if: ${{ matrix.makepot == 'true' && github.event_name == 'push' && github.repository_owner == 'OCA' }}
+        run:
+          oca_export_and_push_pot https://x-access-token:${{ secrets.GIT_PUSH_TOKEN
+          }}@github.com/${{ github.repository }}
+        if:
+          ${{ matrix.makepot == 'true' && github.event_name == 'push' &&
+          github.repository_owner == 'OCA' }}
