@@ -193,6 +193,27 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
                           self.sale_company_b.order_line.product_uom_qty)
         self.assertEquals(purchases.notes, 'Test sale note')
 
+    def test_confirm_several_picking(self):
+        """
+        Ensure that confirming several picking is not broken
+        """
+        self.product_consultant.type = 'consu'
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        purchase_company_a2 = self.purchase_company_a.sudo().copy()
+        purchase_company_a2.sudo(self.user_a).button_approve()
+        sale_1 = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id),
+        ])
+        sale_2 = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', purchase_company_a2.id),
+        ])
+        pickings = sale_1.picking_ids | sale_2.picking_ids
+        for move in pickings.mapped("move_lines"):
+            move.quantity_done = move.product_uom_qty
+        for picking in pickings:
+            picking.button_validate()
+        self.assertEqual(pickings.mapped("state"), ["done", "done"])
+
     def test_sync_picking_same_product_multiple_lines(self):
         """
         Picking synchronization should work even when there

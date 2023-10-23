@@ -35,21 +35,18 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         res = super().button_validate()
-        company_obj_sudo = self.env["res.company"].sudo()
-        is_intercompany = company_obj_sudo.search(
-            [("partner_id", "=", self.partner_id.id)]
-        ) or company_obj_sudo.search(
-            [("partner_id", "=", self.partner_id.parent_id.id)]
-        )
-        if is_intercompany and self.company_id.sync_picking and self.state == "done" \
-                and self.picking_type_code == "outgoing":
-            sale_order = self.sale_id
-            dest_company = sale_order.partner_id.ref_company_ids
-            for rec in self:
-                if rec.intercompany_picking_id:
-                    rec._sync_receipt_with_delivery(
+        for record in self.sudo():
+            dest_company = record.partner_id.commercial_partner_id.ref_company_ids
+            if (
+                dest_company
+                and dest_company.sync_picking
+                and record.state == "done"
+                and record.picking_type_code == "outgoing"
+            ):
+                if record.intercompany_picking_id:
+                    record._sync_receipt_with_delivery(
                         dest_company,
-                        sale_order,
+                        record.sale_id,
                     )
         return res
 
