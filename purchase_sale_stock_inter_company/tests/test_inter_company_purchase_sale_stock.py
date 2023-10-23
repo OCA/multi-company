@@ -207,6 +207,24 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertTrue(len(sale.picking_ids) > 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
     
+    def test_confirm_several_picking(self):
+        """
+        Ensure that confirming several picking is not broken
+        """
+        purchase_1 = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        purchase_2 = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        sale_1 = self._approve_po(purchase_1)
+        sale_2 = self._approve_po(purchase_2)
+        pickings = sale_1.picking_ids | sale_2.picking_ids
+        for move in pickings.move_lines:
+            move.quantity_done = move.product_uom_qty
+        pickings.button_validate()
+        self.assertEqual(pickings.mapped("state"), ["done", "done"])
+    
     def test_sync_picking_lot(self):
         """
         Test that the lot is synchronized on the moves
