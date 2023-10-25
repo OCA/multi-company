@@ -7,7 +7,7 @@
 {
     "name": "Inter Company Invoices",
     "summary": "Intercompany invoice rules",
-    "version": "16.0.1.0.1",
+    "version": "16.0.1.0.2",
     "category": "Accounting & Finance",
     "website": "https://github.com/OCA/multi-company",
     "author": "Odoo SA, Akretion, Odoo Community Association (OCA)",
