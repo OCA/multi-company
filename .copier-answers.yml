@@ -1,8 +1,7 @@
 # Do NOT update manually; changes here will be overwritten by Copier
-_commit: v1.17.1
+_commit: v1.17.2
 _src_path: gh:oca/oca-addons-repo-template
 ci: GitHub
-dependency_installation_mode: PIP
 generate_requirements_txt: true
 github_check_license: true
 github_ci_extra_env: {}
@@ -21,6 +20,4 @@ repo_description: Addons for the management of multi company instances as well a
 repo_name: Multi company modules
 repo_slug: multi-company
 repo_website: https://github.com/OCA/multi-company
-travis_apt_packages: []
-travis_apt_sources: []
 
