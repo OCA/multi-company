@@ -22,7 +22,7 @@ Available addons
 addon | version | maintainers | summary
 --- | --- | --- | ---
 [account_invoice_consolidated](account_invoice_consolidated/) | 14.0.1.0.4 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![swapnesh-serpentcs](https://github.com/swapnesh-serpentcs.png?size=30px)](https://github.com/swapnesh-serpentcs) | Consolidate your invoices across companies
-[account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.4.0 |  | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 14.0.1.4.1 |  | Intercompany invoice rules
 [account_invoice_inter_company_queued](account_invoice_inter_company_queued/) | 14.0.1.0.1 |  | Generate invoices using jobs
 [account_invoice_inter_company_sale](account_invoice_inter_company_sale/) | 14.0.1.0.0 |  | Show sale related fields
 [account_move_change_company](account_move_change_company/) | 14.0.1.0.2 |  | Allow to change company of account moves
