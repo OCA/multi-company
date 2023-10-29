@@ -25,6 +25,7 @@ setuptools.setup(
         'odoo12-addon-mail_template_multi_company',
         'odoo12-addon-partner_multi_company',
         'odoo12-addon-pos_restaurant_multi_company',
+        'odoo12-addon-product_category_company_favorite',
         'odoo12-addon-product_intercompany_account',
         'odoo12-addon-product_multi_company',
         'odoo12-addon-product_tax_multicompany_default',

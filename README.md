@@ -38,6 +38,7 @@ addon | version | maintainers | summary
 [mail_template_multi_company](mail_template_multi_company/) | 12.0.1.0.1 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [partner_multi_company](partner_multi_company/) | 12.0.2.0.1 |  | Select individually the partner visibility on each company
 [pos_restaurant_multi_company](pos_restaurant_multi_company/) | 12.0.1.0.0 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | This module adds support for multi company on PoS Restaurant.
+[product_category_company_favorite](product_category_company_favorite/) | 12.0.1.0.1 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | Possilibity to set favorite product categories per company
 [product_intercompany_account](product_intercompany_account/) | 12.0.1.0.4 |  | Change the income and COGS accounts in intercompany transactions
 [product_multi_company](product_multi_company/) | 12.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 12.0.1.0.1 |  | Product Tax Multi Company Default
