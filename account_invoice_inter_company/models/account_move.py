@@ -64,7 +64,12 @@ class AccountMove(models.Model):
                 try:
                     line.sudo(False).product_id.product_tmpl_id.with_user(
                         dest_user
-                    ).check_access_rule("read")
+                    ).with_context(
+                        force_company=dest_company.id,
+                        allowed_company_ids=dest_company.ids,
+                    ).check_access_rule(
+                        "read"
+                    )
                 except AccessError:
                     raise UserError(
                         _(
