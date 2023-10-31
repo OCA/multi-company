@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[account_invoice_inter_company](account_invoice_inter_company/) | 13.0.2.1.2 |  | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 13.0.2.1.3 |  | Intercompany invoice rules
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 13.0.1.0.4 |  | This module adds a wizard to create companies easily
 [base_multi_company](base_multi_company/) | 13.0.1.0.3 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
 [company_dependent_attribute](company_dependent_attribute/) | 13.0.1.0.0 |  | Display company dependent attribute on fields
