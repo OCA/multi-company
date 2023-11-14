@@ -597,6 +597,8 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.assertEqual(len(bill_a_pdf), 1)
         self.assertEqual(bill_a_pdf.name, invoice_company_b.name + ".pdf")
+        invoice_company_b.button_cancel()
+        invoice_company_b.action_post()
 
     def _confirm_invoice_with_product(self):
         # Confirm the invoice of company A

@@ -82,12 +82,12 @@ class AccountMove(models.Model):
             # nor the invoices that were already validated in the past
             dest_company = src_invoice._find_company_from_invoice_partner()
             if dest_company:
+                intercompany_user = dest_company.intercompany_invoice_user_id
+                if intercompany_user:
+                    src_invoice = src_invoice.with_user(intercompany_user).sudo()
+                else:
+                    src_invoice = src_invoice.sudo()
                 if not src_invoice.auto_generated:
-                    intercompany_user = dest_company.intercompany_invoice_user_id
-                    if intercompany_user:
-                        src_invoice = src_invoice.with_user(intercompany_user).sudo()
-                    else:
-                        src_invoice = src_invoice.sudo()
                     src_invoice.with_company(dest_company.id).with_context(
                         skip_check_amount_difference=True
                     )._inter_company_create_invoice(dest_company)
