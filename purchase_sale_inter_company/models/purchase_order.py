@@ -43,18 +43,25 @@ class PurchaseOrder(models.Model):
             dest_company = (
                 po_partner.ref_company_ids or po_partner.parent_id.ref_company_ids
             )
+            if len(dest_company) > 1:
+                raise UserError(
+                    _("You can generate sale order only for one vendor company at once")
+                )
             intercompany_user = dest_company.intercompany_sale_user_id
             if not intercompany_user:
                 intercompany_user = self.env.user
             if dest_company and dest_company.so_from_po:
                 # one sale order is expected to be created when confirm purchase order
                 # so we check for existing sale order with auto_purchase_order_id set
+                # and confirm that sale order if found (it's possible it can be draft)
                 # we don't need extra sale orders if purchase order was confirmed again
                 auto_sale_order_id = (
                     self.env["sale.order"]
                     .sudo()
                     .search([("auto_purchase_order_id", "=", purchase_order.id)])
                 )
+                # standard OCA flow raises an error if we try to confirm purchase order
+                # with already generated auto sale order, comment it for now
                 # if len(auto_sale_order_id) > 1:
                 #     raise UserError(
                 #         _(
@@ -63,10 +70,11 @@ class PurchaseOrder(models.Model):
                 #         )
                 #         % ",".join([order.display_name for order in auto_sale_order_id])
                 #     )
-                if auto_sale_order_id and (
-                    auto_sale_order_id.state not in ("sale", "done")
-                ):
-                    auto_sale_order_id.with_user(
+                if auto_sale_order_id:
+                    not_confirmed_orders = auto_sale_order_id.filtered(
+                        lambda order: order.state not in ("sale", "done")
+                    )
+                    not_confirmed_orders.with_user(
                         intercompany_user.id
                     ).sudo().action_confirm()
                 else:
