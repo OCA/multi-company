@@ -1,4 +1,5 @@
 # Copyright 2017 LasLabs Inc.
+# Copyright 2023 Tecnativa - Pedro M. Baeza
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 from odoo import api, fields, models
@@ -22,12 +23,19 @@ class MultiCompanyAbstract(models.AbstractModel):
     )
 
     @api.depends("company_ids")
-    @api.depends_context("company")
+    @api.depends_context("company", "_check_company_source_id")
     def _compute_company_id(self):
         for record in self:
-            # Give the priority of the current company of the user to avoid
-            # multi company incompatibility errors.
-            company_id = self.env.company.id
+            # Set this priority computing the company (if included in the allowed ones)
+            # for avoiding multi company incompatibility errors:
+            # - If this call is done from method _check_company, the company of the
+            #   record to be compared.
+            # - Otherwise, current company of the user.
+            company_id = (
+                self.env.context.get("_check_company_source_id")
+                or self.env.context.get("force_company")
+                or self.env.company.id
+            )
             if company_id in record.company_ids.ids:
                 record.company_id = company_id
             else:
