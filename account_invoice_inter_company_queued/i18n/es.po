@@ -6,58 +6,60 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-11-29 23:34+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model,name:account_invoice_inter_company_queued.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
+msgstr "Ajustes de Configuración"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_account_move__display_name
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_account_move__id
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: account_invoice_inter_company_queued
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company_queued.res_config_settings_view_form
 msgid "Invoices creation using queued jobs"
-msgstr ""
+msgstr "Creación de facturas utilizando trabajos en cola"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model,name:account_invoice_inter_company_queued.model_account_move
 msgid "Journal Entry"
-msgstr ""
+msgstr "Entrada Diaria"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_account_move____last_update
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última Modificación el"
 
 #. module: account_invoice_inter_company_queued
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company_queued.res_config_settings_view_form
 msgid "Queued"
-msgstr ""
+msgstr "En cola"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,field_description:account_invoice_inter_company_queued.field_res_config_settings__module_account_invoice_inter_company_queued
 msgid "Queued Invoices Creation"
-msgstr ""
+msgstr "Creación de Facturas Utilizando trabajos en cola"
 
 #. module: account_invoice_inter_company_queued
 #: model:ir.model.fields,help:account_invoice_inter_company_queued.field_res_config_settings__module_account_invoice_inter_company_queued
 msgid "This will install account_invoice_inter_company_queued"
-msgstr ""
+msgstr "Esto instalará account_invoice_inter_company_queued"
