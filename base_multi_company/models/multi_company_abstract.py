@@ -39,7 +39,7 @@ class MultiCompanyAbstract(models.AbstractModel):
                 record.no_company_ids = True
 
     @api.depends("company_ids")
-    @api.depends_context("company", "_check_company_source")
+    @api.depends_context("company", "_check_company_source_id")
     def _compute_company_id(self):
         for record in self:
             # Set this priority computing the company (if included in the allowed ones)
