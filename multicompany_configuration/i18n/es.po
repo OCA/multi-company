@@ -6,18 +6,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-11-29 20:33+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_multicompany_abstract
 msgid "Abstract model that allows multicompany easy configuration"
-msgstr ""
+msgstr "Modelo abstracto que permite una fácil configuración multicompañía"
 
 #. module: multicompany_configuration
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_category_multicompany_form_view
@@ -25,7 +27,7 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_template_multicompany_form_view
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.res_partner_form_view
 msgid "Apply"
-msgstr ""
+msgstr "Aplicar"
 
 #. module: multicompany_configuration
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_category_multicompany_form_view
@@ -33,12 +35,12 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_template_multicompany_form_view
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.res_partner_form_view
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_res_partner
 msgid "Contact"
-msgstr ""
+msgstr "Contacto"
 
 #. module: multicompany_configuration
 #: model:ir.model.fields,field_description:multicompany_configuration.field_multicompany_abstract__display_name
@@ -47,7 +49,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:multicompany_configuration.field_product_template__display_name
 #: model:ir.model.fields,field_description:multicompany_configuration.field_res_partner__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: multicompany_configuration
 #: model:ir.model.fields,field_description:multicompany_configuration.field_multicompany_abstract__id
@@ -56,7 +58,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:multicompany_configuration.field_product_template__id
 #: model:ir.model.fields,field_description:multicompany_configuration.field_res_partner__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: multicompany_configuration
 #: model:ir.model.fields,field_description:multicompany_configuration.field_multicompany_abstract____last_update
@@ -65,7 +67,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:multicompany_configuration.field_product_template____last_update
 #: model:ir.model.fields,field_description:multicompany_configuration.field_res_partner____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Modificado por Última vez el"
 
 #. module: multicompany_configuration
 #: model:ir.model.fields,field_description:multicompany_configuration.field_multicompany_abstract__multicompany_data
@@ -79,39 +81,39 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_template_only_form_view
 #: model_terms:ir.ui.view,arch_db:multicompany_configuration.view_partner_form
 msgid "Multicompany Data"
-msgstr ""
+msgstr "Datos Multicompañía"
 
 #. module: multicompany_configuration
 #: model:ir.actions.act_window,name:multicompany_configuration.res_partner_form_multicompany_action
 msgid "Multicompany data"
-msgstr ""
+msgstr "Datos multicompañía"
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_product_product
 msgid "Product"
-msgstr ""
+msgstr "Producto"
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_product_category
 msgid "Product Category"
-msgstr ""
+msgstr "Categoría de Producto"
 
 #. module: multicompany_configuration
 #: model:ir.actions.act_window,name:multicompany_configuration.product_template_form_multicompany_action
 msgid "Product Template"
-msgstr ""
+msgstr "Plantilla del Producto"
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_product_template
 msgid "Product Template (Multi-Company)"
-msgstr ""
+msgstr "Plantilla de producto (Multi-Compañía)"
 
 #. module: multicompany_configuration
 #: model:ir.actions.act_window,name:multicompany_configuration.product_category_form_multicompany_action
 msgid "Product category"
-msgstr ""
+msgstr "Categoría de producto"
 
 #. module: multicompany_configuration
 #: model:ir.actions.act_window,name:multicompany_configuration.product_product_form_multicompany_action
 msgid "Product product"
-msgstr ""
+msgstr "Producto producto"
