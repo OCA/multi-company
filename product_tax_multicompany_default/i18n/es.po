@@ -9,21 +9,21 @@ msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-12-04 19:36+0100\n"
-"PO-Revision-Date: 2021-03-09 10:45+0000\n"
-"Last-Translator: Ana Suárez <ana.suarez@qubiq.es>\n"
+"PO-Revision-Date: 2023-11-29 23:34+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: Spanish (https://www.transifex.com/oca/teams/23907/es/)\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.3.2\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__display_name
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product__divergent_company_taxes
@@ -32,24 +32,26 @@ msgid ""
 "Does this product have divergent cross-company taxes? (Only for multi-"
 "company products)"
 msgstr ""
+"¿Este producto tiene impuestos divergentes entre compañías? (Sólo para "
+"productos multi-compañía)"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__divergent_company_taxes
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__divergent_company_taxes
 msgid "Has divergent cross-company taxes"
-msgstr ""
+msgstr "Tiene impuestos divergentes entre compañías"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__id
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product____last_update
 #: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modificación el"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_product
@@ -59,7 +61,7 @@ msgstr "Producto"
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_template
 msgid "Product Template"
-msgstr ""
+msgstr "Plantilla de Producto"
 
 #. module: product_tax_multicompany_default
 #: model:ir.actions.server,name:product_tax_multicompany_default.action_set_multicompany_taxes
