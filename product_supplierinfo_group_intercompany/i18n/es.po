@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2023-11-29 20:33+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_intercompany_supplier_mixin__display_name
@@ -20,7 +22,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo__display_name
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Mostrar Nombre"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,help:product_supplierinfo_group_intercompany.field_product_pricelist__supplier_sequence
@@ -29,6 +31,9 @@ msgid ""
 "supplier in first position, use a big positif value if you want to be the "
 "last"
 msgstr ""
+"Fuerce la secuencia del proveedor, use un valor negativo si quiere tener "
+"este proveedor en la primera posición, use un valor positivo grande si "
+"quiere ser el último"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_intercompany_supplier_mixin__id
@@ -36,18 +41,18 @@ msgstr ""
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo__id
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo__intercompany_pricelist_id
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group__intercompany_pricelist_id
 msgid "Intercompany Pricelist"
-msgstr ""
+msgstr "Lista de Precios Intercompañía"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_intercompany_supplier_mixin
 msgid "Intercompany product mixin"
-msgstr ""
+msgstr "Combinación de productos entre compañías"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_intercompany_supplier_mixin____last_update
@@ -55,34 +60,36 @@ msgstr ""
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo____last_update
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_supplierinfo_group____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Última Modificación el"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_pricelist
 msgid "Pricelist"
-msgstr ""
+msgstr "Lista de Precios"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.constraint,message:product_supplierinfo_group_intercompany.constraint_product_supplierinfo_group_intercopany_pricelist_uniq
 msgid "Product can have only one group per intercompany pricelist"
 msgstr ""
+"El producto solo puede tener un grupo por lista de precios de empresas "
+"vinculadas"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist__supplier_group_ids
 msgid "Supplier Group"
-msgstr ""
+msgstr "Grupo de proveedores"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_supplierinfo
 msgid "Supplier Pricelist"
-msgstr ""
+msgstr "Lista de precios de Proveedor"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model.fields,field_description:product_supplierinfo_group_intercompany.field_product_pricelist__supplier_sequence
 msgid "Supplier Sequence"
-msgstr ""
+msgstr "Secuencia de Proveedores"
 
 #. module: product_supplierinfo_group_intercompany
 #: model:ir.model,name:product_supplierinfo_group_intercompany.model_product_supplierinfo_group
 msgid "Supplierinfo group"
-msgstr ""
+msgstr "Grupo de información del proveedor"
