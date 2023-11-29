@@ -12,6 +12,7 @@ class Base(models.AbstractModel):
         for being taking into account when computing the company of many2one's
         relations that links with our multi-company models.
         """
+        company_source_id = False
         if self._name == "res.company":
             company_source_id = self.id
         elif "company_id" in self._fields:
