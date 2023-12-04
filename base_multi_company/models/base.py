@@ -11,11 +11,15 @@ class Base(models.AbstractModel):
         """Inject as context the company of the record that is going to be compared
         for being taking into account when computing the company of many2one's
         relations that links with our multi-company models.
+
+        We have to serialize the call to super, but it doesn't matter in terms of
+        performance, as super also makes a for loop in the records.
         """
-        company_source_id = False
-        if self._name == "res.company":
-            company_source_id = self.id
-        elif "company_id" in self._fields:
-            company_source_id = self.company_id.id
-        self = self.with_context(_check_company_source_id=company_source_id)
-        return super()._check_company(fnames=fnames)
+        for record in self:
+            company_source_id = False
+            if record._name == "res.company":
+                company_source_id = self.id
+            elif "company_id" in record._fields:
+                company_source_id = record.company_id.id
+            self = self.with_context(_check_company_source_id=company_source_id)
+            super()._check_company(fnames=fnames)
