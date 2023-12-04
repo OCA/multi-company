@@ -106,6 +106,20 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         # Result is [(<id>, "test")]
         self.assertEqual(name_result[0][0], self.record_1.id)
 
+        result = self.test_model.search_read(
+            [("company_id", "in", [False, self.company_2.id])], ["name"]
+        )
+        self.assertEqual([{"id": self.record_1.id, "name": self.record_1.name}], result)
+
+    def test_patch_company_domain(self):
+        new_domain = self.test_model._patch_company_domain(
+            [["company_id", "in", [False, self.company_2.id]]]
+        )
+        self.assertEqual(
+            ["|", ["company_id", "=", False], ["company_id", "=", self.company_2.id]],
+            new_domain,
+        )
+
     def test_compute_company_id2(self):
         """
         Test the computation of company_id for a multi_company_abstract.
