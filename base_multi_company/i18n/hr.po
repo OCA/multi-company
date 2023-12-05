@@ -21,6 +21,11 @@ msgstr ""
 "X-Generator: Weblate 3.8\n"
 
 #. module: base_multi_company
+#: model:ir.model,name:base_multi_company.model_base
+msgid "Base"
+msgstr ""
+
+#. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
 msgid "Companies"
 msgstr "Tvrtke"
@@ -31,24 +36,18 @@ msgid "Company"
 msgstr "Tvrtka"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
-msgid "Display Name"
-msgstr "Naziv za prikaz"
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
-msgid "ID"
-msgstr "ID"
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
-msgid "Last Modified on"
-msgstr "Zadnje modificirano"
-
-#. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
 msgstr "Multi Tvrtka - Apstraktno"
+
+#~ msgid "Display Name"
+#~ msgstr "Naziv za prikaz"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Zadnje modificirano"
 
 #~ msgid "Name"
 #~ msgstr "Naziv"
