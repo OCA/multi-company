@@ -17,6 +17,11 @@ msgstr ""
 "X-Generator: Weblate 3.10\n"
 
 #. module: base_multi_company
+#: model:ir.model,name:base_multi_company.model_base
+msgid "Base"
+msgstr ""
+
+#. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__company_ids
 msgid "Companies"
 msgstr "Compañías"
@@ -27,21 +32,15 @@ msgid "Company"
 msgstr "Compañía"
 
 #. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
-msgid "Display Name"
-msgstr "Mostrar Nombre"
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
-msgid "ID"
-msgstr "ID"
-
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract____last_update
-msgid "Last Modified on"
-msgstr "Última Modificación el"
-
-#. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
 msgstr "Resumen de Multi-Compañía"
+
+#~ msgid "Display Name"
+#~ msgstr "Mostrar Nombre"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Última Modificación el"
