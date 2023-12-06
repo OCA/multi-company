@@ -192,3 +192,35 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         self.assertEquals(purchases.order_line.product_qty,
                           self.sale_company_b.order_line.product_uom_qty)
         self.assertEquals(purchases.notes, 'Test sale note')
+
+    def test_sync_picking_same_product_multiple_lines(self):
+        """
+        Picking synchronization should work even when there
+        are multiple lines of the same product in the PO/SO/picking
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        self.product_consultant.type = 'consu'
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        self.purchase_company_a.order_line += self.purchase_company_a.order_line.copy(
+            {"product_qty": 2})
+        sale = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id),
+        ])
+        sale.action_confirm()
+
+        # validate the SO picking
+        po_picking_id = self.purchase_company_a.picking_ids[0]
+        so_picking_id = sale.picking_ids[0]
+
+        # Set quantities done on the picking and validate
+        for move in so_picking_id.move_lines:
+            move.quantity_done = move.product_uom_qty
+        so_picking_id.button_validate()
+
+        self.assertEqual(
+            po_picking_id.mapped("move_lines")[0].quantity_done,
+            so_picking_id.mapped("move_lines")[0].quantity_done,
+            msg="The quantities are not the same in both pickings.",
+        )
