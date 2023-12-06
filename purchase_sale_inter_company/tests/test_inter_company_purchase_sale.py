@@ -131,18 +131,19 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
 
     @classmethod
-    def _create_serial_and_quant(cls, product, name, company):
+    def _create_serial_and_quant(cls, product, name, company, quant=True):
         lot = cls.lot_obj.create(
             {"product_id": product.id, "name": name, "company_id": company.id}
         )
-        cls.quant_obj.create(
-            {
-                "product_id": product.id,
-                "location_id": cls.warehouse_a.lot_stock_id.id,
-                "quantity": 1,
-                "lot_id": lot.id,
-            }
-        )
+        if quant:
+            cls.quant_obj.create(
+                {
+                    "product_id": product.id,
+                    "location_id": cls.warehouse_a.lot_stock_id.id,
+                    "quantity": 1,
+                    "lot_id": lot.id,
+                }
+            )
         return lot
 
     def _approve_po(self, purchase_id):
@@ -319,7 +320,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         """
         # lot 3 already exists in company_a
         serial_3_company_a = self._create_serial_and_quant(
-            self.stockable_product_serial, "333", self.company_a
+            self.stockable_product_serial,
+            "333",
+            self.company_a,
+            quant=False,
         )
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
@@ -396,4 +400,34 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             serial_3_company_a,
             po_lots,
             msg="Serial 333 already existed, a new one shouldn't have been created",
+        )
+
+    def test_sync_picking_same_product_multiple_lines(self):
+        """
+        Picking synchronization should work even when there
+        are multiple lines of the same product in the PO/SO/picking
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        purchase.order_line += purchase.order_line.copy({"product_qty": 2})
+        sale = self._approve_po(purchase)
+        sale.action_confirm()
+
+        # validate the SO picking
+        po_picking_id = purchase.picking_ids
+        so_picking_id = sale.picking_ids
+
+        # Set quantities done on the picking and validate
+        for move in so_picking_id.move_lines:
+            move.quantity_done = move.product_uom_qty
+        so_picking_id.button_validate()
+
+        self.assertEqual(
+            po_picking_id.mapped("move_lines.quantity_done"),
+            so_picking_id.mapped("move_lines.quantity_done"),
+            msg="The quantities are not the same in both pickings.",
         )
