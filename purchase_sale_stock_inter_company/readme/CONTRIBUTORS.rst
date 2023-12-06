@@ -9,3 +9,9 @@
 * `Camptocamp <https://www.camptocamp.com>`:
 
   * Maksym Yankin <maksym.yankin@camptocamp.com>
+* `PyTech SRL <info@pytech.it>`_:
+
+  * Alessandro Uffreduzzi <alessandro.uffreduzzi@pytech.it>
+* Ooops404 <info@ooops404.com>
+
+  * Francesco Foresti <francesco.foresti@ooops404.com>
