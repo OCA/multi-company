@@ -33,6 +33,9 @@ This module considers the propagation of the warehouse into the sale orders.
 This module is a glue module and is auto installed if `purchase_sale_inter_company`, `sale_stock` and `purchase_stock` modules are installed.
 Full purpose description can be found in `purchase_sale_inter_company`.
 
+When Company A sends a product tracked by lot or serial number, a new lot/serial number with the same name is created in Company B to match it, if one doesn't already exist.
+
+
 **Table of contents**
 
 .. contents::
@@ -80,6 +83,12 @@ Contributors
 * `Camptocamp <https://www.camptocamp.com>`:
 
   * Maksym Yankin <maksym.yankin@camptocamp.com>
+* `PyTech SRL <info@pytech.it>`_:
+
+  * Alessandro Uffreduzzi <alessandro.uffreduzzi@pytech.it>
+* Ooops404 <info@ooops404.com>
+
+  * Francesco Foresti <francesco.foresti@ooops404.com>
 
 Maintainers
 ~~~~~~~~~~~

@@ -71,7 +71,46 @@ class StockPicking(models.Model):
                 continue
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
             po_picks |= pick._set_intercompany_picking_qty(purchase)
-        # Transfer dropship pickings
-        for po_pick in po_picks.sudo():
-            po_pick.with_company(po_pick.company_id.id)._action_done()
+            for move in pick.move_ids:
+                move_lines = move.move_line_ids
+                po_move_lines = move.sale_line_id.auto_purchase_line_id.move_ids.mapped(
+                    "move_line_ids"
+                )
+                if not len(move_lines) == len(po_move_lines):
+                    raise UserError(
+                        _(
+                            "Mismatch between move lines with the "
+                            "corresponding  PO %(po)s for assigning "
+                            "quantities and lots from %(pick_name)s for product %(product)s"
+                        )
+                        % {
+                            "po": purchase.name,
+                            "pick_name": pick.name,
+                            "product": move.product_id.name,
+                        }
+                    )
+                # check and assign lots here
+                for ml, po_ml in zip(move_lines, po_move_lines):
+                    lot_id = ml.lot_id
+                    if not lot_id:
+                        continue
+                    # search if the same lot exists in destination company
+                    dest_lot_id = (
+                        self.env["stock.lot"]
+                        .sudo()
+                        .search(
+                            [
+                                ("product_id", "=", lot_id.product_id.id),
+                                ("name", "=", lot_id.name),
+                                ("company_id", "=", po_ml.company_id.id),
+                            ],
+                            limit=1,
+                        )
+                    )
+                    if not dest_lot_id:
+                        # if it doesn't exist, create it by copying from original company
+                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
+                    po_ml.lot_id = dest_lot_id
+            for po_pick in po_picks.sudo():
+                po_pick.with_company(po_pick.company_id.id)._action_done()
         return super()._action_done()
