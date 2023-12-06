@@ -10,6 +10,7 @@
     "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Odoo SA, Akretion, Tecnativa, Odoo Community Association (OCA)",
+    "maintainers": ["aleuffre", "renda-dev"],
     "license": "AGPL-3",
     "installable": True,
     "depends": [

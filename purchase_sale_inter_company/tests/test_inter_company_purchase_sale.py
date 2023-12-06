@@ -53,6 +53,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.lot_obj = cls.env["stock.production.lot"]
+        cls.quant_obj = cls.env["stock.quant"]
         # no job: avoid issue if account_invoice_inter_company_queued is installed
         cls.env = cls.env(context={"test_queue_job_no_delay": 1})
 
@@ -61,9 +63,17 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.consumable_product = cls.env["product.product"].create(
             {
                 "name": "Consumable Product",
-                "type": "product",
+                "type": "consu",
                 "categ_id": cls.env.ref("product.product_category_all").id,
                 "qty_available": 100,
+            }
+        )
+        cls.stockable_product_serial = cls.env["product.product"].create(
+            {
+                "name": "Stockable Product Tracked by Serial",
+                "type": "product",
+                "tracking": "serial",
+                "categ_id": cls.env.ref("product.product_category_all").id,
             }
         )
 
@@ -108,6 +118,32 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.env["product.pricelist"].sudo().search([]).write(
             {"currency_id": cls.env.ref("base.USD").id}
         )
+
+        # Add quants for product tracked by serial to supplier
+        cls.serial_1 = cls._create_serial_and_quant(
+            cls.stockable_product_serial, "111", cls.company_b
+        )
+        cls.serial_2 = cls._create_serial_and_quant(
+            cls.stockable_product_serial, "222", cls.company_b
+        )
+        cls.serial_3 = cls._create_serial_and_quant(
+            cls.stockable_product_serial, "333", cls.company_b
+        )
+
+    @classmethod
+    def _create_serial_and_quant(cls, product, name, company):
+        lot = cls.lot_obj.create(
+            {"product_id": product.id, "name": name, "company_id": company.id}
+        )
+        cls.quant_obj.create(
+            {
+                "product_id": product.id,
+                "location_id": cls.warehouse_a.lot_stock_id.id,
+                "quantity": 1,
+                "lot_id": lot.id,
+            }
+        )
+        return lot
 
     def _approve_po(self, purchase_id):
         """Confirm the PO in company A and return the related sale of Company B"""
@@ -275,3 +311,89 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # A backorder should have been made for both
         self.assertTrue(len(sale.picking_ids) > 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
+
+    def test_sync_picking_lot(self):
+        """
+        Test that the lot is synchronized on the moves
+        by searching or creating a new lot in the company of destination
+        """
+        # lot 3 already exists in company_a
+        serial_3_company_a = self._create_serial_and_quant(
+            self.stockable_product_serial, "333", self.company_a
+        )
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.stockable_product_serial
+        )
+        sale = self._approve_po(purchase)
+
+        # validate the SO picking
+        po_picking_id = purchase.picking_ids
+        so_picking_id = sale.picking_ids
+
+        so_move = so_picking_id.move_lines
+        so_move.move_line_ids = [
+            (
+                0,
+                0,
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "qty_done": 1,
+                    "lot_id": self.serial_1.id,
+                    "picking_id": so_picking_id.id,
+                },
+            ),
+            (
+                0,
+                0,
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "qty_done": 1,
+                    "lot_id": self.serial_2.id,
+                    "picking_id": so_picking_id.id,
+                },
+            ),
+            (
+                0,
+                0,
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "qty_done": 1,
+                    "lot_id": self.serial_3.id,
+                    "picking_id": so_picking_id.id,
+                },
+            ),
+        ]
+        so_picking_id.button_validate()
+
+        so_lots = so_move.mapped("move_line_ids.lot_id")
+        po_lots = po_picking_id.mapped("move_lines.move_line_ids.lot_id")
+        self.assertEqual(
+            len(so_lots),
+            len(po_lots),
+            msg="There aren't the same number of lots on both moves",
+        )
+        self.assertNotEqual(
+            so_lots, po_lots, msg="The lots of the moves should be different objects"
+        )
+        self.assertEqual(
+            so_lots.mapped("name"),
+            po_lots.mapped("name"),
+            msg="The lots should have the same name in both moves",
+        )
+        self.assertIn(
+            serial_3_company_a,
+            po_lots,
+            msg="Serial 333 already existed, a new one shouldn't have been created",
+        )
