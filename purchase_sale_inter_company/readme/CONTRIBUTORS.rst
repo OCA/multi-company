@@ -9,5 +9,8 @@
 * Mourad EL HADJ MIMOUNE <mourad.elhadj.mimoune@akretion.com>
 * `PyTech SRL <info@pytech.it>`_:
 
-  * Alessandro Uffreduzzi
+  * Alessandro Uffreduzzi <alessandro.uffreduzzi@pytech.it>
+
 * Ooops404 <info@ooops404.com>
+
+  * Francesco Foresti <francesco.foresti@ooops404.com>

@@ -21,19 +21,42 @@ class StockPicking(models.Model):
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
             if not pick.intercompany_picking_id and purchase.picking_ids[0]:
                 pick.write({"intercompany_picking_id": purchase.picking_ids[0]})
-            for move_line in pick.move_line_ids:
-                sale_line_id = move_line.move_id.sale_line_id
-                po_move_lines = sale_line_id.auto_purchase_line_id.move_ids.mapped(
+            for move in pick.move_lines:
+                move_lines = move.move_line_ids
+                po_move_lines = move.sale_line_id.auto_purchase_line_id.move_ids.mapped(
                     "move_line_ids"
                 )
-                if not po_move_lines:
+                if not len(move_lines) == len(po_move_lines):
                     raise UserError(
                         _(
-                            "There's no corresponding line in PO %s for assigning "
-                            "qty from %s for product %s"
+                            "Mismatch between move lines with the "
+                            "corresponding  PO %s for assigning "
+                            "quantities and lots from %s for product %s"
                         )
-                        % (purchase.name, pick.name, move_line.product_id.name)
+                        % (purchase.name, pick.name, move.product_id.name)
                     )
+                # check and assign lots here
+                for ml, po_ml in zip(move_lines, po_move_lines):
+                    lot_id = ml.lot_id
+                    if not lot_id:
+                        continue
+                    # search if the same lot exists in destination company
+                    dest_lot_id = (
+                        self.env["stock.production.lot"]
+                        .sudo()
+                        .search(
+                            [
+                                ("product_id", "=", lot_id.product_id.id),
+                                ("name", "=", lot_id.name),
+                                ("company_id", "=", po_ml.company_id.id),
+                            ],
+                            limit=1,
+                        )
+                    )
+                    if not dest_lot_id:
+                        # if it doesn't exist, create it by copying from original company
+                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
+                    po_ml.lot_id = dest_lot_id
         return super()._action_done()
 
     def button_validate(self):
