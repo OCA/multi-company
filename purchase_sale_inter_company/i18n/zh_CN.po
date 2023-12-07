@@ -131,6 +131,14 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
+msgid ""
+"Mismatch between move lines with the corresponding  PO %s for assigning "
+"quantities and lots from %s for product %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
 msgid "PO does not exist or has no receipts"
 msgstr ""
 
@@ -206,14 +214,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sync_picking
 msgid "Sync the receipt with the delivery"
-msgstr ""
-
-#. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
-#, python-format
-msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product "
-"%s"
 msgstr ""
 
 #. module: purchase_sale_inter_company

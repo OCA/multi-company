@@ -141,6 +141,14 @@ msgstr "Última Modificación el"
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
+msgid ""
+"Mismatch between move lines with the corresponding  PO %s for assigning "
+"quantities and lots from %s for product %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
 msgid "PO does not exist or has no receipts"
 msgstr "La orden de compra no existe o no tiene recibos"
 
@@ -221,16 +229,6 @@ msgid "Sync the receipt with the delivery"
 msgstr "Sincronizar el recibo con la entrega"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
-#, python-format
-msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product "
-"%s"
-msgstr ""
-"No hay una línea correspondiente en el pedido de compra %s para asignar "
-"cantidad desde %s para el producto %s"
-
-#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -293,6 +291,14 @@ msgid ""
 msgstr ""
 "No puede crear pedido de venta desde pedido de compra porque la moneda de la "
 "tarifa de venta es distinta de la moneda de la tarifa de compra."
+
+#, python-format
+#~ msgid ""
+#~ "There's no corresponding line in PO %s for assigning qty from %s for "
+#~ "product %s"
+#~ msgstr ""
+#~ "No hay una línea correspondiente en el pedido de compra %s para asignar "
+#~ "cantidad desde %s para el producto %s"
 
 #~ msgid "Journal Entries"
 #~ msgstr "Asientos contables"

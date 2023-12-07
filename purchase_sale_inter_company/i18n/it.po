@@ -138,6 +138,14 @@ msgstr "Ultima modifica il"
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
+msgid ""
+"Mismatch between move lines with the corresponding  PO %s for assigning "
+"quantities and lots from %s for product %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
 msgid "PO does not exist or has no receipts"
 msgstr "Il PO non esiste o non ha ricezioni"
 
@@ -218,16 +226,6 @@ msgid "Sync the receipt with the delivery"
 msgstr "Sincronizza la ricezione con la spedizione"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
-#, python-format
-msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product "
-"%s"
-msgstr ""
-"Non c'è una riga corrisponde nell'ordine d'acquisto %s per assegnare la "
-"quantità da %s per il prodotto %s"
-
-#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -290,6 +288,14 @@ msgid ""
 msgstr ""
 "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
 "valuta del listino di vendita è diversa dalla valuta del listino d'acquisto."
+
+#, python-format
+#~ msgid ""
+#~ "There's no corresponding line in PO %s for assigning qty from %s for "
+#~ "product %s"
+#~ msgstr ""
+#~ "Non c'è una riga corrisponde nell'ordine d'acquisto %s per assegnare la "
+#~ "quantità da %s per il prodotto %s"
 
 #~ msgid "Journal Entries"
 #~ msgstr "Registrazioni contabili"
