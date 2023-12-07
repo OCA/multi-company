@@ -23,8 +23,11 @@ class StockPicking(models.Model):
                 pick.write({"intercompany_picking_id": purchase.picking_ids[0]})
             for move in pick.move_lines:
                 move_lines = move.move_line_ids
-                po_move_lines = move.sale_line_id.auto_purchase_line_id.move_ids.mapped(
-                    "move_line_ids"
+                po_move_lines = (
+                    move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                        lambda x, ic_pick=pick.intercompany_picking_id: x.picking_id
+                        == ic_pick
+                    ).mapped("move_line_ids")
                 )
                 if not len(move_lines) == len(po_move_lines):
                     raise UserError(
@@ -61,9 +64,10 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         res = super().button_validate()
-        is_intercompany = self.env["res.company"].search(
+        company_obj_sudo = self.env["res.company"].sudo()
+        is_intercompany = company_obj_sudo.search(
             [("partner_id", "=", self.partner_id.id)]
-        ) or self.env["res.company"].search(
+        ) or company_obj_sudo.search(
             [("partner_id", "=", self.partner_id.parent_id.id)]
         )
         if (
@@ -90,26 +94,23 @@ class StockPicking(models.Model):
             raise UserError(_("PO does not exist or has no receipts"))
         if self.intercompany_picking_id:
             dest_picking = self.intercompany_picking_id.with_user(intercompany_user.id)
-            for picking_line in self.move_line_ids_without_package.sorted("qty_done"):
-                dest_picking_line = (
-                    dest_picking.sudo().move_line_ids_without_package.filtered(
-                        lambda l: l.product_id.id == picking_line.product_id.id
+            for move in self.move_ids_without_package.sudo():
+                # To identify the correct move to write to,
+                # use both the SO-PO link and the intercompany_picking_id link
+                dest_move = move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                    lambda x, pick=dest_picking: x.picking_id == pick
+                )
+                for line, dest_line in zip(move.move_line_ids, dest_move.move_line_ids):
+                    # Assuming the order of move lines is the same on both moves
+                    # is risky but what would be a better option?
+                    dest_line.sudo().write(
+                        {
+                            "qty_done": line.qty_done,
+                        }
                     )
-                )
-                dest_picking_line.sudo().write(
+                dest_move.write(
                     {
-                        "qty_done": picking_line.qty_done,
-                    }
-                )
-            for picking_move in self.move_ids_without_package.sorted("quantity_done"):
-                dest_picking_move = (
-                    dest_picking.sudo().move_ids_without_package.filtered(
-                        lambda l: l.product_id.id == picking_move.product_id.id
-                    )
-                )
-                dest_picking_move.sudo().write(
-                    {
-                        "quantity_done": picking_move.quantity_done,
+                        "quantity_done": move.quantity_done,
                     }
                 )
             dest_picking.sudo().with_context(
