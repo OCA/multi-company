@@ -79,4 +79,9 @@ class TestStockIntercompanyCommon(SavepointCase):
             .sudo()
             .search([("name", "=", "Stock"), ("company_id", "=", cls.company1.id)])
         )
+        cls.stock_location2 = (
+            cls.env["stock.location"]
+            .sudo()
+            .search([("name", "=", "Stock"), ("company_id", "=", cls.company2.id)])
+        )
         cls.uom_unit = cls.env.ref("uom.product_uom_unit")

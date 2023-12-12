@@ -115,6 +115,14 @@ class TestStockIntercompany(TestStockIntercompanyCommon):
         self.assertNotEqual(counterpart_pickings, picking)
         self.assertEqual(counterpart_pickings.intercompany_parent_id, picking)
         self.assertEqual(picking.intercompany_child_ids[0], counterpart_pickings)
+        self.assertEqual(
+            counterpart_pickings.location_id,
+            self.env.ref("stock.stock_location_suppliers"),
+        )
+        self.assertEqual(
+            counterpart_pickings.location_dest_id,
+            self.stock_location2,
+        )
 
     def test_picking_creation_out(self):
         self.company2.intercompany_picking_creation_mode = "out"
@@ -170,6 +178,15 @@ class TestStockIntercompany(TestStockIntercompanyCommon):
         self.assertNotEqual(counterpart_pickings, picking)
         self.assertEqual(counterpart_pickings.intercompany_parent_id, picking)
         self.assertEqual(picking.intercompany_child_ids[0], counterpart_pickings)
+
+        self.assertEqual(
+            counterpart_pickings.location_id,
+            self.stock_location2,
+        )
+        self.assertEqual(
+            counterpart_pickings.location_dest_id,
+            self.env.ref("stock.stock_location_customers"),
+        )
 
     def test_picking_creation_in_wrong_mode(self):
         self.company2.intercompany_picking_creation_mode = "out"

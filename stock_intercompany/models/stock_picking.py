@@ -33,7 +33,6 @@ class StockPicking(models.Model):
 
         location = self.location_id if mode == "out" else self.location_dest_id
         usage = "customer" if mode == "in" else "supplier"
-        counterusage = "supplier" if mode == "in" else "customer"
 
         if location.usage != usage:
             return
@@ -66,7 +65,7 @@ class StockPicking(models.Model):
         intercompany_type = intercompany_type or getattr(warehouse, "%s_type_id" % mode)
 
         new_picking_vals = self._prepare_counterpart_picking_vals(
-            company, intercompany_type, warehouse, counterusage
+            company, intercompany_type, warehouse, mode
         )
         picking = self.env["stock.picking"].sudo().create(new_picking_vals)
         picking.action_confirm()
@@ -79,16 +78,30 @@ class StockPicking(models.Model):
         return True
 
     def _prepare_counterpart_picking_vals(
-        self, company, intercompany_type, warehouse, counterusage
+        self, company, intercompany_type, warehouse, mode
     ):
         """Prepare the values to create the counterpart picking"""
+
+        # in : suppliers -> stock
+        # out: stock -> customers
+        location_src = (
+            self.env.ref("stock.stock_location_suppliers")
+            if mode == "in"
+            else warehouse.lot_stock_id
+        )
+        location_dest = (
+            warehouse.lot_stock_id
+            if mode == "in"
+            else self.env.ref("stock.stock_location_customers")
+        )
+
         vals = {
             "partner_id": self.company_id.partner_id.id,
             "company_id": company.id,
             "picking_type_id": intercompany_type.id,
             "state": "draft",
-            "location_id": self.env.ref("stock.stock_location_%ss" % counterusage).id,
-            "location_dest_id": warehouse.lot_stock_id.id,
+            "location_id": location_src.id,
+            "location_dest_id": location_dest.id,
             "intercompany_parent_id": self.id,  # Keep track of the parent picking
         }
         return self.sudo().copy_data(default=vals)
