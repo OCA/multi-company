@@ -1,5 +1,6 @@
 # Copyright 2018 Tecnativa - Carlos Dauden
 # Copyright 2018 Tecnativa - Pedro M. Baeza
+# Copyright 2023 Tecnativa - Carolina Fernandez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import _, fields, models
@@ -12,8 +13,6 @@ class StockPicking(models.Model):
     intercompany_picking_id = fields.Many2one(comodel_name="stock.picking")
 
     def action_done(self):
-        # Only DropShip pickings
-        po_picks = self.browse()
         for pick in self.filtered(
             lambda x: x.location_dest_id.usage == "customer"
         ).sudo():
@@ -21,37 +20,45 @@ class StockPicking(models.Model):
             if not purchase:
                 continue
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
-            for move_line in pick.move_line_ids:
-                qty_done = move_line.qty_done
-                sale_line_id = move_line.move_id.sale_line_id
-                po_move_lines = sale_line_id.auto_purchase_line_id.move_ids.mapped(
+            if not pick.intercompany_picking_id and purchase.picking_ids[0]:
+                pick.write({"intercompany_picking_id": purchase.picking_ids[0]})
+            for move in pick.move_lines:
+                move_lines = move.move_line_ids
+                po_move_lines = move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                    lambda x, ic_pick=pick.intercompany_picking_id: x.picking_id
+                    == ic_pick
+                ).mapped(
                     "move_line_ids"
                 )
-                for po_move_line in po_move_lines:
-                    if po_move_line.product_qty >= qty_done:
-                        po_move_line.qty_done = qty_done
-                        qty_done = 0.0
-                    else:
-                        po_move_line.qty_done = po_move_line.product_qty
-                        qty_done -= po_move_line.product_qty
-                    po_picks |= po_move_line.picking_id
-                if qty_done and po_move_lines:
-                    po_move_lines[-1:].qty_done += qty_done
-                elif not po_move_lines:
+                if not len(move_lines) == len(po_move_lines):
                     raise UserError(
                         _(
-                            "There's no corresponding line in PO %(po)s for assigning "
-                            "qty from %(pick_name)s for product %(product)s"
+                            "Mismatch between move lines with the "
+                            "corresponding  PO %s for assigning "
+                            "quantities and lots from %s for product %s"
                         )
-                        % (
-                            {
-                                "po": purchase.name,
-                                "pick_name": pick.name,
-                                "product": move_line.product_id.name,
-                            }
+                        % (purchase.name, pick.name, move.product_id.name)
+                    )
+                # check and assign lots here
+                for ml, po_ml in zip(move_lines, po_move_lines):
+                    lot_id = ml.lot_id
+                    if not lot_id:
+                        continue
+                    # search if the same lot exists in destination company
+                    dest_lot_id = (
+                        self.env["stock.production.lot"]
+                        .sudo()
+                        .search(
+                            [
+                                ("product_id", "=", lot_id.product_id.id),
+                                ("name", "=", lot_id.name),
+                                ("company_id", "=", po_ml.company_id.id),
+                            ],
+                            limit=1,
                         )
                     )
-        # Transfer dropship pickings
-        for po_pick in po_picks.sudo():
-            po_pick.with_company(po_pick.company_id.id).action_done()
-        return super(StockPicking, self).action_done()
+                    if not dest_lot_id:
+                        # if it doesn't exist, create it by copying from original company
+                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
+                    po_ml.lot_id = dest_lot_id
+        return super().action_done()
