@@ -138,12 +138,6 @@ class PurchaseOrder(models.Model):
             new_order.partner_shipping_id = delivery_address
         if self.notes:
             new_order.note = self.notes
-        if "warehouse_id" in new_order:
-            new_order.warehouse_id = (
-                dest_company.warehouse_id.company_id == dest_company
-                and dest_company.warehouse_id
-                or False
-            )
         new_order.commitment_date = self.date_planned
         return new_order._convert_to_write(new_order._cache)
 

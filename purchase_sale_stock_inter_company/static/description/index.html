@@ -371,6 +371,7 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/15.0/purchase_sale_stock_inter_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-15-0/multi-company-15-0-purchase_sale_stock_inter_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=15.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
 <p>This module considers the propagation of the warehouse into the sale orders.</p>
+<p>When Company A sends a product tracked by lot or serial number, a new lot/serial number with the same name is created in Company B to match it, if one doesn’t already exist.</p>
 <p>This module is a glue module and is auto installed if <cite>purchase_sale_inter_company</cite>, <cite>sale_stock</cite> and <cite>purchase_stock</cite> modules are installed.
 Full purpose description can be found in <cite>purchase_sale_inter_company</cite>.</p>
 <p><strong>Table of contents</strong></p>
@@ -410,10 +411,15 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <li><cite>Akretion &lt;https://www.akretion.com&gt;</cite>:<ul>
 <li>Chafique Delli &lt;<a class="reference external" href="mailto:chafique.delli&#64;akretion.com">chafique.delli&#64;akretion.com</a>&gt;</li>
 <li>Pierrick Brun &lt;<a class="reference external" href="mailto:pierrick.brun&#64;akretion.com">pierrick.brun&#64;akretion.com</a>&gt;</li>
+<li>Alessandro Uffreduzzi &lt;<a class="reference external" href="mailto:alessandro.uffreduzzi&#64;pytech.it">alessandro.uffreduzzi&#64;pytech.it</a>&gt;</li>
+</ul>
+</li>
+<li>Francesco Foresti &lt;<a class="reference external" href="mailto:francesco.foresti&#64;ooops404.com">francesco.foresti&#64;ooops404.com</a>&gt;</li>
 </ul>
 </li>
 <li><cite>Tecnativa &lt;https://www.tecnativa.com&gt;</cite>:<ul>
 <li>Pedro M. Baeza</li>
+<li>Carolina Fernandez</li>
 </ul>
 </li>
 <li><cite>Camptocamp &lt;https://www.camptocamp.com&gt;</cite>:<ul>
