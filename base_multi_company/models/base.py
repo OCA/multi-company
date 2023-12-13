@@ -18,7 +18,7 @@ class Base(models.AbstractModel):
         for record in self:
             company_source_id = False
             if record._name == "res.company":
-                company_source_id = self.id
+                company_source_id = record.id
             elif "company_id" in record._fields:
                 company_source_id = record.company_id.id
             self = self.with_context(_check_company_source_id=company_source_id)
