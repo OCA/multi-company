@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright (C) 2019 - Today: GRAP (http://www.grap.coop)
+@author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+<odoo>
+
+    <record id="action_company_category_to_company" model="ir.actions.act_window">
+        <field name="name">Companies</field>
+        <field name="res_model">res.company</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{
+            "search_default_category_id": [active_id],
+            "default_category_id": active_id,
+        }
+        </field>
+    </record>
+
+
+    <record id="view_res_company_category_tree" model="ir.ui.view">
+        <field name="model">res.company.category</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="type == 'view'">
+                <field name="complete_name" />
+                <field name="company_qty" />
+                <field name="type" invisible="1" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_res_company_category_form" model="ir.ui.view">
+        <field name="model">res.company.category</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <header />
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button
+                        class="oe_stat_button"
+                        type="action"
+                        name="%(action_company_category_to_company)d"
+                        icon="fa-list"
+                    >
+                        <field
+                            string="Companies"
+                            name="company_qty"
+                            widget="statinfo"
+                        />
+                    </button>
+                </div>
+                <widget
+                    name="web_ribbon"
+                    title="Archived"
+                    bg_color="bg-danger"
+                    attrs="{'invisible': [('active', '=', True)]}"
+                />
+                <div class="oe_title">
+                    <label class="oe_edit_only" for="name" string="Name" />
+                    <h1><field name="name" /></h1>
+                    <label
+                        class="oe_edit_only"
+                        for="parent_id"
+                        string="Parent Category"
+                    />
+                    <h2><field name="parent_id" /></h2>
+                </div>
+
+                <group>
+                    <group>
+                        <field name="type" />
+                        <field name="active" invisible="1" />
+                    </group>
+                </group>
+            </sheet>
+        </field>
+    </record>
+
+    <record id="view_res_company_search" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field
+            name="inherit_id"
+            ref="res_company_search_view.view_res_company_search"
+        />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="category_id" />
+            </field>
+        </field>
+    </record>
+
+    <record id="action_company_category" model="ir.actions.act_window">
+        <field name="name">Company Categories</field>
+        <field name="res_model">res.company.category</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem
+        id="menu_company_category"
+        parent="base.menu_users"
+        sequence="20"
+        action="action_company_category"
+    />
+
+</odoo>
