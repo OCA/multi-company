@@ -35,6 +35,7 @@ addon | version | maintainers | summary
 [crm_lost_reason_multi_company](crm_lost_reason_multi_company/) | 12.0.1.0.0 |  | This module add multi-company management to crm lost reason
 [crm_stage_multi_company](crm_stage_multi_company/) | 12.0.1.0.0 |  | This module adds support for multi company on crm stage.
 [ir_filters_multi_company](ir_filters_multi_company/) | 12.0.1.0.0 |  | This module add multi-company management to user-defined filters
+[mail_multicompany](mail_multicompany/) | 12.0.0.1.1 | [![quentinDupont](https://github.com/quentinDupont.png?size=30px)](https://github.com/quentinDupont) | Email Gateway Multi company
 [mail_template_multi_company](mail_template_multi_company/) | 12.0.1.0.1 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [partner_multi_company](partner_multi_company/) | 12.0.2.0.1 |  | Select individually the partner visibility on each company
 [pos_restaurant_multi_company](pos_restaurant_multi_company/) | 12.0.1.0.0 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | This module adds support for multi company on PoS Restaurant.
