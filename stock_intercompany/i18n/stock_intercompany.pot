@@ -1,0 +1,67 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* stock_intercompany
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
+msgid ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
+"specific.\" groups=\"base.group_multi_company\"/>"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model,name:stock_intercompany.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model,name:stock_intercompany.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_move_line__counterpart_of_line_id
+msgid "Counterpart Of Line"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_move__counterpart_of_move_id
+msgid "Counterpart Of Move"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_picking__counterpart_of_picking_id
+msgid "Counterpart Of Picking"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_in_type_id
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_in_type_id
+msgid "Intercompany operation type"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model,name:stock_intercompany.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model,name:stock_intercompany.model_stock_move
+msgid "Stock Move"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model,name:stock_intercompany.model_stock_picking
+msgid "Transfer"
+msgstr ""
