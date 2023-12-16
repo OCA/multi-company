@@ -17,7 +17,9 @@ msgstr ""
 "X-Generator: Weblate 4.3.2\n"
 
 #. module: mail_multicompany
+#: model:ir.model.fields,field_description:mail_multicompany.field_account_invoice_send__company_id
 #: model:ir.model.fields,field_description:mail_multicompany.field_ir_mail_server__company_id
+#: model:ir.model.fields,field_description:mail_multicompany.field_mail_compose_message__company_id
 #: model:ir.model.fields,field_description:mail_multicompany.field_mail_mail__company_id
 #: model:ir.model.fields,field_description:mail_multicompany.field_mail_message__company_id
 msgid "Company"
