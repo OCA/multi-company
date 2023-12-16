@@ -215,6 +215,7 @@ class AccountMove(models.Model):
             .with_company(dest_company.id)
             .with_context(
                 default_move_type=dest_inv_type,
+                default_journal_id=dest_journal.id,
             )
         )
         dest_invoice_data.journal_id = dest_journal
