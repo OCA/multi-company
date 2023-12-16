@@ -32,27 +32,9 @@ msgid "Complete Name"
 msgstr "Nombre completo"
 
 #. module: res_company_code
-#: model:ir.model.fields,field_description:res_company_code.field_ir_http__display_name
-#: model:ir.model.fields,field_description:res_company_code.field_res_company__display_name
-msgid "Display Name"
-msgstr ""
-
-#. module: res_company_code
 #: model:ir.model,name:res_company_code.model_ir_http
 msgid "HTTP Routing"
 msgstr "Enrutamiento HTTP"
-
-#. module: res_company_code
-#: model:ir.model.fields,field_description:res_company_code.field_ir_http__id
-#: model:ir.model.fields,field_description:res_company_code.field_res_company__id
-msgid "ID"
-msgstr ""
-
-#. module: res_company_code
-#: model:ir.model.fields,field_description:res_company_code.field_ir_http____last_update
-#: model:ir.model.fields,field_description:res_company_code.field_res_company____last_update
-msgid "Last Modified on"
-msgstr ""
 
 #. module: res_company_code
 #: model:ir.model.constraint,message:res_company_code.constraint_res_company_code_uniq
