@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright (C) 2019 - Today: GRAP (http://www.grap.coop)
+@author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+<odoo>
+    <record id="view_res_company_form" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']/.." position="after">
+                <label for="code" class="oe_edit_only" />
+                <h2>
+                    <field name="code" />
+                </h2>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_res_company_tree" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree" />
+        <field name="arch" type="xml">
+            <field name="sequence" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="name" position="before">
+                <field name="code" />
+            </field>
+        </field>
+    </record>
+    <record id="view_res_company_kanban" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_res_company_kanban" />
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <field name="code" />
+            </field>
+            <xpath expr="//i[hasclass('fa', 'fa-building')]" position="after">
+                <strong><field name="code" /> - </strong>
+            </xpath>
+        </field>
+    </record>
+</odoo>
