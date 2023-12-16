@@ -10,6 +10,7 @@ setuptools.setup(
     install_requires=[
         'odoo-addon-account_invoice_inter_company>=16.0dev,<16.1dev',
         'odoo-addon-account_multicompany_easy_creation>=16.0dev,<16.1dev',
+        'odoo-addon-account_reconcile_model_multicompany_propagate>=16.0dev,<16.1dev',
         'odoo-addon-base_multi_company>=16.0dev,<16.1dev',
         'odoo-addon-company_dependent_flag>=16.0dev,<16.1dev',
         'odoo-addon-mail_multicompany>=16.0dev,<16.1dev',
