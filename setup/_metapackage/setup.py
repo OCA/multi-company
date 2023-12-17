@@ -11,6 +11,7 @@ setuptools.setup(
         'odoo-addon-account_invoice_inter_company>=15.0dev,<15.1dev',
         'odoo-addon-account_multicompany_easy_creation>=15.0dev,<15.1dev',
         'odoo-addon-base_multi_company>=15.0dev,<15.1dev',
+        'odoo-addon-calendar_event_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-mail_multicompany>=15.0dev,<15.1dev',
         'odoo-addon-mail_template_multi_company>=15.0dev,<15.1dev',
         'odoo-addon-multicompany_configuration>=15.0dev,<15.1dev',
