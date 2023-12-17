@@ -13,13 +13,13 @@ class ResCompany(models.Model):
             categories = (
                 self.env["product.category"]
                 .sudo()
-                .with_context(force_company=company.id)
+                .with_company(company)
                 .search([("parent_id", "=", False)])
             )
             categories.write({"is_favorite": True})
 
-    @api.model
-    def create(self, vals):
-        company = super().create(vals)
-        company._configure_favorite_product_category()
-        return company
+    @api.model_create_multi
+    def create(self, vals_list):
+        companies = super().create(vals_list)
+        companies._configure_favorite_product_category()
+        return companies

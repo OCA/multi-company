@@ -23,7 +23,7 @@ class TestModule(common.TransactionCase):
     def _change_company(self, item, company=False):
         if not company:
             company = self.demo_company
-        return item.with_context(force_company=company.id)
+        return item.with_company(company)
 
     def test_00_hook(self):
         self.assertTrue(self.category_A.is_favorite)

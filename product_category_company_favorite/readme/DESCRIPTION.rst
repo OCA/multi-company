@@ -8,6 +8,9 @@ With that module, categories manager can set for each company, which category
 will be displayed, reducing configuration error. (and so accounting error
 if accounts are set at the category level.)
 
+You could be interested by concurrent module named ``product_category_company``,
+(same repository), that propose similar features but with alternative implementation.
+
 **Note**
 
 - When creating **new root category**:
