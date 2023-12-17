@@ -1,7 +1,8 @@
 # Do NOT update manually; changes here will be overwritten by Copier
-_commit: v1.17.2
+_commit: v1.20
 _src_path: gh:oca/oca-addons-repo-template
 ci: GitHub
+convert_readme_fragments_to_markdown: false
 generate_requirements_txt: true
 github_check_license: true
 github_ci_extra_env: {}
@@ -10,13 +11,15 @@ github_enable_makepot: true
 github_enable_stale_action: true
 github_enforce_dev_status_compatibility: true
 include_wkhtmltopdf: false
-odoo_test_flavor: Both
+odoo_test_flavor: Odoo
 odoo_version: 16.0
 org_name: Odoo Community Association (OCA)
 org_slug: OCA
 rebel_module_groups: []
 repo_description: 'TODO: add repo description.'
-repo_name: multi-company
+repo_name: Tools for managing instances containing multiple companies
 repo_slug: multi-company
 repo_website: https://github.com/OCA/multi-company
+use_pyproject_toml: false
+use_ruff: false
 

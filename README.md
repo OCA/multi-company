@@ -7,7 +7,7 @@
 
 <!-- /!\ do not modify above this line -->
 
-# multi-company
+# Tools for managing instances containing multiple companies
 
 TODO: add repo description.
 
