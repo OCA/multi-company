@@ -6,7 +6,6 @@ from odoo.tests import Form, common
 
 
 class TestModule(common.TransactionCase):
-
     def setUp(self):
         super().setUp()
         self.main_company = self.env.ref("base.main_company")
@@ -42,32 +41,40 @@ class TestModule(common.TransactionCase):
         self.assertFalse(self.category_A_2_x.is_favorite)
 
     def test_20_create_new_category_not_favorite(self):
-        new_root_categ = self.ProductCategory.create({
-            "name": "New Root Category",
-            "is_favorite": False,
-        })
+        new_root_categ = self.ProductCategory.create(
+            {
+                "name": "New Root Category",
+                "is_favorite": False,
+            }
+        )
         self.assertFalse(new_root_categ.is_favorite)
         self.assertFalse(self._change_company(new_root_categ).is_favorite)
 
-        new_child_categ = self.ProductCategory.create({
-            "name": "New Child Category",
-            "parent_id": new_root_categ.id,
-        })
+        new_child_categ = self.ProductCategory.create(
+            {
+                "name": "New Child Category",
+                "parent_id": new_root_categ.id,
+            }
+        )
         self.assertFalse(new_child_categ.is_favorite)
         self.assertFalse(self._change_company(new_child_categ).is_favorite)
 
     def test_21_create_new_category_favorite(self):
-        new_root_categ = self.ProductCategory.create({
-            "name": "New Root Category",
-            "is_favorite": True,
-        })
+        new_root_categ = self.ProductCategory.create(
+            {
+                "name": "New Root Category",
+                "is_favorite": True,
+            }
+        )
         self.assertTrue(new_root_categ.is_favorite)
         self.assertTrue(self._change_company(new_root_categ).is_favorite)
 
-        new_child_categ = self.ProductCategory.create({
-            "name": "New Child Category",
-            "parent_id": new_root_categ.id,
-        })
+        new_child_categ = self.ProductCategory.create(
+            {
+                "name": "New Child Category",
+                "parent_id": new_root_categ.id,
+            }
+        )
         self.assertTrue(self._change_company(new_child_categ).is_favorite)
 
     def test_30_create_new_company(self):
@@ -76,12 +83,12 @@ class TestModule(common.TransactionCase):
         }
         new_company = self.ResCompany.create(company_vals)
 
-        self.assertTrue(self._change_company(
-            self.category_A, company=new_company
-        ).is_favorite)
-        self.assertTrue(self._change_company(
-            self.category_A_2_x, company=new_company
-        ).is_favorite)
+        self.assertTrue(
+            self._change_company(self.category_A, company=new_company).is_favorite
+        )
+        self.assertTrue(
+            self._change_company(self.category_A_2_x, company=new_company).is_favorite
+        )
 
     def test_40_name_search(self):
         self.category_A_2_x.is_favorite = True
@@ -91,14 +98,18 @@ class TestModule(common.TransactionCase):
         self.assertFalse(self.ProductCategory.name_search(self.category_A_2_x.name))
 
     def test_40_test_onchange(self):
-        root_categ_favorite = self.ProductCategory.create({
-            "name": "New Root Category 1",
-            "is_favorite": True,
-        })
-        root_categ_not_favorite = self.ProductCategory.create({
-            "name": "New Root Category 2",
-            "is_favorite": False,
-        })
+        root_categ_favorite = self.ProductCategory.create(
+            {
+                "name": "New Root Category 1",
+                "is_favorite": True,
+            }
+        )
+        root_categ_not_favorite = self.ProductCategory.create(
+            {
+                "name": "New Root Category 2",
+                "is_favorite": False,
+            }
+        )
         categ = Form(self.env["product.category"])
         self.assertFalse(categ.is_favorite)
         categ.parent_id = root_categ_favorite

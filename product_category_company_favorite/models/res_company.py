@@ -10,9 +10,12 @@ class ResCompany(models.Model):
 
     def _configure_favorite_product_category(self):
         for company in self:
-            categories = self.env["product.category"].sudo().with_context(
-                force_company=company.id
-            ).search([("parent_id", "=", False)])
+            categories = (
+                self.env["product.category"]
+                .sudo()
+                .with_context(force_company=company.id)
+                .search([("parent_id", "=", False)])
+            )
             categories.write({"is_favorite": True})
 
     @api.model

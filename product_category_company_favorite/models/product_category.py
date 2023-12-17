@@ -13,7 +13,7 @@ class ProductCategory(models.Model):
         company_dependent=True,
         help="If this field is unchecked, the category will"
         " be hidden when searching category in a drop-down list"
-        " like in the product form view."
+        " like in the product form view.",
     )
 
     @api.onchange("parent_id")
@@ -25,9 +25,12 @@ class ProductCategory(models.Model):
     def create(self, vals):
         category = super().create(vals)
         # Configure is_favorite for all the other companies
-        company_ids = self.env["res.company"].with_context(
-            active_test=False
-        ).search([("id", "!=", self.env.user.company_id.id)]).ids
+        company_ids = (
+            self.env["res.company"]
+            .with_context(active_test=False)
+            .search([("id", "!=", self.env.user.company_id.id)])
+            .ids
+        )
         for company_id in company_ids:
             ctx_category = category.with_context(force_company=company_id)
             if ctx_category.parent_id:
@@ -40,23 +43,20 @@ class ProductCategory(models.Model):
 
     def write(self, vals):
         if "is_favorite" in vals:
-            children = self.search(
-                [("id", "child_of", self.ids)]
-            ).filtered(lambda x: x.id not in self.ids)
-            super(ProductCategory, children).write(
-                {"is_favorite": vals["is_favorite"]}
+            children = self.search([("id", "child_of", self.ids)]).filtered(
+                lambda x: x.id not in self.ids
             )
+            super(ProductCategory, children).write({"is_favorite": vals["is_favorite"]})
         return super().write(vals)
 
     def _name_search(
-            self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
+    ):
         args = list(args or [])
-        if (
-            not args
-            or not any([x[0] == "is_favorite"
-                                for x in args if getattr(x, "__getitem__", False)])
+        if not args or not any(
+            [x[0] == "is_favorite" for x in args if getattr(x, "__getitem__", False)]
         ):
             args += [("is_favorite", "=", True)]
         return super()._name_search(
-            name, args=args, operator=operator, limit=limit,
-            name_get_uid=name_get_uid)
+            name, args=args, operator=operator, limit=limit, name_get_uid=name_get_uid
+        )
