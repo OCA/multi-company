@@ -21,25 +21,26 @@ class ProductCategory(models.Model):
         if self.parent_id:
             self.is_favorite = self.parent_id.is_favorite
 
-    @api.model
-    def create(self, vals):
-        category = super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        categories = super().create(vals_list)
         # Configure is_favorite for all the other companies
         company_ids = (
             self.env["res.company"]
             .with_context(active_test=False)
-            .search([("id", "!=", self.env.user.company_id.id)])
+            .search([("id", "!=", self.env.company.id)])
             .ids
         )
         for company_id in company_ids:
-            ctx_category = category.with_context(force_company=company_id)
-            if ctx_category.parent_id:
-                # We inherit the contextual configuration of the parent category, if any
-                ctx_category.is_favorite = ctx_category.parent_id.is_favorite
-            else:
-                # Otherwise, we set the same setting as the current one
-                ctx_category.is_favorite = category.is_favorite
-        return category
+            for category in categories:
+                ctx_category = category.with_company(company_id)
+                if ctx_category.parent_id:
+                    # We inherit the contextual configuration of the parent category, if any
+                    ctx_category.is_favorite = ctx_category.parent_id.is_favorite
+                else:
+                    # Otherwise, we set the same setting as the current one
+                    ctx_category.is_favorite = category.is_favorite
+        return categories
 
     def write(self, vals):
         if "is_favorite" in vals:
