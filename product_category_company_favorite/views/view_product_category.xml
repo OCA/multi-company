@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!--
 Copyright (C) 2023 - Today: GRAP (http://www.grap.coop)
 @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
@@ -11,8 +11,11 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="inherit_id" ref="product.product_category_search_view" />
         <field name="arch" type="xml">
             <field name="parent_id" position="after">
-                <filter name="is_favorite"
-                    string="Favorites" domain="[('is_favorite','=',True)]"/>
+                <filter
+                    name="is_favorite"
+                    string="Favorites"
+                    domain="[('is_favorite','=',True)]"
+                />
             </field>
         </field>
     </record>
@@ -22,7 +25,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="inherit_id" ref="product.product_category_list_view" />
         <field name="arch" type="xml">
             <field name="display_name" position="before">
-                <field name="is_favorite" widget="boolean_favorite" nolabel="1"/>
+                <field name="is_favorite" widget="boolean_favorite" nolabel="1" />
             </field>
             <tree position="attributes">
                 <attribute name="decoration-bf">is_favorite == True</attribute>
@@ -35,7 +38,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="inherit_id" ref="product.product_category_form_view" />
         <field name="arch" type="xml">
             <field name="parent_id" position="before">
-                <field name="is_favorite" widget="boolean_favorite"/>
+                <field name="is_favorite" widget="boolean_favorite" />
             </field>
         </field>
     </record>
