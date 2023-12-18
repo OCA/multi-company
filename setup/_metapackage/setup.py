@@ -15,6 +15,7 @@ setuptools.setup(
         'odoo-addon-company_dependent_flag>=16.0dev,<16.1dev',
         'odoo-addon-mail_multicompany>=16.0dev,<16.1dev',
         'odoo-addon-mail_template_multi_company>=16.0dev,<16.1dev',
+        'odoo-addon-partner_multi_company>=16.0dev,<16.1dev',
         'odoo-addon-product_account_multicompany_default>=16.0dev,<16.1dev',
         'odoo-addon-product_category_company>=16.0dev,<16.1dev',
         'odoo-addon-product_tax_multicompany_default>=16.0dev,<16.1dev',
