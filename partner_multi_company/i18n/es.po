@@ -20,6 +20,16 @@ msgstr ""
 "X-Generator: Weblate 4.3.2\n"
 
 #. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_ids
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_id
+msgid "Company"
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_partner
 msgid "Contact"
 msgstr "Contacto"
@@ -31,8 +41,8 @@ msgstr "Nombre mostrado"
 
 #. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_users
-msgid "Users"
-msgstr "Usuarios"
+msgid "User"
+msgstr ""
 
-#~ msgid "Companies"
-#~ msgstr "Compañías"
+#~ msgid "Users"
+#~ msgstr "Usuarios"
