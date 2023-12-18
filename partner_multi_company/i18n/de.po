@@ -1,0 +1,40 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * partner_multi_company
+#
+# Translators:
+# Rudolf Schnapka <rs@techno-flex.de>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-24 03:32+0000\n"
+"PO-Revision-Date: 2016-12-24 03:32+0000\n"
+"Last-Translator: Rudolf Schnapka <rs@techno-flex.de>, 2017\n"
+"Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: partner_multi_company
+#: model:ir.model,name:partner_multi_company.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model,name:partner_multi_company.model_res_users
+msgid "Users"
+msgstr "Anwender"
+
+#~ msgid "Partner"
+#~ msgstr "Partner"
+
+#~ msgid "Companies"
+#~ msgstr "Unternehmen"
