@@ -28,7 +28,7 @@ addon | version | maintainers | summary
 [account_move_change_company](account_move_change_company/) | 14.0.1.0.2 |  | Allow to change company of account moves
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 14.0.1.0.2 |  | This module adds a wizard to create companies easily
 [account_payment_other_company](account_payment_other_company/) | 14.0.1.0.2 | [![max3903](https://github.com/max3903.png?size=30px)](https://github.com/max3903) [![osi-scampbell](https://github.com/osi-scampbell.png?size=30px)](https://github.com/osi-scampbell) | Create Payments for Other Companies
-[base_multi_company](base_multi_company/) | 14.0.1.1.9 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
+[base_multi_company](base_multi_company/) | 14.0.1.1.10 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
 [company_dependent_attribute](company_dependent_attribute/) | 14.0.1.0.0 |  | Display company dependent attribute on fields
 [intercompany_shared_contact](intercompany_shared_contact/) | 14.0.1.1.2 |  | User of each company are contact of a company partner. All child address of a company are automatically shared
 [login_all_company](login_all_company/) | 14.0.1.0.1 |  | Access all your companies when you log in
