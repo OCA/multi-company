@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <!-- Technically a bug in `stock` module's demo data,
+    Just changing these fields to make it easier to test the module
+    The route for location "Inter-warehouse transit" doesn't exist
+    causing an error when creating the intercompany SO with demo data -->
+    <record id="stock.res_partner_address_41" model="res.partner">
+        <field name="property_stock_customer" ref="stock.stock_location_customers" />
+        <field name="property_stock_supplier" ref="stock.stock_location_suppliers" />
+    </record>
+
+</odoo>

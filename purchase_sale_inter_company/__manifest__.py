@@ -22,4 +22,7 @@
         "views/res_config_view.xml",
         "wizard/stock_backorder_confirmation_views.xml",
     ],
+    "demo": [
+        "demo/res_partner_demo.xml",
+    ],
 }
