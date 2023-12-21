@@ -3,12 +3,33 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
+
+    auto_sale_order_info = fields.Html(compute="_compute_auto_sale_order_info")
+
+    def _compute_auto_sale_order_info(self):
+        for purchase_order in self.sudo():
+            auto_sale_order_id = (
+                self.env["sale.order"]
+                .sudo()
+                .search([("auto_purchase_order_id", "=", purchase_order.id)])
+            )
+            info_message = (
+                _(
+                    "Sale order '%s' is already generated for this purchase order "
+                    "You can confirm/cancel this purchase order and "
+                    "related sale order will be also confirmed/canceled"
+                )
+                % auto_sale_order_id.display_name
+            )
+            purchase_order.auto_sale_order_info = (
+                info_message if auto_sale_order_id.exists() else False
+            )
 
     def button_approve(self, force=False):
         """Generate inter company sale order base on conditions."""
@@ -16,13 +37,50 @@ class PurchaseOrder(models.Model):
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
+            po_partner = purchase_order.partner_id
+            # vendor can be a member of group company or it's child
+            # dest_company will be anyway member of group company
             dest_company = (
-                purchase_order.partner_id.commercial_partner_id.ref_company_ids
+                po_partner.ref_company_ids or po_partner.parent_id.ref_company_ids
             )
+            if len(dest_company) > 1:
+                raise UserError(
+                    _("You can generate sale order only for one vendor company at once")
+                )
+            intercompany_user = dest_company.intercompany_sale_user_id
+            if not intercompany_user:
+                intercompany_user = self.env.user
             if dest_company and dest_company.so_from_po:
-                purchase_order.with_company(
-                    dest_company.id
-                )._inter_company_create_sale_order(dest_company)
+                # one sale order is expected to be created when confirm purchase order
+                # so we check for existing sale order with auto_purchase_order_id set
+                # and confirm that sale order if found (it's possible it can be draft)
+                # we don't need extra sale orders if purchase order was confirmed again
+                auto_sale_order_id = (
+                    self.env["sale.order"]
+                    .sudo()
+                    .search([("auto_purchase_order_id", "=", purchase_order.id)])
+                )
+                # standard OCA flow raises an error if we try to confirm purchase order
+                # with already generated auto sale order, comment it for now
+                # if len(auto_sale_order_id) > 1:
+                #     raise UserError(
+                #         _(
+                #             "You can have only one auto-generated sale order "
+                #             "but following orders were found '%s' "
+                #         )
+                #         % ",".join([order.display_name for order in auto_sale_order_id])
+                #     )
+                if auto_sale_order_id:
+                    not_confirmed_orders = auto_sale_order_id.filtered(
+                        lambda order: order.state not in ("sale", "done")
+                    )
+                    not_confirmed_orders.with_user(
+                        intercompany_user.id
+                    ).sudo().action_confirm()
+                else:
+                    purchase_order.with_company(
+                        dest_company.id
+                    )._inter_company_create_sale_order(dest_company)
         return res
 
     def _get_user_domain(self, dest_company):
@@ -61,6 +119,7 @@ class PurchaseOrder(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
+        pricelist_obj = self.env["product.pricelist"]
         # Check intercompany user
         intercompany_user = dest_company.intercompany_sale_user_id
         if not intercompany_user:
@@ -70,19 +129,40 @@ class PurchaseOrder(models.Model):
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
         company_partner = self.company_id.partner_id
-        # check pricelist currency should be same with PO/SO document
-        if self.currency_id.id != (
-            company_partner.property_product_pricelist.currency_id.id
+        intercompany_so_pricelist = company_partner.property_product_pricelist
+        # pricelist currency should be same with PO/SO document
+        # if corresponding pricelist currency is not the same
+        # find or create propriate pricelist
+        if intercompany_so_pricelist and (
+            self.currency_id == intercompany_so_pricelist.currency_id
         ):
-            raise UserError(
-                _(
-                    "You cannot create SO from PO because "
-                    "sale price list currency is different than "
-                    "purchase price list currency."
+            related_pricelist = intercompany_so_pricelist
+        else:
+            related_pricelist = pricelist_obj.search(
+                [
+                    ("currency_id", "=", self.currency_id.id),
+                    ("company_id", "=", dest_company.id),
+                ]
+            )
+            if len(related_pricelist) > 1:
+                raise UserError(
+                    _(
+                        "There is more than one pricelist for this vendor "
+                        "with the same currency"
+                    )
                 )
+        if not related_pricelist:
+            related_pricelist = pricelist_obj.create(
+                {
+                    "name": "Public pricelist",
+                    "company_id": dest_company.id,
+                    "currency_id": self.currency_id.id,
+                }
             )
         # create the SO and generate its lines from the PO lines
-        sale_order_data = self._prepare_sale_order_data(
+        sale_order_data = self.with_context(
+            pricelist=related_pricelist
+        )._prepare_sale_order_data(
             self.name, company_partner, dest_company, self.dest_address_id
         )
         sale_order = (
@@ -93,7 +173,7 @@ class PurchaseOrder(models.Model):
         )
         for purchase_line in self.order_line:
             sale_line_data = self._prepare_sale_order_line_data(
-                purchase_line, dest_company, sale_order
+                purchase_line, sale_order
             )
             self.env["sale.order.line"].with_user(intercompany_user.id).sudo().create(
                 sale_line_data
@@ -101,6 +181,10 @@ class PurchaseOrder(models.Model):
         # write supplier reference field on PO
         if not self.partner_ref:
             self.partner_ref = sale_order.name
+        # set ignore_exception=True to confirm the order
+        # if sale_exception module is installed
+        if "ignore_exception" in self.env["sale.order"]:
+            sale_order.ignore_exception = True
         # Validation of sale order
         if dest_company.sale_auto_validation:
             sale_order.with_user(intercompany_user.id).sudo().action_confirm()
@@ -137,14 +221,14 @@ class PurchaseOrder(models.Model):
         if self.notes:
             new_order.note = self.notes
         new_order.commitment_date = self.date_planned
+        if self.env.context.get("pricelist"):
+            new_order.pricelist_id = self.env.context.get("pricelist")
         return new_order._convert_to_write(new_order._cache)
 
-    def _prepare_sale_order_line_data(self, purchase_line, dest_company, sale_order):
+    def _prepare_sale_order_line_data(self, purchase_line, sale_order):
         """Generate the Sale Order Line values from the PO line
         :param purchase_line : the origin Purchase Order Line
         :rtype purchase_line : purchase.order.line record
-        :param dest_company : the company of the created SO
-        :rtype dest_company : res.company record
         :param sale_order : the Sale Order
         """
         new_line = self.env["sale.order.line"].new(

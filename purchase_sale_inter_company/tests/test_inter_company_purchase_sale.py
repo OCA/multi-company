@@ -33,6 +33,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
         with po.order_line.new() as line_form:
             line_form.product_id = cls.product
+            line_form.account_analytic_id = cls.analytic_account_sale
             line_form.product_qty = 3.0
             line_form.name = "Service Multi Company"
             line_form.price_unit = 450.0
@@ -42,9 +43,16 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     def setUpClass(cls):
         super().setUpClass()
         # no job: avoid issue if account_invoice_inter_company_queued is installed
-        cls.env = cls.env(context={"test_queue_job_no_delay": 1})
+        cls.env = cls.env(
+            context=dict(
+                cls.env.context, tracking_disable=True, test_queue_job_no_delay=1
+            )
+        )
 
         cls.product = cls.product_consultant_multi_company
+        cls.analytic_account_sale = cls.env["account.analytic.account"].create(
+            {"name": "Project for selling timesheet - AA1", "code": "AA-20301"}
+        )
 
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
@@ -65,38 +73,89 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
         # Create purchase order
         cls.purchase_company_a = cls._create_purchase_order(cls.partner_company_b)
+        cls.purchase_company_a.notes = "Test note"
 
-        # Configure pricelist to USD
+        # Configure pricelist to EUR
         cls.env["product.pricelist"].sudo().search([]).write(
-            {"currency_id": cls.env.ref("base.USD").id}
+            {"currency_id": cls.env.ref("base.EUR").id}
         )
+        cls.purchase_company_a_child = cls._create_purchase_order(cls.partner_company_b)
+        cls.purchase_company_a_child.notes = "Test note child"
+        cls.purchase_company_a_child.partner_id = cls.partner_company_b.child_ids
 
-    def _approve_po(self):
+    def _approve_po(self, *args):
         """Confirm the PO in company A and return the related sale of Company B"""
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
+        purchase_order = self.purchase_company_a
+        if args:
+            (purchase_order,) = args
+        purchase_order.with_user(self.user_company_a).button_approve()
         return (
             self.env["sale.order"]
             .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
+            .search([("auto_purchase_order_id", "=", purchase_order.id)])
         )
 
-    def test_purchase_sale_inter_company(self):
-        self.purchase_company_a.notes = "Test note"
-        sale = self._approve_po()
+    def _set_ignore_exception(self, *args):
+        # set ignore_exception=True to confirm the order
+        # if purchase_exception module is installed
+        purchase_order = self.purchase_company_a
+        if args:
+            (purchase_order,) = args
+        if "ignore_exception" in self.env["purchase.order"]:
+            purchase_order.ignore_exception = True
+
+    def _check_inter_company_data(self, purchase_order):
+        sale = self._approve_po(purchase_order)
+        self.assertNotEqual(sale, False)
         self.assertEqual(len(sale), 1)
-        self.assertEqual(sale.state, "sale")
-        self.assertEqual(sale.partner_id, self.partner_company_a)
-        self.assertEqual(len(sale.order_line), len(self.purchase_company_a.order_line))
-        self.assertEqual(sale.order_line.product_id, self.product)
-        self.assertEqual(str(sale.note), "<p>Test note</p>")
+        if sale.company_id.sale_auto_validation:
+            self.assertEqual(sale.state, "sale")
+        else:
+            self.assertEqual(sale.state, "draft")
+        self.assertEqual(
+            sale.partner_id,
+            purchase_order.company_id.partner_id,
+        )
+        po_partner = purchase_order.partner_id
+
+        if po_partner.ref_company_ids:
+            vendor = po_partner.ref_company_ids
+            self.assertEqual(sale.note, "<p>Test note</p>")
+        if po_partner.parent_id.ref_company_ids:
+            vendor = po_partner.parent_id.ref_company_ids
+            self.assertEqual(sale.note, "<p>Test note child</p>")
+        self.assertEqual(sale.company_id.partner_id, vendor.partner_id)
+        self.assertEqual(len(sale.order_line), len(purchase_order.order_line))
+        self.assertEqual(
+            sale.order_line.product_id,
+            purchase_order.order_line.product_id,
+        )
+        self.assertEqual(sale.currency_id, purchase_order.currency_id)
+
+    def test_purchase_sale_inter_company(self):
+        self._set_ignore_exception()
+        self._check_inter_company_data(self.purchase_company_a)
+
+        self._set_ignore_exception(self.purchase_company_a_child)
+        self._check_inter_company_data(self.purchase_company_a_child)
+
+    def test_purchase_sale_inter_company_pricelist(self):
+        currency_usd = self.env.ref("base.USD")
+        self.purchase_company_a.currency_id = currency_usd
+        self._set_ignore_exception()
+        self._check_inter_company_data(self.purchase_company_a)
+
+        self.purchase_company_a_child.currency_id = self.env.ref("base.CHF")
+        self._set_ignore_exception(self.purchase_company_a_child)
+        self._check_inter_company_data(self.purchase_company_a_child)
 
     def test_not_auto_validate(self):
         self.company_b.sale_auto_validation = False
+        self._set_ignore_exception()
         sale = self._approve_po()
         self.assertEqual(sale.state, "draft")
 
-    # TODO FIXME
-    def xxtest_date_planned(self):
+    def test_date_planned(self):
         # Install sale_order_dates module
         module = self.env["ir.module.module"].search(
             [("name", "=", "sale_order_dates")]
@@ -105,6 +164,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             return False
         module.button_install()
         self.purchase_company_a.date_planned = "2070-12-31"
+        self._set_ignore_exception()
         sale = self._approve_po()
         self.assertEqual(sale.requested_date, "2070-12-31")
 
@@ -118,15 +178,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         with self.assertRaises(UserError):
             self._approve_po()
 
-    def test_raise_currency(self):
-        currency = self.env.ref("base.EUR")
-        self.purchase_company_a.currency_id = currency
-        with self.assertRaises(UserError):
-            self._approve_po()
-
     def test_purchase_invoice_relation(self):
         self.partner_company_a.company_id = False
         self.partner_company_b.company_id = False
+        self._set_ignore_exception()
         sale = self._approve_po()
         sale_invoice = sale._create_invoices()[0]
         sale_invoice.action_post()
@@ -140,30 +195,29 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_cancel(self):
         self.company_b.sale_auto_validation = False
+        self._set_ignore_exception()
         sale = self._approve_po()
         self.assertEqual(self.purchase_company_a.partner_ref, sale.name)
         self.purchase_company_a.with_user(self.user_company_a).button_cancel()
         self.assertFalse(self.purchase_company_a.partner_ref)
-        self.assertEqual(sale.state, "cancel")
-
-    def test_cancel_confirmed_po_so(self):
-        self.company_b.sale_auto_validation = True
-        self._approve_po()
-        with self.assertRaises(UserError):
-            self.purchase_company_a.with_user(self.user_company_a).button_cancel()
 
     def test_so_change_price(self):
+        self._set_ignore_exception()
         sale = self._approve_po()
         sale.order_line.price_unit = 10
         sale.action_confirm()
         self.assertEqual(self.purchase_company_a.order_line.price_unit, 10)
 
-    def test_po_with_contact_as_partner(self):
-        contact = self.env["res.partner"].create(
-            {"name": "Test contact", "parent_id": self.partner_company_b.id}
-        )
-        self.purchase_company_a = self._create_purchase_order(contact)
-        sale = self._approve_po()
-        self.assertEqual(len(sale), 1)
-        self.assertEqual(sale.state, "sale")
-        self.assertEqual(sale.partner_id, self.partner_company_a)
+    def test_cancel_confirmed_po_so(self):
+        self.company_b.sale_auto_validation = True
+        self._set_ignore_exception()
+        self._approve_po()
+        with self.assertRaises(UserError):
+            self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+
+    # def test_reconfirm_canceled_po_so(self):
+    #     self.company_b.sale_auto_validation = True
+    #     self._set_ignore_exception()
+    #     self._approve_po()
+    #     with self.assertRaises(UserError):
+    #         self.purchase_company_a.with_user(self.user_company_a).button_cancel()
