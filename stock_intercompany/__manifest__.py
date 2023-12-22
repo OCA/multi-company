@@ -12,6 +12,8 @@
     "installable": True,
     "license": "AGPL-3",
     "data": [
+        "data/ir_cron_data.xml",
         "views/res_config_settings.xml",
+        "views/stock_picking_views.xml",
     ],
 }

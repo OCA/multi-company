@@ -13,6 +13,8 @@ The different available creation modes on a company are:
 * **Create Both** This mode will create both a reception and a delivery on this company when a delivery or a reception is done on another company.
 * **[Empty]** This mode will not create any picking on this company when a delivery or a reception is done on another company.
 
+In the case of a delivery, the picking will be created when the user manually clicks on the "Create Counterpart" button in the picking view or automatically with the 
+"Create Receipt Pickings Counterparts" scheduled action.
 
 **Caution:**
 

@@ -74,14 +74,34 @@ class TestStockIntercompanyCommon(SavepointCase):
                 "qty_available": 100,
             }
         )
+        cls.product2 = cls.env["product.product"].create(
+            {
+                "name": "Product B",
+                "type": "product",
+                "categ_id": cls.env.ref("product.product_category_all").id,
+                "qty_available": 50,
+            }
+        )
+        cls.product3 = cls.env["product.product"].create(
+            {
+                "name": "Product C",
+                "type": "product",
+                "categ_id": cls.env.ref("product.product_category_all").id,
+                "qty_available": 5,
+            }
+        )
         cls.stock_location = (
             cls.env["stock.location"]
             .sudo()
-            .search([("name", "=", "Stock"), ("company_id", "=", cls.company1.id)])
+            .search(
+                [("name", "=", "Stock"), ("company_id", "=", cls.company1.id)], limit=1
+            )
         )
         cls.stock_location2 = (
             cls.env["stock.location"]
             .sudo()
-            .search([("name", "=", "Stock"), ("company_id", "=", cls.company2.id)])
+            .search(
+                [("name", "=", "Stock"), ("company_id", "=", cls.company2.id)], limit=1
+            )
         )
         cls.uom_unit = cls.env.ref("uom.product_uom_unit")

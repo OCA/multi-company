@@ -4,13 +4,11 @@ from odoo import models
 class StockMove(models.Model):
     _inherit = "stock.move"
 
-    def _action_assign(self):
+    def _search_picking_for_assignation_domain(self):
         """
-        Override to create counterpart pickings after moves are assigned.
+        Override to filter out moves that have a counterpart picking
         """
-        res = super()._action_assign()
-        counterparts = self.picking_id._create_counterpart_pickings("out")
+        domain = super()._search_picking_for_assignation_domain()
+        domain += [("has_counterpart", "=", False)]
 
-        for picking, counterpart in counterparts:
-            picking._finalize_counterpart_picking(counterpart)
-        return res
+        return domain
