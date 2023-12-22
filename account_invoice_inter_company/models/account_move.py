@@ -67,11 +67,21 @@ class AccountMove(models.Model):
         )
         return company or False
 
+    def _set_intercompany_supplier_invoice_ref(self):
+        self.ensure_one()
+        supplier_invoice = self.auto_invoice_id
+        if not supplier_invoice.ref:
+            supplier_invoice.write({"ref": self.name})
+
     def _post(self, soft=True):
         """Validated invoice generate cross invoice base on company rules"""
         res = super()._post(soft=soft)
         if not self.env.context.get("account_invoice_inter_company_queued"):
             self.create_counterpart_invoices()
+        for invoice in self.filtered(
+            lambda i: i.is_sale_document() and i.auto_generated
+        ):
+            invoice.sudo()._set_intercompany_supplier_invoice_ref()
         return res
 
     def create_counterpart_invoices(self):
