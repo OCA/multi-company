@@ -295,10 +295,13 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertTrue(purchase.picking_ids)
         self.assertTrue(sale.picking_ids)
 
-        # validate the SO picking
         po_picking_id = purchase.picking_ids
         so_picking_id = sale.picking_ids
 
+        # check po_picking state
+        self.assertEqual(po_picking_id.state, "waiting")
+
+        # validate the SO picking
         so_picking_id.move_lines.quantity_done = 2
 
         self.assertNotEqual(po_picking_id, so_picking_id)
@@ -326,6 +329,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             po_picking_id.move_lines.quantity_done,
             so_picking_id.move_lines.quantity_done,
         )
+
+        # Check picking state
+        self.assertEqual(po_picking_id.state, so_picking_id.state)
 
         # A backorder should have been made for both
         self.assertTrue(len(sale.picking_ids) > 1)
