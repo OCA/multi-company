@@ -56,6 +56,15 @@ To configure this module, you need to:
 #. Go to the tab *Inter-Company* then the group *Purchase To Sale*.
 #. If you check the option *Sale Auto Validation* in the configuration of company B, then when you validate a *Purchase Order* in company A with company B as supplier, the *Sale Order* will be automatically validated in company B with company A as customer.
 
+Known issues / Roadmap
+======================
+
+* No synchronization is made from the generated sale order back to the purchase order.
+  This would be interesting in the case of price changes and discounts, that would be
+  transmitted to the purchase so both documents couldn't have different total amounts,
+  taxes, etc. A mechanism for synching from the sale to the purchase order would be
+  needed.
+
 Bug Tracker
 ===========
 
