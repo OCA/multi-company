@@ -61,6 +61,7 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__display_name
@@ -94,6 +95,7 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order__id
@@ -111,6 +113,16 @@ msgid "Intercompany Picking"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__intercompany_sale_line_id
+msgid "Intercompany Sale Line"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__intercompany_sale_order_id
+msgid "Intercompany Sale Order"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
 msgid "Intercompany Sale User"
@@ -124,6 +136,7 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order____last_update
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_sale_order____last_update
@@ -139,7 +152,7 @@ msgstr ""
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
 msgid ""
-"Mismatch between move lines with the corresponding  PO %s for assigning "
+"Mismatch between move lines with the corresponding PO %s for assigning "
 "quantities and lots from %s for product %s"
 msgstr ""
 
@@ -158,6 +171,11 @@ msgstr ""
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
 msgid "Purchase Order"
 msgstr "Commande d'achat"
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
@@ -226,6 +244,14 @@ msgid "Sync the receipt with the delivery"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#, python-format
+msgid ""
+"The generated sale orders with reference %(orders)s can't be modified. "
+"They're either unconfirmed or locked for modifications."
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
@@ -268,6 +294,13 @@ msgstr ""
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
 #, python-format
 msgid "You can't cancel an order that is %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#, python-format
+msgid ""
+"You can't change this purchase order as the corresponding sale is %(state)s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
