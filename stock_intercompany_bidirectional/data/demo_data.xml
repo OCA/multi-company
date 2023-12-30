@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="stock.res_company_1" model="res.company">
+        <field name="intercompany_out_type_id" ref="stock.chi_picking_type_out" />
+        <field name="intercompany_in_type_id" ref="stock.chi_picking_type_in" />
+        <field name="auto_update_qty_done">True</field>
+        <field name="move_packages">True</field>
+    </record>
+    <record id="base.main_company" model="res.company">
+        <field name="intercompany_out_type_id" ref="stock.picking_type_out" />
+        <field name="intercompany_in_type_id" ref="stock.picking_type_in" />
+        <field name="auto_update_qty_done">True</field>
+        <field name="move_packages">True</field>
+    </record>
+</odoo>

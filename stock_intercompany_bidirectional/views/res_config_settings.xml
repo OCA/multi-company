@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record
+        id="intercompany_bidirectional_res_config_settings_view_form"
+        model="ir.ui.view"
+    >
+        <field
+            name="name"
+        >intercompany.bidirectional.res.config.settings.view.form</field>
+        <field name="model">res.config.settings</field>
+        <field
+            name="inherit_id"
+            ref="stock_intercompany.intercompany_res_config_settings_view_form"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='intercompany_delivery_sbox']" position="after">
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_right_pane">
+                        <label for="intercompany_out_type_id" />
+                        <span
+                            class="fa fa-lg fa-building-o"
+                            title="Values set here are company-specific."
+                            groups="base.group_multi_company"
+                        />
+                        <div class="content-group">
+                            <field name="intercompany_out_type_id" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane">
+                        <field name="auto_update_qty_done" />
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="auto_update_qty_done" />
+                        <span
+                            class="fa fa-lg fa-building-o"
+                            title="Values set here are company-specific."
+                            groups="base.group_multi_company"
+                        />
+                        <div class="text-muted">
+                            Set the "Done" quantity based on the counterpart picking
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane">
+                        <field name="move_packages" />
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="move_packages" />
+                        <span
+                            class="fa fa-lg fa-building-o"
+                            title="Values set here are company-specific."
+                            groups="base.group_multi_company"
+                        />
+                        <div class="text-muted">
+                            Move the entire packages between companies
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane">
+                        <field name="mirror_lot_numbers" />
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <label for="mirror_lot_numbers" />
+                        <span
+                            class="fa fa-lg fa-building-o"
+                            title="Values set here are company-specific."
+                            groups="base.group_multi_company"
+                        />
+                        <div class="text-muted">
+                            Mirror lots/serial numbers in the destination company
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
