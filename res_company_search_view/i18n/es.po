@@ -6,25 +6,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2024-01-02 20:36+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
 "Language-Team: none\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: res_company_search_view
 #: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
 msgid "Archived"
-msgstr ""
+msgstr "Archivado"
 
 #. module: res_company_search_view
 #: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
 msgid "Country"
-msgstr ""
+msgstr "País"
 
 #. module: res_company_search_view
 #: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
 msgid "Group By"
-msgstr ""
+msgstr "Grupo Por"
