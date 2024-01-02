@@ -3,7 +3,6 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-
 from odoo.exceptions import UserError
 from odoo.tests.common import Form
 
@@ -45,6 +44,16 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.env = cls.env(context={"test_queue_job_no_delay": 1})
 
         cls.product = cls.product_consultant_multi_company
+        cls.service_product_2 = cls.env["product.product"].create(
+            {
+                "name": "Service Product 2",
+                "type": "service",
+            }
+        )
+        # if product_multi_company is installed
+        if "company_ids" in cls.env["product.template"]._fields:
+            # We have to do that because the default method added a company
+            cls.service_product_2.company_ids = False
 
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
@@ -167,3 +176,48 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(len(sale), 1)
         self.assertEqual(sale.state, "sale")
         self.assertEqual(sale.partner_id, self.partner_company_a)
+
+    def test_update_open_sale_order(self):
+        """
+        When the purchase user request extra product, the sale order gets synched if
+        it's open.
+        """
+        purchase = self.purchase_company_a
+        sale = self._approve_po()
+        sale.action_confirm()
+        # Now we add an extra product to the PO and it will show up in the SO
+        po_form = Form(purchase)
+        with po_form.order_line.new() as line:
+            line.product_id = self.service_product_2
+            line.product_qty = 6
+        po_form.save()
+        # It's synched and the values match
+        synched_order_line = sale.order_line.filtered(
+            lambda x: x.product_id == self.service_product_2
+        )
+        self.assertTrue(
+            bool(synched_order_line),
+            "The line should have been created in the sale order",
+        )
+        self.assertEqual(
+            synched_order_line.product_uom_qty,
+            6,
+            "The quantity should be equal to the one set in the purchase order",
+        )
+        # The quantity is synched as well
+        purchase_line = purchase.order_line.filtered(
+            lambda x: x.product_id == self.service_product_2
+        ).sudo()
+        purchase_line.product_qty = 8
+        self.assertEqual(
+            synched_order_line.product_uom_qty,
+            8,
+            "The quantity should be equal to the one set in the purchase order",
+        )
+        # Let's decrease the quantity
+        purchase_line.product_qty = 3
+        self.assertEqual(
+            synched_order_line.product_uom_qty,
+            3,
+            "The quantity should decrease as it was in the purchase order",
+        )
