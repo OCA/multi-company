@@ -21,6 +21,16 @@ def post_init_hook(cr, registry):
             ),
         }
     )
+    # Initialize m2m table for preserving old restrictions
+    cr.execute(
+        """
+        INSERT INTO res_company_res_partner_rel
+        (res_partner_id, res_company_id)
+        SELECT id, company_id
+        FROM res_partner
+        WHERE company_id IS NOT NULL
+        """
+    )
 
 
 def uninstall_hook(cr, registry):
