@@ -22,14 +22,3 @@ class SaleOrder(models.Model):
                 if line.auto_purchase_line_id:
                     line.auto_purchase_line_id.price_unit = line.price_unit
         return super().action_confirm()
-
-
-class SaleOrderLine(models.Model):
-    _inherit = "sale.order.line"
-
-    auto_purchase_line_id = fields.Many2one(
-        comodel_name="purchase.order.line",
-        string="Source Purchase Order Line",
-        readonly=True,
-        copy=False,
-    )
