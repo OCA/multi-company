@@ -116,7 +116,7 @@ msgstr "Riga ordine d'acquisto di origine"
 
 #. module: purchase_sale_inter_company
 #. odoo-python
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
 #, python-format
 msgid ""
 "The generated sale orders with reference %(orders)s can't be modified. "
@@ -156,7 +156,7 @@ msgstr "Impossibile annullare un ordine che è %s"
 
 #. module: purchase_sale_inter_company
 #. odoo-python
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
 #, python-format
 msgid ""
 "You can't change this purchase order as the corresponding sale is %(state)s"
@@ -164,7 +164,7 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+#: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
 #, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
 msgstr ""
