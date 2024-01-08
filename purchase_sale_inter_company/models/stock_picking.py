@@ -12,7 +12,7 @@ class StockPicking(models.Model):
     intercompany_picking_id = fields.Many2one(comodel_name='stock.picking', copy=False)
 
     @api.multi
-    def do_transfer(self):
+    def action_done(self):
         # Only DropShip pickings
         po_picks = self.browse()
         for pick in self.filtered(
@@ -45,7 +45,7 @@ class StockPicking(models.Model):
             po_pick.with_context(
                 force_company=po_pick.company_id.id,
             ).action_done()
-        return super(StockPicking, self).do_transfer()
+        return super(StockPicking, self).action_done()
 
     def button_validate(self):
         is_intercompany = self.env["res.company"].search(
