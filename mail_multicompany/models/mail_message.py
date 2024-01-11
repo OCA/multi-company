@@ -4,7 +4,6 @@ from odoo import api, fields, models
 
 
 class MailMessage(models.Model):
-
     _inherit = "mail.message"
 
     company_id = fields.Many2one("res.company", "Company")
@@ -29,4 +28,4 @@ class MailMessage(models.Model):
                     )
                     .id
                 )
-        return super(MailMessage, self).create(vals_list)
+        return super().create(vals_list)
