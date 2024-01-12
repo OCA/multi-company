@@ -31,6 +31,8 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         cls.company_a = cls.env.ref('purchase_sale_inter_company.company_a')
         cls.company_b = cls.env.ref('purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
+        cls.partner_company_a = cls.company_a.partner_id
+        cls.partner_company_b = cls.company_b.partner_id
         cls.purchase_manager_gr = cls.env.ref(
             'purchase.group_purchase_manager')
         cls.sale_manager_gr = cls.env.ref('sales_team.group_sale_manager')
@@ -39,13 +41,17 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         cls.purchase_manager_gr.users = [
             (4, cls.user_a.id), (4, cls.user_b.id)]
         cls.sale_manager_gr.users = [(4, cls.user_a.id), (4, cls.user_b.id)]
-        cls.intercompany_user = cls.user_b.copy()
-        cls.intercompany_user.company_ids |= cls.company_a
-        cls.company_b.intercompany_user_id = cls.intercompany_user
+        cls.intercompany_user_a = cls.user_a.copy()
+        cls.intercompany_user_a.company_ids |= cls.company_b
+        cls.company_a.intercompany_user_id = cls.intercompany_user_a
+        cls.intercompany_user_b = cls.user_b.copy()
+        cls.intercompany_user_b.company_ids |= cls.company_a
+        cls.company_b.intercompany_user_id = cls.intercompany_user_b
         cls.account_sale_b = cls.env.ref(
             'purchase_sale_inter_company.a_sale_company_b')
         cls.product_consultant = cls.env.ref(
             'purchase_sale_inter_company.product_consultant_multi_company')
+        cls.product_consultant.invoice_policy = "order"
         cls.product_consultant.sudo(
             cls.user_b.id).property_account_income_id = cls.account_sale_b
         currency_eur = cls.env.ref('base.EUR')
@@ -165,9 +171,6 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         warehouse_company_a = self.env.ref(
             'purchase_sale_inter_company.warehouse_company_a')
         self.company_a.po_picking_type_id = warehouse_company_a.in_type_id.id
-        intercompany_user_a = self.user_a.copy()
-        intercompany_user_a.company_ids |= self.company_b
-        self.company_a.intercompany_user_id = intercompany_user_a
         self.sale_company_b.note = 'Test sale note'
         self.sale_company_b.sudo(self.user_b).action_confirm()
         purchases = self.env['purchase.order'].sudo(self.user_a).search([

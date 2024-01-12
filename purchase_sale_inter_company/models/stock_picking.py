@@ -13,47 +13,32 @@ class StockPicking(models.Model):
 
     @api.multi
     def action_done(self):
-        # Only DropShip pickings
-        po_picks = self.browse()
         for pick in self.filtered(
                 lambda x: x.location_dest_id.usage == 'customer').sudo():
             purchase = pick.sale_id.auto_purchase_order_id
             if not purchase:
                 continue
             purchase.picking_ids.write({'intercompany_picking_id': pick.id})
+            if not pick.intercompany_picking_id and purchase.picking_ids[0]:
+                pick.write({"intercompany_picking_id": purchase.picking_ids[0].id})
             for move_line in pick.move_line_ids:
-                qty_done = move_line.qty_done
-                po_move_lines = move_line.move_id.sale_line_id.\
+                po_move_lines = move_line.move_id.sale_line_id. \
                     auto_purchase_line_id.move_ids.mapped('move_line_ids')
-                for po_move_line in po_move_lines:
-                    if po_move_line.product_qty >= qty_done:
-                        po_move_line.qty_done = qty_done
-                        qty_done = 0.0
-                    else:
-                        po_move_line.qty_done = po_move_line.product_qty
-                        qty_done -= po_move_line.product_qty
-                    po_picks |= po_move_line.picking_id
-                if qty_done and po_move_lines:
-                    po_move_lines[-1:].qty_done += qty_done
-                elif not po_move_lines:
+                if not po_move_lines:
                     raise UserError(_(
                         "There's no corresponding line in PO %s for assigning "
                         "qty from %s for product %s"
                     ) % (purchase.name, pick.name, move_line.product_id.name))
-        # Transfer dropship pickings
-        for po_pick in po_picks.sudo():
-            po_pick.with_context(
-                force_company=po_pick.company_id.id,
-            ).action_done()
-        return super(StockPicking, self).action_done()
+        return super().action_done()
 
     def button_validate(self):
+        res = super().button_validate()
         is_intercompany = self.env["res.company"].search(
             [("partner_id", "=", self.partner_id.id)]
         ) or self.env["res.company"].search(
             [("partner_id", "=", self.partner_id.parent_id.id)]
         )
-        if is_intercompany and self.company_id.sync_picking \
+        if is_intercompany and self.company_id.sync_picking and self.state == "done" \
                 and self.picking_type_code == "outgoing":
             sale_order = self.sale_id
             dest_company = sale_order.partner_id.ref_company_ids
@@ -63,7 +48,7 @@ class StockPicking(models.Model):
                         dest_company,
                         sale_order,
                     )
-        return super().button_validate()
+        return res
 
     def _sync_receipt_with_delivery(self, dest_company, sale_order):
         self.ensure_one()
@@ -76,19 +61,19 @@ class StockPicking(models.Model):
             raise UserError(_("PO does not exist or has no receipts"))
         if self.intercompany_picking_id:
             dest_picking = self.intercompany_picking_id.sudo(intercompany_user.id)
-            for picking_move in self.move_ids_without_package:
-                dest_picking_move = dest_picking.sudo(
-                ).move_ids_without_package.filtered(
-                    lambda l: l.product_id.id == picking_move.product_id.id)
-                dest_picking_move.sudo().write({
-                    'quantity_done': picking_move.quantity_done,
-                })
-            for picking_line in self.move_line_ids_without_package:
+            for picking_line in self.move_line_ids_without_package.sorted("qty_done"):
                 dest_picking_line = dest_picking.sudo(
                 ).move_line_ids_without_package.filtered(
                     lambda l: l.product_id.id == picking_line.product_id.id)
                 dest_picking_line.sudo().write({
                     'qty_done': picking_line.qty_done,
+                })
+            for picking_move in self.move_ids_without_package.sorted("quantity_done"):
+                dest_picking_move = dest_picking.sudo(
+                ).move_ids_without_package.filtered(
+                    lambda l: l.product_id.id == picking_move.product_id.id)
+                dest_picking_move.sudo().write({
+                    'quantity_done': picking_move.quantity_done,
                 })
 
     def action_generate_backorder_wizard(self):
