@@ -16,9 +16,9 @@
     'license': 'AGPL-3',
     'installable': True,
     'depends': [
-        'sale',
-        'purchase',
-        'stock',
+        'sale_stock',
+        'purchase_stock',
+        'sale_purchase',
         'account_invoice_inter_company',
     ],
     'data': [
