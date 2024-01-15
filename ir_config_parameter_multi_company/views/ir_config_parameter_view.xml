@@ -5,16 +5,33 @@
         <field name="model">ir.config_parameter</field>
         <field name="inherit_id" ref="base.view_ir_config_form" />
         <field name="arch" type="xml">
-
-            <xpath expr="//group" position="inside">
-                <field name="company_value_ids">
-                    <tree editable="bottom">
-                        <field name="company_id" />
-                        <field name="company_value" />
-                    </tree>
-                </field>
-            </xpath>
-
+            <field name="value" position="after">
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    options="{'no_create': True}"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="view_ir_config_list_company" model="ir.ui.view">
+        <field name="name">view_ir_config_list_company</field>
+        <field name="model">ir.config_parameter</field>
+        <field name="inherit_id" ref="base.view_ir_config_list" />
+        <field name="arch" type="xml">
+            <field name="value" position="after">
+                <field name="company_id" groups="base.group_multi_company" />
+            </field>
+        </field>
+    </record>
+    <record id="view_ir_config_search_company" model="ir.ui.view">
+        <field name="name">view_ir_config_search_company</field>
+        <field name="model">ir.config_parameter</field>
+        <field name="inherit_id" ref="base.view_ir_config_search" />
+        <field name="arch" type="xml">
+            <field name="value" position="after">
+                <field name="company_id" groups="base.group_multi_company" />
+            </field>
         </field>
     </record>
 </odoo>
