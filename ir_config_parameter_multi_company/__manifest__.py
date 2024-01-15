@@ -7,7 +7,8 @@
     "maintainers": ["deniscraciungabriel", "eLBati"],
     "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
-    "data": ["views/ir_config_parameter_view.xml", "security/ir.model.access.csv"],
+    "depends": ["base"],
+    "data": ["views/ir_config_parameter_view.xml", "security/parameter_security.xml"],
     "images": [],
     "installable": True,
 }
