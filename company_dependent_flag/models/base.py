@@ -28,4 +28,5 @@ class Base(models.AbstractModel):
 
     def _get_company_dependent_css_class(self):
         """Inherit to apply your own class"""
-        return ["fa", "fa-building-o"]
+
+        return ["fa", "fa-building-o", "d-flex", "flex-row"]
