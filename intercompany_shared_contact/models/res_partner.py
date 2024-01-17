@@ -32,7 +32,7 @@ class ResPartner(models.Model):
             if record.parent_id.origin_company_id:
                 record.origin_company_id = record.parent_id.origin_company_id
                 record.company_id = False
-            if record.res_company_id:
+            elif record.res_company_id:
                 record.origin_company_id = record.res_company_id
                 record.company_id = False
             else:
