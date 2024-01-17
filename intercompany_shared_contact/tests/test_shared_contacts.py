@@ -40,7 +40,13 @@ class IntercompanySharedContactCase(SavepointCase, FakeModelLoader):
                 "login": "y",
             }
         )
-
+        cls.contact_y = cls.user_y.partner_id
+        cls.address_y = cls.env["res.partner"].create(
+            {
+                "name": "Foo address",
+                "parent_id": cls.partner_y.id,
+            }
+        )
         cls.partner_other = cls.env.ref("base.res_partner_12")
         cls.partner_other.company_id = cls.company_x
 
@@ -53,24 +59,60 @@ class IntercompanySharedContactCase(SavepointCase, FakeModelLoader):
         self.assertEqual(self.partner_x.res_company_id, self.company_x)
         self.assertEqual(self.partner_x.origin_company_id, self.company_x)
 
+        self.assertEqual(self.partner_y.res_company_id, self.company_y)
+        self.assertEqual(self.partner_y.origin_company_id, self.company_y)
+        self.assertEqual(self.contact_y.origin_company_id, self.company_y)
+        self.assertEqual(self.address_y.origin_company_id, self.company_y)
+
     def test_intercompany_read(self):
         """
-        Company contacts are readable by other companies
+        Company partner are readable by other companies
         """
         self.env["res.partner"].with_user(self.user_x).browse(self.partner_y.id).name
+        self.env["res.partner"].with_user(self.user_x).browse(self.contact_y.id).name
+        self.env["res.partner"].with_user(self.user_x).browse(self.address_y.id).name
         self.env["res.partner"].with_user(self.user_y).browse(self.partner_x.id).name
 
-    def test_intercompany_update(self):
+    def test_partner_intercompany_update(self):
         """
-        Company contacts are non-modifiable by other companies
+        Company partner are not-editable by other companies
         """
         partner_y = self.partner_y.with_user(self.user_x)
         with self.assertRaises(AccessError):
             partner_y.name = "boom"
 
+    def test_contact_intercompany_create(self):
+        """
+        Company contact are not-creatable by other companies
+        """
+        with self.assertRaises(AccessError):
+            self.env["res.partner"].with_user(self.user_x).create(
+                {
+                    "name": "Foo new address",
+                    "parent_id": self.partner_y.id,
+                }
+            )
+
+    def test_contact_intercompany_update(self):
+        """
+        Company contact are not-editable by other companies
+        """
+        with self.assertRaises(AccessError):
+            self.contact_y.with_user(self.user_x).name = "boom"
+
+        with self.assertRaises(AccessError):
+            self.address_y.with_user(self.user_x).name = "boom"
+
+    def test_contact_intercompany_unlink(self):
+        """
+        Company contact are not-deleteable by other companies
+        """
+        with self.assertRaises(AccessError):
+            self.address_y.with_user(self.user_x).unlink()
+
     def test_intercompany_update_company_dependent(self):
         """
-        Company dependent field of Company contacts are modifiable by other companies
+        Company dependent field of Company partner are modifiable by other companies
         """
         partner_y = self.partner_y.with_user(self.user_x)
         partner_y.barcode = "ça-fait-pas-boom"
