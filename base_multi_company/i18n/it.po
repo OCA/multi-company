@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-11-30 12:33+0000\n"
-"Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
+"PO-Revision-Date: 2024-01-19 22:33+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -49,7 +49,7 @@ msgstr "Ultima modifica il"
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
-msgstr "Multi-Azienda astratto"
+msgstr "Multi-azienda astratto"
 
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__no_company_ids
