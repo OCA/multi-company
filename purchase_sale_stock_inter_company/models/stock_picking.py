@@ -11,11 +11,10 @@ class StockPicking(models.Model):
 
     intercompany_picking_id = fields.Many2one(comodel_name="stock.picking")
 
-    def _get_product_intercompany_qty_done_dict(
-        self, sale_line, sale_move_lines, po_move_lines
-    ):
+    def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
+        product = po_move_lines[0].product_id
         qty_done = sum(sale_move_lines.mapped("qty_done"))
-        res = {sale_line.product_id: qty_done}
+        res = {product: qty_done}
         return res
 
     def _set_intercompany_picking_qty(self, purchase):
@@ -43,7 +42,7 @@ class StockPicking(models.Model):
                     )
                 )
             product_qty_done = self._get_product_intercompany_qty_done_dict(
-                sale_line, sale_move_lines, po_move_lines
+                sale_move_lines, po_move_lines
             )
             for product, qty_done in product_qty_done.items():
                 product_po_mls = po_move_lines.filtered(
