@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_location_form_inherit" model="ir.ui.view">
+        <field name="name">stock.route.form.inherit</field>
+        <field name="model">stock.route</field>
+        <field name="inherit_id" ref="stock.stock_location_route_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='active']" position="after">
+                <field
+                    name="company_ids"
+                    groups="base.group_multi_company"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                />
+            </xpath>
+            <xpath
+                expr="//sheet/group/group[1]/field[@name='company_id']"
+                position="attributes"
+            >
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

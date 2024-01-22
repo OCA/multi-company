@@ -1,0 +1,1 @@
+Any sale & stock user must be part of any company defined on the warehouse.

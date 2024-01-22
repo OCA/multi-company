@@ -1,0 +1,1 @@
+* Test with a normal user that with the solution you can make a sale in DIVO and deliver goods from AB.
