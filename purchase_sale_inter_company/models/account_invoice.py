@@ -18,6 +18,8 @@ class AccountInvoice(models.Model):
         if dest_inv_type == 'in_invoice':
             # Link intercompany purchase order with intercompany invoice
             self._link_invoice_purchase(res['dest_invoice'])
+        elif dest_inv_type == 'in_refund':
+            self._link_refund_purchase(res['dest_invoice'])
         return res
 
     @api.multi
@@ -36,6 +38,31 @@ class AccountInvoice(models.Model):
                 purchase_lines = self.env["purchase.order.line"].search([(
                     "auto_sale_line_id", "in",
                     line.auto_invoice_line_id.sale_line_ids.ids
+                )])
+            purchase_lines.update(vals)
+            orders |= purchase_lines.mapped('order_id')
+        if orders:
+            ref = '<a href=# data-oe-model=purchase.order data-oe-id={}>{}</a>'
+            message = _('This vendor bill is related with: {}'.format(
+                ','.join([ref.format(o.id, o.name) for o in orders])))
+            dest_invoice.message_post(body=message)
+
+    @api.multi
+    def _link_refund_purchase(self, dest_invoice):
+        self.ensure_one()
+        orders = self.env['purchase.order']
+        vals = {}
+        for line in dest_invoice.invoice_line_ids:
+            vals['invoice_lines'] = [(4, line.id)]
+            purchase_lines = (line.auto_invoice_line_id.invoice_id.
+                              refund_invoice_id.invoice_line_ids.mapped(
+                                  'sale_line_ids.auto_purchase_line_id'))
+            if not purchase_lines:
+                # the case where PO is generated from SO
+                purchase_lines = self.env["purchase.order.line"].search([(
+                    "auto_sale_line_id", "in",
+                    line.auto_invoice_line_id.invoice_id.
+                    refund_invoice_id.invoice_line_ids.mapped('sale_line_ids.ids')
                 )])
             purchase_lines.update(vals)
             orders |= purchase_lines.mapped('order_id')
