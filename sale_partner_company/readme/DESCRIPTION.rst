@@ -1,0 +1,1 @@
+Allow to set the default selling company on a partner. 
