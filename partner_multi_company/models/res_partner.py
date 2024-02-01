@@ -17,6 +17,11 @@ class ResPartner(models.Model):
         store=True,
         index=True,
     )
+    company_ids = fields.Many2many(
+        default=lambda self: [(6, 0, [self.env.company.id])]
+        if self.env.company.set_active_company_partner
+        else False
+    )
 
     @api.model
     def create(self, vals):

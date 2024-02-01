@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">account settings </field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <div id="inter_company" position="after">
+                <div
+                    class="col-xs-12 col-md-6 o_setting_box"
+                    id="active_company_partner"
+                >
+                    <div class="o_setting_left_pane">
+                        <field name="set_active_company_partner" />
+                    </div>
+                    <div
+                        class="o_setting_right_pane"
+                        id="active_company_partner_settings"
+                    >
+                        <label for="set_active_company_partner" />
+                        <div class="text-muted">
+                            Set active company in partner's companies on create
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>

@@ -12,6 +12,16 @@ class TestPartnerMultiCompany(common.TransactionCase):
         )
         self.company_1 = self.env["res.company"].create({"name": "Test company 1"})
         self.company_2 = self.env["res.company"].create({"name": "Test company 2"})
+
+        self.is_account_module_installed = bool(
+            self.env["ir.module.module"].search(
+                [
+                    ("name", "=", "account"),
+                    ("state", "=", "installed"),
+                ]
+            )
+        )
+
         self.partner_company_none = self.partner_model.create(
             {"name": "partner without company", "company_ids": False}
         )
@@ -167,3 +177,72 @@ class TestPartnerMultiCompany(common.TransactionCase):
         user_partner.write({"company_id": False, "company_ids": [(5, False)]})
         self.user_company_1.write({"company_id": self.company_2.id})
         self.assertEqual(user_partner.company_ids.ids, [])
+
+    def test_partner_default_company_ids(self):
+        view = self.env.ref("base.view_partner_form")
+        self.company_2.set_active_company_partner = True
+
+        Form1 = common.Form(
+            self.partner_model.with_user(self.user_company_1), view=view
+        )
+        Form1.name = "Test partner 1"
+
+        Form2 = common.Form(
+            self.partner_model.with_user(self.user_company_2), view=view
+        )
+        Form2.name = "Test partner 2"
+
+        if self.is_account_module_installed:
+            account_type = self.env["account.account.type"].create(
+                {
+                    "name": "test account type",
+                    "type": "other",
+                    "internal_group": "off_balance",
+                }
+            )
+
+            account_receivable_1 = self.env["account.account"].create(
+                {
+                    "name": "Test account 1 Rec",
+                    "code": "001R",
+                    "user_type_id": account_type.id,
+                    "company_id": self.company_1.id,
+                }
+            )
+            account_payable_1 = self.env["account.account"].create(
+                {
+                    "name": "Test account 1 Pay",
+                    "code": "001P",
+                    "user_type_id": account_type.id,
+                    "company_id": self.company_1.id,
+                }
+            )
+            Form1.property_account_receivable_id = account_receivable_1
+            Form1.property_account_payable_id = account_payable_1
+
+            account_receivable_2 = self.env["account.account"].create(
+                {
+                    "name": "Test account 2",
+                    "code": "002R",
+                    "user_type_id": account_type.id,
+                    "company_id": self.company_2.id,
+                }
+            )
+            account_payable_2 = self.env["account.account"].create(
+                {
+                    "name": "Test account 2 Pay",
+                    "code": "002P",
+                    "user_type_id": account_type.id,
+                    "company_id": self.company_2.id,
+                }
+            )
+            Form2.property_account_receivable_id = account_receivable_2
+            Form2.property_account_payable_id = account_payable_2
+
+        partner_1 = Form1.save()
+        partner_2 = Form2.save()
+
+        self.assertFalse(self.company_1.set_active_company_partner)
+        self.assertFalse(partner_1.company_ids)
+        self.assertTrue(self.company_2.set_active_company_partner)
+        self.assertEqual(partner_2.company_ids, self.company_2)
