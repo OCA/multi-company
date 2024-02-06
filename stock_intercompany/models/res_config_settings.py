@@ -10,3 +10,11 @@ class ResConfigSettings(models.TransientModel):
     intercompany_in_type_id = fields.Many2one(
         related="company_id.intercompany_in_type_id", readonly=False
     )
+
+    intercompany_out_type_id = fields.Many2one(
+        related="company_id.intercompany_out_type_id", readonly=False
+    )
+
+    intercompany_picking_creation_mode = fields.Selection(
+        related="company_id.intercompany_picking_creation_mode", readonly=False
+    )
