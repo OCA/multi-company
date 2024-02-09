@@ -59,7 +59,7 @@ class SaleOrder(models.Model):
                         for move in moves:
                             purchase_move = purchase_moves.filtered(
                                 lambda m: m.product_id.id == move.product_id.id
-                            )
+                            )[:1]
                             new_move = purchase_move.with_user(
                                 po_company.intercompany_sale_user_id.id
                             ).copy(
@@ -74,7 +74,7 @@ class SaleOrder(models.Model):
                                     "note": move.note,
                                     "create_date": move.create_date,
                                     "date": move.date,
-                                    "date_expected": move.date_expected,
+                                    "date_deadline": move.date_deadline,
                                     "state": move.state,
                                 }
                             )
@@ -140,7 +140,7 @@ class SaleOrder(models.Model):
                     purchase_moves._action_cancel()
                     purchase_moves.unlink()
                     purchase_picking._update_extra_data_in_picking(pickings[:1])
-                    new_pickings.action_assign()
+                    new_pickings.sudo().action_assign()
 
         return res
 
