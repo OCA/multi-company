@@ -37,18 +37,21 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             user.groups_id |= cls.env.ref(xml)
 
     @classmethod
-    def _create_purchase_order(cls, partner, product_id=None):
+    def _create_purchase_order(cls, partner, product_ids=None):
+        if not product_ids:
+            product_ids = [None]
+
         po = Form(cls.env["purchase.order"])
         po.company_id = cls.company_a
         po.partner_id = partner
 
         cls.product.invoice_policy = "order"
 
-        with po.order_line.new() as line_form:
-            line_form.product_id = product_id if product_id else cls.product
-            line_form.product_qty = 3.0
-            line_form.name = "Service Multi Company"
-            line_form.price_unit = 450.0
+        for product_id in product_ids:
+            with po.order_line.new() as line_form:
+                line_form.product_id = product_id or cls.product
+                line_form.product_qty = 3.0
+                line_form.price_unit = 450.0
         return po.save()
 
     @classmethod
@@ -152,6 +155,36 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 }
             )
         return lot
+
+    def create_picking(self, product_id=None, location_id=None, location_dest_id=None):
+        product_id = product_id or self.env.ref("product.product_product_8")
+        location_id = location_id or self.env.ref("stock.stock_location_stock")
+        location_dest_id = location_dest_id or self.env.ref(
+            "stock.stock_location_customers"
+        )
+
+        picking_data = {
+            "partner_id": self.company_a.partner_id.id,
+            "picking_type_id": self.env.ref("stock.picking_type_out").id,
+            "location_id": location_id.id,
+            "location_dest_id": location_dest_id.id,
+            "move_lines": [
+                (
+                    0,
+                    0,
+                    {
+                        "name": product_id.name,
+                        "product_id": product_id.id,
+                        "product_uom_qty": 3,
+                        "product_uom": product_id.uom_id.id,
+                        "location_id": location_id.id,
+                        "location_dest_id": location_dest_id.id,
+                    },
+                )
+            ],
+        }
+
+        return self.env["stock.picking"].create(picking_data)
 
     def _approve_po(self, purchase_id):
         """Confirm the PO in company A and return the related sale of Company B"""
@@ -462,6 +495,29 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             so_picking_id.mapped("move_lines.quantity_done"),
             msg="The quantities are not the same in both pickings.",
         )
+
+    def test_sync_picking_different_product_multiple_lines(self):
+        """
+        Test that the action_confirm of the sale order
+        still works even if the amount of pickings is
+        different between the sale order and the purchase order
+        """
+
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product | self.consumable_product_2
+        )
+        sale = self._approve_po(purchase)
+
+        new_picking = self.create_picking(
+            product_id=self.consumable_product_2,
+            location_id=sale.picking_ids.location_id,
+            location_dest_id=sale.picking_ids.location_dest_id,
+        )
+        sale.sudo().write({"picking_ids": [(4, new_picking.id)]})
+        sale.action_confirm()
 
     def test_update_open_sale_order(self):
         """
