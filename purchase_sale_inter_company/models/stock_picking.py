@@ -2,7 +2,7 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -10,6 +10,11 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     intercompany_picking_id = fields.Many2one(comodel_name="stock.picking")
+    is_intercompany_picking = fields.Boolean(
+        string="Is Inter Company Transfer?",
+        compute="_compute_is_intercompany_picking",
+        store=True,
+    )
 
     def action_done(self):
         # Only DropShip pickings
@@ -49,3 +54,10 @@ class StockPicking(models.Model):
         for po_pick in po_picks.sudo():
             po_pick.with_context(force_company=po_pick.company_id.id,).action_done()
         return super(StockPicking, self).action_done()
+
+    @api.depends("move_lines.is_intercompany_move")
+    def _compute_is_intercompany_picking(self):
+        for picking in self:
+            picking.is_intercompany_picking = bool(
+                any([move.is_intercompany_move for move in picking.move_lines])
+            )
