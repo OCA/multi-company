@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-01-29 17:33+0000\n"
+"PO-Revision-Date: 2024-02-13 11:42+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -144,7 +144,7 @@ msgstr "Ultima modifica il"
 #: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:0
 #, python-format
 msgid "No Chart of Account Template has been defined !"
-msgstr "Nessun template di piano dei conti è stato definito !"
+msgstr "Non è stato definito un modello per il piano dei conti!"
 
 #. module: account_invoice_inter_company
 #: code:addons/account_invoice_inter_company/models/account_move.py:0
