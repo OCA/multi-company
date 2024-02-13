@@ -81,8 +81,10 @@ class PurchaseOrder(models.Model):
                 company_partner.property_product_pricelist.currency_id.id):
             raise UserError(_(
                 'You cannot create SO from PO because '
-                'sale price list currency is different than '
-                'purchase price list currency.'))
+                'sale price list currency (%s) is different than '
+                'purchase price list currency (%s).') % (
+                company_partner.property_product_pricelist.currency_id.name,
+                self.currency_id.name))
         # create the SO and generate its lines from the PO lines
         sale_order_data = self._prepare_sale_order_data(
             self.name, company_partner, dest_company, self.dest_address_id)

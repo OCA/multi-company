@@ -31,6 +31,8 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         cls.company_a = cls.env.ref('purchase_sale_inter_company.company_a')
         cls.company_b = cls.env.ref('purchase_sale_inter_company.company_b')
         cls.company_b.so_from_po = True
+        cls.partner_company_a = cls.company_a.partner_id
+        cls.partner_company_b = cls.company_b.partner_id
         cls.purchase_manager_gr = cls.env.ref(
             'purchase.group_purchase_manager')
         cls.sale_manager_gr = cls.env.ref('sales_team.group_sale_manager')
@@ -39,13 +41,17 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         cls.purchase_manager_gr.users = [
             (4, cls.user_a.id), (4, cls.user_b.id)]
         cls.sale_manager_gr.users = [(4, cls.user_a.id), (4, cls.user_b.id)]
-        cls.intercompany_user = cls.user_b.copy()
-        cls.intercompany_user.company_ids |= cls.company_a
-        cls.company_b.intercompany_user_id = cls.intercompany_user
+        cls.intercompany_user_a = cls.user_a.copy()
+        cls.intercompany_user_a.company_ids |= cls.company_b
+        cls.company_a.intercompany_user_id = cls.intercompany_user_a
+        cls.intercompany_user_b = cls.user_b.copy()
+        cls.intercompany_user_b.company_ids |= cls.company_a
+        cls.company_b.intercompany_user_id = cls.intercompany_user_b
         cls.account_sale_b = cls.env.ref(
             'purchase_sale_inter_company.a_sale_company_b')
         cls.product_consultant = cls.env.ref(
             'purchase_sale_inter_company.product_consultant_multi_company')
+        cls.product_consultant.invoice_policy = "order"
         cls.product_consultant.sudo(
             cls.user_b.id).property_account_income_id = cls.account_sale_b
         currency_eur = cls.env.ref('base.EUR')
@@ -165,9 +171,6 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         warehouse_company_a = self.env.ref(
             'purchase_sale_inter_company.warehouse_company_a')
         self.company_a.po_picking_type_id = warehouse_company_a.in_type_id.id
-        intercompany_user_a = self.user_a.copy()
-        intercompany_user_a.company_ids |= self.company_b
-        self.company_a.intercompany_user_id = intercompany_user_a
         self.sale_company_b.note = 'Test sale note'
         self.sale_company_b.sudo(self.user_b).action_confirm()
         purchases = self.env['purchase.order'].sudo(self.user_a).search([
@@ -189,3 +192,56 @@ class TestPurchaseSaleInterCompany(common.SavepointCase):
         self.assertEquals(purchases.order_line.product_qty,
                           self.sale_company_b.order_line.product_uom_qty)
         self.assertEquals(purchases.notes, 'Test sale note')
+
+    def test_confirm_several_picking(self):
+        """
+        Ensure that confirming several picking is not broken
+        """
+        self.product_consultant.type = 'consu'
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        purchase_company_a2 = self.purchase_company_a.sudo().copy()
+        purchase_company_a2.sudo(self.user_a).button_approve()
+        sale_1 = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id),
+        ])
+        sale_2 = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', purchase_company_a2.id),
+        ])
+        pickings = sale_1.picking_ids | sale_2.picking_ids
+        for move in pickings.mapped("move_lines"):
+            move.quantity_done = move.product_uom_qty
+        for picking in pickings:
+            picking.button_validate()
+        self.assertEqual(pickings.mapped("state"), ["done", "done"])
+
+    def test_sync_picking_same_product_multiple_lines(self):
+        """
+        Picking synchronization should work even when there
+        are multiple lines of the same product in the PO/SO/picking
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        self.product_consultant.type = 'consu'
+        self.purchase_company_a.sudo(self.user_a).button_approve()
+        self.purchase_company_a.order_line += self.purchase_company_a.order_line.copy(
+            {"product_qty": 2})
+        sale = self.env['sale.order'].sudo(self.user_b).search([
+            ('auto_purchase_order_id', '=', self.purchase_company_a.id),
+        ])
+        sale.action_confirm()
+
+        # validate the SO picking
+        po_picking_id = self.purchase_company_a.picking_ids[0]
+        so_picking_id = sale.picking_ids[0]
+
+        # Set quantities done on the picking and validate
+        for move in so_picking_id.move_lines:
+            move.quantity_done = move.product_uom_qty
+        so_picking_id.button_validate()
+
+        self.assertEqual(
+            po_picking_id.mapped("move_lines")[0].quantity_done,
+            so_picking_id.mapped("move_lines")[0].quantity_done,
+            msg="The quantities are not the same in both pickings.",
+        )
