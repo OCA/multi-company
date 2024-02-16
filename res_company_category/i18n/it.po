@@ -6,33 +6,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2024-02-16 16:37+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__active
 msgid "Active"
-msgstr ""
+msgstr "Attiva"
 
 #. module: res_company_category
 #: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
 msgid "Archived"
-msgstr ""
+msgstr "In archivio"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company__category_id
 msgid "Category"
-msgstr ""
+msgstr "Categoria"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__child_ids
 msgid "Category Childs"
-msgstr ""
+msgstr "Figli categoria"
 
 #. module: res_company_category
 #: model:ir.actions.act_window,name:res_company_category.action_company_category_to_company
@@ -40,88 +42,88 @@ msgstr ""
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_ids
 #: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
 msgid "Companies"
-msgstr ""
+msgstr "Aziende"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_qty
 msgid "Companies Quantity"
-msgstr ""
+msgstr "Quantità aziende"
 
 #. module: res_company_category
 #: model:ir.actions.act_window,name:res_company_category.action_company_category
 #: model:ir.model,name:res_company_category.model_res_company_category
 #: model:ir.ui.menu,name:res_company_category.menu_company_category
 msgid "Company Categories"
-msgstr ""
+msgstr "Categorie aziende"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__complete_name
 msgid "Complete Name"
-msgstr ""
+msgstr "Nome completo"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creato da"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creato il"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nome visualizzato"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category____last_update
 msgid "Last Modified on"
-msgstr ""
+msgstr "Ultima modifica il"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Ultimo aggiornamento di"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Ultimo aggiornamento il"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__name
 #: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #. module: res_company_category
 #: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__normal
 msgid "Normal"
-msgstr ""
+msgstr "Normale"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_id
 #: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
 msgid "Parent Category"
-msgstr ""
+msgstr "Categoria padre"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_path
 msgid "Parent Path"
-msgstr ""
+msgstr "Percorso padre"
 
 #. module: res_company_category
 #: model:ir.model.fields,field_description:res_company_category.field_res_company_category__type
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #. module: res_company_category
 #: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__view
 msgid "View"
-msgstr ""
+msgstr "Vista"
