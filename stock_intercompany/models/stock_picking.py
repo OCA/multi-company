@@ -156,7 +156,12 @@ class StockPicking(models.Model):
             "location_dest_id": location_dest.id,
             "intercompany_parent_id": self.id,  # Keep track of the parent picking
         }
-        return self.sudo().copy_data(default=vals)
+        result = self.sudo().copy_data(default=vals)
+        for picking in result:
+            for move_line in picking["move_lines"]:
+                del move_line[2]["rule_id"]
+                del move_line[2]["orderpoint_id"]
+        return result
 
     def _create_counterpart_pickings(self, mode):
         """Create counterpart pickings for all the pickings in the given mode"""
