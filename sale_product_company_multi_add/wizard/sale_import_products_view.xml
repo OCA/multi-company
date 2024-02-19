@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="view_import_product_to_sale_inherit" model="ir.ui.view">
+        <field name="name">import.products.to.sale.form.inherit</field>
+        <field name="model">sale.import.products</field>
+        <field
+            name="inherit_id"
+            ref="sale_product_multi_add.view_import_product_to_sale"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='products']" position="before">
+                <field name="sale_company_id" invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='products']" position="attributes">
+                <field name="products" position="attributes">
+                    <attribute name="domain" operation="domain_add" join_operator="AND">
+                        [('sale_ok', '=', True), '|', ('sale_ok_company_ids', 'in', sale_company_id), ('sale_ok_company_ids', '=', False)]
+                    </attribute>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>
