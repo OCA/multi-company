@@ -5,7 +5,7 @@
 {
     "name": "Product Category Company",
     "summary": "Product categories as company dependent",
-    "version": "16.0.1.0.0",
+    "version": "16.0.1.0.1",
     "category": "Product",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Odoo Community Association (OCA)",
