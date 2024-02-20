@@ -4,7 +4,7 @@
 {
     "name": "Product Categories - Company Favorites",
     "summary": "Possilibity to set favorite product categories per company",
-    "version": "16.0.1.0.0",
+    "version": "16.0.1.0.1",
     "category": "Product",
     "author": "GRAP,Odoo Community Association (OCA)",
     "maintainers": ["legalsylvain"],

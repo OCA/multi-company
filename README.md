@@ -30,7 +30,8 @@ addon | version | maintainers | summary
 [mail_template_multi_company](mail_template_multi_company/) | 16.0.1.0.0 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [partner_multi_company](partner_multi_company/) | 16.0.1.0.1 |  | Select individually the partner visibility on each company
 [product_account_multicompany_default](product_account_multicompany_default/) | 16.0.0.1.0 | [![yajo](https://github.com/yajo.png?size=30px)](https://github.com/yajo) | Set a default account for all companies of a product
-[product_category_company](product_category_company/) | 16.0.1.0.0 |  | Product categories as company dependent
+[product_category_company](product_category_company/) | 16.0.1.0.1 |  | Product categories as company dependent
+[product_category_company_favorite](product_category_company_favorite/) | 16.0.1.0.1 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | Possilibity to set favorite product categories per company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 16.0.1.0.2 | [![Shide](https://github.com/Shide.png?size=30px)](https://github.com/Shide) | Product Tax Multi Company Default
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 16.0.1.1.1 |  | Intercompany PO/SO rules
 [purchase_sale_stock_inter_company](purchase_sale_stock_inter_company/) | 16.0.1.0.0 |  | Intercompany PO/SO rules with warehouse
