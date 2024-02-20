@@ -15,7 +15,8 @@ odoo_test_flavor: Odoo
 odoo_version: 16.0
 org_name: Odoo Community Association (OCA)
 org_slug: OCA
-rebel_module_groups: []
+rebel_module_groups:
+- product_category_company
 repo_description: 'TODO: add repo description.'
 repo_name: Tools for managing instances containing multiple companies
 repo_slug: multi-company
