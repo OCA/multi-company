@@ -65,8 +65,22 @@ class TestPartnerMultiCompany(common.SavepointCase):
                 "company_ids": [(6, 0, cls.company_2.ids)],
             }
         )
+        cls.user_company_3 = cls.env["res.users"].create(
+            {
+                "name": "User company 3",
+                "login": "user_company_3",
+                "email": "somebody@somewhere.com",
+                "groups_id": [
+                    (4, cls.env.ref("base.group_partner_manager").id),
+                    (4, cls.env.ref("base.group_user").id),
+                ],
+                "company_id": cls.company_2.id,
+                "company_ids": [(6, 0, (cls.company_1 + cls.company_2).ids)],
+            }
+        )
         cls.partner_company_1 = cls.partner_company_1.with_user(cls.user_company_1)
         cls.partner_company_2 = cls.partner_company_2.with_user(cls.user_company_2)
+        cls.partner_company_3 = cls.partner_company_2.with_user(cls.user_company_3)
 
     def test_create_partner(self):
         partner = self.env["res.partner"].create(
@@ -170,3 +184,19 @@ class TestPartnerMultiCompany(common.SavepointCase):
         user_partner.write({"company_id": False, "company_ids": [(5, False)]})
         self.user_company_1.write({"company_id": self.company_2.id})
         self.assertEquals(user_partner.company_ids.ids, [])
+
+    def test_partner_companies_syncronize_with_users(self):
+        # check that the partner related has the same two companies as the user related
+        self.assertEqual(
+            len(self.user_company_3.partner_id.company_ids),
+            len(self.user_company_3.company_ids),
+        )
+
+        # modify user companies to 1
+        self.user_company_1.write({"company_ids": [(6, 0, [self.company_1.id])]})
+
+        # check that partner has the same number of companies
+        self.assertEqual(
+            len(self.user_company_1.partner_id.company_ids),
+            len(self.user_company_1.company_ids),
+        )

@@ -12,12 +12,10 @@ class ResUsers(models.Model):
         res = super(ResUsers, self).create(vals)
         if "company_ids" in vals:
             res.partner_id.company_ids = vals["company_ids"]
-        if "company_id" in vals and res.partner_id.company_ids:
-            res.partner_id.company_id = vals["company_id"]
         return res
 
     def write(self, vals):
-        res = super(ResUsers, self).write(vals)
+        res = super(ResUsers, self.with_context(from_res_users=True)).write(vals)
         if "company_ids" in vals:
             for user in self.sudo():
                 if user.partner_id.company_ids:
