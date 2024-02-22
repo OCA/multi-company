@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_tax_form" model="ir.ui.view">
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="company_map_id"
+                    groups="product_tax_multicompany_default.tax_man_mapping"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
