@@ -11,7 +11,6 @@ _logger = logging.getLogger(__name__)
 
 
 class AccountMove(models.Model):
-
     _inherit = "account.move"
 
     auto_generated = fields.Boolean(
@@ -73,9 +72,7 @@ class AccountMove(models.Model):
                     dest_user
                 ).with_context(
                     **{"allowed_company_ids": [dest_company.id]}
-                ).check_access_rule(
-                    "read"
-                )
+                ).check_access_rule("read")
             except AccessError as e:
                 raise UserError(
                     _(
@@ -298,7 +295,6 @@ class AccountMove(models.Model):
 
 
 class AccountMoveLine(models.Model):
-
     _inherit = "account.move.line"
 
     auto_invoice_line_id = fields.Many2one(
