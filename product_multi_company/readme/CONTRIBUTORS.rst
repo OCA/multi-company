@@ -4,3 +4,6 @@
 
   * Vicent Cubells <vicent.cubells@tecnativa.com>
 * Denis Roussel <denis.roussel@acsone.eu>
+* Ooops404 <https://ooops404.com>
+
+  * Ilyas <irazor147@gmail.com>

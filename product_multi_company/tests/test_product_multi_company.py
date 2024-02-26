@@ -24,6 +24,9 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.SavepointCase):
         ).description_sale = "Test 2"
 
     def test_company_1(self):
+        self.product_company_1.product_tmpl_id.company_ids = [
+            (6, 0, self.company_1.ids)
+        ]
         self.assertEqual(
             self.product_company_1.with_user(self.user_company_1).company_id,
             self.company_1,
@@ -42,6 +45,9 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.SavepointCase):
             ).description_sale = "Test 3"
 
     def test_company_2(self):
+        self.product_company_2.product_tmpl_id.company_ids = [
+            (6, 0, self.company_2.ids)
+        ]
         self.assertEqual(
             self.product_company_2.with_user(self.user_company_2).company_id,
             self.company_2,
