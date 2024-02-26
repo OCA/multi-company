@@ -369,12 +369,16 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:705c323d012dad5f7fabb63c188aaef08b3ca0eaa5bba80b15583c6525e12d73
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/16.0/account_invoice_inter_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-account_invoice_inter_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=16.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module is usefull if there are multiple companies in the same Odoo database and those companies sell goods or services among themselves.
-It allow to create an invoice in company A from an invoice in company B.</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/17.0/account_invoice_inter_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-17-0/multi-company-17-0-account_invoice_inter_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=17.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This module is usefull if there are multiple companies in the same Odoo
+database and those companies sell goods or services among themselves. It
+allow to create an invoice in company A from an invoice in company B.</p>
 <p>Imagine you have company A and company B in the same Odoo database.
-First scenario: company B create an invoice with company A as customer. The module will automate the generation of the supplier invoice in company A.
-Second scenario: company A create an invoice with company B as supplier. The module will automate the generation of the customer invoice in company B.</p>
+First scenario: company B create an invoice with company A as customer.
+The module will automate the generation of the supplier invoice in
+company A. Second scenario: company A create an invoice with company B
+as supplier. The module will automate the generation of the customer
+invoice in company B.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -391,16 +395,24 @@ Second scenario: company A create an invoice with company B as supplier. The mod
 </div>
 <div class="section" id="configuration">
 <h1><a class="toc-backref" href="#toc-entry-1">Configuration</a></h1>
-<p>To configure this module, you need to go to the menu <em>Settings &gt; General Settings</em>, go to the tab <em>Companies / Inter Company OCA features</em></p>
-<p>You now have access to other checks <em>Common Product Catalog</em> and <em>Invoice Auto Validation</em>.</p>
-<p>To customize products sharing don’t hesitate to override <cite>_compute_share_product()</cite> in <cite>res.company</cite> model.</p>
+<p>To configure this module, you need to go to the menu <em>Settings &gt; General
+Settings</em>, go to the tab <em>Companies / Inter Company OCA features</em></p>
+<p>You now have access to other checks <em>Common Product Catalog</em> and
+<em>Invoice Auto Validation</em>.</p>
+<p>To customize products sharing don’t hesitate to override
+_compute_share_product() in res.company model.</p>
 </div>
 <div class="section" id="known-issues-roadmap">
 <h1><a class="toc-backref" href="#toc-entry-2">Known issues / Roadmap</a></h1>
 <blockquote>
 <ul class="simple">
-<li>This module cannot be fully used in combination with <cite>remove_odoo_entreprise</cite> module. If you need both, uninstall <cite>remove_odoo_entreprise</cite>, complete settings with <cite>account_invoice_inter_company</cite> and then re-install <cite>remove_odoo_entreprise</cite>.</li>
-<li>Product mapping: would be nice to have a matrix with the products on the left side and on the top row the companies.</li>
+<li>This module cannot be fully used in combination with
+remove_odoo_entreprise module. If you need both, uninstall
+remove_odoo_entreprise, complete settings with
+account_invoice_inter_company and then re-install
+remove_odoo_entreprise.</li>
+<li>Product mapping: would be nice to have a matrix with the products
+on the left side and on the top row the companies.</li>
 </ul>
 </blockquote>
 </div>
@@ -409,7 +421,7 @@ Second scenario: company A create an invoice with company B as supplier. The mod
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/multi-company/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20account_invoice_inter_company%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20account_invoice_inter_company%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
@@ -424,17 +436,17 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <div class="section" id="contributors">
 <h2><a class="toc-backref" href="#toc-entry-6">Contributors</a></h2>
 <ul class="simple">
-<li>Odoo S.A. (original module <cite>inter_company_rules</cite>)</li>
+<li>Odoo S.A. (original module inter_company_rules)</li>
 <li>Andrea Stirpe &lt;<a class="reference external" href="mailto:a.stirpe&#64;onestein.nl">a.stirpe&#64;onestein.nl</a>&gt;</li>
 <li>Adria Gil Sorribes &lt;<a class="reference external" href="mailto:adria.gil&#64;forgeflow.com">adria.gil&#64;forgeflow.com</a>&gt;</li>
 <li>Christopher Ormaza &lt;<a class="reference external" href="mailto:chris.ormaza&#64;forgeflow.com">chris.ormaza&#64;forgeflow.com</a>&gt;</li>
-<li><cite>Akretion &lt;https://www.akretion.com&gt;</cite>:<ul>
+<li>`Akretion &lt;<a class="reference external" href="https://www.akretion.com">https://www.akretion.com</a>&gt;`:<ul>
 <li>Chafique Delli &lt;<a class="reference external" href="mailto:chafique.delli&#64;akretion.com">chafique.delli&#64;akretion.com</a>&gt;</li>
 <li>Alexis de Lattre &lt;<a class="reference external" href="mailto:alexis.delattre&#64;akretion.com">alexis.delattre&#64;akretion.com</a>&gt;</li>
 <li>David Beal &lt;<a class="reference external" href="mailto:david.beal&#64;akretion.com">david.beal&#64;akretion.com</a>&gt;</li>
 </ul>
 </li>
-<li><cite>Tecnativa &lt;https://www.tecnativa.com&gt;</cite>:<ul>
+<li>`Tecnativa &lt;<a class="reference external" href="https://www.tecnativa.com">https://www.tecnativa.com</a>&gt;`:<ul>
 <li>Jairo Llopis</li>
 <li>David Vidal</li>
 <li>Pedro M. Baeza</li>
@@ -450,7 +462,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/16.0/account_invoice_inter_company">OCA/multi-company</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/17.0/account_invoice_inter_company">OCA/multi-company</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
 </div>
 </div>
