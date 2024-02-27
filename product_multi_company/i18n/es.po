@@ -20,6 +20,7 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 
 #. module: product_multi_company
+#: model:ir.model.fields,field_description:product_multi_company.field_product_product__company_ids
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__company_ids
 msgid "Companies"
 msgstr "Compañías"
@@ -31,18 +32,21 @@ msgstr "Companía"
 
 #. module: product_multi_company
 #: model:ir.model.fields,field_description:product_multi_company.field_product_category__display_name
+#: model:ir.model.fields,field_description:product_multi_company.field_product_product__display_name
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__display_name
 msgid "Display Name"
 msgstr "Mostrar Nombre"
 
 #. module: product_multi_company
 #: model:ir.model.fields,field_description:product_multi_company.field_product_category__id
+#: model:ir.model.fields,field_description:product_multi_company.field_product_product__id
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__id
 msgid "ID"
 msgstr "ID"
 
 #. module: product_multi_company
 #: model:ir.model.fields,field_description:product_multi_company.field_product_category____last_update
+#: model:ir.model.fields,field_description:product_multi_company.field_product_product____last_update
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template____last_update
 msgid "Last Modified on"
 msgstr "Última Modificación el"
@@ -51,6 +55,11 @@ msgstr "Última Modificación el"
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__no_company_ids
 msgid "No Companies"
 msgstr "No Compañías"
+
+#. module: product_multi_company
+#: model:ir.model,name:product_multi_company.model_product_product
+msgid "Product"
+msgstr ""
 
 #. module: product_multi_company
 #: model:ir.model,name:product_multi_company.model_product_category
