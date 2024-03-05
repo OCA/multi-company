@@ -1,3 +1,1 @@
-This module extends the functionality of account reconcile module
-to allow you to propagate configuration from one company to other companies
-with same chart template.
+Module for a multi-company environment. This module allows for the propagation of reconciliation models to be shared across all companies in the database.

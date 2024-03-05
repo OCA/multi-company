@@ -28,9 +28,7 @@ Account Reconcile Model Multicompany Propagate
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module extends the functionality of account reconcile module
-to allow you to propagate configuration from one company to other companies
-with same chart template.
+Module for a multi-company environment. This module allows for the propagation of reconciliation models to be shared across all companies in the database.
 
 .. IMPORTANT::
    This is an alpha version, the data model and design can change at any time without warning.
@@ -57,6 +55,12 @@ Usage
 #. Create a new conciliation model.
 #. Click on "Propagate to companies".
 
+Points to consider:
+
+  #. If it is propagated and there is no reconciliation model with the same name in another company, with the same chart of accounts (i.e., the country's chart of accounts), it creates one with the same values except for the journal.
+  #. If the account and tax codes of the lines are located by code or name, they will also be propagated.
+  #. If it is propagated and there is a reconciliation model with the same name in another company that shares the chart of accounts, it will replace (NOT duplicate) the values except for the journal. It will also propagate the account and tax codes of the lines if they are located by code or name, respectively.
+
 Bug Tracker
 ===========
 
@@ -79,6 +83,7 @@ Contributors
 ~~~~~~~~~~~~
 
 * Emilio Pascual (`Moduon <https://www.moduon.team/>`__)
+* Loida Vilaplana (`Moduon <https://www.moduon.team/>`__)
 
 Maintainers
 ~~~~~~~~~~~
