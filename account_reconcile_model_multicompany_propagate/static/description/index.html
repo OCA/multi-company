@@ -369,9 +369,7 @@ ul.auto-toc {
 !! source digest: sha256:1f1acb934cbbaa2be0bb9e416ac2516f17f02883a3d206fa511a6100eae5ae38
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Alpha" src="https://img.shields.io/badge/maturity-Alpha-red.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/licence-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/16.0/account_reconcile_model_multicompany_propagate"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-account_reconcile_model_multicompany_propagate"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=16.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module extends the functionality of account reconcile module
-to allow you to propagate configuration from one company to other companies
-with same chart template.</p>
+<p>Module for a multi-company environment. This module allows for the propagation of reconciliation models to be shared across all companies in the database.</p>
 <div class="admonition important">
 <p class="first admonition-title">Important</p>
 <p class="last">This is an alpha version, the data model and design can change at any time without warning.
@@ -407,6 +405,14 @@ Only for development or testing purpose, do not use in production.
 <li>Create a new conciliation model.</li>
 <li>Click on “Propagate to companies”.</li>
 </ol>
+<p>Points to consider:</p>
+<blockquote>
+<ol class="arabic simple">
+<li>If it is propagated and there is no reconciliation model with the same name in another company, with the same chart of accounts (i.e., the country’s chart of accounts), it creates one with the same values except for the journal.</li>
+<li>If the account and tax codes of the lines are located by code or name, they will also be propagated.</li>
+<li>If it is propagated and there is a reconciliation model with the same name in another company that shares the chart of accounts, it will replace (NOT duplicate) the values except for the journal. It will also propagate the account and tax codes of the lines if they are located by code or name, respectively.</li>
+</ol>
+</blockquote>
 </div>
 <div class="section" id="bug-tracker">
 <h1><a class="toc-backref" href="#toc-entry-3">Bug Tracker</a></h1>
@@ -428,6 +434,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <h2><a class="toc-backref" href="#toc-entry-6">Contributors</a></h2>
 <ul class="simple">
 <li>Emilio Pascual (<a class="reference external" href="https://www.moduon.team/">Moduon</a>)</li>
+<li>Loida Vilaplana (<a class="reference external" href="https://www.moduon.team/">Moduon</a>)</li>
 </ul>
 </div>
 <div class="section" id="maintainers">
