@@ -5,7 +5,8 @@ from odoo import api, fields, models
 
 
 class ProductProduct(models.Model):
-    _inherit = "product.product"
+    _inherit = ["multi.company.abstract", "product.product"]
+    _name = "product.product"
 
     company_ids = fields.Many2many(
         string="Companies",

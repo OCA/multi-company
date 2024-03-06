@@ -75,3 +75,15 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.SavepointCase):
             "('company_id', '=', False)]"
         )
         self.assertEqual(rule.domain_force, domain)
+
+    def test_search_product(self):
+        product_ids = self.env["product.product"].search_read(
+            [["company_id", "=", False]], ["id"]
+        )
+        self.assertIn({"id": self.product_company_none.id}, product_ids)
+
+        product_ids = self.env["product.product"].search_read(
+            [["company_id", "in", [self.company_1.id, False]]], ["id"]
+        )
+        self.assertIn({"id": self.product_company_1.id}, product_ids)
+        self.assertIn({"id": self.product_company_none.id}, product_ids)
