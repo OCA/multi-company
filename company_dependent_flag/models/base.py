@@ -1,6 +1,8 @@
 # © 2023 David BEAL @ Akretion
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+import xml.dom.minidom as minidom
+
 from odoo import api, models
 
 
@@ -8,11 +10,15 @@ class Base(models.AbstractModel):
     _inherit = "base"
 
     @api.model
-    def _get_view(self, view_id=None, view_type="form", **options):
-        arch, view = super()._get_view(view_id, view_type, **options)
+    def _fields_view_get(
+        self, view_id=None, view_type="form", toolbar=False, submenu=False
+    ):
+        res = super()._fields_view_get(view_id, view_type, toolbar, submenu)
         if view_type == "form":
+            arch = minidom.parseString(res["arch"])
             self._update_company_dependent_css(arch)
-        return arch, view
+            res["arch"] = arch.toxml()
+        return res
 
     def _update_company_dependent_css(self, arch):
         cpny_dep_fields = [
