@@ -26,6 +26,7 @@ msgid "Companies"
 msgstr "Bedrijven"
 
 #. module: product_multi_company
+#: model:ir.model.fields,field_description:product_multi_company.field_product_product__company_id
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__company_id
 msgid "Company"
 msgstr ""
@@ -52,6 +53,7 @@ msgid "Last Modified on"
 msgstr ""
 
 #. module: product_multi_company
+#: model:ir.model.fields,field_description:product_multi_company.field_product_product__no_company_ids
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__no_company_ids
 msgid "No Companies"
 msgstr ""
