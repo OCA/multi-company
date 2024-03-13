@@ -7,7 +7,7 @@
     "author": "Tecnativa," "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "category": "Product Management",
-    "version": "14.0.1.1.0",
+    "version": "14.0.1.1.1",
     "license": "AGPL-3",
     "depends": ["base_multi_company", "product", "stock"],
     "data": ["views/product_template_view.xml"],
