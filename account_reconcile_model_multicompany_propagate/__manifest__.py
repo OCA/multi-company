@@ -4,7 +4,7 @@
 {
     "name": "Account Reconcile Model Multicompany Propagate",
     "summary": "Propagate account reconcile model in companies with same chart template",
-    "version": "16.0.1.0.1",
+    "version": "16.0.1.1.0",
     "development_status": "Alpha",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/multi-company",
