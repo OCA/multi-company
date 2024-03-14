@@ -15,6 +15,7 @@ class PurchaseOrder(models.Model):
         string='Source Sale Order',
         readonly=True,
         copy=False,
+        index=True,
     )
 
     @api.multi
@@ -186,4 +187,5 @@ class PurchaseOrderLine(models.Model):
         string='Source Sale Order Line',
         readonly=True,
         copy=False,
+        index=True,
     )
