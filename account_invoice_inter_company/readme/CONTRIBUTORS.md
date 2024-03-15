@@ -11,3 +11,5 @@
   - David Vidal
   - Pedro M. Baeza
 - Isaac Gallart \<<igallart@puntsistemes.es>\>
+- \`Komit \<<https://komit-consulting.com>\>\`:
+  - Cuong Nguyen Mtm \<<cuong.nmtm@komit-consulting.com>\>

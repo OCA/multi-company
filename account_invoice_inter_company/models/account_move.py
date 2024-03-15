@@ -62,8 +62,6 @@ class AccountMove(models.Model):
 
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
-        if dest_company.company_share_product:
-            return
         domain = dest_company._get_user_domain()
         dest_user = self.env["res.users"].search(domain, limit=1)
         for line in self.invoice_line_ids:
@@ -76,8 +74,8 @@ class AccountMove(models.Model):
             except AccessError as e:
                 raise UserError(
                     _(
-                        "You cannot create invoice in company '%(dest_company_name)s' with "
-                        "product '%(product_name)s' because it is not multicompany"
+                        "You cannot create invoice in company '%(dest_company_name)s' "
+                        "with product '%(product_name)s' because it is not multicompany"
                     )
                     % {
                         "dest_company_name": dest_company.name,
