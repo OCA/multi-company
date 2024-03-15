@@ -62,8 +62,6 @@ class AccountMove(models.Model):
 
     def _check_intercompany_product(self, dest_company):
         self.ensure_one()
-        if dest_company.company_share_product:
-            return
         domain = dest_company._get_user_domain()
         dest_user = self.env["res.users"].search(domain, limit=1)
         for line in self.invoice_line_ids:

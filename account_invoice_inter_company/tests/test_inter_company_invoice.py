@@ -3,36 +3,60 @@
 # Copyright 2020 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _
-from odoo.exceptions import UserError, ValidationError
+from unittest.mock import patch
+
+from odoo.exceptions import UserError
 from odoo.tests import tagged
 from odoo.tests.common import Form, TransactionCase
 
+from odoo.addons.account.models.chart_template import AccountChartTemplate
+from odoo.addons.account.tests.test_chart_template import test_get_data
+
+
+def _get_chart_template_mapping(self, get_all=False):
+    return {
+        "test": {
+            "name": "test",
+            "country_id": None,
+            "country_code": None,
+            "modules": ["account"],
+            "parent": None,
+        }
+    }
+
 
 @tagged("post_install", "-at_install")
+@patch.object(
+    AccountChartTemplate, "_get_chart_template_mapping", _get_chart_template_mapping
+)
 class TestAccountInvoiceInterCompanyBase(TransactionCase):
     @classmethod
+    @patch.object(
+        AccountChartTemplate, "_get_chart_template_mapping", _get_chart_template_mapping
+    )
     def setUpClass(cls):
         super().setUpClass()
         cls.account_obj = cls.env["account.account"]
         cls.account_move_obj = cls.env["account.move"]
-        cls.chart = cls.env["account.chart.template"].search([], limit=1)
-        if not cls.chart:
-            raise ValidationError(
-                # translation to avoid pylint warnings
-                _("No Chart of Account Template has been defined !")
-            )
 
         cls.company_a = cls.env["res.company"].create(
             {
                 "name": "Company A",
                 "currency_id": cls.env.ref("base.EUR").id,
                 "country_id": cls.env.ref("base.fr").id,
-                "parent_id": cls.env.ref("base.main_company").id,
+                # "parent_id": cls.env.ref("base.main_company").id,
                 "invoice_auto_validation": True,
             }
         )
-        cls.chart.try_loading(company=cls.company_a, install_demo=False)
+        with patch.object(
+            AccountChartTemplate,
+            "_get_chart_template_data",
+            side_effect=test_get_data,
+            autospec=True,
+        ):
+            cls.env["account.chart.template"].try_loading(
+                "test", company=cls.company_a, install_demo=False
+            )
         cls.partner_company_a = cls.env["res.partner"].create(
             {"name": cls.company_a.name, "is_company": True}
         )
@@ -42,11 +66,19 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Company B",
                 "currency_id": cls.env.ref("base.EUR").id,
                 "country_id": cls.env.ref("base.fr").id,
-                "parent_id": cls.env.ref("base.main_company").id,
+                # "parent_id": cls.env.ref("base.main_company").id,
                 "invoice_auto_validation": True,
             }
         )
-        cls.chart.try_loading(company=cls.company_b, install_demo=False)
+        with patch.object(
+            AccountChartTemplate,
+            "_get_chart_template_data",
+            side_effect=test_get_data,
+            autospec=True,
+        ):
+            cls.env["account.chart.template"].try_loading(
+                "test", company=cls.company_b, install_demo=False
+            )
         cls.partner_company_b = cls.env["res.partner"].create(
             {"name": cls.company_b.name, "is_company": True}
         )
@@ -332,15 +364,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "company_id": cls.company_a.id,
             }
         )
-        cls.pcg_X58 = cls.env["account.account.template"].create(
-            {
-                "name": "Internal Transfers",
-                "code": "X58",
-                "account_type": "asset_current",
-                "reconcile": True,
-            }
-        )
-
         cls.a_recv_company_a = cls.account_obj.create(
             {
                 "code": "X11002.A",
@@ -363,8 +386,18 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.partner_company_a.property_account_receivable_id = cls.a_recv_company_a.id
         cls.partner_company_a.property_account_payable_id = cls.a_pay_company_a.id
 
-        cls.partner_company_b.property_account_receivable_id = cls.a_recv_company_b.id
-        cls.partner_company_b.property_account_payable_id = cls.a_pay_company_b.id
+        cls.partner_company_b.with_user(
+            cls.user_company_a.id
+        ).property_account_receivable_id = cls.a_recv_company_a.id
+        cls.partner_company_b.with_user(
+            cls.user_company_a.id
+        ).property_account_payable_id = cls.a_pay_company_a.id
+        cls.partner_company_b.with_user(
+            cls.user_company_b.id
+        ).property_account_receivable_id = cls.a_recv_company_b.id
+        cls.partner_company_b.with_user(
+            cls.user_company_b.id
+        ).property_account_payable_id = cls.a_pay_company_b.id
 
         cls.invoice_company_a = Form(
             cls.account_move_obj.with_user(cls.user_company_a.id).with_context(
@@ -390,7 +423,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.product_a = cls.invoice_line_a.product_id
         cls.product_a.with_user(
             cls.user_company_b.id
-        ).property_account_expense_id = cls.a_expense_company_b.id
+        ).sudo().property_account_expense_id = cls.a_expense_company_b.id
 
 
 class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
@@ -415,7 +448,9 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         # ensure the catalog is shared
         self.env.ref("product.product_comp_rule").write({"active": False})
         # Make sure there are no taxes in target company for the used product
-        self.product_a.with_user(self.user_company_b.id).supplier_taxes_id = False
+        self.product_a.with_user(
+            self.user_company_b.id
+        ).sudo().supplier_taxes_id = False
         # Confirm the invoice of company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
@@ -443,9 +478,9 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
         # Cancel the invoice of company A
-        invoice_origin = ("%s - Canceled Invoice: %s") % (
-            self.invoice_company_a.company_id.name,
-            self.invoice_company_a.name,
+        invoice_origin = "{company_name} - Canceled Invoice: {invoice_name}".format(
+            company_name=self.invoice_company_a.company_id.name,
+            invoice_name=self.invoice_company_a.name,
         )
         self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()
         # Check invoices after to cancel invoice of company A
@@ -454,6 +489,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(invoices[0].invoice_origin, invoice_origin)
         # Check if keep the invoice number
         invoice_number = self.invoice_company_a.name
+        self.invoice_company_a.with_user(self.user_company_a.id).button_draft()
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         self.assertEqual(self.invoice_company_a.name, invoice_number)
         # When the destination invoice is posted we can't modify the origin either
@@ -484,19 +520,6 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.assertEqual(len(invoices), 1)
 
-    def test_confirm_invoice_with_product_and_shared_catalog(self):
-        """With no security rule, child company have access to any product.
-        Then child invoice can share the same product
-        """
-        # ensure the catalog is shared even if product is in other company
-        self.env.ref("product.product_comp_rule").write({"active": False})
-        # Product is set to a specific company
-        self.product_a.write({"company_id": self.company_a.id})
-        invoices = self._confirm_invoice_with_product()
-        self.assertNotEqual(
-            invoices.invoice_line_ids[0].product_id, self.env["product.product"]
-        )
-
     def test_confirm_invoice_with_native_product_rule_and_shared_product(self):
         """With native security rule, products with access in both companies
         must be present in parent and child invoices.
@@ -504,10 +527,10 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         # ensure the catalog is shared even if product is in other company
         self.env.ref("product.product_comp_rule").write({"active": True})
         # Product is set to a specific company
-        self.product_a.write({"company_id": False})
+        self.product_a.sudo().write({"company_id": False})
         # If product_multi_company is installed
         if "company_ids" in dir(self.product_a):
-            self.product_a.write({"company_ids": [(5, 0, 0)]})
+            self.product_a.sudo().write({"company_ids": [(5, 0, 0)]})
         invoices = self._confirm_invoice_with_product()
         self.assertEqual(invoices.invoice_line_ids[0].product_id, self.product_a)
 
@@ -518,10 +541,10 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         # ensure the catalog is shared even if product is in other company
         self.env.ref("product.product_comp_rule").write({"active": True})
         # Product is set to a specific company
-        self.product_a.write({"company_id": self.company_a.id})
+        self.product_a.sudo().write({"company_id": self.company_a.id})
         # If product_multi_company is installed
         if "company_ids" in dir(self.product_a):
-            self.product_a.write({"company_ids": [(6, 0, [self.company_a.id])]})
+            self.product_a.sudo().write({"company_ids": [(6, 0, [self.company_a.id])]})
         with self.assertRaises(UserError):
             self._confirm_invoice_with_product()
 
