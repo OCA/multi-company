@@ -102,14 +102,22 @@ class StockPicking(models.Model):
                         == ic_pick
                     ).mapped("move_line_ids")
                 )
-                if not len(move_lines) == len(po_move_lines):
-                    raise UserError(
-                        _(
-                            "Mismatch between move lines with the "
-                            "corresponding  PO %s for assigning "
-                            "quantities and lots from %s for product %s"
-                        )
-                        % (purchase.name, pick.name, move.product_id.name)
+                if len(move_lines) != len(po_move_lines):
+                    note = _(
+                        "Mismatch between move lines with the "
+                        "corresponding PO %s for assigning "
+                        "quantities and lots from %s for product %s"
+                    ) % (purchase.name, pick.name, move.product_id.name)
+                    self.activity_schedule(
+                        "mail.mail_activity_data_warning",
+                        fields.Date.today(),
+                        note=note,
+                        # Try to notify someone relevant
+                        user_id=(
+                            pick.sale_id.user_id.id
+                            or pick.sale_id.team_id.user_id.id
+                            or SUPERUSER_ID,
+                        ),
                     )
                 # check and assign lots here
                 for ml, po_ml in zip(move_lines, po_move_lines):
