@@ -50,19 +50,12 @@ class StockPicking(models.Model):
                         == ic_pick
                     ).mapped("move_line_ids")
                 )
-                if not len(move_lines) == len(po_move_lines):
+                if len(move_lines) != len(po_move_lines):
                     note = _(
                         "Mismatch between move lines with the "
                         "corresponding PO %s for assigning "
                         "quantities and lots from %s for product %s"
                     ) % (purchase.name, pick.name, move.product_id.name)
-                    # Configurable parameter so we don't lock the picking validation
-                    if (
-                        not self.env["ir.config_parameter"]
-                        .sudo()
-                        .get_param("purchase_sale_inter_company.soft_picking_mismatch")
-                    ):
-                        raise UserError(note)
                     self.activity_schedule(
                         "mail.mail_activity_data_warning",
                         fields.Date.today(),
