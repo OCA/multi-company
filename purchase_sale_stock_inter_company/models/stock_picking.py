@@ -2,7 +2,7 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import SUPERUSER_ID, _, fields, models
 from odoo.exceptions import UserError
 
 
@@ -76,18 +76,26 @@ class StockPicking(models.Model):
                 po_move_lines = move.sale_line_id.auto_purchase_line_id.move_ids.mapped(
                     "move_line_ids"
                 )
-                if not len(move_lines) == len(po_move_lines):
-                    raise UserError(
-                        _(
-                            "Mismatch between move lines with the "
-                            "corresponding  PO %(po)s for assigning "
-                            "quantities and lots from %(pick_name)s for product %(product)s"
-                        )
-                        % {
-                            "po": purchase.name,
-                            "pick_name": pick.name,
-                            "product": move.product_id.name,
-                        }
+                if len(move_lines) != len(po_move_lines):
+                    note = _(
+                        "Mismatch between move lines with the "
+                        "corresponding PO %(po)s for assigning "
+                        "quantities and lots from %(pick_name)s for product %(product)s"
+                    ) % {
+                        "po": purchase.name,
+                        "pick_name": pick.name,
+                        "product": move.product_id.name,
+                    }
+                    self.activity_schedule(
+                        "mail.mail_activity_data_warning",
+                        fields.Date.today(),
+                        note=note,
+                        # Try to notify someone relevant
+                        user_id=(
+                            pick.sale_id.user_id.id
+                            or pick.sale_id.team_id.user_id.id
+                            or SUPERUSER_ID,
+                        ),
                     )
                 # check and assign lots here
                 for ml, po_ml in zip(move_lines, po_move_lines):
