@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright (C) 2022 - Today: GRAP (http://www.grap.coop)
+@author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+<odoo>
+
+    <record id="view_res_company_search" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field name="arch" type="xml">
+            <search>
+                <field
+                    name="name"
+                    filter_domain="['|', '|',
+                    ('name', 'ilike', self),
+                    ('vat', 'ilike', self),
+                    ('company_registry', 'ilike', self)]"
+                />
+                <field name="email" filter_domain="[('email', 'ilike', self)]" />
+                <field
+                    name="phone"
+                    filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"
+                />
+                <field name="parent_id" operator="child_of" />
+                <separator />
+                <filter
+                    string="Archived"
+                    name="inactive"
+                    domain="[('active', '=', False)]"
+                />
+                <separator />
+                <group expand="0" name="group_by" string="Group By">
+                    <filter
+                        name="group_country"
+                        string="Country"
+                        context="{'group_by': 'country_id'}"
+                    />
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>
