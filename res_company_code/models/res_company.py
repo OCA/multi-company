@@ -31,5 +31,5 @@ class ResCompany(models.Model):
         domain = []
         if name:
             domain = ["|", ("code", operator, name), ("name", operator, name)]
-        company = self.search(domain + args, limit=limit)
-        return company.name_get()
+        companies = self.search(domain + args, limit=limit)
+        return [(record.id, record.display_name) for record in companies]
