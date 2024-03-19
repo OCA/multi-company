@@ -1,0 +1,1 @@
+This module extends stock_multicompany and allows to define both incoming and outgoing operation types. It allows to have a flexible bidirectional inventory flow between multiple companies in the system.
