@@ -21,22 +21,6 @@ class MultiCompanyAbstract(models.AbstractModel):
         string="Companies",
         comodel_name="res.company",
     )
-    # TODO: Remove it following https://github.com/odoo/odoo/pull/81344
-    no_company_ids = fields.Boolean(
-        string="No Companies",
-        compute="_compute_no_company_ids",
-        compute_sudo=True,
-        store=True,
-        index=True,
-    )
-
-    @api.depends("company_ids")
-    def _compute_no_company_ids(self):
-        for record in self:
-            if record.company_ids:
-                record.no_company_ids = False
-            else:
-                record.no_company_ids = True
 
     @api.depends("company_ids")
     @api.depends_context("company", "_check_company_source_id")
