@@ -1,1 +1,3 @@
 odoo-test-helper
+# https://github.com/OCA/multi-company/pull/459
+odoo-addon-product_multi_company @ git+https://github.com/OCA/multi-company.git@refs/pull/459/head#subdirectory=setup/product_multi_company
