@@ -11,6 +11,7 @@
     "version": "14.0.1.1.2",
     "category": "Partner",
     "website": "https://github.com/OCA/multi-company",
+    "maintainers": ["sebastienbeau"],
     "author": "Odoo Community Association (OCA), Akretion",
     "license": "AGPL-3",
     "application": False,
