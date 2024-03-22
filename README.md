@@ -45,7 +45,7 @@ addon | version | maintainers | summary
 [product_supplierinfo_intercompany_multi_company](product_supplierinfo_intercompany_multi_company/) | 14.0.1.1.0 |  | Compatibility of product_multi_company and product_supplierinfo_intercompany
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 14.0.1.2.0 | [![Shide](https://github.com/Shide.png?size=30px)](https://github.com/Shide) | Product Tax Multi Company Default
 [purchase_quick_intercompany](purchase_quick_intercompany/) | 14.0.0.1.1 |  | Purchase Quick Intercompany
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.2.1.1 | [![aleuffre](https://github.com/aleuffre.png?size=30px)](https://github.com/aleuffre) [![renda-dev](https://github.com/renda-dev.png?size=30px)](https://github.com/renda-dev) | Intercompany PO/SO rules
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 14.0.2.1.2 | [![aleuffre](https://github.com/aleuffre.png?size=30px)](https://github.com/aleuffre) [![renda-dev](https://github.com/renda-dev.png?size=30px)](https://github.com/renda-dev) | Intercompany PO/SO rules
 [res_company_code](res_company_code/) | 14.0.1.0.1 |  | Add 'code' field on company model
 [stock_intercompany](stock_intercompany/) | 14.0.1.1.1 |  | Stock Intercompany Delivery-Reception
 
