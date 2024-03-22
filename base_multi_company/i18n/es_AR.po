@@ -51,7 +51,5 @@ msgstr "Última Modificación el"
 msgid "Multi-Company Abstract"
 msgstr "Resumen de Multi-Compañía"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__no_company_ids
-msgid "No Companies"
-msgstr "No hay Compañías"
+#~ msgid "No Companies"
+#~ msgstr "No hay Compañías"

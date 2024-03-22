@@ -51,11 +51,6 @@ msgstr "最后修改时间"
 msgid "Multi-Company Abstract"
 msgstr "抽象多公司"
 
-#. module: base_multi_company
-#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__no_company_ids
-msgid "No Companies"
-msgstr ""
-
 #~ msgid "Name"
 #~ msgstr "名称"
 
