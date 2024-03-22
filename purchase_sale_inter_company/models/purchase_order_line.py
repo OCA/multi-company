@@ -31,10 +31,14 @@ class PurchaseOrderLine(models.Model):
         """Sync lines between an confirmed unlocked purchase and a confirmed unlocked
         sale order"""
         lines = super().create(vals_list)
+        allowed_states = self._get_allowed_sale_order_states()
         for order in lines.order_id.filtered(
             lambda x: x.state == "purchase" and x.intercompany_sale_order_id
         ):
-            if order.intercompany_sale_order_id.sudo().state in {"cancel", "done"}:
+            if (
+                order.intercompany_sale_order_id.sudo().state,
+                order.intercompany_sale_order_id.sudo().locked,
+            ) not in allowed_states:
                 raise UserError(
                     _(
                         "You can't change this purchase order as the corresponding "
@@ -87,7 +91,10 @@ class PurchaseOrderLine(models.Model):
         ).sudo()
         if not sale_lines:
             return res
-        closed_sale_lines = sale_lines.filtered(lambda x: x.state != "sale")
+        closed_sale_lines = sale_lines.filtered(
+            lambda x: (x.state, x.order_id.locked)
+            not in self._get_allowed_sale_order_states()
+        )
         if closed_sale_lines:
             raise UserError(
                 _(
@@ -123,3 +130,10 @@ class PurchaseOrderLine(models.Model):
                 )
                 % self.product_id.name
             )
+
+    def _get_allowed_sale_order_states(self):
+        """Done state doesn't exist for SO, adding tuple with state and locked."""
+        allowed_states = [("sale", False)]
+        if self.env.context.get("allow_update_locked_sales", False):
+            allowed_states.append(("sale", True))
+        return allowed_states
