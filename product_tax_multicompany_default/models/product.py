@@ -38,24 +38,45 @@ class ProductTemplate(models.Model):
                 continue
             # A unique constraint in account.tax makes it impossible to have
             # duplicated tax names by company
-            customer_taxes = {
-                frozenset(tax.name for tax in one.taxes_id if tax.company_id == company)
-                for company in all_companies
-            }
-            if len(customer_taxes) > 1:
-                one.divergent_company_taxes = True
-                continue
-            supplier_taxes = {
-                frozenset(
-                    tax.name
-                    for tax in one.supplier_taxes_id
-                    if tax.company_id == company
+            if self.user_has_groups("product_tax_multicompany_default.tax_man_mapping"):
+                one.divergent_company_taxes = bool(
+                    self._get_group_divergent_taxes(one.taxes_id)
+                    or self._get_group_divergent_taxes(one.supplier_taxes_id)
                 )
-                for company in all_companies
-            }
-            if len(supplier_taxes) > 1:
-                one.divergent_company_taxes = True
-                continue
+            else:
+                customer_taxes = {
+                    frozenset(
+                        tax.name for tax in one.taxes_id if tax.company_id == company
+                    )
+                    for company in all_companies
+                }
+                if len(customer_taxes) > 1:
+                    one.divergent_company_taxes = True
+                    continue
+                supplier_taxes = {
+                    frozenset(
+                        tax.name
+                        for tax in one.supplier_taxes_id
+                        if tax.company_id == company
+                    )
+                    for company in all_companies
+                }
+                if len(supplier_taxes) > 1:
+                    one.divergent_company_taxes = True
+                    continue
+
+    @api.model
+    def _get_group_divergent_taxes(self, product_tax_ids):
+        tax_map_ids = product_tax_ids.mapped("company_map_id")
+        if len(tax_map_ids) == 1:
+            tax_ids = self.env["account.tax"].search(
+                [
+                    ("company_map_id", "=", tax_map_ids.id),
+                    ("type_tax_use", "in", product_tax_ids.mapped("type_tax_use")),
+                ],
+            )
+            return tax_ids - product_tax_ids
+        return False
 
     def taxes_by_company(self, field, company, match_tax_ids=None):
         taxes_ids = []
@@ -66,11 +87,23 @@ class ProductTemplate(models.Model):
             return taxes_ids
         AccountTax = self.env["account.tax"]
         for tax in AccountTax.browse(match_tax_ids):
-            taxes_ids.extend(
-                AccountTax.search(
-                    [("name", "=", tax.name), ("company_id", "=", company.id)]
-                ).ids
-            )
+            if self.user_has_groups("product_tax_multicompany_default.tax_man_mapping"):
+                taxes_ids.extend(
+                    AccountTax.search(
+                        [
+                            ("company_map_id", "=", tax.company_map_id.id),
+                            ("company_id", "=", company.id),
+                            ("type_tax_use", "=", tax.type_tax_use),
+                        ],
+                        limit=1,
+                    ).ids
+                )
+            else:
+                taxes_ids.extend(
+                    AccountTax.search(
+                        [("name", "=", tax.name), ("company_id", "=", company.id)]
+                    ).ids
+                )
         return taxes_ids
 
     def _delete_product_taxes(

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_tax_company_map_internal_user,account.tax.company.map internal user,model_account_tax_company_map,base.group_user,1,0,0,0
+access_account_tax_company_map_readonly,account.tax.company.map,model_account_tax_company_map,account.group_account_readonly,1,0,0,0
+access_account_tax_company_map,account.tax.company.map,model_account_tax_company_map,account.group_account_invoice,1,0,0,0
+access_account_tax_company_map_manager,account.tax.company.map,model_account_tax_company_map,account.group_account_manager,1,1,1,1

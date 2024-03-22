@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="sale_tax_template" model="account.tax">
+        <field name="name">Tax 15.00% (CHI)</field>
+        <field name="amount">15</field>
+        <field name="type_tax_use">sale</field>
+        <field name="company_id" ref="stock.res_company_1" />
+        <field name="tax_group_id" ref="l10n_generic_coa.tax_group_15" />
+        <field name="description">15.00%</field>
+        <field
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'base',
+            }),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'tax',
+            }),
+        ]"
+        />
+        <field
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'base',
+            }),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'tax',
+            }),
+        ]"
+        />
+    </record>
+
+    <record id="purchase_tax_template" model="account.tax">
+        <field name="name">Tax 15.00% (CHI)</field>
+        <field name="amount">15</field>
+        <field name="type_tax_use">purchase</field>
+        <field name="company_id" ref="stock.res_company_1" />
+        <field name="tax_group_id" ref="l10n_generic_coa.tax_group_15" />
+        <field name="description">15.00%</field>
+        <field
+            name="invoice_repartition_line_ids"
+            eval="[(5, 0, 0),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'base',
+            }),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'tax',
+            }),
+        ]"
+        />
+        <field
+            name="refund_repartition_line_ids"
+            eval="[(5, 0, 0),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'base',
+            }),
+            (0,0, {
+                'factor_percent': 100,
+                'repartition_type': 'tax',
+            }),
+        ]"
+        />
+    </record>
+</odoo>

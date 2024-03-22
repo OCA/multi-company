@@ -9,7 +9,18 @@
     "website": "https://github.com/OCA/multi-company",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "depends": ["account", "product"],
-    "data": ["views/product_template_view.xml"],
+    "depends": ["account", "product", "stock"],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/security.xml",
+        "views/account_tax_company_map_views.xml",
+        "views/account_tax_views.xml",
+        "views/product_template_view.xml",
+        "views/res_config_settings_views.xml",
+    ],
+    "demo": [
+        "demo/account_tax_demo.xml",
+        "demo/account_tax_company_map_demo.xml",
+    ],
     "maintainers": ["Shide"],
 }
