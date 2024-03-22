@@ -64,11 +64,6 @@ msgid "Last Modified on"
 msgstr ""
 
 #. module: partner_multi_company
-#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__no_company_ids
-msgid "No Companies"
-msgstr ""
-
-#. module: partner_multi_company
 #: model:ir.model.fields,field_description:partner_multi_company.field_res_company__set_active_company_partner
 #: model:ir.model.fields,field_description:partner_multi_company.field_res_config_settings__set_active_company_partner
 msgid "Set Active Company Partner"
