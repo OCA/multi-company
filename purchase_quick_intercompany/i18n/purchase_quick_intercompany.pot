@@ -20,7 +20,7 @@ msgid "Display Name"
 msgstr ""
 
 #. module: purchase_quick_intercompany
-#: model:ir.model.fields,field_description:purchase_quick_intercompany.field_product_product__quick_stock_level
+#: model:ir.model.fields,field_description:purchase_quick_intercompany.field_product_product__quick_intercompany_stock_level
 msgid "Free quantity"
 msgstr ""
 
