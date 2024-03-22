@@ -53,12 +53,6 @@ msgid "Last Modified on"
 msgstr "Última Modificación el"
 
 #. module: product_multi_company
-#: model:ir.model.fields,field_description:product_multi_company.field_product_product__no_company_ids
-#: model:ir.model.fields,field_description:product_multi_company.field_product_template__no_company_ids
-msgid "No Companies"
-msgstr "No Compañías"
-
-#. module: product_multi_company
 #: model:ir.model,name:product_multi_company.model_product_product
 msgid "Product"
 msgstr "Producto"
@@ -82,3 +76,6 @@ msgstr "Rutas"
 #: model:ir.model.fields,field_description:product_multi_company.field_product_category__total_route_ids
 msgid "Total routes"
 msgstr "Total de rutas"
+
+#~ msgid "No Companies"
+#~ msgstr "No Compañías"
