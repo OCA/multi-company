@@ -349,3 +349,23 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             so_picking_id.mapped("move_lines.quantity_done"),
             msg="The quantities are not the same in both pickings.",
         )
+
+    def test_block_manual_validation(self):
+        """
+        Test that the manual validation of the picking is blocked
+        when the flag is set in the destination company
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        self.company_a.block_po_manual_picking_validation = True
+        self.company_b.block_po_manual_picking_validation = True
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        purchase.button_confirm()
+        po_picking_id = purchase.picking_ids
+        # The picking should be in waiting state
+        self.assertEqual(po_picking_id.state, "waiting")
+        # The manual validation should be blocked
+        with self.assertRaises(UserError):
+            po_picking_id.with_user(self.user_company_a).button_validate()

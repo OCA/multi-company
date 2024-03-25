@@ -15,6 +15,16 @@
                     for="sync_picking"
                 />
                 <br />
+                <field
+                    name="block_po_manual_picking_validation"
+                    class="oe_inline"
+                />
+                <label
+                    string="Block PO manual picking validation"
+                    class="o_light_label"
+                    for="block_po_manual_picking_validation"
+                />
+                <br />
                 <label for="warehouse_id" class="o_light_label" />
                 <field
                     name="warehouse_id"
