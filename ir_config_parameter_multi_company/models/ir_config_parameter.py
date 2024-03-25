@@ -24,7 +24,7 @@ class IrConfigMultiCompany(models.Model):
         else:
             # avoid limit to fetch all values
             records = super().search(
-                args=args, offset=offset, limit=None, order=order, count=count
+                args, offset=offset, limit=None, order=order, count=count
             )
             if len(records) > 1:
                 # key must be unique per company
@@ -32,12 +32,12 @@ class IrConfigMultiCompany(models.Model):
                     (args, [("company_id", "=", self.env.company.id)])
                 )
                 records = super().search(
-                    args=args, offset=offset, limit=None, order=order, count=count
+                    args, offset=offset, limit=None, order=order, count=count
                 )
                 if len(records) > 1:
                     # call with limit
                     records = super().search(
-                        args=args, offset=offset, limit=limit, order=order, count=count
+                        args, offset=offset, limit=limit, order=order, count=count
                     )
         return records
 
