@@ -116,6 +116,10 @@ Contributors
 
    -  Maksym Yankin <maksym.yankin@camptocamp.com>
 
+-  \`Komit <https://komit-consulting.com>\`:
+
+   -  Cuong Nguyen Mtm <cuong.nmtm@komit-consulting.com>
+
 Maintainers
 -----------
 

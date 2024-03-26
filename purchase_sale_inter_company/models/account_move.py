@@ -3,6 +3,8 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from markupsafe import Markup
+
 from odoo import _, models
 
 
@@ -24,8 +26,7 @@ class AccountMove(models.Model):
             )
         orders = dest_invoice.invoice_line_ids.purchase_line_id.order_id
         if orders:
-            ref = "<a href=# data-oe-model=purchase.order data-oe-id={}>{}</a>"
             message = _("This vendor bill is related with: {}").format(
-                ",".join([ref.format(o.id, o.name) for o in orders])
+                ",".join([o._get_html_link(o.name) for o in orders])
             )
-            dest_invoice.message_post(body=message)
+            dest_invoice.message_post(body=Markup(message))
