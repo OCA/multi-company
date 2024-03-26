@@ -5,9 +5,11 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 
-from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
-    TestPurchaseSaleInterCompany,
+from odoo.addons.purchase_sale_inter_company.tests import (
+    test_inter_company_purchase_sale as test_icps,
 )
+
+TestPurchaseSaleInterCompany = test_icps.TestPurchaseSaleInterCompany
 
 
 class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
