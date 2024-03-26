@@ -80,6 +80,7 @@ class PurchaseOrder(models.Model):
         # check pricelist currency should be same with PO/SO document
         if self.currency_id.id != (
             company_partner.property_product_pricelist.currency_id.id
+            or dest_company.currency_id.id
         ):
             raise UserError(
                 _(
@@ -180,6 +181,7 @@ class PurchaseOrder(models.Model):
         for so in sale_orders:
             if so.state not in ["draft", "sent", "cancel"]:
                 raise UserError(_("You can't cancel an order that is %s") % so.state)
-        sale_orders.action_cancel()
+        for so in sale_orders:
+            so.action_cancel()
         self.write({"partner_ref": False})
         return super().button_cancel()

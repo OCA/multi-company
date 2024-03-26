@@ -75,9 +75,42 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # Create purchase order
         cls.purchase_company_a = cls._create_purchase_order(cls.partner_company_b)
 
-        # Configure pricelist to USD
-        cls.env["product.pricelist"].sudo().search([]).write(
-            {"currency_id": cls.env.ref("base.USD").id}
+        # Create account
+        income_account = cls.env["account.account"].create(
+            {
+                "name": "test_account_income",
+                "code": "987",
+                "account_type": "income",
+                "company_id": cls.company_b.id,
+            }
+        )
+        expense_account = cls.env["account.account"].create(
+            {
+                "name": "test account_expenses",
+                "code": "765",
+                "account_type": "expense",
+                "reconcile": True,
+                "company_id": cls.company_a.id,
+            }
+        )
+        # Create journal
+        cls.env["account.journal"].create(
+            {
+                "name": "Customer Invoices - Test",
+                "code": "TEST1",
+                "type": "sale",
+                "company_id": cls.company_b.id,
+                "default_account_id": income_account.id,
+            }
+        )
+        cls.env["account.journal"].create(
+            {
+                "name": "Vendor Bills - Test",
+                "code": "TEST2",
+                "type": "purchase",
+                "company_id": cls.company_a.id,
+                "default_account_id": expense_account.id,
+            }
         )
 
     def _approve_po(self):
@@ -162,6 +195,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
 
     def test_so_change_price(self):
+        self.company_b.sale_auto_validation = False
         sale = self._approve_po()
         sale.order_line.price_unit = 10
         sale.action_confirm()
@@ -182,6 +216,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         When the purchase user request extra product, the sale order gets synched if
         it's open.
         """
+        self.company_b.sale_auto_validation = False
         purchase = self.purchase_company_a
         sale = self._approve_po()
         sale.action_confirm()
@@ -220,4 +255,75 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             synched_order_line.product_uom_qty,
             3,
             "The quantity should decrease as it was in the purchase order",
+        )
+
+    def test_default_intercompany_sale_user_id(self):
+        """
+        When the intercompany_sale_user_id is not set, the current user that creates the
+        purchase order is used, this impacts the salesperson value on the sale order.
+        Following the _compute_user_id method on sale.order model, if there is no
+        salesperson set, the salesperson will be the user set on the Sale's customer,
+        or customer's company, or the current user if he is a salesman.
+        """
+        self.company_b.intercompany_sale_user_id = False
+        self.company_b.sale_auto_validation = False
+        sale = self._approve_po()
+        self.assertEqual(sale.create_uid, self.user_company_a)
+        self.assertNotEqual(sale.user_id, self.user_company_b)
+        expected_salesperson = (
+            sale.partner_id.user_id
+            or sale.partner_id.parent_id.user_id
+            or (
+                self.user_company_a
+                if self.user_company_a.has_group("sales_team.group_sale_manager")
+                else False
+            )
+        )
+        self.assertNotEqual(sale.user_id, expected_salesperson)
+
+    def test_sale_order_line_note_sync(self):
+        """
+        When a purchase order line has a note, it should be copied to the sale order
+        line.
+        """
+        self.purchase_company_a.order_line = [
+            (0, 0, {"name": "Test Note", "display_type": "line_note", "product_qty": 0})
+        ]
+        sale = self._approve_po()
+        self.assertEqual(
+            sale.order_line.filtered(lambda x: x.display_type == "line_note").name,
+            "Test Note",
+        )
+
+    def test_cannot_modify_pol_of_related_so_is_cancel(self):
+        """
+        When the related sale order is cancel, the purchase order lines cannot be
+        created or modified.
+        """
+        self.company_b.sale_auto_validation = False
+        sale = self._approve_po()
+        sale.action_confirm()
+        purchase_line = self.purchase_company_a.order_line
+        sale._action_cancel()
+        with self.assertRaises(UserError):
+            purchase_line[0].product_qty = 5
+        with self.assertRaises(UserError):
+            self.env["purchase.order.line"].create(
+                {
+                    "order_id": self.purchase_company_a.id,
+                    "product_id": self.service_product_2.id,
+                    "product_qty": 5,
+                    "name": "Test",
+                }
+            )
+        sale.action_draft()
+        sale.action_confirm()
+        purchase_line[0].product_qty = 5
+        self.env["purchase.order.line"].create(
+            {
+                "order_id": self.purchase_company_a.id,
+                "product_id": self.service_product_2.id,
+                "product_qty": 5,
+                "name": "Test",
+            }
         )
