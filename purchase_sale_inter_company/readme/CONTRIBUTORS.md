@@ -12,3 +12,5 @@
   - Pedro M. Baeza
 - \`Camptocamp \<<https://www.camptocamp.com>\>\`:
   - Maksym Yankin \<<maksym.yankin@camptocamp.com>\>
+- \`Komit \<<https://komit-consulting.com>\>\`:
+  - Cuong Nguyen Mtm \<<cuong.nmtm@komit-consulting.com>\>

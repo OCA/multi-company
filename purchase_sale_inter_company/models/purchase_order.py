@@ -180,6 +180,7 @@ class PurchaseOrder(models.Model):
         for so in sale_orders:
             if so.state not in ["draft", "sent", "cancel"]:
                 raise UserError(_("You can't cancel an order that is %s") % so.state)
-        sale_orders.action_cancel()
+        for so in sale_orders:
+            so.action_cancel()
         self.write({"partner_ref": False})
         return super().button_cancel()

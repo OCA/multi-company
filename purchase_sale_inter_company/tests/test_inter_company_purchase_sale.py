@@ -75,9 +75,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # Create purchase order
         cls.purchase_company_a = cls._create_purchase_order(cls.partner_company_b)
 
-        # Configure pricelist to USD
+        # Configure pricelist to EUR
         cls.env["product.pricelist"].sudo().search([]).write(
-            {"currency_id": cls.env.ref("base.USD").id}
+            {"currency_id": cls.env.ref("base.EUR").id}
         )
 
     def _approve_po(self):
@@ -128,7 +128,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self._approve_po()
 
     def test_raise_currency(self):
-        currency = self.env.ref("base.EUR")
+        currency = self.env.ref("base.USD")
         self.purchase_company_a.currency_id = currency
         with self.assertRaises(UserError):
             self._approve_po()
@@ -162,6 +162,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
 
     def test_so_change_price(self):
+        self.company_b.sale_auto_validation = False
         sale = self._approve_po()
         sale.order_line.price_unit = 10
         sale.action_confirm()
@@ -182,6 +183,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         When the purchase user request extra product, the sale order gets synched if
         it's open.
         """
+        self.company_b.sale_auto_validation = False
         purchase = self.purchase_company_a
         sale = self._approve_po()
         sale.action_confirm()
