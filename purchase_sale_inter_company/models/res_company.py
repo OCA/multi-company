@@ -36,3 +36,7 @@ class ResCompany(models.Model):
         help="Sync the receipt from the destination company with the "
         "delivery from the source company",
     )
+    block_po_manual_picking_validation = fields.Boolean(
+        string="Block manual validation of picking in the destination company",
+        help="Block manual validation of picking in the destination company",
+    )

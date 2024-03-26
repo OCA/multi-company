@@ -47,3 +47,9 @@ class InterCompanyRulesConfig(models.TransientModel):
         "the delivery from the source company",
         readonly=False,
     )
+    block_po_manual_picking_validation = fields.Boolean(
+        related="company_id.block_po_manual_picking_validation",
+        string="Block manual validation of picking in the destination company",
+        help="Block manual validation of picking in the destination company",
+        readonly=False,
+    )
