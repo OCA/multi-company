@@ -47,7 +47,7 @@ class PurchaseOrderLine(models.Model):
                 or self.env.user
             )
             sale_lines = []
-            for purchase_line in lines.filtered(lambda x: x.order_id == order):
+            for purchase_line in lines.filtered(lambda x, o=order: x.order_id == o):
                 sale_lines.append(
                     order._prepare_sale_order_line_data(
                         purchase_line,
@@ -102,7 +102,9 @@ class PurchaseOrderLine(models.Model):
                 {
                     "order_line": [
                         (1, line.id, update_vals)
-                        for line in sale_lines.filtered(lambda x: x.order_id == sale)
+                        for line in sale_lines.filtered(
+                            lambda x, s=sale: x.order_id == s
+                        )
                     ]
                 }
             )
