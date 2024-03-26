@@ -3,7 +3,6 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-import re
 
 from odoo.exceptions import UserError
 from odoo.tests.common import Form
@@ -194,7 +193,12 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         return (
             self.env["sale.order"]
             .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", purchase_id.id)])
+            .search(
+                [
+                    ("auto_purchase_order_id", "=", purchase_id.id),
+                    ("state", "!=", "cancel"),
+                ]
+            )
         )
 
     def test_purchase_sale_inter_company(self):
@@ -519,81 +523,20 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         sale.sudo().write({"picking_ids": [(4, new_picking.id)]})
         sale.action_confirm()
 
-    def test_update_open_sale_order(self):
-        """
-        When the purchase user request extra product, the sale order gets synched if
-        it's open.
-        """
-        purchase = self._create_purchase_order(
-            self.partner_company_b, self.consumable_product
-        )
-        purchase.picking_type_id = self.warehouse_a.in_type_id
-        sale = self._approve_po(purchase)
-        sale.action_confirm()
-        # Now we add an extra product to the PO and it will show up in the SO
-        po_form = Form(purchase)
-        with po_form.order_line.new() as line:
-            line.product_id = self.consumable_product_2
-            line.product_qty = 6
-        po_form.save()
-        # It's synched and the values match
-        synched_order_line = sale.order_line.filtered(
-            lambda x: x.product_id == self.consumable_product_2
-        )
-        self.assertTrue(
-            bool(synched_order_line),
-            "The line should have been created in the sale order",
-        )
-        self.assertEqual(
-            synched_order_line.product_uom_qty,
-            6,
-            "The quantity should be equal to the one set in the purchase order",
-        )
-        # Also the moves match as well
-        so_picking_id = sale.picking_ids
-        synched_move = so_picking_id.move_lines.filtered(
-            lambda x: x.product_id == self.consumable_product_2
-        )
-        self.assertTrue(
-            bool(synched_move),
-            "The move should have been created in the delivery order",
-        )
-        self.assertEqual(
-            synched_move.product_uom_qty,
-            6,
-            "The quantity should be equal to the one set in the purchase order",
-        )
-        # The quantity is synched as well
-        purchase_line = purchase.order_line.filtered(
-            lambda x: x.product_id == self.consumable_product_2
-        ).sudo()
-        purchase_line.product_qty = 8
-        self.assertEqual(
-            synched_order_line.product_uom_qty,
-            8,
-            "The quantity should be equal to the one set in the purchase order",
-        )
-        self.assertEqual(
-            synched_move.product_uom_qty,
-            8,
-            "The quantity should synched to the one set in the purchase order",
-        )
-        # Let's decrease the quantity
-        purchase_line.product_qty = 3
-        self.assertEqual(
-            synched_order_line.product_uom_qty,
-            3,
-            "The quantity should decrease as it was in the purchase order",
-        )
-        self.assertEqual(
-            synched_move.product_uom_qty,
-            8,
-            "The quantity should remain as it was as it can't be decreased from the SO",
-        )
-        # A warning activity is scheduled in the picking
-        self.assertRegex(
-            so_picking_id.activity_ids.note,
-            re.compile(
-                "3.0 Units of Consumable Product 2.+instead of 8.0 Units", re.DOTALL
-            ),
-        )
+    def test_update_po(self):
+        # create intercompany sale order
+        self.company_b.sale_auto_validation = False
+        old_sale = self._approve_po(self.purchase_company_a)
+        # cancel and back to draft the PO before update
+        self.purchase_company_a.button_cancel()
+        self.purchase_company_a.button_draft()
+        # update PO
+        self.purchase_company_a.order_line.product_qty = 5.0
+        # create new intercompany sale order after confirm updated PO
+        self.company_b.sale_auto_validation = True
+        new_sale = self._approve_po(self.purchase_company_a)
+        # test update
+        self.assertEqual(new_sale.order_line.product_uom_qty, 5.0)
+        self.assertEqual(new_sale.state, "sale")
+        self.assertEqual(self.purchase_company_a.intercompany_sale_order_id, new_sale)
+        self.assertEqual(old_sale.auto_purchase_order_id, self.purchase_company_a)
