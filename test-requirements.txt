@@ -1,1 +1,2 @@
 odoo-test-helper
+odoo-addon-sale-product-company @ git+https://github.com/OCA/multi-company@refs/pull/584/head#subdirectory=setup/sale_product_company
