@@ -22,22 +22,16 @@ class StockPicking(models.Model):
                 continue
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
             for move_line in pick.move_line_ids:
-                qty_done = move_line.qty_done
+                quantity = move_line.quantity
                 sale_line_id = move_line.move_id.sale_line_id
                 po_move_lines = sale_line_id.auto_purchase_line_id.move_ids.mapped(
                     "move_line_ids"
                 )
                 for po_move_line in po_move_lines:
-                    if po_move_line.reserved_qty >= qty_done:
-                        po_move_line.qty_done = qty_done
-                        qty_done = 0.0
-                    else:
-                        po_move_line.qty_done = po_move_line.reserved_qty
-                        qty_done -= po_move_line.reserved_qty
+                    po_move_line.quantity = quantity
+                    quantity = 0.0
                     po_picks |= po_move_line.picking_id
-                if qty_done and po_move_lines:
-                    po_move_lines[-1:].qty_done += qty_done
-                elif not po_move_lines:
+                if not po_move_lines:
                     raise UserError(
                         _(
                             "There's no corresponding line in PO %(po)s for assigning "
