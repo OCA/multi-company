@@ -1,1 +1,2 @@
 odoo-test-helper
+odoo-addon-purchase_sale_inter_company @ git+https://github.com/OCA/multi-company.git@refs/pull/602/head#subdirectory=setup/purchase_sale_inter_company
