@@ -87,7 +87,10 @@ class PurchaseOrderLine(models.Model):
         ).sudo()
         if not sale_lines:
             return res
-        closed_sale_lines = sale_lines.filtered(lambda x: x.state != "sale")
+        state = ["sale"]
+        if self.env.context.get("allow_update_locked_sales", False):
+            state.append("done")
+        closed_sale_lines = sale_lines.filtered(lambda x: x.state not in state)
         if closed_sale_lines:
             raise UserError(
                 _(
