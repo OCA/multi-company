@@ -17,6 +17,7 @@ setuptools.setup(
         'odoo14-addon-account_payment_other_company',
         'odoo14-addon-base_multi_company',
         'odoo14-addon-company_dependent_attribute',
+        'odoo14-addon-company_dependent_flag',
         'odoo14-addon-intercompany_shared_contact',
         'odoo14-addon-ir_config_parameter_multi_company',
         'odoo14-addon-login_all_company',
