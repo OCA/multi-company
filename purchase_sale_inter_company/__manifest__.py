@@ -17,9 +17,11 @@
         "sale_stock",
         "purchase_stock",
         "account_invoice_inter_company",
+        "base_view_inheritance_extension",
     ],
     "data": [
         "views/res_config_view.xml",
+        "views/purchase_view.xml",
         "wizard/stock_backorder_confirmation_views.xml",
     ],
     "demo": [
