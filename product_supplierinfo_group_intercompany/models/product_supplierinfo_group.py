@@ -26,6 +26,7 @@ class ProductSupplierinfoGroup(models.Model):
         if operation in ("create", "unlink"):
             self.check_intercompany_pricelist()
         super().check_access_rule(operation)
+        return True
 
     def check_field_access_rights(self, operation, fields):
         # Note
