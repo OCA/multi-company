@@ -221,3 +221,57 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             3,
             "The quantity should decrease as it was in the purchase order",
         )
+
+    def test_bypass_check_when_update_locked_sale_order_with_ctx(self):
+        self.intercompany_sale_user_id.groups_id += self.env.ref(
+            "sale.group_auto_done_setting"
+        )
+        purchase = self.purchase_company_a
+        sale = self._approve_po()
+        # Now, the SO is in Locked state
+        self.assertEqual(sale.state, "done")
+        # Without `allow_update_locked_sales` ctx
+        with self.assertRaisesRegex(
+            UserError,
+            "You can't change this purchase order as the corresponding sale"
+            f" is {purchase.state}",
+        ):
+            purchase.order_line.create(
+                [
+                    {
+                        "order_id": purchase.id,
+                        "name": self.product.name,
+                        "product_id": self.product.id,
+                        "product_qty": 280,
+                        "price_unit": 99,
+                    },
+                ]
+            )
+        with self.assertRaisesRegex(
+            UserError,
+            f"The generated sale orders with reference {sale.name} can't be "
+            "modified. They're either unconfirmed or locked for modifications.",
+        ):
+            purchase.order_line[0].write({"product_qty": 99})
+        # We can bypass the check with `allow_update_locked_sales` ctx
+        purchase.order_line.with_context(allow_update_locked_sales=True).create(
+            [
+                {
+                    "order_id": purchase.id,
+                    "name": self.product.name,
+                    "product_id": self.product.id,
+                    "product_qty": 280,
+                    "price_unit": 99,
+                },
+            ]
+        )
+        # But we still need another logic to handle on the sale order when write
+        # Example:
+        # https://github.com/OCA/sale-workflow/commit/3fe8ed00c046c9ef68a487eedea282ecb5415231
+        with self.assertRaisesRegex(
+            UserError,
+            "It is forbidden to modify the following fields in a locked order:\nQuantity",
+        ):
+            purchase.order_line[0].with_context(allow_update_locked_sales=True).write(
+                {"product_qty": 99}
+            )
