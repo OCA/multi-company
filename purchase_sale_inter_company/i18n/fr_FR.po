@@ -25,6 +25,17 @@ msgid "Backorder Confirmation"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Block PO manual picking validation"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__block_po_manual_picking_validation
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__block_po_manual_picking_validation
+msgid "Block manual validation of picking in the destination company"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_company
 msgid "Companies"
 msgstr "Sociétés"
@@ -146,6 +157,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move_line____last_update
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking____last_update
 msgid "Last Modified on"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"Manual validation of the picking is not allowed in the destination company."
 msgstr ""
 
 #. module: purchase_sale_inter_company
