@@ -106,6 +106,19 @@ class StockPicking(models.Model):
                         dest_company,
                         record.sale_id,
                     )
+        # if the flag is set, block the validation of the picking in the destination company
+        if self.env.company.block_po_manual_picking_validation:
+            for record in self:
+                dest_company = record.partner_id.commercial_partner_id.ref_company_ids
+                if (
+                    dest_company and record.picking_type_code == "incoming"
+                ) and record.state in ["done", "waiting", "assigned"]:
+                    raise UserError(
+                        _(
+                            "Manual validation of the picking is not allowed"
+                            " in the destination company."
+                        )
+                    )
         return res
 
     def _sync_receipt_with_delivery(self, dest_company, sale_order):
