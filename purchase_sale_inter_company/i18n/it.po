@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-12-11 11:35+0000\n"
+"PO-Revision-Date: 2024-04-23 18:37+0000\n"
 "Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -24,13 +24,13 @@ msgstr "Conferma ordine residuo"
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
 msgid "Block PO manual picking validation"
-msgstr ""
+msgstr "Blocca validazione manuale dei picking in acquisto"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__block_po_manual_picking_validation
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__block_po_manual_picking_validation
 msgid "Block manual validation of picking in the destination company"
-msgstr ""
+msgstr "Blocca validazione manuale dei picking nell'azienda di destinazione"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_company
@@ -126,12 +126,12 @@ msgstr "Prelievo interaziendale"
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__intercompany_sale_line_id
 msgid "Intercompany Sale Line"
-msgstr ""
+msgstr "Riga vendita intercompany"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__intercompany_sale_order_id
 msgid "Intercompany Sale Order"
-msgstr ""
+msgstr "Ordine di vendita intercompany"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
@@ -165,6 +165,8 @@ msgstr "Ultima modifica il"
 msgid ""
 "Manual validation of the picking is not allowed in the destination company."
 msgstr ""
+"La validazione manuale del picking non è permessa nell'azienda di "
+"destinazione."
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
@@ -173,6 +175,8 @@ msgid ""
 "Mismatch between move lines with the corresponding PO %s for assigning "
 "quantities and lots from %s for product %s"
 msgstr ""
+"Mancata corrispondenza tra le righe movimento con il PO %s per poter "
+"assegnare lotti e quantità da %s per il prodotto %s"
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
@@ -193,7 +197,7 @@ msgstr "Ordine di acquisto"
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order_line
 msgid "Purchase Order Line"
-msgstr ""
+msgstr "Riga ordine di acquisto"
 
 #. module: purchase_sale_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
@@ -268,6 +272,8 @@ msgid ""
 "The generated sale orders with reference %(orders)s can't be modified. "
 "They're either unconfirmed or locked for modifications."
 msgstr ""
+"Gli ordini di vendita generati con riferimento %(orders)s non possono essere "
+"modificati. Sono non confermati o bloccati per modifiche."
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
@@ -321,6 +327,8 @@ msgstr "Impossibile annullare un ordine che è %s"
 msgid ""
 "You can't change this purchase order as the corresponding sale is %(state)s"
 msgstr ""
+"Non si può modificare questo ordine di acquisto perchè la vendita "
+"corrispondente è %(state)s"
 
 #. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
