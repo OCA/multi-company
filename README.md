@@ -34,7 +34,7 @@ addon | version | maintainers | summary
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 15.0.1.1.0 |  | Intercompany PO/SO rules
 [purchase_sale_stock_inter_company](purchase_sale_stock_inter_company/) | 15.0.1.0.0 |  | Intercompany PO/SO rules with warehouse
 [res_company_code](res_company_code/) | 15.0.1.0.0 |  | Add 'code' field on company model
-[stock_intercompany](stock_intercompany/) | 15.0.1.1.1 |  | Stock Intercompany Delivery-Reception
+[stock_intercompany](stock_intercompany/) | 15.0.1.1.2 |  | Stock Intercompany Delivery-Reception
 
 [//]: # (end addons)
 
