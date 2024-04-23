@@ -63,13 +63,16 @@ class TestIntercompanyDelivery(TransactionCase):
         self.stock_location = (
             self.env["stock.location"]
             .sudo()
-            .search([("name", "=", "Stock"), ("company_id", "=", self.company1.id)])
+            .search(
+                [("name", "=", "Stock"), ("company_id", "=", self.company1.id)], limit=1
+            )
         )
         self.uom_unit = self.env.ref("uom.product_uom_unit")
 
     def test_picking_creation(self):
         stock_location = self.env["stock.location"].search(
-            [("usage", "=", "internal"), ("company_id", "=", self.company1.id)]
+            [("usage", "=", "internal"), ("company_id", "=", self.company1.id)],
+            limit=1,
         )
         custs_location = self.env.ref("stock.stock_location_customers")
         custs_location.company_id = False
