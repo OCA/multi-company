@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2023 Moduon Team S.L.
+     Copyright 2024 Camptocamp SA
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0) -->
+<data>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <field name="property_account_payable_id" position="after">
+                <div
+                    class="o_form_label"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                />
+                <button
+                    name="propagate_multicompany_account_payable"
+                    type="object"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                    icon="fa-arrow-right"
+                    class="btn-link"
+                    confirm="Are you sure? This action will propagate this account to all of your selected companies, if they have an account with the same code."
+                >Propagate payable account to other companies</button>
+            </field>
+            <field name="property_account_receivable_id" position="after">
+                <div
+                    class="o_form_label"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                />
+                <button
+                    name="propagate_multicompany_account_receivable"
+                    type="object"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                    icon="fa-arrow-right"
+                    class="btn-link"
+                    confirm="Are you sure? This action will propagate this account to all of your selected companies, if they have an account with the same code."
+                >Propagate receivable account to other companies</button>
+            </field>
+            <field name="property_account_position_id" position="after">
+                <div
+                    class="o_form_label"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                />
+                <button
+                    name="propagate_multicompany_account_position"
+                    type="object"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                    icon="fa-arrow-right"
+                    class="btn-link"
+                    confirm="Are you sure? This action will propagate this value to all of your selected companies."
+                >Propagate fiscal position to other companies</button>
+            </field>
+            <field name="property_payment_term_id" position="after">
+                <div
+                    class="o_form_label"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                />
+                <button
+                    name="propagate_multicompany_payment_term_id"
+                    type="object"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                    icon="fa-arrow-right"
+                    class="btn-link"
+                    confirm="Are you sure? This action will propagate this value to all of your selected companies."
+                >Propagate payment term to other companies</button>
+            </field>
+            <field name="property_supplier_payment_term_id" position="after">
+                <div
+                    class="o_form_label"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                />
+                <button
+                    name="propagate_multicompany_supplier_payment_term_id"
+                    type="object"
+                    attrs="{'invisible': [('company_id', '!=', False)]}"
+                    icon="fa-arrow-right"
+                    class="btn-link"
+                    confirm="Are you sure? This action will propagate this value to all of your selected companies."
+                >Propagate supplier payment term to other companies</button>
+            </field>
+        </field>
+    </record>
+
+</data>
