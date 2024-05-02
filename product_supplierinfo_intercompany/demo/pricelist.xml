@@ -31,6 +31,7 @@
             ref="product.product_product_4_product_template"
         />
         <field name="base" eval="'list_price'" />
+        <field name="applied_on" eval="'1_product'" />
         <field name="fixed_price">10</field>
     </record>
 
@@ -43,6 +44,7 @@
         <field name="product_id" ref="product.product_product_4b" />
         <field name="base" eval="'list_price'" />
         <field name="fixed_price">15</field>
+        <field name="applied_on" eval="'0_product_variant'" />
     </record>
 
     <record id="pricelist_item_product_product_2" model="product.pricelist.item">
@@ -54,5 +56,6 @@
         <field name="product_id" ref="product.product_product_2" />
         <field name="base" eval="'list_price'" />
         <field name="fixed_price">20</field>
+        <field name="applied_on" eval="'0_product_variant'" />
     </record>
 </odoo>

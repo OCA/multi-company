@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import _, fields, models
-from odoo.exceptions import Warning as UserError
+from odoo.exceptions import UserError
 
 
 class IntercompanySupplierinfoMixin(models.AbstractModel):
@@ -34,3 +34,4 @@ class ProductSupplierinfo(models.Model):
         super().check_access_rule(operation)
         if operation in ("write", "create", "unlink"):
             self.check_intercompany_pricelist()
+        return True

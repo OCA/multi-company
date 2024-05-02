@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import _, api, models
-from odoo.exceptions import Warning as UserError
+from odoo.exceptions import UserError
 
 
 class ProductPricelistItem(models.Model):
@@ -59,11 +59,12 @@ class ProductPricelistItem(models.Model):
         self._add_product_to_synchronize(todo)
         self._process_product_to_synchronize(todo)
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
-        record = super().create(vals)
-        record._init_supplier_info()
-        return record
+        records = super().create(vals)
+        for rec in records:
+            rec._init_supplier_info()
+        return records
 
     def write(self, vals):
         todo = {}
