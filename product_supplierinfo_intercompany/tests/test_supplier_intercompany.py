@@ -1,11 +1,11 @@
 # Copyright 2019 Akretion (http://www.akretion.com).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from odoo.exceptions import Warning as UserError
-from odoo.tests.common import SavepointCase
+from odoo.exceptions import UserError
+from odoo.tests.common import TransactionCase
 
 
-class TestIntercompanySupplierCase(SavepointCase):
+class TestIntercompanySupplierCase(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -44,16 +44,22 @@ class TestIntercompanySupplierCase(SavepointCase):
                 {
                     "product_id": record.id,
                     "product_tmpl_id": record.product_tmpl_id.id,
+                    "applied_on": "0_product_variant",
                 }
             )
         else:
-            vals["product_tmpl_id"] = record.id
+            vals.update(
+                {
+                    "product_tmpl_id": record.id,
+                    "applied_on": "1_product",
+                }
+            )
         res = self.env["product.pricelist.item"].create(vals)
         return res
 
     def _get_supplier_info(self, record=None, sudo=True):
         domain = [
-            ("name", "=", self.partner.id),
+            ("partner_id", "=", self.partner.id),
             ("intercompany_pricelist_id", "=", self.pricelist_intercompany.id),
             ("company_id", "=", False),
         ]
@@ -92,7 +98,12 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
 
         self.user = self.env.ref("base.user_demo")
         self.user.write(
-            {"groups_id": [(4, self.env.ref("sales_team.group_sale_manager").id)]}
+            {
+                "groups_id": [
+                    (4, self.env.ref("sales_team.group_sale_manager").id),
+                    (4, self.env.ref("base.group_multi_company").id),
+                ]
+            }
         )
         self.env = self.env(user=self.user)
         ref = self.env.ref
@@ -165,7 +176,7 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         self._check_supplier_info_for(product, 22)
 
     def test_add_template_item(self):
-        template = self.env.ref("product.product_product_2_product_template")
+        template = self.env["product.template"].create({"name": "New template"})
         self._add_item(template, 30)
         self._check_supplier_info_for(template, 30)
 
@@ -219,7 +230,7 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
             self.env["product.supplierinfo"].sudo().create(
                 {
                     "company_id": False,
-                    "name": self.partner.id,
+                    "partner_id": self.partner.id,
                     "product_tmpl_id": self.product_template_1.id,
                     "intercompany_pricelist_id": pricelist,
                 }
@@ -327,11 +338,11 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
             {
                 "product_id": self.product_product_4b.id,
                 "product_tmpl_id": self.product_template_4.id,
-                "name": partner.id,
+                "partner_id": partner.id,
                 "sequence": 2,
                 "company_id": self.sale_company.id,
             }
         )
         # Select using sudo (as some native odoo code do it)
         supplier = self.product_product_4b.sudo()._select_seller()
-        self.assertEqual(supplier.name, partner)
+        self.assertEqual(supplier.partner_id, partner)

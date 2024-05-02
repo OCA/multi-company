@@ -17,6 +17,7 @@ org_name: Odoo Community Association (OCA)
 org_slug: OCA
 rebel_module_groups:
 - product_category_company
+- product_supplierinfo_intercompany
 repo_description: 'TODO: add repo description.'
 repo_name: Tools for managing instances containing multiple companies
 repo_slug: multi-company

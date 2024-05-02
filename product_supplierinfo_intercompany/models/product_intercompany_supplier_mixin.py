@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import _, models
-from odoo.exceptions import Warning as UserError
+from odoo.exceptions import UserError
 
 
 class ProductIntercompanySupplierMixin(models.AbstractModel):
@@ -17,10 +17,10 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
 
     def _prepare_intercompany_supplier_info(self, pricelist):
         self.ensure_one()
-        price = self.uom_id._compute_price(self.price, self.uom_po_id)
+        price = pricelist._get_product_price(self, 0, self.uom_po_id)
         res = {
             "intercompany_pricelist_id": pricelist.id,
-            "name": pricelist.company_id.partner_id.id,
+            "partner_id": pricelist.company_id.partner_id.id,
             "company_id": False,
             "price": price,
         }
@@ -36,11 +36,7 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
                 raise UserError(
                     _("The pricelist %s is not intercompany") % pricelist.name
                 )
-            # We pass the pricelist in the context in order to get the right
-            # sale price on record.price (compatible v8 to v12)
-            for record in self.sudo().with_context(
-                pricelist=pricelist.id, automatic_intercompany_sync=True
-            ):
+            for record in self.sudo().with_context(automatic_intercompany_sync=True):
                 domain = record._get_intercompany_supplier_info_domain(pricelist)
                 supplierinfo = record.env["product.supplierinfo"].search(domain)
                 if (

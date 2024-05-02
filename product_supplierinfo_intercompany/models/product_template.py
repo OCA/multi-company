@@ -24,65 +24,55 @@ class ProductTemplate(models.Model):
 
     def _has_intercompany_price(self, pricelist):
         self.ensure_one()
-        if self.env["product.pricelist.item"].search(
+
+        def _get_all_categs(categ):
+            if categ.parent_id:
+                return categ | _get_all_categs(categ.parent_id)
+            else:
+                return categ
+
+        domains = [
             [
                 ("pricelist_id", "=", pricelist.id),
                 ("product_tmpl_id", "=", self.id),
                 ("product_id", "=", False),
-            ]
-        ):
-            return True
-        if self.env["product.pricelist.item"].search(
+            ],
             [
                 ("pricelist_id", "=", pricelist.id),
                 ("applied_on", "=", "2_product_category"),
+                ("categ_id", "in", _get_all_categs(self.categ_id).ids),
                 ("product_tmpl_id", "=", False),
                 ("product_id", "=", False),
-            ]
-        ):
-            return True
-        if self.env["product.pricelist.item"].search(
+            ],
             [
                 ("pricelist_id", "=", pricelist.id),
                 ("applied_on", "=", "3_global"),
                 ("product_tmpl_id", "=", False),
                 ("product_id", "=", False),
-            ]
-        ):
-            return True
+            ],
+        ]
+        for domain in domains:
+            item = self.env["product.pricelist.item"].search(domain)
+            if item:
+                return item
 
     @api.depends("pricelist_item_ids.fixed_price")
     def _compute_template_price(self):
-        """We need the 'depends' in ordder to get the correct, updated price
+        """We need the 'depends' in order to get the correct, updated price
         calculations when a pricelist item is added"""
         return super()._compute_template_price()
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
-        res = super(ProductTemplate, self).create(vals)
-        if res.sale_ok and res.purchase_ok:
-            res.update_intercompany_prices()
+        res = super().create(vals)
+        for rec in self:
+            if rec.sale_ok and rec.purchase_ok:
+                rec._synchronise_supplier_info()
         return res
 
     def write(self, vals):
-        res = super(ProductTemplate, self).write(vals)
-        for rec in self:
-            rec.update_intercompany_prices()
+        res = super().write(vals)
+        if "sale_ok" in vals or "purchase_ok" in vals:
+            for rec in self:
+                rec._synchronise_supplier_info()
         return res
-
-    def update_intercompany_prices(self):
-        pricelist_ids = (
-            self.env["product.pricelist"]
-            .sudo()
-            .search([("is_intercompany_supplier", "=", True)])
-        )
-        if len(pricelist_ids) > 0:
-            for pricelist_id in pricelist_ids:
-                for item in pricelist_id.item_ids:
-                    todo = {
-                        pricelist_id: {
-                            "templates": self,
-                            "products": self.env["product.product"].browse(False),
-                        }
-                    }
-                    item._process_product_to_synchronize(todo)
