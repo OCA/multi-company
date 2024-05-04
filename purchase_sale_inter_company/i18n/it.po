@@ -33,24 +33,6 @@ msgid "Create Sale Orders when buying to this company"
 msgstr "Creare ordini di vendita quando si acquista da questa azienda"
 
 #. module: purchase_sale_inter_company
-#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid ""
-"Default value to set on Sale Orders that will be created based on Purchase "
-"Orders made to this company"
-msgstr ""
-"Valore predefinito da impostare sugli ordini di vendita che verranno creati "
-"sulla base degli ordini di acquisto fatti a questa azienda"
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid ""
-"Default value to set on Sale Orders that will be created based on Purchase "
-"Orders made to this company."
-msgstr ""
-"Valore predefinito da impostare sugli ordini di vendita che verranno creati "
-"sulla base degli ordini di acquisto fatti a questa azienda."
-
-#. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__so_from_po
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__so_from_po
 msgid ""
@@ -61,11 +43,6 @@ msgstr ""
 "Generare un ordine di vendita quando un ordine d'acquisto viene creato con "
 "questa azienda come fornitore.\n"
 " L'utente interaziendale deve essere almeno un utente vendite."
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__intercompany_picking_id
-msgid "Intercompany Picking"
-msgstr "Prelievo interaziendale"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__intercompany_sale_user_id
@@ -123,25 +100,10 @@ msgid "Source Purchase Order Line"
 msgstr "Riga ordine d'acquisto di origine"
 
 #. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
-#, python-format
-msgid ""
-"There's no corresponding line in PO %s for assigning qty from %s for product "
-"%s"
-msgstr ""
-"Non c'è una riga corrisponde nell'ordine d'acquisto %s per assegnare la "
-"quantità da %s per il prodotto %s"
-
-#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 #, python-format
 msgid "This vendor bill is related with: {}"
 msgstr "Questa fattura fornitore è relativa a: {}"
-
-#. module: purchase_sale_inter_company
-#: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
-msgid "Transfer"
-msgstr "Trasferimento"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__intercompany_sale_user_id
@@ -149,16 +111,6 @@ msgid ""
 "User used to create the sales order arising from a purchase order in another "
 "company."
 msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__warehouse_id
-msgid "Warehouse For Sale Orders"
-msgstr "Magazzino per gli ordini di vendita"
-
-#. module: purchase_sale_inter_company
-#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__warehouse_id
-msgid "Warehouse for Sale Orders"
-msgstr "Magazzino per gli ordini di vendita"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sale_auto_validation
