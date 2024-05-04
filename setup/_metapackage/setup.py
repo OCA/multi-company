@@ -18,6 +18,7 @@ setuptools.setup(
         'odoo13-addon-product_multi_company',
         'odoo13-addon-product_tax_multicompany_default',
         'odoo13-addon-purchase_sale_inter_company',
+        'odoo13-addon-purchase_sale_stock_inter_company',
         'odoo13-addon-res_company_code',
     ],
     classifiers=[
