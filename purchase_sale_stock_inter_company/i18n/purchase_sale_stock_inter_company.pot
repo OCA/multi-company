@@ -4,7 +4,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 15.0\n"
+"Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -42,8 +42,8 @@ msgstr ""
 msgid "Intercompany Picking"
 msgstr ""
 
-#. module: purchase_sale_inter_company
-#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#. module: purchase_sale_stock_inter_company
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
 #, python-format
 msgid ""
 "Mismatch between move lines with the corresponding  PO %s for assigning "
