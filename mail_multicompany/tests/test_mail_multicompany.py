@@ -53,7 +53,7 @@ class TestMailMultiCompany(TransactionCase):
         self.assertEqual(msg.mail_server_id.id, self.server1.id)
 
         # Set company 2 on server 1
-        # Server on message should be empty as the copany on user is still
+        # Server on message should be empty as the company on user is still
         # Company 1
         self.server1.write({"company_id": self.company2.id})
         msg = self._create_message()
@@ -78,3 +78,11 @@ class TestMailMultiCompany(TransactionCase):
         self.user_demo.write({"company_id": self.company1.id})
         msg = self._create_message()
         self.assertEqual(msg.mail_server_id.id, self.server1.id)
+
+        # Set Company 1 in both servers
+        # Server on message should be server 1 as no from_filters are set
+        # and it will be the first to appear on the search
+        self.server2.write({"company_id": self.company1.id})
+        msg = self._create_message()
+        self.assertEqual(msg.mail_server_id.id, self.server1.id)
+        self.assertEqual(msg.email_from, "test.from@example.com")
