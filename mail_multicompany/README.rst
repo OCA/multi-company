@@ -28,7 +28,8 @@ Email Gateway Multi company
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module adds company_id to the models ir.mail_server and mail.message. Also inherits mail.message create function to set the company mail_server.
+This module adds company_id to the models ir.mail_server, mail.message and fetchmail.server. Also inherits mail.message create function to set the company mail_server
+and the mail.thread message_process function to set the correct self.env.company when fetching from the incoming mail servers through a scheduled action.
 
 **Table of contents**
 
@@ -39,6 +40,7 @@ Configuration
 =============
 
 * Go to 'Settings / Technical / Outgoing Mail Servers', and add the company.
+* Go to 'Settings / Technical / Incoming Mail Servers', and add the company.
 
 Usage
 =====
@@ -46,6 +48,7 @@ Usage
 To use this module, you need to:
 
 * Send some email or message that comes out of Odoo.
+* Fetch emails from your mail server into Odoo.
 
 Bug Tracker
 ===========

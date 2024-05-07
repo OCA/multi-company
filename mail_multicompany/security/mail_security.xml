@@ -20,4 +20,16 @@
             name="domain_force"
         >['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
     </record>
+    <record model="ir.rule" id="fetchmail_server_rule">
+        <field name="name">fetchmail_server multi-company</field>
+        <field
+            name="model_id"
+            search="[('model','=','fetchmail.server')]"
+            model="ir.model"
+        />
+        <field name="global" eval="True" />
+        <field
+            name="domain_force"
+        >['|',('company_id','=',False),('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>
