@@ -14,8 +14,8 @@ class IrMailServer(models.Model):
                 ("company_id", "=", self.env.company.id),
                 ("company_id", "=", False),
             ]
-        args = expression.AND((args, domain))       
-            
+        args = expression.AND((args, domain))
+
         return super().search(
             args, offset=offset, limit=limit, order=order, count=count
         )
