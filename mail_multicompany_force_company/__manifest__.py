@@ -9,13 +9,11 @@
     """,
     "version": "15.0.1.0.0",
     "author": "Infraestructuras Tecnológicas de Cantabria, S.L.",
-    "website": "https://www.itecan.es",
+    "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
     "depends": ["mail_multicompany", "base"],
-    "data": [
-        "views/ir_mail_server_views.xml"
-        ],
+    "data": ["views/ir_mail_server_views.xml"],
     "application": False,
     "installable": True,
-    "auto_install": False
+    "auto_install": False,
 }

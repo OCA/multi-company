@@ -8,8 +8,12 @@ class IrMailServer(models.Model):
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
         domain = []
-        if not self._context.get('show_all'):
-            domain = ['|', ("company_id", "=", self.env.company.id), ('company_id', '=', False)]
+        if not self._context.get("show_all"):
+            domain = [
+                "|",
+                ("company_id", "=", self.env.company.id),
+                ("company_id", "=", False),
+            ]
         args = expression.AND((args, domain))       
             
         return super().search(

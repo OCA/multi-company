@@ -3,4 +3,5 @@
 <record id="base.action_ir_mail_server_list" model="ir.actions.act_window">
     <field name="context">{'show_all': True}</field>
 </record>
+
 </odoo>
