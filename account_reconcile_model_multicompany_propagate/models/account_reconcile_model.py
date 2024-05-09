@@ -19,21 +19,21 @@ class AccountReconcileModel(models.Model):
 
     def _compute_same_name_other_companies(self):
         for record in self:
-            alien_companies = self.env.user.company_ids - self.company_id
-            companies_chart_template_equal = (
-                alien_companies - self.company_id
-            ).filtered(
-                lambda c: c.chart_template_id == self.company_id.chart_template_id
+            alien_companies = self.env.user.company_ids - record.company_id
+            companies_chart_template_equal = alien_companies.filtered(
+                lambda c, record=record: c.chart_template_id
+                == record.company_id.chart_template_id
             )
-            self = self.with_context(
-                allowed_company_ids=companies_chart_template_equal.ids
-                + self.company_id.ids
+            record = record.with_context(
+                allowed_company_ids=(
+                    companies_chart_template_equal + record.company_id
+                ).ids
             )
             record.same_name_other_companies = bool(
-                self.search_count(
+                record.search_count(
                     [
                         ("company_id", "in", companies_chart_template_equal.ids),
-                        ("name", "=", self.name),
+                        ("name", "=", record.name),
                     ]
                 )
             )

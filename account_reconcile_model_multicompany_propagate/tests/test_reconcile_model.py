@@ -191,3 +191,21 @@ class TestPropagateReconcileModel(AccountTestInvoicingCommon):
                 },
             ],
         )
+
+    def test_multi_compute(self):
+        """Make sure compute works in multi-record mode."""
+        rule_2 = self.rule_1.copy({"name": "rule 2"})
+        rule_2.propagate_to_other_companies()
+        self.assertRecordValues(
+            self.rule_1 + rule_2,
+            [
+                {
+                    "name": "Invoices Matching Rule Test",
+                    "same_name_other_companies": False,
+                },
+                {
+                    "name": "rule 2",
+                    "same_name_other_companies": True,
+                },
+            ],
+        )
