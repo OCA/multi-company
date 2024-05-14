@@ -1,1 +1,1 @@
-from . import models, tests
+from . import models
