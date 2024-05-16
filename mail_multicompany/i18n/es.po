@@ -18,8 +18,6 @@ msgstr ""
 
 #. module: mail_multicompany
 #: model:ir.model.fields,field_description:mail_multicompany.field_ir_mail_server__company_id
-#: model:ir.model.fields,field_description:mail_multicompany.field_mail_mail__company_id
-#: model:ir.model.fields,field_description:mail_multicompany.field_mail_message__company_id
 msgid "Company"
 msgstr "Compañía"
 
