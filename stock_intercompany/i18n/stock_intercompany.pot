@@ -48,7 +48,7 @@ msgstr ""
 #. module: stock_intercompany
 #: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_in_type_id
 #: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_in_type_id
-msgid "Intercompany operation type"
+msgid "Intercompany Operation Type IN"
 msgstr ""
 
 #. module: stock_intercompany
