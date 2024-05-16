@@ -53,8 +53,8 @@ msgstr "Contrapartida de la Recogida"
 #. module: stock_intercompany
 #: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_in_type_id
 #: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_in_type_id
-msgid "Intercompany operation type"
-msgstr "Tipo de operación entre empresas"
+msgid "Intercompany Operation Type IN"
+msgstr ""
 
 #. module: stock_intercompany
 #: model:ir.model,name:stock_intercompany.model_stock_move_line
@@ -70,3 +70,6 @@ msgstr "Movimiento de Existencias"
 #: model:ir.model,name:stock_intercompany.model_stock_picking
 msgid "Transfer"
 msgstr "Transferencia"
+
+#~ msgid "Intercompany operation type"
+#~ msgstr "Tipo de operación entre empresas"
