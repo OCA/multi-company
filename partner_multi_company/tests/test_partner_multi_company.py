@@ -10,7 +10,7 @@ from odoo.tests import common, tagged
 class TestPartnerMultiCompany(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
-        super(TestPartnerMultiCompany, cls).setUpClass()
+        super().setUpClass()
         # Avoid possible spam
         cls.partner_model = cls.env["res.partner"].with_context(
             mail_create_nosubscribe=True,
@@ -130,7 +130,7 @@ class TestPartnerMultiCompany(common.TransactionCase):
     def test_uninstall(self):
         from ..hooks import uninstall_hook
 
-        uninstall_hook(self.env.cr, None)
+        uninstall_hook(self.env)
         rule = self.env.ref("base.res_partner_rule")
         domain = (
             "['|', '|', ('partner_share', '=', False),"

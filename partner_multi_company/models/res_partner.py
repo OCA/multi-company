@@ -36,7 +36,7 @@ class ResPartner(models.Model):
          parent/child...).
         :return: List of field names to be synced.
         """
-        fields = super(ResPartner, self)._commercial_fields()
+        fields = super()._commercial_fields()
         fields += ["company_ids"]
         return fields
 

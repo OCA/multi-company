@@ -14,7 +14,7 @@
                     groups="base.group_multi_company"
                     widget="many2many_tags"
                     options="{'no_create': True}"
-                    attrs="{'readonly': [('parent_id', '!=', False)]}"
+                    readonly="parent_id != False"
                 />
             </xpath>
             <xpath
@@ -32,7 +32,7 @@
                     groups="base.group_multi_company"
                     widget="many2many_tags"
                     options="{'no_create': True}"
-                    attrs="{'readonly': [('parent_id', '!=', False)]}"
+                    readonly="parent_id != False"
                 />
             </xpath>
         </field>
