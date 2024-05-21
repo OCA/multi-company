@@ -43,17 +43,12 @@ def post_init_hook(cr, rule_ref, model_name):
     table_name = model._fields["company_ids"].relation
     column1 = model._fields["company_ids"].column1
     column2 = model._fields["company_ids"].column2
-    SQL = """
-        INSERT INTO {}
-        ({}, {})
-        SELECT id, company_id FROM {} WHERE company_id IS NOT NULL
+    SQL = f"""
+        INSERT INTO {table_name}
+        ({column1}, {column2})
+        SELECT id, company_id FROM {model._table} WHERE company_id IS NOT NULL
         ON CONFLICT DO NOTHING
-    """.format(
-        table_name,
-        column1,
-        column2,
-        model._table,
-    )
+    """
     env.cr.execute(SQL)
 
 
