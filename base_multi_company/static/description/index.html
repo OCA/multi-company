@@ -368,34 +368,32 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:964598216860da55dff4212af38c17fa514bf5739b27f4f464c058aea5cdc293
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Production/Stable" src="https://img.shields.io/badge/maturity-Production%2FStable-green.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/licence-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/16.0/base_multi_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-base_multi_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=16.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module will provide a way to change the way Odoo manages a ‘multi-company’
-implementation.</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Production/Stable" src="https://img.shields.io/badge/maturity-Production%2FStable-green.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/lgpl-3.0-standalone.html"><img alt="License: LGPL-3" src="https://img.shields.io/badge/licence-LGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/17.0/base_multi_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-17-0/multi-company-17-0-base_multi_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=17.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This module will provide a way to change the way Odoo manages a
+‘multi-company’ implementation.</p>
 <div class="section" id="abstract">
 <h1>Abstract</h1>
 <p>Odoo traditional implementation of multi-company:</p>
 <ul class="simple">
-<li>Some models contain a field named Company (company_id) that allows to set one company or None
-in order to:
-- Limit access to that company if set.
-- not limiting access to any company if not set.</li>
+<li>Some models contain a field named Company (company_id) that allows to
+set one company or None in order to:<ul>
+<li>Limit access to that company if set.</li>
+<li>not limiting access to any company if not set.</li>
+</ul>
+</li>
 </ul>
 <p>This module changes that in order to introduce a finer company access.
-e.g.: If you want to give record access to company A and B but not for C.</p>
-<p>This module is not doing anything by its own but provide a transversal implementation
-for further ones.
-e.g.: If you want to implement OCA multi-company behaviour for products, install
-also the ‘product_multi_company’ or ‘partner_multi_company’ modules.</p>
+e.g.: If you want to give record access to company A and B but not for
+C.</p>
+<p>This module is not doing anything by its own but provide a transversal
+implementation for further ones. e.g.: If you want to implement OCA
+multi-company behaviour for products, install also the
+‘product_multi_company’ or ‘partner_multi_company’ modules.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#bug-tracker" id="toc-entry-1">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-2">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-3">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="toc-entry-4">Contributors</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-5">Maintainers</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#credits" id="toc-entry-2">Credits</a></li>
 </ul>
 </div>
 <div class="section" id="bug-tracker">
@@ -403,13 +401,15 @@ also the ‘product_multi_company’ or ‘partner_multi_company’ modules.</p>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/multi-company/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20base_multi_company%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20base_multi_company%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
 <h2><a class="toc-backref" href="#toc-entry-2">Credits</a></h2>
+</div>
+</div>
 <div class="section" id="authors">
-<h3><a class="toc-backref" href="#toc-entry-3">Authors</a></h3>
+<h1>Authors</h1>
 <ul class="simple">
 <li>ACSONE SA/NV</li>
 <li>LasLabs</li>
@@ -417,7 +417,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="contributors">
-<h3><a class="toc-backref" href="#toc-entry-4">Contributors</a></h3>
+<h1>Contributors</h1>
 <ul class="simple">
 <li>Dave Lasley &lt;<a class="reference external" href="mailto:dave&#64;laslabs.com">dave&#64;laslabs.com</a>&gt;</li>
 <li>Pedro M. Baeza &lt;<a class="reference external" href="mailto:pedro.baeza&#64;tecnativa.com">pedro.baeza&#64;tecnativa.com</a>&gt;</li>
@@ -429,7 +429,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h3><a class="toc-backref" href="#toc-entry-5">Maintainers</a></h3>
+<h1>Maintainers</h1>
 <p>This module is maintained by the OCA.</p>
 <a class="reference external image-reference" href="https://odoo-community.org"><img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" /></a>
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
@@ -437,10 +437,8 @@ mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
 <p>Current <a class="reference external" href="https://odoo-community.org/page/maintainer-role">maintainer</a>:</p>
 <p><a class="reference external image-reference" href="https://github.com/pedrobaeza"><img alt="pedrobaeza" src="https://github.com/pedrobaeza.png?size=40px" /></a></p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/16.0/base_multi_company">OCA/multi-company</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/17.0/base_multi_company">OCA/multi-company</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
-</div>
-</div>
 </div>
 </div>
 </body>

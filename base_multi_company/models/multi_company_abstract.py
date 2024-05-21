@@ -6,7 +6,6 @@ from odoo import api, fields, models
 
 
 class MultiCompanyAbstract(models.AbstractModel):
-
     _name = "multi.company.abstract"
     _description = "Multi-Company Abstract"
 
