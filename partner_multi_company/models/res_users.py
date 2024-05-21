@@ -9,7 +9,7 @@ class ResUsers(models.Model):
 
     @api.model_create_multi
     def create(self, vals):
-        res = super(ResUsers, self).create(vals)
+        res = super().create(vals)
         if "company_ids" in vals:
             res.partner_id.company_ids = vals["company_ids"]
         if "company_id" in vals and res.partner_id.company_ids:
@@ -17,7 +17,7 @@ class ResUsers(models.Model):
         return res
 
     def write(self, vals):
-        res = super(ResUsers, self).write(vals)
+        res = super().write(vals)
         if "company_ids" in vals:
             for user in self.sudo():
                 if user.partner_id.company_ids:
