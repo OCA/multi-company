@@ -1,15 +1,12 @@
 import logging
 
-from odoo import SUPERUSER_ID, api
-
 _logger = logging.getLogger(__name__)
 
 
-def post_init_hook(cr, registry):
+def post_init_hook(env):
     """
     Set access rule to support multi-company fields
     """
-    env = api.Environment(cr, SUPERUSER_ID, {})
     # Change access rule
     rule = env.ref("base.res_partner_rule")
     rule.write(
@@ -22,7 +19,7 @@ def post_init_hook(cr, registry):
         }
     )
     # Initialize m2m table for preserving old restrictions
-    cr.execute(
+    env.cr.execute(
         """
         INSERT INTO res_company_res_partner_rel
         (res_partner_id, res_company_id)
@@ -33,7 +30,7 @@ def post_init_hook(cr, registry):
     )
 
 
-def uninstall_hook(cr, registry):
+def uninstall_hook(env):
     """Restore product rule to base value.
 
     Args:
@@ -41,7 +38,6 @@ def uninstall_hook(cr, registry):
         rule_ref (string): XML ID of security rule to remove the
             `domain_force` from.
     """
-    env = api.Environment(cr, SUPERUSER_ID, {})
     # Change access rule
     rule = env.ref("base.res_partner_rule")
     rule.write(
