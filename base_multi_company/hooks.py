@@ -1,7 +1,6 @@
 # Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # Copyright 2017 LasLabs Inc.
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
-from odoo import SUPERUSER_ID, api
 
 __all__ = [
     "post_init_hook",
@@ -16,27 +15,28 @@ def set_security_rule(env, rule_ref):
     :param: rule_ref: XML-ID of the security rule to change.
     """
     rule = env.ref(rule_ref)
-    if not rule:  # safeguard if it's deleted
-        return
-    rule.write(
-        {
-            "active": True,
-            "domain_force": ("[('company_ids', 'in', [False] + company_ids)]"),
-        }
-    )
+    if rule:  # safeguard if it's deleted
+        rule.write(
+            {
+                "active": True,
+                "domain_force": (
+                    "['|', ('company_ids', '=', False),"
+                    " ('company_ids', 'in', company_ids)]"
+                ),
+            }
+        )
 
 
-def post_init_hook(cr, rule_ref, model_name):
+def post_init_hook(env, rule_ref, model_name):
     """Set the `domain_force` and default `company_ids` to `company_id`.
 
     Args:
-        cr (Cursor): Database cursor to use for operation.
+        env (Environment): Environment to use for operation.
         rule_ref (string): XML ID of security rule to write the
             `domain_force` from.
         model_name (string): Name of Odoo model object to search for
             existing records.
     """
-    env = api.Environment(cr, SUPERUSER_ID, {})
     set_security_rule(env, rule_ref)
     # Copy company values
     model = env[model_name]
@@ -52,20 +52,23 @@ def post_init_hook(cr, rule_ref, model_name):
     env.cr.execute(SQL)
 
 
-def uninstall_hook(cr, rule_ref):
-    """Restore product rule to base value.
+def uninstall_hook(env, rule_ref):
+    """Restore rule to base value.
 
     Args:
-        cr (Cursor): Database cursor to use for operation.
+        env (Environment): Environment to use for operation.
         rule_ref (string): XML ID of security rule to remove the
             `domain_force` from.
     """
-    env = api.Environment(cr, SUPERUSER_ID, {})
     # Change access rule
     rule = env.ref(rule_ref)
-    rule.write(
-        {
-            "active": False,
-            "domain_force": (" [('company_id', 'in', [False, user.company_id.id])]"),
-        }
-    )
+    if rule:  # safeguard if it's deleted
+        rule.write(
+            {
+                "active": False,
+                "domain_force": (
+                    " ['|', ('company_ids', '=', False),"
+                    " ('company_ids', 'in', company_ids)]"
+                ),
+            }
+        )

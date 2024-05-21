@@ -67,8 +67,8 @@ class MultiCompanyAbstract(models.AbstractModel):
     @api.model
     def _patch_company_domain(self, args):
         # In some situations the 'in' operator is used with company_id in a
-        # name_search or search_read. ORM does not convert to a proper WHERE clause when using
-        # the 'in' operator.
+        # name_search or search_read.
+        # ORM does not convert to a proper WHERE clause when using the 'in' operator.
         # e.g: ```
         #     WHERE "res_partner"."id" in (SELECT "res_partner_id"
         #     FROM "res_company_res_partner_rel" WHERE "res_company_id" IN (False, 1)
@@ -86,7 +86,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         if args is None:
             args = []
         for arg in args:
-            if type(arg) == list and arg[:2] == ["company_id", "in"]:
+            if isinstance(arg, list) and arg[:2] == ["company_id", "in"]:
                 fix = []
                 for _i in range(len(arg[2]) - 1):
                     fix.append("|")
@@ -98,16 +98,14 @@ class MultiCompanyAbstract(models.AbstractModel):
         return new_args
 
     @api.model
-    def _name_search(
-        self, name, args=None, operator="ilike", limit=100, name_get_uid=None
-    ):
-        new_args = self._patch_company_domain(args)
+    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
+        new_domain = self._patch_company_domain(domain)
         return super()._name_search(
             name,
-            args=new_args,
+            domain=new_domain,
             operator=operator,
             limit=limit,
-            name_get_uid=name_get_uid,
+            order=order,
         )
 
     @api.model
