@@ -17,18 +17,19 @@ Product multi-company
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/15.0/product_multi_company
+    :target: https://github.com/OCA/multi-company/tree/17.0/product_multi_company
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/multi-company-15-0/multi-company-15-0-product_multi_company
+    :target: https://translation.odoo-community.org/projects/multi-company-17-0/multi-company-17-0-product_multi_company
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=15.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=17.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This modules allows to select in which of the companies you want to use each of the product templates.
+This modules allows to select in which of the companies you want to use
+each of the product templates.
 
 **Table of contents**
 
@@ -38,17 +39,18 @@ This modules allows to select in which of the companies you want to use each of 
 Installation
 ============
 
-This module uses the post and uninstall hooks for updating default product
-template security rule. This only means that updating the module will not
-restore the security rule this module changes. Only a complete removal and
-reinstallation will serve.
+This module uses the post and uninstall hooks for updating default
+product template security rule. This only means that updating the module
+will not restore the security rule this module changes. Only a complete
+removal and reinstallation will serve.
 
 Usage
 =====
 
-On the product form view, go to the "Information" tab, and put the companies
-in which you want to use that product. If none is selected, the product will
-be visible in all of them. The default value is the current one.
+On the product form view, go to the "Information" tab, and put the
+companies in which you want to use that product. If none is selected,
+the product will be visible in all of them. The default value is the
+current one.
 
 Bug Tracker
 ===========
@@ -56,7 +58,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20product_multi_company%0Aversion:%2015.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20product_multi_company%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -64,22 +66,23 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Tecnativa
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* Pedro M. Baeza <pedro.baeza@tecnativa.com>
-* Dave Lasley <dave@laslabs.com>
-* `Tecnativa <https://www.tecnativa.com>`_:
+-  Pedro M. Baeza <pedro.baeza@tecnativa.com>
+-  Dave Lasley <dave@laslabs.com>
+-  `Tecnativa <https://www.tecnativa.com>`__:
 
-  * Vicent Cubells <vicent.cubells@tecnativa.com>
-* Denis Roussel <denis.roussel@acsone.eu>
+   -  Vicent Cubells <vicent.cubells@tecnativa.com>
+
+-  Denis Roussel <denis.roussel@acsone.eu>
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -91,6 +94,6 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/15.0/product_multi_company>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/17.0/product_multi_company>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
