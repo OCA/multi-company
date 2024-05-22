@@ -6,13 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2024-05-22 17:35+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
 
 #. module: stock_intercompany_bidirectional
 #: model_terms:ir.ui.view,arch_db:stock_intercompany_bidirectional.intercompany_bidirectional_res_config_settings_view_form
@@ -20,16 +22,18 @@ msgid ""
 "<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
 "specific.\" groups=\"base.group_multi_company\"/>"
 msgstr ""
+"<span class=\"fa fa-lg fa-building-o\" title=\"I valori impostati qui sono "
+"specifici per azienda.\" groups=\"base.group_multi_company\"/>"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model,name:stock_intercompany_bidirectional.model_res_company
 msgid "Companies"
-msgstr ""
+msgstr "Aziende"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model,name:stock_intercompany_bidirectional.model_res_config_settings
 msgid "Config Settings"
-msgstr ""
+msgstr "Impostazioni configurazione"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,help:stock_intercompany_bidirectional.field_res_company__mirror_lot_numbers
@@ -39,6 +43,9 @@ msgid ""
 "lots/serial numbers with the same names in the destination company "
 "automatically."
 msgstr ""
+"Abilitare 'Numeri di lotto/serie speculari' se si vuole che i lotti creino "
+"automaticamente numeri di lotti/serie assegnati con gli stessi nomi "
+"nell'azienda di destinazione."
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,help:stock_intercompany_bidirectional.field_res_company__move_packages
@@ -47,6 +54,8 @@ msgid ""
 "Enable 'Move Packages' to automatically use the same package for the "
 "incoming operation as was used for the outgoing one."
 msgstr ""
+"Abilitare 'Colli movimento' per utilizzare automaticamente lo stesso collo "
+"per le operazioni in ingresso come utilizzato per quelle di uscita."
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,help:stock_intercompany_bidirectional.field_res_company__auto_update_qty_done
@@ -55,52 +64,55 @@ msgid ""
 "Enable 'Set Qty Done' to automatically update the 'Done' quantity based on "
 "the counterpart picking."
 msgstr ""
+"Abilitare 'Imposta q.tà completata' per aggiornare automaticamente la "
+"quantità 'Completata' in base al prelievo della controparte."
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_company__intercompany_in_type_id
 msgid "Intercompany Operation Type IN"
-msgstr ""
+msgstr "Tipo di operazione ingresso intercompany"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_company__intercompany_out_type_id
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_config_settings__intercompany_out_type_id
 msgid "Intercompany Operation Type OUT"
-msgstr ""
+msgstr "Tipo di operazione uscita intercompany"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_company__mirror_lot_numbers
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_config_settings__mirror_lot_numbers
 msgid "Mirror Lots/Serial Numbers"
-msgstr ""
+msgstr "Numeri di lotto/serie speculari"
 
 #. module: stock_intercompany_bidirectional
 #: model_terms:ir.ui.view,arch_db:stock_intercompany_bidirectional.intercompany_bidirectional_res_config_settings_view_form
 msgid "Mirror lots/serial numbers in the destination company"
-msgstr ""
+msgstr "Numeri di lotto/serie speculari nell'azienda destinazione"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_company__move_packages
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_config_settings__move_packages
 msgid "Move Packages"
-msgstr ""
+msgstr "Colli movimento"
 
 #. module: stock_intercompany_bidirectional
 #: model_terms:ir.ui.view,arch_db:stock_intercompany_bidirectional.intercompany_bidirectional_res_config_settings_view_form
 msgid "Move the entire packages between companies"
-msgstr ""
+msgstr "Muovere colli interi tra le aziende"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_company__auto_update_qty_done
 #: model:ir.model.fields,field_description:stock_intercompany_bidirectional.field_res_config_settings__auto_update_qty_done
 msgid "Set Qty Done"
-msgstr ""
+msgstr "Imposta q.tà completata"
 
 #. module: stock_intercompany_bidirectional
 #: model_terms:ir.ui.view,arch_db:stock_intercompany_bidirectional.intercompany_bidirectional_res_config_settings_view_form
 msgid "Set the \"Done\" quantity based on the counterpart picking"
 msgstr ""
+"Imposta la quantità \"Completata\" in base al prelievo della controparte"
 
 #. module: stock_intercompany_bidirectional
 #: model:ir.model,name:stock_intercompany_bidirectional.model_stock_picking
 msgid "Transfer"
-msgstr ""
+msgstr "Trasferimento"
