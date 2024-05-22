@@ -26,6 +26,7 @@ setuptools.setup(
         'odoo14-addon-multicompany_configuration',
         'odoo14-addon-partner_contact_company_propagation',
         'odoo14-addon-partner_multi_company',
+        'odoo14-addon-partner_multi_company_pos',
         'odoo14-addon-product_category_inter_company',
         'odoo14-addon-product_multi_company',
         'odoo14-addon-product_supplierinfo_group_intercompany',

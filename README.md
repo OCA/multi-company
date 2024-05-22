@@ -39,6 +39,7 @@ addon | version | maintainers | summary
 [multicompany_configuration](multicompany_configuration/) | 14.0.1.0.0 |  | Simplify the configuration on multicompany environments
 [partner_contact_company_propagation](partner_contact_company_propagation/) | 14.0.1.0.0 |  | Propagate company info to children contacts
 [partner_multi_company](partner_multi_company/) | 14.0.1.1.0 | [![aleuffre](https://github.com/aleuffre.png?size=30px)](https://github.com/aleuffre) [![PicchiSeba](https://github.com/PicchiSeba.png?size=30px)](https://github.com/PicchiSeba) [![renda-dev](https://github.com/renda-dev.png?size=30px)](https://github.com/renda-dev) | Select individually the partner visibility on each company
+[partner_multi_company_pos](partner_multi_company_pos/) | 14.0.1.0.0 | [![aleuffre](https://github.com/aleuffre.png?size=30px)](https://github.com/aleuffre) [![renda-dev](https://github.com/renda-dev.png?size=30px)](https://github.com/renda-dev) [![PicchiSeba](https://github.com/PicchiSeba.png?size=30px)](https://github.com/PicchiSeba) | Partner Multi Company POS
 [product_category_inter_company](product_category_inter_company/) | 14.0.1.1.0 |  | Product categories as company dependent
 [product_multi_company](product_multi_company/) | 14.0.1.1.1 |  | Select individually the product template visibility on each company
 [product_supplierinfo_group_intercompany](product_supplierinfo_group_intercompany/) | 14.0.1.1.3 |  | Add sequence field on grouped pricelist items
