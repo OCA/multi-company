@@ -10,7 +10,6 @@ class ProductMultiCompanyCommon(object):
         cls.product_company_none = cls.product_obj.create(
             {
                 "name": "Product without company",
-                "company_ids": [(6, 0, [])],
                 "company_id": False,
             }
         )
