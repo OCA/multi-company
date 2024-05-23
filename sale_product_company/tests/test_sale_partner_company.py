@@ -3,7 +3,7 @@
 
 from lxml import etree
 
-from odoo.tests import Form, common
+from odoo.tests import common
 
 from odoo.addons.base.tests.common import DISABLED_MAIL_CONTEXT
 
@@ -19,9 +19,8 @@ class TestSaleProductCompany(common.TransactionCase):
         company2 = self.env["res.company"].create({"name": "Test Company 2"})
         product = self.env["product.template"].create({"name": "Test Product"})
         product.sale_ok_company_ids = [(6, 0, [company1.id, company2.id])]
-        with Form(product) as product_form:
-            product_form.company_id = company2
-        product = product_form.save()
+        product.company_id = company2
+        product._set_sale_ok_company_ids_from_company_id()
         self.assertEqual(product.sale_ok_company_ids, company2)
 
     def test_sale_product_company(self):
