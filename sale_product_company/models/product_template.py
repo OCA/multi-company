@@ -7,7 +7,11 @@ from odoo import api, fields, models
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    sale_ok_company_ids = fields.Many2many("res.company", string="Selling Companies")
+    sale_ok_company_ids = fields.Many2many(
+        "res.company",
+        string="Selling Companies",
+        relation="product_template_sale_product_company_company_rel",
+    )
 
     @api.onchange("company_id")
     def _set_sale_ok_company_ids_from_company_id(self):
