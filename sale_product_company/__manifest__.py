@@ -3,7 +3,7 @@
 {
     "name": "sale product company",
     "summary": "Set selling companies on product",
-    "version": "16.0.1.0.0",
+    "version": "16.0.2.0.0",
     "development_status": "Alpha",
     "category": "Sale Management",
     "website": "https://github.com/OCA/multi-company",
