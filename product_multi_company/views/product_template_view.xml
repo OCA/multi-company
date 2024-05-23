@@ -22,6 +22,10 @@
                     options="{'no_create': True}"
                 />
             </xpath>
+            <!-- Trick for allowing to set this field via Form -->
+            <xpath expr="//header" position="inside">
+                <field name="company_id" class="invisible" />
+            </xpath>
         </field>
     </record>
 </odoo>

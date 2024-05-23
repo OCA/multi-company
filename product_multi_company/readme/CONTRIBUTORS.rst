@@ -3,6 +3,7 @@
 * `Tecnativa <https://www.tecnativa.com>`_:
 
   * Vicent Cubells <vicent.cubells@tecnativa.com>
+  * Pilar Vargas
 * Denis Roussel <denis.roussel@acsone.eu>
 
 * `Sodexis <https://sodexis.com>`_:
