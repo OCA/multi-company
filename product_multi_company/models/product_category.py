@@ -8,11 +8,7 @@ class ProductCategory(models.Model):
     _inherit = "product.category"
 
     total_route_ids = fields.Many2many(
-        domain=lambda self: [
-            "|",
-            ("company_id", "=", False),
-            ("company_id", "in", self.env.companies.ids),
-        ]
+        domain=lambda self: [("company_id", "in", [False] + self.env.companies.ids)]
     )
 
     route_ids = fields.Many2many(
@@ -21,9 +17,5 @@ class ProductCategory(models.Model):
         "categ_id",
         "route_id",
         "Routes",
-        domain=lambda self: [
-            "|",
-            ("company_id", "=", False),
-            ("company_id", "in", self.env.companies.ids),
-        ],
+        domain=lambda self: [("company_id", "in", [False] + self.env.companies.ids)],
     )
