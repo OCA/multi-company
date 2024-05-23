@@ -46,7 +46,7 @@ reinstallation will serve.
 Usage
 =====
 
-On the product form view, go to the "Information" tab, and put the companies
+On the product form view, go to the "General Information" tab, and put the companies
 in which you want to use that product. If none is selected, the product will
 be visible in all of them. The default value is the current one.
 
@@ -76,6 +76,7 @@ Contributors
 * `Tecnativa <https://www.tecnativa.com>`_:
 
   * Vicent Cubells <vicent.cubells@tecnativa.com>
+  * Pilar Vargas
 * Denis Roussel <denis.roussel@acsone.eu>
 
 * `Sodexis <https://sodexis.com>`_:
