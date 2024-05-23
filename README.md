@@ -40,7 +40,7 @@ addon | version | maintainers | summary
 [res_company_category](res_company_category/) | 16.0.1.0.1 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | Company Categories
 [res_company_code](res_company_code/) | 16.0.1.0.0 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | Add 'code' field on company model
 [res_company_search_view](res_company_search_view/) | 16.0.1.0.0 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | Add a search view for company model
-[sale_product_company](sale_product_company/) | 16.0.1.0.0 |  | Set selling companies on product
+[sale_product_company](sale_product_company/) | 16.0.2.0.0 |  | Set selling companies on product
 [sale_stock_warehouse_multicompany](sale_stock_warehouse_multicompany/) | 16.0.1.0.0 |  | Allow multiple companies to sell the stock of a shared warehouse
 [stock_intercompany](stock_intercompany/) | 16.0.1.0.0 |  | Stock Intercompany Delivery-Reception
 [stock_intercompany_bidirectional](stock_intercompany_bidirectional/) | 16.0.1.0.0 |  | Bidirectional operations for the Stock Intercomany module
