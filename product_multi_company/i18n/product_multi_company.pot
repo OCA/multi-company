@@ -26,7 +26,7 @@ msgstr ""
 
 #. module: product_multi_company
 #: model:ir.model,name:product_multi_company.model_product_template
-msgid "Product Template (Multi-Company)"
+msgid "Product"
 msgstr ""
 
 #. module: product_multi_company
