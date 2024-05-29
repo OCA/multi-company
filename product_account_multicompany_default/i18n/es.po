@@ -34,8 +34,8 @@ msgstr "Sólo los productos multicompañía pueden propagarse a otras companías
 
 #. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_template
-msgid "Product"
-msgstr "Producto"
+msgid "Product Template (Multi-Company)"
+msgstr ""
 
 #. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_product
@@ -62,3 +62,6 @@ msgid ""
 msgstr ""
 "No hay otras compañías a las que propagarse. Asegúrate de que tienes acceso "
 "a otras compañías."
+
+#~ msgid "Product"
+#~ msgstr "Producto"

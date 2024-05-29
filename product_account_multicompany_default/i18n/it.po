@@ -35,8 +35,8 @@ msgstr ""
 
 #. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_template
-msgid "Product"
-msgstr "Prodotto"
+msgid "Product Template (Multi-Company)"
+msgstr ""
 
 #. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_product
@@ -63,3 +63,6 @@ msgid ""
 msgstr ""
 "Non ci sono altre aziende in cui propagare. Assicurarsi di avere accesso "
 "alle altre aziende."
+
+#~ msgid "Product"
+#~ msgstr "Prodotto"
