@@ -32,6 +32,7 @@ addon | version | maintainers | summary
 [product_account_multicompany_default](product_account_multicompany_default/) | 16.0.0.1.0 | [![yajo](https://github.com/yajo.png?size=30px)](https://github.com/yajo) | Set a default account for all companies of a product
 [product_category_company](product_category_company/) | 16.0.1.0.1 |  | Product categories as company dependent
 [product_category_company_favorite](product_category_company_favorite/) | 16.0.1.0.1 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | Possilibity to set favorite product categories per company
+[product_multi_company](product_multi_company/) | 16.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 16.0.1.0.2 | [![Shide](https://github.com/Shide.png?size=30px)](https://github.com/Shide) | Product Tax Multi Company Default
 [purchase_sale_container_deposit_inter_company](purchase_sale_container_deposit_inter_company/) | 16.0.1.0.0 |  | Add compatibility between OCA product_packaging_container_deposit and purchase_sale_inter_company
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 16.0.1.1.2 |  | Intercompany PO/SO rules
