@@ -32,8 +32,8 @@ msgstr ""
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_template
-msgid "Product Template (Multi-Company)"
-msgstr "Modello prodotto (multi-azienda)"
+msgid "Product"
+msgstr "Prodotto"
 
 #. module: product_tax_multicompany_default
 #: model:ir.model,name:product_tax_multicompany_default.model_product_product
@@ -46,5 +46,5 @@ msgstr ""
 msgid "Propagate Taxes"
 msgstr "Propagare imposte"
 
-#~ msgid "Product"
-#~ msgstr "Prodotto"
+#~ msgid "Product Template (Multi-Company)"
+#~ msgstr "Modello prodotto (multi-azienda)"
