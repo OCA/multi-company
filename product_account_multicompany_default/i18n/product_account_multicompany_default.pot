@@ -29,7 +29,7 @@ msgstr ""
 
 #. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_template
-msgid "Product Template (Multi-Company)"
+msgid "Product"
 msgstr ""
 
 #. module: product_account_multicompany_default
