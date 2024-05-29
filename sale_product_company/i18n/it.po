@@ -18,14 +18,11 @@ msgstr ""
 
 #. module: sale_product_company
 #: model:ir.model,name:sale_product_company.model_product_template
-msgid "Product Template (Multi-Company)"
-msgstr ""
+msgid "Product"
+msgstr "Prodotto"
 
 #. module: sale_product_company
 #: model:ir.model.fields,field_description:sale_product_company.field_product_product__sale_ok_company_ids
 #: model:ir.model.fields,field_description:sale_product_company.field_product_template__sale_ok_company_ids
 msgid "Selling Companies"
 msgstr "Aziende che vendono"
-
-#~ msgid "Product"
-#~ msgstr "Prodotto"
