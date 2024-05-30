@@ -39,6 +39,12 @@ With this module all company dependent fields are decorated with an adhoc class.
 .. contents::
    :local:
 
+Known issues / Roadmap
+======================
+
+This moudle won't work cleanly if the field in question is present twice in the view.
+It's very rare, but it could happen.
+
 Bug Tracker
 ===========
 
