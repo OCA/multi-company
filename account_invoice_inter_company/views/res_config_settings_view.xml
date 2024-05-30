@@ -33,7 +33,18 @@
                     <div class="o_setting_left_pane" />
                     <div class="o_setting_right_pane">
                         <div class="o_form_label mt8">Invoicing</div>
-                        <div id="intercompany_invoice_user">
+                        <div id="intercompany_invoicing">
+                            <field name="intercompany_invoicing" class="oe_inline" />
+                            <label
+                                string="Generate Intercompany Invoices"
+                                class="o_light_label"
+                                for="intercompany_invoicing"
+                            />
+                        </div>
+                        <div
+                            id="intercompany_invoice_user"
+                            attrs="{'invisible': [('intercompany_invoicing', '=', False)]}"
+                        >
                             <label
                                 string="Intercompany user for invoices"
                                 class="o_light_label"
@@ -44,7 +55,10 @@
                                 class="oe_inline"
                             />
                         </div>
-                        <div id="inter_company_invoice_validation">
+                        <div
+                            id="inter_company_invoice_validation"
+                            attrs="{'invisible': [('intercompany_invoicing', '=', False)]}"
+                        >
                             <field name="invoice_auto_validation" class="oe_inline" />
                             <label
                                 string="Invoice Auto Validation"
