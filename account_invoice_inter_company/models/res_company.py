@@ -17,6 +17,14 @@ class ResCompany(models.Model):
         help="Responsible user for creation of invoices triggered by "
         "intercompany rules.",
     )
+    intercompany_invoicing = fields.Boolean(
+        string="Generate Inter company Invoices",
+        help="Enable intercompany invoicing: "
+        "\n* Generate a Customer Invoice when a bill with this company is created."
+        "\n* Generate a Vendor Bill when an invoice with this company as a customer"
+        " is created.",
+        default=True,
+    )
 
     def _get_user_domain(self):
         self.ensure_one()

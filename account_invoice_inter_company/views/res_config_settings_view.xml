@@ -17,7 +17,18 @@
                 >
                     <div class="text-decoration-underline mt8 mb8">Invoice</div>
                     <div class="content-group" string="Invoice">
-                        <div>
+                        <div id="intercompany_invoicing">
+                            <label
+                                for="intercompany_invoicing"
+                                string="Generate Intercompany Invoices"
+                                class="o_light_label mr8"
+                            />
+                            <field name="intercompany_invoicing" class="oe_inline" />
+                        </div>
+                        <div
+                            id="intercompany_invoice_user_id"
+                            invisible="not intercompany_invoicing"
+                        >
                             <label
                                 for="intercompany_invoice_user_id"
                                 string="Invoices User"
@@ -28,7 +39,10 @@
                                 class="oe_inline"
                             />
                         </div>
-                        <div>
+                        <div
+                            id="intercompany_invoice_auto_validation"
+                            invisible="not intercompany_invoicing"
+                        >
                             <label
                                 for="invoice_auto_validation"
                                 class="o_light_label mr8"

@@ -20,6 +20,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             {
                 "name": "Company A",
                 "invoice_auto_validation": True,
+                "intercompany_invoicing": True,
             }
         )
         cls.partner_company_a = cls.env["res.partner"].create(
@@ -30,6 +31,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             {
                 "name": "Company B",
                 "invoice_auto_validation": True,
+                "intercompany_invoicing": True,
             }
         )
         cls.partner_company_b = cls.env["res.partner"].create(
@@ -512,3 +514,16 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.assertEqual(len(invoices), 1)
         return invoices
+
+    def test_confirm_invoice_intercompany_disabled(self):
+        # ensure the catalog is shared
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # Disable the configuration in company A
+        self.company_a.intercompany_invoicing = False
+        # Confirm the invoice of company A
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        # Check that no destination invoice has been created in company B
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertFalse(invoices)

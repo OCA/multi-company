@@ -50,6 +50,12 @@ class AccountMove(models.Model):
             dest_company = src_invoice._find_company_from_invoice_partner()
             if not dest_company or src_invoice.auto_generated:
                 continue
+            # Skip if one of the involved companies have intercompany setting disabled
+            if (
+                not dest_company.intercompany_invoicing
+                or not src_invoice.company_id.intercompany_invoicing
+            ):
+                continue
             intercompany_user = dest_company.intercompany_invoice_user_id
             if intercompany_user:
                 src_invoice = src_invoice.with_user(intercompany_user).sudo()

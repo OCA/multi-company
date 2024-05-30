@@ -20,3 +20,13 @@ class ResConfigSettings(models.TransientModel):
         "intercompany rules. If not set the user initiating the"
         "transaction will be used",
     )
+
+    intercompany_invoicing = fields.Boolean(
+        string="Generate Inter company Invoices",
+        related="company_id.intercompany_invoicing",
+        help="Enable intercompany invoicing: "
+        "\n * Generate a Customer Invoice when a bill with this company is created."
+        "\n * Generate a Vendor Bill when an invoice with this company as a customer"
+        " is created.",
+        readonly=False,
+    )
