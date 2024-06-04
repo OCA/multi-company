@@ -17,8 +17,8 @@ class ProductTemplate(models.Model):
             ("product_tmpl_id", "=", self.id),
         ]
 
-    def _prepare_intercompany_supplier_info(self, pricelist):
-        vals = super()._prepare_intercompany_supplier_info(pricelist)
+    def _prepare_intercompany_supplier_info(self, pricelist, min_qty):
+        vals = super()._prepare_intercompany_supplier_info(pricelist, min_qty)
         vals["product_tmpl_id"] = self.id
         return vals
 
