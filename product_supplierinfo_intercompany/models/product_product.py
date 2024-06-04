@@ -34,8 +34,8 @@ class ProductProduct(models.Model):
             ("product_tmpl_id", "=", self.product_tmpl_id.id),
         ]
 
-    def _prepare_intercompany_supplier_info(self, pricelist):
-        vals = super()._prepare_intercompany_supplier_info(pricelist)
+    def _prepare_intercompany_supplier_info(self, pricelist, min_qty):
+        vals = super()._prepare_intercompany_supplier_info(pricelist, min_qty)
         vals.update(
             {
                 "product_id": self.id,

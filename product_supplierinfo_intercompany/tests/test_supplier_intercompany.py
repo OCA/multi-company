@@ -26,7 +26,7 @@ class TestIntercompanySupplierCase(TransactionCase):
         )
         cls.partner = cls.env.ref("base.main_partner")
 
-    def _add_item(self, record, price, pricelist_id=None):
+    def _add_item(self, record, price, pricelist_id=None, min_qty=0):
         ref = self.env.ref
         pricelist_id = (
             pricelist_id
@@ -37,6 +37,7 @@ class TestIntercompanySupplierCase(TransactionCase):
             "pricelist_id": pricelist_id,
             "base": "list_price",
             "price_discount": 0,
+            "min_quantity": min_qty,
             "fixed_price": price,
         }
         if record._name == "product.product":
@@ -85,11 +86,12 @@ class TestIntercompanySupplierCase(TransactionCase):
         supplierinfo = self._get_supplier_info(record)
         self.assertEqual(len(supplierinfo), 0)
 
-    def _check_supplier_info_for(self, record, price):
+    def _check_supplier_info_for(self, record, price, min_qty=0):
         supplierinfo = self._get_supplier_info(record)
         self.assertEqual(len(supplierinfo), 1)
         self.assertEqual(len(supplierinfo.intercompany_pricelist_id), 1)
         self.assertEqual(supplierinfo.price, price)
+        self.assertEqual(supplierinfo.min_qty, min_qty)
 
 
 class TestIntercompanySupplier(TestIntercompanySupplierCase):
@@ -346,3 +348,46 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         # Select using sudo (as some native odoo code do it)
         supplier = self.product_product_4b.sudo()._select_seller()
         self.assertEqual(supplier.partner_id, partner)
+
+    def test_add_second_supplierinfo_with_different_qty(self):
+        self._check_supplier_info_for(self.product_template_4, 10, min_qty=0)
+        self._add_item(self.product_template_4, 20, min_qty=20)
+        supplierinfos = self._get_supplier_info(self.product_template_4)
+        self.assertEqual(len(supplierinfos), 2)
+        self.assertEqual(supplierinfos[0].price, 20)
+        self.assertEqual(supplierinfos[0].min_qty, 20)
+        self.assertEqual(supplierinfos[1].price, 10)
+        self.assertEqual(supplierinfos[1].min_qty, 0)
+
+    def test_second_supplierinfo_chg_qty(self):
+        self._check_supplier_info_for(self.product_template_4, 10, min_qty=0)
+        new_item = self._add_item(self.product_template_4, 20, min_qty=20)
+        supplierinfos = self._get_supplier_info(self.product_template_4)
+        self.assertEqual(len(supplierinfos), 2)
+        new_item.min_quantity = 100
+        supplierinfos = self._get_supplier_info(self.product_template_4)
+        self.assertEqual(len(supplierinfos), 2)
+        self.assertEqual(supplierinfos[0].price, 20)
+        self.assertEqual(supplierinfos[0].min_qty, 100)
+        self.assertEqual(supplierinfos[1].price, 10)
+        self.assertEqual(supplierinfos[1].min_qty, 0)
+
+    def test_third_supplierinfo_and_remove_it(self):
+        self._check_supplier_info_for(self.product_template_4, 10, min_qty=0)
+        self._add_item(self.product_template_4, 20, min_qty=20)
+        new_item2 = self._add_item(self.product_template_4, 30, min_qty=30)
+        supplierinfos = self._get_supplier_info(self.product_template_4)
+        self.assertEqual(len(supplierinfos), 3)
+        new_item2.unlink()
+        supplierinfos = self._get_supplier_info(self.product_template_4)
+        self.assertEqual(len(supplierinfos), 2)
+        self.assertEqual(supplierinfos[0].price, 20)
+        self.assertEqual(supplierinfos[0].min_qty, 20)
+        self.assertEqual(supplierinfos[1].price, 10)
+        self.assertEqual(supplierinfos[1].min_qty, 0)
+
+    def test_change_min_qty(self):
+        self.pricelist_item_4.min_quantity = 100
+        supplierinfos = self._get_supplier_info(self.product_template_4)
+        self.assertEqual(len(supplierinfos), 1)
+        self.assertEqual(supplierinfos.min_qty, 100)
