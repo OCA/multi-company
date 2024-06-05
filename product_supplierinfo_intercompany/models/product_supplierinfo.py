@@ -8,6 +8,12 @@ from odoo.exceptions import UserError
 class IntercompanySupplierinfoMixin(models.AbstractModel):
     _name = "intercompany.supplierinfo.mixin"
 
+    def write(self, vals):
+        # allow to change sequence only
+        if len(vals) == 1 and "sequence" in vals:
+            self = self.with_context(automatic_intercompany_sync=True)
+        return super(IntercompanySupplierinfoMixin, self).write(vals)
+
     def check_intercompany_pricelist(self):
         if not self._context.get("automatic_intercompany_sync"):
             for record in self:
