@@ -191,7 +191,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         new_company = self.new_company_id.with_context(
             allowed_company_ids=allowed_company_ids
         )
-        self.with_context(
+        self.sudo().with_context(
             allowed_company_ids=allowed_company_ids
         ).chart_template_id.try_loading(company=new_company)
         self.create_bank_journals()
