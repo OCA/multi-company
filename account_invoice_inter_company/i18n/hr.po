@@ -54,6 +54,35 @@ msgid "Config Settings"
 msgstr "Postavke"
 
 #. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
+msgid ""
+"Enable intercompany invoicing: \n"
+" * Generate a Customer Invoice when a bill with this company is created.\n"
+" * Generate a Vendor Bill when an invoice with this company as a customer is "
+"created."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoicing
+msgid ""
+"Enable intercompany invoicing: \n"
+"* Generate a Customer Invoice when a bill with this company is created.\n"
+"* Generate a Vendor Bill when an invoice with this company as a customer is "
+"created."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoicing
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
+msgid "Generate Inter company Invoices"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Generate Intercompany Invoices"
+msgstr ""
+
+#. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
 #, fuzzy
