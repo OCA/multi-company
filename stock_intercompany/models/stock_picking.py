@@ -41,7 +41,8 @@ class StockPicking(models.Model):
             "picking_type_id": ptype.id,
             "state": "draft",
             "location_id": self.env.ref("stock.stock_location_suppliers").id,
-            "location_dest_id": warehouse.lot_stock_id.id,
+            "location_dest_id": ptype.default_location_dest_id.id
+            or warehouse.lot_stock_id.id,
             "counterpart_of_picking_id": self.id,
             "move_ids": move_ids,
             "move_line_ids": move_line_ids,
