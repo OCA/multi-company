@@ -16,6 +16,7 @@
         "product",
         "res_company_code",
     ],
+    "excludes": ["product_variant_default_code"],
     "data": ["views/view_product_product.xml", "views/view_product_template.xml"],
     "post_init_hook": "_create_company_sequence",
     "installable": True,
