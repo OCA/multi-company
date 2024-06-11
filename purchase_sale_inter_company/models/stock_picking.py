@@ -94,7 +94,9 @@ class StockPicking(models.Model):
     def button_validate(self):
         res = super().button_validate()
         for record in self.sudo():
-            dest_company = record.partner_id.commercial_partner_id.ref_company_ids
+            dest_company = (
+                record.sale_id.partner_id.commercial_partner_id.ref_company_ids
+            )
             if (
                 dest_company
                 and dest_company.sync_picking
