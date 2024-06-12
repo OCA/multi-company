@@ -1,7 +1,7 @@
 # Copyright 2023 Moduon Team S.L.
 # Copyright 2024 Camptocamp SA
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0)
-from odoo import api, models
+from odoo import models
 
 
 class Partner(models.Model):
@@ -31,25 +31,15 @@ class Partner(models.Model):
     def propagate_multicompany_supplier_payment_term_id(self):
         self._propagate_multicompany_field("property_supplier_payment_term_id")
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Propagate accounts to other companies always, on creation."""
-        res = super().create(vals_list)
-        multicompany_partners = res - res.filtered("company_id")
-        payable_partners = multicompany_partners.filtered("property_account_payable_id")
-        receivable_partners = multicompany_partners.filtered(
-            "property_account_receivable_id"
-        )
-        position_partners = multicompany_partners.filtered(
-            "property_account_position_id"
-        )
-        payment_term_partners = multicompany_partners.filtered(
-            "property_payment_term_id"
-        )
-        payment_term_partners = multicompany_partners.filtered(
-            "property_payment_term_id"
-        )
-        supplier_payment_term_partners = multicompany_partners.filtered(
+    def _propagate_property_fields(self):
+        """Propagate accounts to other companies always."""
+        super()._propagate_property_fields()
+        payable_partners = self.filtered("property_account_payable_id")
+        receivable_partners = self.filtered("property_account_receivable_id")
+        position_partners = self.filtered("property_account_position_id")
+        payment_term_partners = self.filtered("property_payment_term_id")
+        payment_term_partners = self.filtered("property_payment_term_id")
+        supplier_payment_term_partners = self.filtered(
             "property_supplier_payment_term_id"
         )
         if (
@@ -60,15 +50,14 @@ class Partner(models.Model):
             and not payment_term_partners
             and not supplier_payment_term_partners
         ):
-            return res
+            return
         # Skip if user has access to only one company
         alien_user_companies = self.env.user.company_ids - self.env.company
         if not alien_user_companies:
-            return res
+            return
         # Propagate account to other companies by default
         payable_partners.propagate_multicompany_account_payable()
         receivable_partners.propagate_multicompany_account_receivable()
         position_partners.propagate_multicompany_account_position()
         payment_term_partners.propagate_multicompany_payment_term_id()
         supplier_payment_term_partners.propagate_multicompany_supplier_payment_term_id()
-        return res

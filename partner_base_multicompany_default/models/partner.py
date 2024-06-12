@@ -7,7 +7,7 @@ from functools import reduce
 from itertools import groupby
 from operator import itemgetter, or_
 
-from odoo import _, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.osv import expression
 
@@ -160,13 +160,52 @@ class Partner(models.Model):
         else:
             sorted_partners._propagate_multicompany_value(field)
 
-    def write(self, vals):
-        updated_properties = []
+    def _propagate_property_fields(self):
+        return
+
+    def _get_properties_to_propagate(self, vals):
+        """Return list of field name of fields that are property fields""""
+        properties = []
         for key in vals:
             if key in self._fields and self._fields[key].company_dependent:
-                updated_properties.append(key)
-        if updated_properties:
-            return super(
-                Partner, self.with_context(updated_properties=updated_properties)
-            ).write(vals)
-        return super().write(vals)
+                properties.append(key)
+        return properties
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        # Propagate property values on creation to other companies.
+        # Propagate only when property fields are defined
+
+        properties = set()
+        for vals in vals_list:
+            properties |= set(self._get_properties_to_propagate(vals))
+        properties = list(properties)
+        ctx = {
+            "properties_to_propagate": properties
+        }
+        res = super().create(vals_list)
+        multicompany_partners = res - res.filtered("company_id")
+        multicompany_partners._propagate_property_fields()
+        return res
+
+    def write(self, vals):
+        # Propagate only when property fields are updated
+        # If forced, propagate property values on update to other companies.
+        updated_properties = self._get_properties_to_propagate(vals)
+
+        res = super().write(vals)
+        # Allow opt-in for progagation on write using context
+        # Useful for data import to update records
+        if (
+            self.env.context.get("force_property_propagation")
+            and "property_propagation" not in self.env.context
+        ):
+            multicompany_partners = self - self.filtered("company_id")
+            # avoid infinite loop
+            ctx = {
+                "property_propagation": "ongoing",
+                "properties_to_propagate": updated_properties
+            }
+            multicompany_partners = multicompany_partners.with_context(**ctx)
+            multicompany_partners._propagate_property_fields()
+        return res
