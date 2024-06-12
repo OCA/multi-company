@@ -7,7 +7,7 @@ from functools import reduce
 from itertools import groupby
 from operator import itemgetter, or_
 
-from odoo import _, models
+from odoo import _, api, models
 from odoo.exceptions import UserError
 from odoo.osv import expression
 
@@ -145,3 +145,30 @@ class Partner(models.Model):
             sorted_partners._propagate_multicompany_m2o(field)
         else:
             sorted_partners._propagate_multicompany_value(field)
+
+    def _propagate_property_fields(self):
+        return
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Propagate property values on creation to other companies."""
+        res = super().create(vals_list)
+        multicompany_partners = res - res.filtered("company_id")
+        multicompany_partners._propagate_property_fields()
+        return res
+
+    def write(self, vals):
+        """If forced, propagate property values on update to other companies."""
+        res = super().write(vals)
+        # Allow opt-in for progagation on write using context
+        # Useful for data import to update records
+        if (
+            self.env.context.get("force_property_propagation")
+            and "property_propagation" not in self.env.context
+        ):
+            multicompany_partners = self - self.filtered("company_id")
+            # avoid infinite loop
+            ctx = {"property_propagation": "ongoing"}
+            multicompany_partners = multicompany_partners.with_context(**ctx)
+            multicompany_partners._propagate_property_fields()
+        return res
