@@ -24,6 +24,7 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
             "company_id": False,
             "min_qty": min_qty,
             "price": price,
+            "currency_id": pricelist.currency_id.id,
         }
         return res
 

@@ -92,6 +92,9 @@ class TestIntercompanySupplierCase(TransactionCase):
         self.assertEqual(len(supplierinfo.intercompany_pricelist_id), 1)
         self.assertEqual(supplierinfo.price, price)
         self.assertEqual(supplierinfo.min_qty, min_qty)
+        self.assertEqual(
+            supplierinfo.currency_id, supplierinfo.intercompany_pricelist_id.currency_id
+        )
 
 
 class TestIntercompanySupplier(TestIntercompanySupplierCase):
@@ -391,3 +394,9 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         supplierinfos = self._get_supplier_info(self.product_template_4)
         self.assertEqual(len(supplierinfos), 1)
         self.assertEqual(supplierinfos.min_qty, 100)
+
+    def test_currency_consistency(self):
+        self.pricelist_intercompany.currency_id = self.env.ref("base.USD")
+        template = self.env["product.template"].create({"name": "New One"})
+        self._add_item(template, 30)
+        self._check_supplier_info_for(template, 30)
