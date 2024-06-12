@@ -84,23 +84,36 @@ class ProductTemplate(models.Model):
     def propagate_multicompany_account_expense(self):
         self._propagate_multicompany_account("property_account_expense_id")
 
+    def _propagate_property_fields(self):
+        income_products = self.filtered("property_account_income_id")
+        expense_products = self.filtered("property_account_expense_id")
+        # Skip if no account was selected
+        if not income_products and not expense_products:
+            return
+        # Skip if user has access to only one company
+        alien_user_companies = self.env.user.company_ids - self.env.company
+        if not alien_user_companies:
+            return
+        # Propagate account to other companies by default
+        income_products.propagate_multicompany_account_income()
+        expense_products.propagate_multicompany_account_expense()
+
     @api.model_create_multi
     def create(self, vals_list):
         """Propagate accounts to other companies always, on creation."""
         res = super().create(vals_list)
         multicompany_products = res - res.filtered("company_id")
-        income_products = multicompany_products.filtered("property_account_income_id")
-        expense_products = multicompany_products.filtered("property_account_expense_id")
-        # Skip if no account was selected
-        if not income_products and not expense_products:
-            return res
-        # Skip if user has access to only one company
-        alien_user_companies = self.env.user.company_ids - self.env.company
-        if not alien_user_companies:
-            return res
-        # Propagate account to other companies by default
-        income_products.propagate_multicompany_account_income()
-        expense_products.propagate_multicompany_account_expense()
+        multicompany_products._propagate_property_fields()
+        return res
+
+    def write(self, vals):
+        """If forced, propagate property values on write to other companies."""
+        res = super().write(vals)
+        # Allow opt-in for progagation on write using context
+        # Useful for data import to update records
+        if self.env.context.get("force_property_propagation"):
+            multicompany_products = self - self.filtered("company_id")
+            multicompany_products._propagate_property_fields()
         return res
 
 
