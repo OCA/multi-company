@@ -49,6 +49,8 @@ class InterCompanyRulesConfig(models.TransientModel):
     )
     sync_picking_failure_action = fields.Selection(
         related="company_id.sync_picking_failure_action",
+    sync_picking_state = fields.Boolean(
+        related="company_id.sync_picking_state",
         readonly=False,
     )
     block_po_manual_picking_validation = fields.Boolean(
