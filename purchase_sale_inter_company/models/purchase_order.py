@@ -37,9 +37,18 @@ class PurchaseOrder(models.Model):
                 purchase_order.partner_id.commercial_partner_id.ref_company_ids
             )
             if dest_company and dest_company.so_from_po:
-                purchase_order.with_company(
-                    dest_company.id
-                )._inter_company_create_sale_order(dest_company)
+                # ensure compatibility with sale_purchase_inter_company
+                # module
+                create_sale_order = False
+                if "auto_sale_order_id" in self._fields:
+                    if not self.auto_sale_order_id:
+                        create_sale_order = True
+                else:
+                    create_sale_order = True
+                if create_sale_order:
+                    purchase_order.with_company(
+                        dest_company.id
+                    )._inter_company_create_sale_order(dest_company)
         return res
 
     def _get_user_domain(self, dest_company):
@@ -172,14 +181,25 @@ class PurchaseOrder(models.Model):
         return new_line._convert_to_write(new_line._cache)
 
     def button_cancel(self):
-        sale_orders = (
-            self.env["sale.order"]
-            .sudo()
-            .search([("auto_purchase_order_id", "in", self.ids)])
-        )
-        for so in sale_orders:
-            if so.state not in ["draft", "sent", "cancel"]:
-                raise UserError(_("You can't cancel an order that is %s") % so.state)
-        sale_orders.action_cancel()
-        self.write({"partner_ref": False})
+        for purchase_order in self:
+            # check if 'sale_purchase_inter_company' is installed
+            # that the purcahse order is not created from an inter company sale order
+            if (
+                "auto_sale_order_id" in self._fields
+                and purchase_order.auto_sale_order_id
+            ):
+                continue
+
+            sale_orders = (
+                self.env["sale.order"]
+                .sudo()
+                .search([("auto_purchase_order_id", "=", purchase_order.id)])
+            )
+            for so in sale_orders:
+                if so.state not in ["draft", "sent", "cancel"]:
+                    raise UserError(
+                        _("You can't cancel an order that is %s") % so.state
+                    )
+            sale_orders.action_cancel()
+            self.write({"partner_ref": False})
         return super().button_cancel()
