@@ -2,10 +2,11 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.tests.common import SavepointCase
+from odoo.exceptions import UserError
+from odoo.tests.common import TransactionCase
 
 
-class TestProductCategoryMultiCompany(SavepointCase):
+class TestProductCategoryMultiCompany(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -44,6 +45,13 @@ class TestProductCategoryMultiCompany(SavepointCase):
                 "company_id": cls.company2.id,
             }
         )
+        cls.categ_4 = cls.category.create(
+            {
+                "name": "four",
+                "parent_id": cls.categ_1.id,
+                "company_id": cls.company1.id,
+            }
+        )
 
     def test_1(self):
         new_categories = [self.categ_1.id, self.categ_2.id, self.categ_3.id]
@@ -60,3 +68,7 @@ class TestProductCategoryMultiCompany(SavepointCase):
             .search([("id", "in", new_categories)])
         )
         self.assertEqual(len(categ_list_2), 1)
+
+        # Child category must belong to the same company as the parent category
+        with self.assertRaises(UserError):
+            self.categ_4.write({"company_id": self.company2.id})

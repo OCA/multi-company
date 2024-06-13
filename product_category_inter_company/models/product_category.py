@@ -36,12 +36,16 @@ class ProductCategory(models.Model):
                     if record.company_id != child.company_id:
                         if child.company_id:
                             msg = _(
-                                "The category %s must be shared as the "
-                                "child %s belong to company %s."
-                            ) % (record.name, child.name)
+                                "The category %(parent)s must be shared as the "
+                                "child %(child)s belong to company %(company)s."
+                            ) % {
+                                "parent": record.name,
+                                "child": child.name,
+                                "company": child.company_id.name,
+                            }
                         else:
                             msg = _(
-                                "The category %s must be shared as the "
-                                "child %s is shared."
-                            ) % (record.name, child.name)
+                                "The category %(parent)s must be shared as the "
+                                "child %(child)s is shared."
+                            ) % {"parent": record.name, "child": child.name}
                         raise UserError(msg)
