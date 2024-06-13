@@ -50,6 +50,37 @@ class StockPicking(models.Model):
                         == ic_pick
                     ).mapped("move_line_ids")
                 )
+                # assign lots if applicable
+                for ml in move_lines:
+                    lot_id = None
+                    if ml.lot_id:
+                        lot_id = self._get_or_create_lot(
+                            ml.lot_id, purchase.company_id
+                        )
+                        po_ml = po_move_lines.filtered(
+                            lambda x: x.lot_id == lot_id
+                        )
+                        if po_ml:
+                            continue
+                        po_ml = po_move_lines.filtered(
+                            lambda x: not x.lot_id
+                        )[:1]
+                        if po_ml:
+                            po_ml.lot_id = lot_id
+                        else:
+                            new_move_l_vals = po_move._prepare_move_line_vals(
+                                quantity=ml.qty_done
+                            )
+                            new_move_l_vals.update(
+                                {
+                                    "lot_id": lot_id.id,
+                                    "qty_done": ml.qty_done,
+                                }
+                            )
+                            po_move_lines |= self.env["stock.move.line"].sudo().create(
+                                new_move_l_vals
+                            )
+
                 if len(move_lines) != len(po_move_lines):
                     note = _(
                         "Mismatch between move lines with the "
@@ -67,29 +98,28 @@ class StockPicking(models.Model):
                             or SUPERUSER_ID,
                         ),
                     )
-                # check and assign lots here
-                for ml, po_ml in zip(move_lines, po_move_lines):
-                    lot_id = ml.lot_id
-                    if not lot_id:
-                        continue
-                    # search if the same lot exists in destination company
-                    dest_lot_id = (
-                        self.env["stock.production.lot"]
-                        .sudo()
-                        .search(
-                            [
-                                ("product_id", "=", lot_id.product_id.id),
-                                ("name", "=", lot_id.name),
-                                ("company_id", "=", po_ml.company_id.id),
-                            ],
-                            limit=1,
-                        )
-                    )
-                    if not dest_lot_id:
-                        # if it doesn't exist, create it by copying from original company
-                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
-                    po_ml.lot_id = dest_lot_id
+
         return super()._action_done()
+
+    def _get_or_create_lot(self, lot_id, company):
+        """Get or create equivalent lot in other company"""
+        # search if the same lot exists in destination company
+        dest_lot_id = (
+            self.env["stock.production.lot"]
+            .sudo()
+            .search(
+                [
+                    ("product_id", "=", lot_id.product_id.id),
+                    ("name", "=", lot_id.name),
+                    ("company_id", "=", company.id),
+                ],
+                limit=1,
+            )
+        )
+        if not dest_lot_id:
+            # if it doesn't exist, create it by copying from original company
+            dest_lot_id = lot_id.copy({"company_id": company.id})
+        return dest_lot_id
 
     def button_validate(self):
         res = super().button_validate()
