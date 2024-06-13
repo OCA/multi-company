@@ -63,6 +63,13 @@
                         class="oe_inline"
                     />
                     <br />
+                    <field name="sync_picking_state" class="oe_inline" />
+                    <label
+                        string="Sync picking state"
+                        class="o_light_label"
+                        for="sync_picking_state"
+                    />
+                    <br />
                     <field
                         name="block_po_manual_picking_validation"
                         class="oe_inline"
