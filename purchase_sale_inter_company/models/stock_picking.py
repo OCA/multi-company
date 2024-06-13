@@ -21,7 +21,8 @@ class StockPicking(models.Model):
         res = super()._compute_state()
         for picking in self:
             if (
-                picking.intercompany_picking_id
+                picking.company_id.sync_picking_state
+                and picking.intercompany_picking_id
                 and picking.picking_type_code == "incoming"
                 and picking.state not in ["done", "cancel"]
             ):

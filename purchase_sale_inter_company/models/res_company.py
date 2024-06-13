@@ -36,6 +36,13 @@ class ResCompany(models.Model):
         help="Sync the receipt from the destination company with the "
         "delivery from the source company",
     )
+    sync_picking_state = fields.Boolean(
+        string="Sync the receipt state with the delivery state",
+        default=lambda p: p.sync_picking,
+        help="State of receipt picking syncs with state of the delivery "
+        "from the source company. Note this disallows user to manually "
+        "correct or change a picking that did not sync properly.",
+    )
     block_po_manual_picking_validation = fields.Boolean(
         string="Block manual validation of picking in the destination company",
     )

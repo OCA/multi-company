@@ -47,6 +47,10 @@ class InterCompanyRulesConfig(models.TransientModel):
         "the delivery from the source company",
         readonly=False,
     )
+    sync_picking_state = fields.Boolean(
+        related="company_id.sync_picking_state",
+        readonly=False,
+    )
     block_po_manual_picking_validation = fields.Boolean(
         related="company_id.block_po_manual_picking_validation",
         readonly=False,
