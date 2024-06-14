@@ -66,6 +66,14 @@
                                 for="invoice_auto_validation"
                             />
                         </div>
+                        <div id="inter_company_invoice_lock">
+                            <field name="intercompany_invoice_lock" class="oe_inline" />
+                            <label
+                                string="Lock invoice amounts"
+                                class="o_light_label"
+                                for="intercompany_invoice_lock"
+                            />
+                        </div>
                     </div>
                 </div>
             </xpath>
