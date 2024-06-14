@@ -51,11 +51,12 @@ class StockPicking(models.Model):
             pick = self
             for move in pick.move_lines:
                 move_lines = move.move_line_ids
-                po_move_lines = (
-                    move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
-                        lambda x, ic_pick=pick.intercompany_picking_id: x.picking_id
-                        == ic_pick
-                    ).mapped("move_line_ids")
+                po_move_lines = move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                    lambda x, ic_pick=pick.intercompany_picking_id, prod=move.product_id: x.picking_id  # noqa
+                    == ic_pick
+                    and x.product_id == prod
+                ).mapped(
+                    "move_line_ids"
                 )
                 if len(move_lines) != len(po_move_lines):
                     note = _(
@@ -176,8 +177,12 @@ class StockPicking(models.Model):
             for move in self.move_ids_without_package.sudo():
                 # To identify the correct move to write to,
                 # use both the SO-PO link and the intercompany_picking_id link
+                # as well as the product, to support the "kit" case where an order line
+                # unpacks into several move lines
                 dest_move = move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
-                    lambda x, pick=dest_picking: x.picking_id == pick
+                    lambda x, pick=dest_picking, prod=move.product_id: x.picking_id
+                    == pick
+                    and x.product_id == prod
                 )
                 for line, dest_line in zip(move.move_line_ids, dest_move.move_line_ids):
                     # Assuming the order of move lines is the same on both moves
