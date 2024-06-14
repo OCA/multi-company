@@ -354,14 +354,16 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             so_picking_id.move_lines.product_qty,
         )
 
-        so_picking_id.state = "done"
+        # Validate sale order, create backorder
         wizard_data = so_picking_id.with_user(self.user_company_b).button_validate()
         wizard = (
             self.env["stock.backorder.confirmation"]
             .with_context(**wizard_data.get("context"))
             .create({})
         )
-        wizard.process()
+        wizard.with_user(self.user_company_b).process()
+        self.assertEqual(so_picking_id.state, "done")
+        self.assertNotEqual((sale.picking_ids - so_picking_id).state, "done")
 
         # Quantities should have been synced
         self.assertNotEqual(po_picking_id, so_picking_id)
@@ -393,7 +395,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.company_b.sync_picking = True
 
         purchase = self._create_purchase_order(
-            self.partner_company_b, self.stockable_product_serial
+            self.partner_company_b,
+            self.stockable_product_serial + self.consumable_product,
         )
         sale = self._approve_po(purchase)
 
@@ -401,14 +404,15 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         po_picking_id = purchase.picking_ids
         so_picking_id = sale.picking_ids
 
-        so_move = so_picking_id.move_lines
-        so_move.move_line_ids = [
+        so_moves = so_picking_id.move_lines
+        so_moves[1].quantity_done = 2
+        so_moves[0].move_line_ids = [
             (
                 0,
                 0,
                 {
-                    "location_id": so_move.location_id.id,
-                    "location_dest_id": so_move.location_dest_id.id,
+                    "location_id": so_moves[0].location_id.id,
+                    "location_dest_id": so_moves[0].location_dest_id.id,
                     "product_id": self.stockable_product_serial.id,
                     "product_uom_id": self.stockable_product_serial.uom_id.id,
                     "qty_done": 1,
@@ -420,21 +424,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 0,
                 0,
                 {
-                    "location_id": so_move.location_id.id,
-                    "location_dest_id": so_move.location_dest_id.id,
-                    "product_id": self.stockable_product_serial.id,
-                    "product_uom_id": self.stockable_product_serial.uom_id.id,
-                    "qty_done": 1,
-                    "lot_id": self.serial_2.id,
-                    "picking_id": so_picking_id.id,
-                },
-            ),
-            (
-                0,
-                0,
-                {
-                    "location_id": so_move.location_id.id,
-                    "location_dest_id": so_move.location_dest_id.id,
+                    "location_id": so_moves[0].location_id.id,
+                    "location_dest_id": so_moves[0].location_dest_id.id,
                     "product_id": self.stockable_product_serial.id,
                     "product_uom_id": self.stockable_product_serial.uom_id.id,
                     "qty_done": 1,
@@ -443,9 +434,17 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 },
             ),
         ]
-        so_picking_id.button_validate()
+        wizard_data = so_picking_id.with_user(self.user_company_b).button_validate()
+        wizard = (
+            self.env["stock.backorder.confirmation"]
+            .with_context(**wizard_data.get("context"))
+            .create({})
+        )
+        wizard.with_user(self.user_company_b).process()
+        self.assertEqual(so_picking_id.state, "done")
+        self.assertNotEqual((sale.picking_ids - so_picking_id).state, "done")
 
-        so_lots = so_move.mapped("move_line_ids.lot_id")
+        so_lots = so_moves.mapped("move_line_ids.lot_id")
         po_lots = po_picking_id.mapped("move_lines.move_line_ids.lot_id")
         self.assertEqual(
             len(so_lots),
@@ -456,8 +455,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             so_lots, po_lots, msg="The lots of the moves should be different objects"
         )
         self.assertEqual(
-            so_lots.mapped("name"),
-            po_lots.mapped("name"),
+            so_lots.sudo().mapped("name"),
+            po_lots.sudo().mapped("name"),
             msg="The lots should have the same name in both moves",
         )
         self.assertIn(
@@ -465,6 +464,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             po_lots,
             msg="Serial 333 already existed, a new one shouldn't have been created",
         )
+        # A backorder should have been made for both
+        self.assertTrue(len(sale.picking_ids) > 1)
+        self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
 
     def test_sync_picking_same_product_multiple_lines(self):
         """
