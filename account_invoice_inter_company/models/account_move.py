@@ -322,6 +322,8 @@ class AccountMove(models.Model):
         if self.env.context.get("skip_check_amount_difference"):
             return res
         for move in self.filtered("auto_invoice_id"):
+            if not move.company_id.intercompany_invoice_lock:
+                continue
             if (
                 float_compare(
                     move.amount_total,

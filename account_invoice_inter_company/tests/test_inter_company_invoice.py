@@ -502,6 +502,12 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             with move_form.invoice_line_ids.edit(0) as line_form:
                 line_form.price_unit = 33.3
             move_form.save()
+        # Check that we can modify it after we disable the setting
+        dest_invoice.company_id.intercompany_invoice_lock = False
+        move_form = Form(dest_invoice)
+        with move_form.invoice_line_ids.edit(0) as line_form:
+            line_form.price_unit = 33.3
+        move_form.save()
 
     def test_confirm_invoice_with_child_partner(self):
         # ensure the catalog is shared
