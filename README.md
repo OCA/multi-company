@@ -29,6 +29,7 @@ addon | version | maintainers | summary
 [mail_template_multi_company](mail_template_multi_company/) | 15.0.1.0.0 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [multicompany_configuration](multicompany_configuration/) | 15.0.1.0.0 |  | Simplify the configuration on multicompany environments
 [partner_multi_company](partner_multi_company/) | 15.0.1.0.0 |  | Select individually the partner visibility on each company
+[product_category_inter_company](product_category_inter_company/) | 15.0.1.1.0 |  | Product categories as company dependent
 [product_multi_company](product_multi_company/) | 15.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 15.0.1.0.1 | [![Shide](https://github.com/Shide.png?size=30px)](https://github.com/Shide) | Product Tax Multi Company Default
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 15.0.1.1.0 |  | Intercompany PO/SO rules
