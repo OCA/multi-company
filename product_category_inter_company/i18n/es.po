@@ -1,0 +1,69 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_category_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2023-11-29 23:34+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
+
+#. module: product_category_inter_company
+#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: product_category_inter_company
+#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__display_name
+msgid "Display Name"
+msgstr "Mostrar Nombre"
+
+#. module: product_category_inter_company
+#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__id
+msgid "ID"
+msgstr "ID"
+
+#. module: product_category_inter_company
+#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category____last_update
+msgid "Last Modified on"
+msgstr "Última Modificación el"
+
+#. module: product_category_inter_company
+#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__parent_id
+msgid "Parent Category"
+msgstr "Categoría Parental"
+
+#. module: product_category_inter_company
+#: model:ir.model,name:product_category_inter_company.model_product_category
+msgid "Product Category"
+msgstr "Categoría de Producto"
+
+#. module: product_category_inter_company
+#: code:addons/product_category_inter_company/models/product_category.py:0
+#, python-format
+msgid "The category %s must be shared as the child %s belong to company %s."
+msgstr ""
+"La categoría %s debe ser compartida ya que el niño %s pertenece a la empresa "
+"%s."
+
+#. module: product_category_inter_company
+#: code:addons/product_category_inter_company/models/product_category.py:0
+#, python-format
+msgid "The category %s must be shared as the child %s is shared."
+msgstr "La categoría %s debe compartirse como se comparte la hija %s."
+
+#. module: product_category_inter_company
+#: code:addons/product_category_inter_company/models/product_category.py:0
+#, python-format
+msgid ""
+"The parent category and your category %s must belong to the same company."
+msgstr ""
+"La categoría principal y su categoría %s deben pertenecer a la misma empresa."
