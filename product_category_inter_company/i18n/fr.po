@@ -23,21 +23,6 @@ msgid "Company"
 msgstr ""
 
 #. module: product_category_inter_company
-#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__display_name
-msgid "Display Name"
-msgstr "Nom affiché"
-
-#. module: product_category_inter_company
-#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__id
-msgid "ID"
-msgstr ""
-
-#. module: product_category_inter_company
-#: model:ir.model.fields,field_description:product_category_inter_company.field_product_category____last_update
-msgid "Last Modified on"
-msgstr "Dernière modification le"
-
-#. module: product_category_inter_company
 #: model:ir.model.fields,field_description:product_category_inter_company.field_product_category__parent_id
 msgid "Parent Category"
 msgstr "Catégorie mère"
@@ -50,16 +35,17 @@ msgstr "Catégorie d'article"
 #. module: product_category_inter_company
 #: code:addons/product_category_inter_company/models/product_category.py:0
 #, python-format
-msgid "The category %s must be shared as the child %s belong to company %s."
+msgid ""
+"The category %(parent)s must be shared as the child %(child)s belong to "
+"company %(company)s."
 msgstr ""
-"La catégorie %s doit être partagée comme la catégorie enfant %s appartient à "
-"la la société %s."
 
 #. module: product_category_inter_company
 #: code:addons/product_category_inter_company/models/product_category.py:0
 #, python-format
-msgid "The category %s must be shared as the child %s is shared."
-msgstr "La catégorie %s doit être partagée comme la catégorie enfant %s."
+msgid ""
+"The category %(parent)s must be shared as the child %(child)s is shared."
+msgstr ""
 
 #. module: product_category_inter_company
 #: code:addons/product_category_inter_company/models/product_category.py:0
@@ -69,3 +55,19 @@ msgid ""
 msgstr ""
 "La catégorie parent et votre catégorie %s doivent appartenir à la même "
 "société."
+
+#~ msgid "Display Name"
+#~ msgstr "Nom affiché"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Dernière modification le"
+
+#, python-format
+#~ msgid "The category %s must be shared as the child %s belong to company %s."
+#~ msgstr ""
+#~ "La catégorie %s doit être partagée comme la catégorie enfant %s "
+#~ "appartient à la la société %s."
+
+#, python-format
+#~ msgid "The category %s must be shared as the child %s is shared."
+#~ msgstr "La catégorie %s doit être partagée comme la catégorie enfant %s."
