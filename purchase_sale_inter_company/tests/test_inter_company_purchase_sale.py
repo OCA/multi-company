@@ -621,6 +621,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         """
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
+        self.company_a.sync_picking_state = True
+        self.company_b.sync_picking_state = True
         self.company_a.block_po_manual_picking_validation = True
         self.company_b.block_po_manual_picking_validation = True
         purchase = self._create_purchase_order(
