@@ -326,6 +326,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     def test_sync_picking(self):
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
+        self.company_a.sync_picking_state = True
+        self.company_b.sync_picking_state = True
 
         purchase = self._create_purchase_order(
             self.partner_company_b, self.consumable_product
@@ -378,6 +380,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # A backorder should have been made for both
         self.assertTrue(len(sale.picking_ids) > 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
+        # The original orders should now be done.
+        self.assertEqual(so_picking_id.state, "done")
+        self.assertEqual(po_picking_id.state, "done")
 
     def test_sync_picking_no_backorder(self):
         self.company_a.sync_picking = True
@@ -455,6 +460,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
+        self.company_a.sync_picking_state = True
+        self.company_b.sync_picking_state = True
 
         purchase = self._create_purchase_order(
             self.partner_company_b,
@@ -529,6 +536,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # A backorder should have been made for both
         self.assertTrue(len(sale.picking_ids) > 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
+        # The original orders should now be done.
+        self.assertEqual(so_picking_id.state, "done")
+        self.assertEqual(po_picking_id.state, "done")
 
     def test_sync_picking_same_product_multiple_lines(self):
         """
@@ -661,6 +671,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "3.0 Units of Consumable Product 2.+instead of 8.0 Units", re.DOTALL
             ),
         )
+        print(so_picking_id.state)
+        po_picking_id = purchase.picking_ids
+        print(po_picking_id.state)
+        # Upon confirm, I expect here an issue
 
     def test_block_manual_validation(self):
         """
