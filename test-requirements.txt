@@ -1,1 +1,2 @@
 odoo-test-helper
+odoo16-addon-partner_base_multicompany_default @ git+https://github.com/OCA/multi-company@refs/pull/627/head#subdirectory=setup/partner_base_multicompany_default
