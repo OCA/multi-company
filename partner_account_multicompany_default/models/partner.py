@@ -11,7 +11,7 @@ class Partner(models.Model):
         return "code"
 
     def _get_multicompany_account_fiscal_position_key(self):
-        return "name"
+        return "code"
 
     def _get_multicompany_account_payment_term_key(self):
         return "name"

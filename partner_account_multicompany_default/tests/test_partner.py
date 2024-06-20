@@ -68,19 +68,22 @@ class PartnerDefaultAccountsCase(AccountTestInvoicingCommon):
 
         cls.fiscal_position_a1 = cls.env["account.fiscal.position"].create(
             {
-                "name": "Fiscal Pos A",
+                "name": "Fiscal Pos A company 1",
+                "code": "FISCAL.POS.A",
                 "company_id": cls.company_data["company"].id,
             }
         )
         cls.fiscal_position_a2 = cls.env["account.fiscal.position"].create(
             {
-                "name": "Fiscal Pos A",
+                "name": "Fiscal Pos A company 2",
+                "code": "FISCAL.POS.A",
                 "company_id": cls.company_data_2["company"].id,
             }
         )
         cls.fiscal_position_b1 = cls.env["account.fiscal.position"].create(
             {
-                "name": "Fiscal Pos B",
+                "name": "Fiscal Pos B company 1",
+                "code": "FISCAL.POS.B",
                 "company_id": cls.company_data["company"].id,
             }
         )
