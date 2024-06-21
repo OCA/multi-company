@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-06-15 19:34+0000\n"
+"PO-Revision-Date: 2024-12-02 11:06+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -14,10 +14,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #. module: product_account_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.view_category_property_form
 msgid ""
 "Are you sure? This action will propagate this account to all of your other "
 "companies, if they have an account with the same code."
@@ -39,23 +40,31 @@ msgid "Product"
 msgstr "Prodotto"
 
 #. module: product_account_multicompany_default
+#: model:ir.model,name:product_account_multicompany_default.model_product_category
+msgid "Product Category"
+msgstr "Categoria prodotto"
+
+#. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_product
 msgid "Product Variant"
 msgstr "Variante prodotto"
 
 #. module: product_account_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.view_category_property_form
 msgid "Propagate expense account to other companies"
 msgstr "Propaga conto spese alle altre aziende"
 
 #. module: product_account_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.view_category_property_form
 msgid "Propagate income account to other companies"
 msgstr "Propaga conto ricavi alle altre aziende"
 
 #. module: product_account_multicompany_default
 #. odoo-python
 #: code:addons/product_account_multicompany_default/models/product.py:0
+#: code:addons/product_account_multicompany_default/models/product_category.py:0
 #, python-format
 msgid ""
 "There are no other companies to propagate to. Make sure you have access to "

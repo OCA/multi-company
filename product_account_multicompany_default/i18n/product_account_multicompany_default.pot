@@ -15,6 +15,7 @@ msgstr ""
 
 #. module: product_account_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.view_category_property_form
 msgid ""
 "Are you sure? This action will propagate this account to all of your other "
 "companies, if they have an account with the same code."
@@ -33,23 +34,31 @@ msgid "Product"
 msgstr ""
 
 #. module: product_account_multicompany_default
+#: model:ir.model,name:product_account_multicompany_default.model_product_category
+msgid "Product Category"
+msgstr ""
+
+#. module: product_account_multicompany_default
 #: model:ir.model,name:product_account_multicompany_default.model_product_product
 msgid "Product Variant"
 msgstr ""
 
 #. module: product_account_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.view_category_property_form
 msgid "Propagate expense account to other companies"
 msgstr ""
 
 #. module: product_account_multicompany_default
 #: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.product_template_form_view
+#: model_terms:ir.ui.view,arch_db:product_account_multicompany_default.view_category_property_form
 msgid "Propagate income account to other companies"
 msgstr ""
 
 #. module: product_account_multicompany_default
 #. odoo-python
 #: code:addons/product_account_multicompany_default/models/product.py:0
+#: code:addons/product_account_multicompany_default/models/product_category.py:0
 #, python-format
 msgid ""
 "There are no other companies to propagate to. Make sure you have access to "

@@ -4,7 +4,7 @@
 {
     "name": "Product Account Multi-Company Default",
     "summary": "Set a default account for all companies of a product",
-    "version": "16.0.0.1.0",
+    "version": "16.0.0.2.0",
     "development_status": "Alpha",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/multi-company",
@@ -16,5 +16,6 @@
     ],
     "data": [
         "views/product_template_view.xml",
+        "views/product_category_view.xml",
     ],
 }
