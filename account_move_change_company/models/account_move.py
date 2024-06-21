@@ -27,29 +27,25 @@ class AccountMove(models.Model):
         if self.journal_id.company_id == self.company_id:
             # This means we need to change nothing...
             return
-        move_type = self.move_type
-        if move_type in self.get_sale_types(include_receipts=True):
-            journal_types = ["sale"]
-        elif move_type in self.get_purchase_types(include_receipts=True):
-            journal_types = ["purchase"]
-        else:
-            journal_types = self._context.get("default_move_journal_types", ["general"])
         self.journal_id = self.with_context(
             default_company_id=self.company_id.id
-        )._search_default_journal(journal_types)
+        )._search_default_journal()
         if not self.is_invoice():
             self.line_ids = [(5, 0, 0)]
             return
         # Forcing recalculation of change of partner and journal
-        self._onchange_journal()
-        self._onchange_partner_id()
-        for line in self.invoice_line_ids:
-            line.account_id = line._get_computed_account()
-            taxes = line._get_computed_taxes()
-            if taxes and line.move_id.fiscal_position_id:
-                taxes = line.move_id.fiscal_position_id.map_tax(
-                    taxes, partner=line.partner_id
-                )
-            line.tax_ids = taxes
-        self.line_ids.update({"company_id": self.company_id.id})
-        self._onchange_recompute_dynamic_lines()
+        to_protect = []
+        container = {"records": self}
+        with self.env.protecting(to_protect, self), self._check_balanced(container):
+            with self._sync_dynamic_lines(container):
+                self._onchange_journal_id()
+                self._onchange_partner_id()
+                for line in self.invoice_line_ids.with_company(self.company_id):
+                    line.company_id = self.company_id
+                    line._compute_account_id()
+                    taxes = line._get_computed_taxes()
+                    if taxes and line.move_id.fiscal_position_id:
+                        taxes = line.move_id.fiscal_position_id.map_tax(taxes)
+                    line.tax_ids = taxes
+                self.line_ids.update({"company_id": self.company_id.id})
+                self._compute_tax_totals()
