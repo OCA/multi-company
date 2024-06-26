@@ -131,6 +131,7 @@ class StockPicking(models.Model):
             raise UserError(_("PO does not exist or has no receipts"))
         if self.intercompany_picking_id:
             dest_picking = self.intercompany_picking_id.with_user(intercompany_user.id)
+            dest_move_qty_update_dict = {}
             for move in self.move_ids_without_package.sudo():
                 # To identify the correct move to write to,
                 # use both the SO-PO link and the intercompany_picking_id link
@@ -145,11 +146,12 @@ class StockPicking(models.Model):
                             "qty_done": line.qty_done,
                         }
                     )
-                dest_move.write(
-                    {
-                        "quantity_done": move.quantity_done,
-                    }
-                )
+                dest_move_qty_update_dict.setdefault(dest_move, 0.0)
+                dest_move_qty_update_dict[dest_move] += move.quantity_done
+            # "No backorder" case splits SO moves in two while PO stays the same.
+            # Aggregating writes per each PO move makes sure qty does not get overwritten
+            for dest_move, qty_done in dest_move_qty_update_dict.items():
+                dest_move.quantity_done = qty_done
             dest_picking.sudo().with_context(
                 cancel_backorder=bool(
                     self.env.context.get("picking_ids_not_to_backorder")

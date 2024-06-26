@@ -377,6 +377,68 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertTrue(len(sale.picking_ids) > 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
 
+    def test_sync_picking_no_backorder(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        sale = self._approve_po(purchase)
+
+        self.assertTrue(purchase.picking_ids)
+        self.assertTrue(sale.picking_ids)
+
+        po_picking_id = purchase.picking_ids
+        so_picking_id = sale.picking_ids
+
+        # check po_picking state
+        self.assertEqual(po_picking_id.state, "waiting")
+
+        # validate the SO picking
+        so_picking_id.move_lines.quantity_done = 2
+
+        self.assertNotEqual(po_picking_id, so_picking_id)
+        self.assertNotEqual(
+            po_picking_id.move_lines.quantity_done,
+            so_picking_id.move_lines.quantity_done,
+        )
+        self.assertEqual(
+            po_picking_id.move_lines.product_qty,
+            so_picking_id.move_lines.product_qty,
+        )
+
+        # No backorder
+        wizard_data = so_picking_id.with_user(self.user_company_b).button_validate()
+        wizard = (
+            self.env["stock.backorder.confirmation"]
+            .with_context(**wizard_data.get("context"))
+            .create({})
+        )
+        wizard.with_user(self.user_company_b).process_cancel_backorder()
+        self.assertEqual(so_picking_id.state, "done")
+        self.assertEqual(po_picking_id.state, "done")
+
+        # Quantity done should be the same on both sides, per product
+        self.assertNotEqual(po_picking_id, so_picking_id)
+        for product in so_picking_id.move_lines.mapped("product_id"):
+            self.assertEqual(
+                sum(
+                    so_picking_id.move_lines.filtered(
+                        lambda l: l.product_id == product
+                    ).mapped("quantity_done")
+                ),
+                sum(
+                    po_picking_id.move_lines.filtered(
+                        lambda l: l.product_id == product
+                    ).mapped("quantity_done")
+                ),
+            )
+
+        # No backorder should have been made for both
+        self.assertEqual(len(sale.picking_ids), 1)
+        self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
+
     def test_sync_picking_lot(self):
         """
         Test that the lot is synchronized on the moves
