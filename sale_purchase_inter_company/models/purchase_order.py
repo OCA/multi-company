@@ -18,7 +18,7 @@ class PurchaseOrder(models.Model):
         for order in self.filtered("auto_sale_order_id"):
             for line in order.order_line.sudo():
                 if line.auto_sale_line_id:
-                    line.auto_sale_line_id.price_unit = line.price_unit
+                    line.price_unit = line.auto_sale_line_id.price_unit
         return super().button_approve(force)
 
 
