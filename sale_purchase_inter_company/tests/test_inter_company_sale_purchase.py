@@ -147,11 +147,11 @@ class TestSalePurchaseInterCompany(TestAccountInvoiceInterCompanyBase):
         with self.assertRaises(UserError):
             self.sale_company_a.with_user(self.user_company_a).action_cancel()
 
-    def test_po_change_price(self):
+    def test_so_change_price(self):
+        self.sale_company_a.order_line.price_unit = 10
         purchase = self._confirm_so()
-        purchase.order_line.price_unit = 10
         purchase.button_approve()
-        self.assertEqual(self.sale_company_a.order_line.price_unit, 10)
+        self.assertEqual(purchase.order_line.price_unit, 10)
 
     def test_so_with_contact_as_partner(self):
         contact = self.env["res.partner"].create(
