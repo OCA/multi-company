@@ -2,14 +2,21 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+import logging
+
 from odoo import SUPERUSER_ID, _, api, fields, models
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     intercompany_picking_id = fields.Many2one(comodel_name="stock.picking", copy=False)
+    intercompany_return_picking_id = fields.Many2one(
+        comodel_name="stock.picking", copy=False
+    )
 
     @api.depends("intercompany_picking_id.state")
     def _compute_state(self):
@@ -32,7 +39,79 @@ class StockPicking(models.Model):
 
         return res
 
+    def _warn_move_line_mismatch(self, ic_pick, product, ml, po_ml):
+        self.ensure_one()
+        note = _(
+            "Mismatch between move lines (%s vs %s) with the "
+            "corresponding PO picking %s for assigning "
+            "quantities and lots from %s for product %s"
+        ) % (len(ml), len(po_ml), ic_pick.name, self.name, product.name)
+        _logger.warning(note)
+        self.activity_schedule(
+            "mail.mail_activity_data_warning",
+            fields.Date.today(),
+            note=note,
+            # Try to notify someone relevant
+            user_id=(
+                self.sale_id.user_id.id
+                or self.sale_id.team_id.user_id.id
+                or SUPERUSER_ID,
+            ),
+        )
+
+    def _sync_lots(self, ml, po_ml):
+        lot_id = ml.lot_id
+        if not lot_id:
+            return
+        # search if the same lot exists in destination company
+        dest_lot_id = (
+            self.env["stock.production.lot"]
+            .sudo()
+            .search(
+                [
+                    ("product_id", "=", lot_id.product_id.id),
+                    ("name", "=", lot_id.name),
+                    ("company_id", "=", po_ml.company_id.id),
+                ],
+                limit=1,
+            )
+        )
+        if not dest_lot_id:
+            # if it doesn't exist, create it by copying from original company
+            dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
+        po_ml.lot_id = dest_lot_id
+
     def _action_done(self):
+        # sync lots for move lines on returns
+        for pick in self.filtered(lambda x: x.intercompany_return_picking_id).sudo():
+            ic_picking = pick.intercompany_return_picking_id
+            dest_company = ic_picking.sudo().company_id
+            if not dest_company.sync_picking:
+                continue
+            intercompany_user = dest_company.intercompany_sale_user_id
+            for product in pick.move_lines.mapped("product_id"):
+                if product.tracking == "none":
+                    continue
+                move_lines = (
+                    pick.move_lines.filtered(
+                        lambda x, prod=product: x.product_id == product
+                    )
+                    .mapped("move_line_ids")
+                    .filtered("lot_id")
+                )
+                po_move_lines = (
+                    ic_picking.with_user(intercompany_user)
+                    .move_lines.filtered(lambda x, prod=product: x.product_id == prod)
+                    .mapped("move_line_ids")
+                )
+                if len(move_lines) != len(po_move_lines):
+                    pick._warn_move_line_mismatch(
+                        ic_picking, product, move_lines, po_move_lines
+                    )
+                for ml, po_ml in zip(move_lines, po_move_lines):
+                    pick._sync_lots(ml, po_ml)
+
+        # sync lots for move lines on pickings
         for pick in self.filtered(
             lambda x: x.location_dest_id.usage == "customer"
         ).sudo():
@@ -59,44 +138,14 @@ class StockPicking(models.Model):
                     "move_line_ids"
                 )
                 if len(move_lines) != len(po_move_lines):
-                    note = _(
-                        "Mismatch between move lines with the "
-                        "corresponding PO %s for assigning "
-                        "quantities and lots from %s for product %s"
-                    ) % (purchase.name, pick.name, move.product_id.name)
-                    self.activity_schedule(
-                        "mail.mail_activity_data_warning",
-                        fields.Date.today(),
-                        note=note,
-                        # Try to notify someone relevant
-                        user_id=(
-                            pick.sale_id.user_id.id
-                            or pick.sale_id.team_id.user_id.id
-                            or SUPERUSER_ID,
-                        ),
+                    pick._warn_move_line_mismatch(
+                        pick.intercompany_picking_id,
+                        move.product_id,
+                        move_lines,
+                        po_move_lines,
                     )
-                # check and assign lots here
                 for ml, po_ml in zip(move_lines, po_move_lines):
-                    lot_id = ml.lot_id
-                    if not lot_id:
-                        continue
-                    # search if the same lot exists in destination company
-                    dest_lot_id = (
-                        self.env["stock.production.lot"]
-                        .sudo()
-                        .search(
-                            [
-                                ("product_id", "=", lot_id.product_id.id),
-                                ("name", "=", lot_id.name),
-                                ("company_id", "=", po_ml.company_id.id),
-                            ],
-                            limit=1,
-                        )
-                    )
-                    if not dest_lot_id:
-                        # if it doesn't exist, create it by copying from original company
-                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
-                    po_ml.lot_id = dest_lot_id
+                    pick._sync_lots(ml, po_ml)
 
         except Exception:
             if self.env.company_id.sync_picking_failure_action == "raise":
@@ -133,22 +182,30 @@ class StockPicking(models.Model):
             if (
                 dest_company
                 and dest_company.sync_picking
+                # only if it worked, not if wizard was raised
                 and record.state == "done"
-                and record.picking_type_code == "outgoing"
             ):
-                if record.intercompany_picking_id:
-                    try:
+                try:
+                    if (
+                        record.picking_type_code == "outgoing"
+                        and record.intercompany_picking_id
+                    ):
                         record._sync_receipt_with_delivery(
                             dest_company,
                             record.sale_id,
                         )
-                    except Exception:
-                        if record.company_id.sync_picking_failure_action == "raise":
-                            raise
-                        else:
-                            record._notify_picking_problem(
-                                record.sale_id.auto_purchase_order_id
-                            )
+                    elif (
+                        record.picking_type_code == "incoming"
+                        and record.intercompany_return_picking_id
+                    ):
+                        record._sync_receipt_with_delivery(dest_company, None)
+                except Exception:
+                    if record.company_id.sync_picking_failure_action == "raise":
+                        raise
+                    else:
+                        record._notify_picking_problem(
+                            record.sale_id.auto_purchase_order_id
+                        )
 
         # if the flag is set, block the validation of the picking in the destination company
         if self.env.company.block_po_manual_picking_validation:
@@ -168,10 +225,48 @@ class StockPicking(models.Model):
     def _sync_receipt_with_delivery(self, dest_company, sale_order):
         self.ensure_one()
         intercompany_user = dest_company.intercompany_sale_user_id
-        purchase_order = sale_order.auto_purchase_order_id.sudo()
-        if not (purchase_order and purchase_order.picking_ids):
-            raise UserError(_("PO does not exist or has no receipts"))
+
+        # sync SO return to PO return
+        if self.intercompany_return_picking_id:
+            moves = [(m, m.quantity_done) for m in self.move_ids_without_package]
+            dest_picking = self.intercompany_return_picking_id.with_user(
+                intercompany_user
+            )
+            all_dest_moves = self.intercompany_return_picking_id.with_user(
+                intercompany_user
+            ).move_lines
+            for move, qty in moves:
+                dest_moves = all_dest_moves.filtered(
+                    lambda x, prod=move.product_id: x.product_id == prod
+                )
+                remaining_qty = qty
+                remaining_ml = move.move_line_ids
+                while dest_moves and remaining_qty > 0.0:
+                    dest_move = dest_moves[0]
+                    to_assign = min(
+                        remaining_qty,
+                        dest_move.product_uom_qty - dest_move.quantity_done,
+                    )
+                    final_qty = dest_move.quantity_done + to_assign
+                    for line, dest_line in zip(remaining_ml, dest_move.move_line_ids):
+                        # Assuming the order of move lines is the same on both moves
+                        # is risky but what would be a better option?
+                        dest_line.sudo().write(
+                            {
+                                "qty_done": line.qty_done,
+                            }
+                        )
+                    dest_move.quantity_done = final_qty
+                    remaining_qty -= to_assign
+                    if dest_move.quantity_done == dest_move.product_qty:
+                        dest_moves -= dest_move
+            dest_picking._action_done()
+
+        # sync SO to PO picking
         if self.intercompany_picking_id:
+            purchase_order = sale_order.auto_purchase_order_id.sudo()
+            if not (purchase_order and purchase_order.picking_ids):
+                raise UserError(_("PO does not exist or has no receipts"))
             dest_picking = self.intercompany_picking_id.with_user(intercompany_user.id)
             dest_move_qty_update_dict = {}
             for move in self.move_ids_without_package.sudo():
