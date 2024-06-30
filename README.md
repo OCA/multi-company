@@ -25,6 +25,7 @@ addon | version | maintainers | summary
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 15.0.1.0.0 |  | This module adds a wizard to create companies easily
 [base_multi_company](base_multi_company/) | 15.0.1.0.6 | [![pedrobaeza](https://github.com/pedrobaeza.png?size=30px)](https://github.com/pedrobaeza) | Provides a base for adding multi-company support to models.
 [calendar_event_multi_company](calendar_event_multi_company/) | 15.0.1.0.0 |  | This module add multi-company management to calendar events
+[login_all_company](login_all_company/) | 15.0.0.0.0 |  | Access all your companies when you log in
 [mail_multicompany](mail_multicompany/) | 15.0.0.1.0 |  | Email Gateway Multi company
 [mail_template_multi_company](mail_template_multi_company/) | 15.0.1.0.0 | [![Olivier-LAURENT](https://github.com/Olivier-LAURENT.png?size=30px)](https://github.com/Olivier-LAURENT) | Mail Template Multi Company
 [multicompany_configuration](multicompany_configuration/) | 15.0.1.0.0 |  | Simplify the configuration on multicompany environments
