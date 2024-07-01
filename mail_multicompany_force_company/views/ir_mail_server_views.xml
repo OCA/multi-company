@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="base.action_ir_mail_server_list" model="ir.actions.act_window">
+        <field name="context">{'show_all': True}</field>
+    </record>
+</odoo>
