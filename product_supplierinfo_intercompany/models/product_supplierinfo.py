@@ -7,6 +7,7 @@ from odoo.exceptions import UserError
 
 class IntercompanySupplierinfoMixin(models.AbstractModel):
     _name = "intercompany.supplierinfo.mixin"
+    _description = "Intercompany Supplierinfo Mixin"
 
     def write(self, vals):
         # allow to change sequence only
