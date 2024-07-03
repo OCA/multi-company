@@ -822,3 +822,39 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             so_lots, po_lots, msg="The lots of the moves should be the same"
         )
         self.assertFalse(so_lots.company_id, msg="Lots should not have a company.")
+
+    def test_send_from_default_when_no_partner_warehouse(self):
+        """If no warehouse matches the purchase partner,
+        fallback to company warehouse must still work.
+        """
+
+        self.company_b.warehouse_id = self.warehouse_d
+        # ensure no warehouse exists matching the partner
+        self.env["stock.warehouse"].search(
+            [
+                ("partner_id", "=", self.purchase_company_a.partner_id.id),
+                ("company_id", "=", self.company_b.id),
+            ]
+        ).unlink()
+        sale = self._approve_po()
+        self.assertEqual(sale.warehouse_id, self.warehouse_d)
+
+    def test_send_from_partner_matching_warehouse(self):
+        """If a warehouse exists for dest company whose partner matches
+        the purchase partner, it must be used instead of the default one.
+        """
+
+        # default warehouse for company B (fallback)
+        self.company_b.warehouse_id = self.warehouse_c
+        # create a warehouse matching the purchase partner
+        partner_wh = self.env["stock.warehouse"].create(
+            {
+                "name": "Partner WH",
+                "code": "PB-WH",
+                "partner_id": self.purchase_company_a.partner_id.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        sale = self._approve_po()
+        # NEW behavior: matching warehouse must be used
+        self.assertEqual(sale.warehouse_id, partner_wh)
