@@ -42,6 +42,13 @@ class StockPicking(models.Model):
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
             if not pick.intercompany_picking_id and purchase.picking_ids[0]:
                 pick.write({"intercompany_picking_id": purchase.picking_ids[0]})
+            pick._action_done_intercompany_actions(purchase)
+        return super()._action_done()
+
+    def _action_done_intercompany_actions(self, purchase):
+        self.ensure_one()
+        try:
+            pick = self
             for move in pick.move_lines:
                 move_lines = move.move_line_ids
                 po_move_lines = (
@@ -89,7 +96,32 @@ class StockPicking(models.Model):
                         # if it doesn't exist, create it by copying from original company
                         dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
                     po_ml.lot_id = dest_lot_id
-        return super()._action_done()
+
+        except Exception:
+            if self.env.company_id.sync_picking_failure_action == "raise":
+                raise
+            else:
+                self._notify_picking_problem(purchase)
+
+    def _notify_picking_problem(self, purchase):
+        self.ensure_one()
+        note = _(
+            "Failure to confirm picking for PO %s. "
+            "Original picking %s still confirmed, please check "
+            "the other side manually."
+        ) % (purchase.name, self.name)
+        self.activity_schedule(
+            "mail.mail_activity_data_warning",
+            fields.Date.today(),
+            note=note,
+            # Try to notify someone relevant
+            user_id=(
+                self.company_id.notify_user_id.id
+                or self.sale_id.user_id.id
+                or self.sale_id.team_id.user_id.id
+                or SUPERUSER_ID,
+            ),
+        )
 
     def button_validate(self):
         res = super().button_validate()
@@ -104,10 +136,19 @@ class StockPicking(models.Model):
                 and record.picking_type_code == "outgoing"
             ):
                 if record.intercompany_picking_id:
-                    record._sync_receipt_with_delivery(
-                        dest_company,
-                        record.sale_id,
-                    )
+                    try:
+                        record._sync_receipt_with_delivery(
+                            dest_company,
+                            record.sale_id,
+                        )
+                    except Exception:
+                        if record.company_id.sync_picking_failure_action == "raise":
+                            raise
+                        else:
+                            record._notify_picking_problem(
+                                record.sale_id.auto_purchase_order_id
+                            )
+
         # if the flag is set, block the validation of the picking in the destination company
         if self.env.company.block_po_manual_picking_validation:
             for record in self:

@@ -47,7 +47,17 @@ class InterCompanyRulesConfig(models.TransientModel):
         "the delivery from the source company",
         readonly=False,
     )
+    sync_picking_failure_action = fields.Selection(
+        related="company_id.sync_picking_failure_action",
+        readonly=False,
+    )
     block_po_manual_picking_validation = fields.Boolean(
         related="company_id.block_po_manual_picking_validation",
+        readonly=False,
+    )
+    notify_user_id = fields.Many2one(
+        "res.users",
+        related="company_id.notify_user_id",
+        help="User to notify incase of sync picking failure.",
         readonly=False,
     )

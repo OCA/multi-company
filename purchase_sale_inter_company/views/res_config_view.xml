@@ -45,6 +45,24 @@
                         for="sync_picking"
                     />
                     <br />
+                    <field name="sync_picking_failure_action" class="oe_inline" />
+                    <label
+                        string="On sync picking failure"
+                        class="o_light_label"
+                        for="sync_picking_failure_action"
+                    />
+                    <br />
+                    <label
+                        for="notify_user_id"
+                        class="o_light_label"
+                        attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')]}"
+                    />
+                    <field
+                        name="notify_user_id"
+                        attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')], 'required': [('sync_picking_failure_action', '=', 'notify')]}"
+                        class="oe_inline"
+                    />
+                    <br />
                     <field
                         name="block_po_manual_picking_validation"
                         class="oe_inline"
