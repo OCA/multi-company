@@ -1,4 +1,5 @@
 # Copyright 2022 CreuBlanca
+# Copyright 2024 Dixmit
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 {
@@ -8,7 +9,7 @@
     "version": "16.0.1.0.0",
     "website": "https://github.com/OCA/multi-company",
     "license": "AGPL-3",
-    "author": "CreuBlanca,Odoo Community Association (OCA)",
+    "author": "Dixmit,CreuBlanca,Odoo Community Association (OCA)",
     "depends": ["account"],
     "data": [
         "views/account_move.xml",

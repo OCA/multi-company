@@ -51,6 +51,7 @@ Credits
 Authors
 ~~~~~~~
 
+* Dixmit
 * CreuBlanca
 
 Contributors

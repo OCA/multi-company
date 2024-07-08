@@ -1,4 +1,5 @@
 # Copyright 2022 CreuBlanca
+# Copyright 2024 Dixmit
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo.tests.common import Form, tagged
@@ -46,6 +47,49 @@ class TestChangeCompany(AccountTestInvoicingCommon):
             f.company_id = company
         self.assertTrue(invoice.line_ids)
         self.assertEqual(invoice.journal_id.company_id, company)
+        for line in invoice.line_ids:
+            self.assertEqual(line.company_id, company)
+            self.assertEqual(line.account_id.company_id, company)
+            for tax in line.tax_ids:
+                self.assertEqual(tax.company_id, company)
+
+    def test_change_extra_fields(self):
+        invoice = self.init_invoice(
+            "out_invoice", products=self.product_a + self.product_b
+        )
+        # self.assertEqual(invoice.company_id)
+        company = self.company_data_2["company"]
+        fp = (
+            self.env["account.fiscal.position"]
+            .with_company(company.id)
+            .create(
+                {
+                    "name": "Test",
+                    "sequence": 1,
+                }
+            )
+        )
+        term = (
+            self.env["account.payment.term"]
+            .with_company(company.id)
+            .create({"name": "Test", "company_id": company.id})
+        )
+        invoice.invoice_payment_term_id = False
+        invoice.partner_id.with_company(company.id).write(
+            {"property_account_position_id": fp.id, "property_payment_term_id": term.id}
+        )
+        self.assertNotEqual(invoice.company_id, company)
+        invoice = (
+            self.env[invoice._name]
+            .with_context(allowed_company_ids=self.env.companies.ids + company.ids)
+            .browse(invoice.ids)
+        )
+        with Form(invoice) as f:
+            f.company_id = company
+        self.assertTrue(invoice.line_ids)
+        self.assertEqual(invoice.journal_id.company_id, company)
+        self.assertEqual(invoice.fiscal_position_id, fp)
+        self.assertEqual(invoice.invoice_payment_term_id, term)
         for line in invoice.line_ids:
             self.assertEqual(line.company_id, company)
             self.assertEqual(line.account_id.company_id, company)
