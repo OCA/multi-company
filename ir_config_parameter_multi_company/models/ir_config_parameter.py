@@ -12,6 +12,8 @@ class IrConfigMultiCompany(models.Model):
     @api.model
     def _get_param(self, key):
         company_id = self.env.company.id
+        if self.env.context.get("force_config_parameter_company"):
+            company_id = self.env.context["force_config_parameter_company"].id
         if company_id:
             self.flush(["key", "value", "company_id"])
             self.env.cr.execute(
