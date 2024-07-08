@@ -91,7 +91,7 @@ class SaleOrder(models.Model):
                             po_company.intercompany_user_id.id)
                         for move in moves:
                             purchase_move = purchase_moves.filtered(
-                                lambda m: m.product_id.id == move.product_id.id)
+                                lambda m: m.product_id.id == move.product_id.id)[:1]
                             new_move = purchase_move.sudo(
                                 po_company.intercompany_user_id.id).copy({
                                     'picking_id':
