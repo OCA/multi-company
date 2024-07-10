@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2019 ACSONE SA/NV
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+
+    <record model="ir.ui.view" id="sales_team_crm_tag_view_form">
+        <field name="name">crm.tag.form (in crm_tag_multi_company)</field>
+        <field name="model">crm.tag</field>
+        <field name="inherit_id" ref="sales_team.sales_team_crm_tag_view_form" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="company_id" groups="base.group_multi_company" />
+            </field>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="sales_team_crm_tag_view_tree">
+        <field name="name">crm.tag.tree (in crm_tag_multi_company)</field>
+        <field name="model">crm.tag</field>
+        <field name="inherit_id" ref="sales_team.sales_team_crm_tag_view_tree" />
+        <field name="arch" type="xml">
+            <tree position="inside">
+                <field name="company_id" groups="base.group_multi_company" />
+            </tree>
+        </field>
+    </record>
+
+</odoo>
