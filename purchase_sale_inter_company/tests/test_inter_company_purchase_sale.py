@@ -292,8 +292,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     def test_so_change_price(self):
         sale = self._approve_po(self.purchase_company_a)
         sale.order_line.price_unit = 10
+        sale.order_line.discount = 10.0
         sale.action_confirm()
-        self.assertEqual(self.purchase_company_a.order_line.price_unit, 10)
+        self.assertEqual(self.purchase_company_a.order_line.price_unit, 9)
 
     def test_po_with_contact_as_partner(self):
         contact = self.env["res.partner"].create(
