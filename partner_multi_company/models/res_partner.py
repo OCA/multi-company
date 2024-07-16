@@ -2,7 +2,8 @@
 # Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html.html
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 
 class ResPartner(models.Model):
@@ -59,3 +60,33 @@ class ResPartner(models.Model):
         elif "company_id" not in vals:
             vals["company_ids"] = False
         return vals
+
+    @api.constrains("company_ids")
+    def _check_company_id(self):
+        for rec in self:
+            if rec.user_ids:
+                user_company_ids = set(rec.user_ids.mapped("company_ids").ids)
+                partner_company_ids = set(rec.company_ids.ids)
+
+                if (
+                    not user_company_ids.issubset(partner_company_ids)
+                    and partner_company_ids
+                ):
+                    raise ValidationError(
+                        _(
+                            "The partner must have at least all the companies "
+                            "associated with the user."
+                        )
+                    )
+
+    def _inverse_company_id(self):
+        if self.env.context.get("from_res_users"):
+            # don't delete all partner company_ids when
+            # the user's related company_id is modified.
+            for record in self:
+                company = record.company_id
+                if company:
+                    record.company_ids = [(4, company.id)]
+            return
+        else:
+            return super()._inverse_company_id()
