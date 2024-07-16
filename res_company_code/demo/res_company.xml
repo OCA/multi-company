@@ -19,4 +19,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
     <record id="base.main_company" model="res.company">
         <field name="code">C1</field>
     </record>
+    <record model="res.partner" id="base.partner_demo">
+        <field name="company_id" eval="False" />
+    </record>
 </odoo>
