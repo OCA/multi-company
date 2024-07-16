@@ -14,5 +14,5 @@ class CrmStage(models.Model):
         index=True,
         help="Specific company that uses this stage. "
         "Other companies will not be able to see or use this stage.",
-        default=lambda self: self.env["res.company"]._company_default_get("crm.stage"),
+        default=lambda self: self.env.company,
     )

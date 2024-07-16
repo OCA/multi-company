@@ -28,20 +28,20 @@ class TestCrmStageMultiCompany(TransactionCase):
         )
 
     def test_get_stages(self):
-        stages = self.env["crm.stage"].sudo(self.user).search([])
+        stages = self.env["crm.stage"].with_user(self.user).search([])
         stages_2 = self.env["crm.stage"].search([("company_id", "=", self.company.id)])
         self.assertEqual(set(stages), set(stages_2))
 
     def test_create_company_stage(self):
         with self.assertRaises(AccessError):
-            self.env["crm.stage"].sudo(self.user).create(
+            self.env["crm.stage"].with_user(self.user).create(
                 {"name": "Stage 4", "company_id": self.env.user.company_id.id}
             )
 
     def test_write_other_company_stage(self):
         with self.assertRaises(AccessError):
-            self.env.ref("crm.stage_lead1").sudo(self.user).write({"name": "test"})
+            self.env.ref("crm.stage_lead1").with_user(self.user).write({"name": "test"})
 
     def test_unlink_other_company_stage(self):
         with self.assertRaises(AccessError):
-            self.env.ref("crm.stage_lead1").sudo(self.user).unlink()
+            self.env.ref("crm.stage_lead1").with_user(self.user).unlink()
