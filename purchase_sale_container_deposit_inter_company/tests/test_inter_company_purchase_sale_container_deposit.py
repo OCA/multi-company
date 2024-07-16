@@ -1,5 +1,6 @@
 # Copyright 2023 Camptocamp (<https://www.camptocamp.com>).
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+from odoo import fields
 from odoo.tests.common import Form
 
 from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice import (
@@ -25,6 +26,28 @@ class TestProductPackagingContainerDepositMixin(
         # Configure pricelist to USD
         cls.env["product.pricelist"].sudo().search([]).write(
             {"currency_id": cls.env.ref("base.USD").id}
+        )
+        # Add inventory and purchase group to user_company_a
+        cls.user_company_a = cls.env["res.users"].write(
+            {
+                "groups_id": [
+                    fields.Command.link(cls.env.ref("stock.group_stock_user").id),
+                    fields.Command.link(
+                        cls.env.ref("purchase.group_purchase_manager").id
+                    ),
+                ],
+            }
+        )
+        # Add inventory and sale group to user_company_a
+        cls.user_company_a = cls.env["res.users"].write(
+            {
+                "groups_id": [
+                    fields.Command.link(cls.env.ref("stock.group_stock_user").id),
+                    fields.Command.link(
+                        cls.env.ref("sales_team.group_sale_manager").id
+                    ),
+                ],
+            }
         )
 
     @classmethod
