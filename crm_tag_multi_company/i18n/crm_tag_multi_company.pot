@@ -1,6 +1,6 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* crm_lead_tag_multi_company
+#	* crm_tag_multi_company
 #
 msgid ""
 msgstr ""
@@ -13,13 +13,13 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
-#. module: crm_lead_tag_multi_company
-#: model:ir.model.fields,field_description:crm_lead_tag_multi_company.field_crm_lead_tag__company_id
+#. module: crm_tag_multi_company
+#: model:ir.model.fields,field_description:crm_tag_multi_company.field_crm_tag__company_id
 msgid "Company"
 msgstr ""
 
-#. module: crm_lead_tag_multi_company
-#: model:ir.model,name:crm_lead_tag_multi_company.model_crm_lead_tag
-msgid "Lead Tag"
+#. module: crm_tag_multi_company
+#: model:ir.model,name:crm_tag_multi_company.model_crm_tag
+msgid "Tag"
 msgstr ""
 
