@@ -5,7 +5,7 @@
     "name": "Crm Stage Multi Company",
     "summary": """
         This module adds support for multi company on crm stage.""",
-    "version": "12.0.1.0.0",
+    "version": "16.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACS0NE SA/NV, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
