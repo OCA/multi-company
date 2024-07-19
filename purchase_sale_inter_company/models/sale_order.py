@@ -144,6 +144,18 @@ class SaleOrder(models.Model):
 
         return res
 
+    def write(self, vals):
+        res = super().write(vals)
+        if "commitment_date" in vals:
+            purchase_id = (
+                self.env["purchase.order"]
+                .sudo()
+                .search([("name", "=", self.client_order_ref)])
+            )
+            if purchase_id:
+                purchase_id.date_planned = vals["commitment_date"]
+        return res
+
 
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"

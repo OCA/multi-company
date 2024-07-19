@@ -5,6 +5,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 import re
 
+from dateutil.relativedelta import relativedelta
+
 from odoo.exceptions import UserError
 from odoo.tests.common import Form
 
@@ -679,3 +681,9 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # The manual validation should be blocked
         with self.assertRaises(UserError):
             po_picking_id.with_user(self.user_company_a).button_validate()
+
+    def test_change_delivery_date_sale(self):
+        sale = self._approve_po(self.purchase_company_a)
+        self.assertEqual(self.purchase_company_a.date_planned, sale.commitment_date)
+        sale.commitment_date = sale.commitment_date + relativedelta(days=3)
+        self.assertEqual(self.purchase_company_a.date_planned, sale.commitment_date)
