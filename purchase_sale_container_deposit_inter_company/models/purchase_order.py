@@ -20,3 +20,9 @@ class PurchaseOrder(models.Model):
         # Copy value from PO to SO
         order_line["is_container_deposit"] = purchase_line.is_container_deposit
         return order_line
+
+    def write(self, vals):
+        # Allow update of so lines on locked sale on update of order container deposit quantity
+        if self.env.context.get("update_order_container_deposit_quantity", False):
+            self = self.with_context(allow_update_locked_sales=True)
+        return super().write(vals)
