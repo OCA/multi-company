@@ -7,7 +7,7 @@
     "summary": """
     Add compatibility between OCA product_packaging_container_deposit and
     purchase_sale_inter_company""",
-    "version": "16.0.1.0.0",
+    "version": "16.0.1.0.1",
     "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Camptocamp, Odoo Community Association (OCA)",
