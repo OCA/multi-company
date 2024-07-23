@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="product_category_form_view" model="ir.ui.view">
+        <field name="name">Product Category form view (with multi-company)</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="company_id" position="after">
+                <field
+                    name="company_ids"
+                    groups="base.group_multi_company"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>
