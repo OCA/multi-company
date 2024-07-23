@@ -210,15 +210,14 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_purchase_invoice_relation(self):
         sale = self._approve_po(self.purchase_company_a)
-        sale_invoice_id = sale._create_invoices()[0]
-        sale_invoice_id.action_post()
-        self.assertEquals(
-            sale_invoice_id.auto_invoice_id, self.purchase_company_a.invoice_ids,
+        sale_invoice = sale._create_invoices()[0]
+        sale_invoice.action_post()
+        self.assertEqual(len(self.purchase_company_a.invoice_ids), 1)
+        self.assertEqual(
+            self.purchase_company_a.invoice_ids.auto_invoice_id, sale_invoice,
         )
-        self.assertEquals(
-            sale_invoice_id.auto_invoice_id.invoice_line_ids,
-            self.purchase_company_a.order_line.invoice_lines,
-        )
+        self.assertEqual(len(self.purchase_company_a.order_line.invoice_lines), 1)
+        self.assertEqual(self.purchase_company_a.order_line.qty_invoiced, 3)
 
     def test_cancel(self):
         self.company_b.sale_auto_validation = False
