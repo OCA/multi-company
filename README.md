@@ -30,7 +30,7 @@ addon | version | maintainers | summary
 [partner_multi_company](partner_multi_company/) | 13.0.1.0.0 |  | Select individually the partner visibility on each company
 [product_multi_company](product_multi_company/) | 13.0.2.0.1 |  | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 13.0.1.0.0 |  | Product Tax Multi Company Default
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 13.0.1.0.5 |  | Intercompany PO/SO rules
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 13.0.1.0.6 |  | Intercompany PO/SO rules
 [purchase_sale_stock_inter_company](purchase_sale_stock_inter_company/) | 13.0.1.0.0 |  | Intercompany PO/SO rules with warehouse
 [res_company_code](res_company_code/) | 13.0.1.0.0 |  | Add 'code' field on company model
 
