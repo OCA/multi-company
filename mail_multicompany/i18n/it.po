@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-05-17 08:35+0000\n"
+"PO-Revision-Date: 2024-07-23 09:58+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #. module: mail_multicompany
 #: model:ir.model.fields,field_description:mail_multicompany.field_ir_mail_server__company_id
@@ -24,7 +24,7 @@ msgstr "Azienda"
 #. module: mail_multicompany
 #: model:ir.model,name:mail_multicompany.model_ir_mail_server
 msgid "Mail Server"
-msgstr "Server e-ail"
+msgstr "Server di posta"
 
 #. module: mail_multicompany
 #: model:ir.model,name:mail_multicompany.model_mail_message
