@@ -3,7 +3,6 @@
 # Copyright 2023 Eduardo de Miguel - Moduon <edu@moduon.team>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from typing import List
 
 from odoo import api, fields, models
 
@@ -75,8 +74,8 @@ class ProductTemplate(models.Model):
 
     def _delete_product_taxes(
         self,
-        excl_customer_tax_ids: List[int] = None,
-        excl_supplier_tax_ids: List[int] = None,
+        excl_customer_tax_ids: list[int] = None,
+        excl_supplier_tax_ids: list[int] = None,
     ):
         """Delete taxes from product excluding chosen taxes
 
