@@ -17,20 +17,21 @@ Product Tax Multi Company Default
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/16.0/product_tax_multicompany_default
+    :target: https://github.com/OCA/multi-company/tree/17.0/product_tax_multicompany_default
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-product_tax_multicompany_default
+    :target: https://translation.odoo-community.org/projects/multi-company-17-0/multi-company-17-0-product_tax_multicompany_default
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=16.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=17.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module sets the default company taxes for all the existing companies when
-a product is created. It also adds a button in product view to set all the
-taxes from other companies matching them by tax code.
+This module sets the default company taxes for all the existing
+companies when a product is created. It also adds a button in product
+view to set all the taxes from other companies matching them by tax
+code.
 
 **Table of contents**
 
@@ -40,33 +41,37 @@ taxes from other companies matching them by tax code.
 Configuration
 =============
 
-#. As obvious, you need to have several companies.
-#. Go to Invoicing > Configuration > Settings
-#. On Taxes > Default Taxes set fields "Sales Tax" and "Purchase Tax".
+1. As obvious, you need to have several companies.
+2. Go to Invoicing > Configuration > Settings
+3. On Taxes > Default Taxes set fields "Sales Tax" and "Purchase Tax".
 
 Usage
 =====
 
 To propagate taxes in one product:
 
-#. User must have group Full Accounting Features (account.group_account_user)
-#. Go to Invoicing > Customers > Products.
-#. Create a new product and save it.
-#. Switching user company you will see that the product has the default taxes
-   for all the companies.
-#. Change tax in a existing product
-#. If Odoo detects divergent taxes across companies, you will see a "Propagate Taxes" button.
-#. Click "Propagate Taxes" button
-#. Switching user company you will see that the product has the same taxes
-   for all the companies.
+1. User must have group Full Accounting Features
+   (account.group_account_user)
+2. Go to Invoicing > Customers > Products.
+3. Create a new product and save it.
+4. Switching user company you will see that the product has the default
+   taxes for all the companies.
+5. Change tax in a existing product
+6. If Odoo detects divergent taxes across companies, you will see a
+   "Propagate Taxes" button.
+7. Click "Propagate Taxes" button
+8. Switching user company you will see that the product has the same
+   taxes for all the companies.
 
 To propagate taxes in mass:
 
-#. User must have group Full Accounting Features (account.group_account_user)
-#. Open products list view.
-#. *Filters > Add custom filter > Has divergent cross-company taxes > is true > Apply*.
-#. Select all products that you want to change.
-#. *Action > Propagate Taxes*.
+1. User must have group Full Accounting Features
+   (account.group_account_user)
+2. Open products list view.
+3. *Filters > Add custom filter > Has divergent cross-company taxes > is
+   true > Apply*.
+4. Select all products that you want to change.
+5. *Action > Propagate Taxes*.
 
 Bug Tracker
 ===========
@@ -74,7 +79,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20product_tax_multicompany_default%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20product_tax_multicompany_default%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -82,29 +87,30 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Tecnativa
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* `Tecnativa <https://www.tecnativa.com>`_:
+-  `Tecnativa <https://www.tecnativa.com>`__:
 
-  * Carlos Dauden
-  * Pedro M. Baeza
-  * Vicent Cubells
-  * Ernesto Tejeda
+   -  Carlos Dauden
+   -  Pedro M. Baeza
+   -  Vicent Cubells
+   -  Ernesto Tejeda
 
-* Loo <http://odooerp.cl/>`_:
-  * Carlos Lopez
+-  Loo <http://odooerp.cl/>`\_:
 
-* `Moduon <https://www.moduon.team>`_:
+   -  Carlos Lopez
 
-  * Eduardo de Miguel
+-  `Moduon <https://www.moduon.team>`__:
+
+   -  Eduardo de Miguel
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -124,6 +130,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-Shide| 
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/16.0/product_tax_multicompany_default>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/17.0/product_tax_multicompany_default>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
