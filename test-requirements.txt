@@ -1,0 +1,1 @@
+odoo-addon-res_company_search_view @ git+https://github.com/OCA/multi-company.git@refs/pull/597/head#subdirectory=res_company_search_view
