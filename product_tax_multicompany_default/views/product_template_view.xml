@@ -22,7 +22,7 @@
                         string="Propagate Taxes"
                         type="object"
                         class="btn btn-link oe_inline"
-                        attrs="{'invisible':[('divergent_company_taxes', '=', False)]}"
+                        invisible="not divergent_company_taxes"
                         groups="account.group_account_user"
                     />
                 </div>
