@@ -6,14 +6,16 @@
 import logging
 
 from odoo.tests import Form, tagged
-from odoo.tests.common import TransactionCase, new_test_user, users
+from odoo.tests.common import new_test_user, users
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
 @tagged("post_install", "-at_install")
-class TestsProductTaxMulticompany(TransactionCase):
+class TestsProductTaxMulticompany(BaseCommon):
     @classmethod
     def setUpClass(cls):
-        super(TestsProductTaxMulticompany, cls).setUpClass()
+        super().setUpClass()
         default_country = cls.env.ref("base.cl")
         cls.company_1 = cls.env["res.company"].create(
             {"name": "Test company 1", "country_id": default_country.id}
@@ -48,6 +50,21 @@ class TestsProductTaxMulticompany(TransactionCase):
             company_ids=[(6, 0, (cls.company_1 | cls.company_2).ids)],
         )
         AccountTax = cls.env["account.tax"]
+        # tax_group_id is now a computed field.
+        # Create records so that when the field is recomputed,
+        # the records exist and are filled.
+        cls.env["account.tax.group"].create(
+            [
+                {
+                    "name": "Tax group C1",
+                    "company_id": cls.company_1.id,
+                },
+                {
+                    "name": "Tax group C2",
+                    "company_id": cls.company_2.id,
+                },
+            ]
+        )
         tax_vals = {
             "name": "Test Customer Tax 10%",
             "amount": 10.0,
@@ -90,10 +107,13 @@ class TestsProductTaxMulticompany(TransactionCase):
 
     @users("user_1")
     def test_multicompany_default_tax(self):
-        product = self.env["product.product"].create(
-            {"name": "Test Product", "company_id": False}
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
+        product = (
+            self.env["product.product"]
+            .sudo()
+            .create({"name": "Test Product", "company_id": False})
         )
-        product = product.sudo()
         self.assertIn(self.tax_10_cc1, product.taxes_id)
         self.assertIn(self.tax_20_cc2, product.taxes_id)
         self.assertIn(self.tax_10_sc1, product.supplier_taxes_id)
@@ -101,45 +121,60 @@ class TestsProductTaxMulticompany(TransactionCase):
 
     @users("user_1")
     def test_not_default_tax_if_set(self):
-        product = self.env["product.product"].create(
-            {
-                "name": "Test Product",
-                "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
-                "supplier_taxes_id": [(6, 0, self.tax_20_sc1.ids)],
-                "company_id": False,
-            }
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
+        product = (
+            self.env["product.product"]
+            .sudo()
+            .create(
+                {
+                    "name": "Test Product",
+                    "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
+                    "supplier_taxes_id": [(6, 0, self.tax_20_sc1.ids)],
+                    "company_id": False,
+                }
+            )
         )
-        product = product.sudo()
         self.assertNotIn(self.tax_10_cc1, product.taxes_id)
         self.assertNotIn(self.tax_10_sc1, product.supplier_taxes_id)
 
     @users("user_2")
     def test_default_tax_if_set_match(self):
-        product = self.env["product.product"].create(
-            {
-                "name": "Test Product",
-                "taxes_id": [(6, 0, self.tax_20_cc2.ids)],
-                "supplier_taxes_id": [(6, 0, self.tax_20_sc2.ids)],
-                "company_id": False,
-            }
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
+        product = (
+            self.env["product.product"]
+            .sudo()
+            .create(
+                {
+                    "name": "Test Product",
+                    "taxes_id": [(6, 0, self.tax_20_cc2.ids)],
+                    "supplier_taxes_id": [(6, 0, self.tax_20_sc2.ids)],
+                    "company_id": False,
+                }
+            )
         )
-        product = product.sudo()
         self.assertIn(self.tax_10_cc1, product.taxes_id)
         self.assertIn(self.tax_10_sc1, product.supplier_taxes_id)
 
     @users("user_1")
     def test_tax_not_default_set_match(self):
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
         self.company_1.account_sale_tax_id = self.tax_20_cc1.id
         self.company_1.account_purchase_tax_id = self.tax_20_sc1.id
-        product = self.env["product.product"].create(
-            {
-                "name": "Test Product",
-                "taxes_id": [(6, 0, self.tax_10_cc1.ids)],
-                "supplier_taxes_id": [(6, 0, self.tax_10_sc1.ids)],
-                "company_id": False,
-            }
+        product = (
+            self.env["product.product"]
+            .sudo()
+            .create(
+                {
+                    "name": "Test Product",
+                    "taxes_id": [(6, 0, self.tax_10_cc1.ids)],
+                    "supplier_taxes_id": [(6, 0, self.tax_10_sc1.ids)],
+                    "company_id": False,
+                }
+            )
         )
-        product = product.sudo()
         self.assertIn(self.tax_10_cc2, product.taxes_id)
         self.assertIn(self.tax_10_sc2, product.supplier_taxes_id)
 
@@ -155,13 +190,15 @@ class TestsProductTaxMulticompany(TransactionCase):
         except ValueError as e:
             logging.info(e)  # Skipping configuration of purchase module
         # Create product with empty taxes
-        pf_u3_c1 = Form(self.env["product.product"].with_company(self.company_1))
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
+        pf_u3_c1 = Form(self.env["product.product"].sudo().with_company(self.company_1))
         pf_u3_c1.name = "Testing Empty Taxes"
         pf_u3_c1.taxes_id.clear()
         pf_u3_c1.supplier_taxes_id.clear()
         product = pf_u3_c1.save()
         self.assertFalse(
-            product.sudo().taxes_id,
+            product.taxes_id,
             "Taxes not empty when initializing product",
         )
         pf_u3_c1 = Form(product.with_company(self.company_1))
@@ -171,15 +208,15 @@ class TestsProductTaxMulticompany(TransactionCase):
         pf_u3_c1.supplier_taxes_id.add(self.tax_30_sc1)
         product = pf_u3_c1.save()
         self.assertEqual(
-            product.sudo().taxes_id,
+            product.taxes_id,
             self.tax_30_cc1,
             "Taxes has been propagated before calling set_multicompany_taxes",
         )
         product.with_company(self.company_1).set_multicompany_taxes()
-        company_1_taxes_fill = product.sudo().taxes_id.filtered(
+        company_1_taxes_fill = product.taxes_id.filtered(
             lambda t: t.company_id == self.company_1
         )
-        company_2_taxes_fill = product.sudo().taxes_id.filtered(
+        company_2_taxes_fill = product.taxes_id.filtered(
             lambda t: t.company_id == self.company_2
         )
         self.assertEqual(
@@ -193,6 +230,8 @@ class TestsProductTaxMulticompany(TransactionCase):
             "Incorrect taxes when setting it for the first time in Company 2",
         )
         # Change taxes
+        # refresh form to avoid cache errors with multicompany
+        pf_u3_c1 = Form(product.with_company(self.company_1))
         pf_u3_c1.name = "Testing Change Taxes"
         pf_u3_c1.taxes_id.clear()
         pf_u3_c1.taxes_id.add(self.tax_40_cc1)
@@ -200,10 +239,10 @@ class TestsProductTaxMulticompany(TransactionCase):
         pf_u3_c1.supplier_taxes_id.add(self.tax_40_sc1)
         product = pf_u3_c1.save()
         product.with_company(self.company_1).set_multicompany_taxes()
-        company_1_taxes_change = product.sudo().taxes_id.filtered(
+        company_1_taxes_change = product.taxes_id.filtered(
             lambda t: t.company_id == self.company_1
         )
-        company_2_taxes_change = product.sudo().taxes_id.filtered(
+        company_2_taxes_change = product.taxes_id.filtered(
             lambda t: t.company_id == self.company_2
         )
         self.assertEqual(
@@ -219,10 +258,13 @@ class TestsProductTaxMulticompany(TransactionCase):
 
     def test_divergent_taxes_detection_single_company_product(self):
         """Divergency detection is skipped in single-company products."""
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
         product = (
             self.env["product.template"]
             .with_user(self.user_1)
             .with_context(ignored_company_ids=self.alien_companies.ids)
+            .sudo()
             .create(
                 {
                     "name": "test product",
@@ -230,17 +272,20 @@ class TestsProductTaxMulticompany(TransactionCase):
                     "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
                 }
             )
-        ).sudo()
+        )
         self.assertTrue(product.taxes_id)
         self.assertTrue(product.supplier_taxes_id)
         self.assertFalse(product.divergent_company_taxes)
 
     def test_divergent_taxes_detection_multi_company_product(self):
         """Divergency detection works as expected in multi-company products."""
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
         product = (
             self.env["product.template"]
             .with_user(self.user_1)
             .with_context(ignored_company_ids=self.alien_companies.ids)
+            .sudo()
             .create(
                 {
                     "company_id": False,
@@ -249,7 +294,7 @@ class TestsProductTaxMulticompany(TransactionCase):
                     "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
                 }
             )
-        ).sudo()
+        )
         # By default, taxes are propagated
         self.assertTrue(product.taxes_id)
         self.assertTrue(product.supplier_taxes_id)
