@@ -34,6 +34,14 @@ msgid "Display Name"
 msgstr ""
 
 #. module: partner_multi_company
+#. odoo-python
+#: code:addons/partner_multi_company/models/res_partner.py:0
+#, python-format
+msgid ""
+"The partner must have at least all the companies associated with the user."
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_users
 msgid "User"
 msgstr ""
