@@ -1,0 +1,84 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* partner_account_multicompany_default
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2024-06-15 19:34+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid ""
+"Are you sure? This action will propagate this account to all of your "
+"selected companies, if they have an account with the same code."
+msgstr ""
+"Si è sicuri? Questa azione propagherà questo conto in tutte le aziende "
+"selezionate se hanno un conto con lo stesso codice."
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid ""
+"Are you sure? This action will propagate this value to all of your selected "
+"companies."
+msgstr ""
+"Si è sicuri? Questa azione propagherà questo valore a tutte le aziende "
+"selezionate."
+
+#. module: partner_account_multicompany_default
+#: model:ir.model,name:partner_account_multicompany_default.model_res_partner
+msgid "Contact"
+msgstr "Contatto"
+
+#. module: partner_account_multicompany_default
+#. odoo-python
+#: code:addons/partner_account_multicompany_default/models/partner.py:0
+#, python-format
+msgid "Only multi-company partner can be propagated to other companies."
+msgstr ""
+"Solo i partner multi-azienda possono essere propagati alle altre aziende."
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid "Propagate fiscal position to other companies"
+msgstr "Propagare la posizione fiscale alle altre aziende"
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid "Propagate payable account to other companies"
+msgstr "Propagare il conto pagabile alle altre aziende"
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid "Propagate payment term to other companies"
+msgstr "Propagare i termini di pagamento alle altre aziende"
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid "Propagate receivable account to other companies"
+msgstr "Propagare il conto ricevibile alle altre aziende"
+
+#. module: partner_account_multicompany_default
+#: model_terms:ir.ui.view,arch_db:partner_account_multicompany_default.view_partner_form
+msgid "Propagate supplier payment term to other companies"
+msgstr "Propagare i termini di pagamento del fornitore alle altre aziende"
+
+#. module: partner_account_multicompany_default
+#. odoo-python
+#: code:addons/partner_account_multicompany_default/models/partner.py:0
+#, python-format
+msgid ""
+"There are no other companies to propagate to. Make sure you have access to "
+"other companies."
+msgstr ""
+"Non ci sono altre aziende in cui propagare. Assicurarsi di avere accesso "
+"alle altre aziende."
