@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Copyright (C) 2018 - Today: GRAP (http://www.grap.coop)
+  @author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+  @author: Quentin DUPONT (quentin.dupont@grap.coop)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+
+    <template id="external_layout_standard" inherit_id="web.external_layout_standard">
+
+            <xpath expr="//div[@t-field='company.report_footer']" position="before">
+                <div><span t-field="company.report_legal_description" /></div>
+            </xpath>
+
+    </template>
+
+</odoo>

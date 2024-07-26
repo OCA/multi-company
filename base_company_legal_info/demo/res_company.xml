@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+Copyright (C) 2018 - Today: GRAP (http://www.grap.coop)
+@author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+<odoo>
+
+    <record id="company_grap" model="res.company">
+        <field name="name">GRAP</field>
+        <field
+            name="legal_name"
+        >GRAP, Groupement Régional Alimentaire de Proximité</field>
+        <field name="legal_type">SA coopérative à conseil d'administration</field>
+        <field name="street">3, grande rue des feuillants</field>
+        <field name="zip">69001</field>
+        <field name="city">Lyon</field>
+        <field name="website">https://www.grap.coop/</field>
+        <field name="phone">+33 9 72 32 33 17</field>
+        <field name="email">contact@grap.coop</field>
+    </record>
+
+    <record id="company_akretion" model="res.company">
+        <field name="name">Akretion Coop</field>
+        <field name="legal_name">AKRETION FRANCE</field>
+        <field
+            name="legal_type"
+        >Société coopérative exploitée sous forme de SARL</field>
+        <field name="street">27, rue Henri Rolland</field>
+        <field name="zip">69100</field>
+        <field name="city">Villeurbanne</field>
+        <field name="website">https://akretion.com/fr</field>
+        <field name="phone">+33 4 82 53 84 57</field>
+        <field name="email">contact@akretion.com</field>
+    </record>
+
+    <record id="base.main_company" model="res.company">
+        <field name="legal_name">Your Legal Name</field>
+        <field name="legal_type">Your Legal Type</field>
+    </record>
+
+</odoo>
