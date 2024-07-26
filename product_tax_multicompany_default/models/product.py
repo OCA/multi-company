@@ -63,11 +63,16 @@ class ProductTemplate(models.Model):
         # If None: return default taxes
         if not match_tax_ids:
             return taxes_ids
+        type_tax_use = "sale" if field == "account_sale_tax_id" else "purchase"
         AccountTax = self.env["account.tax"]
         for tax in AccountTax.browse(match_tax_ids):
             taxes_ids.extend(
                 AccountTax.search(
-                    [("name", "=", tax.name), ("company_id", "=", company.id)]
+                    [
+                        ("type_tax_use", "=", type_tax_use),
+                        ("name", "=", tax.name),
+                        ("company_id", "=", company.id),
+                    ]
                 ).ids
             )
         return taxes_ids
