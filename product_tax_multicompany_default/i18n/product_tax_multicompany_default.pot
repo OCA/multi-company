@@ -1,0 +1,44 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_tax_multicompany_default
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_product__divergent_company_taxes
+#: model:ir.model.fields,help:product_tax_multicompany_default.field_product_template__divergent_company_taxes
+msgid ""
+"Does this product have divergent cross-company taxes? (Only for multi-"
+"company products)"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_product__divergent_company_taxes
+#: model:ir.model.fields,field_description:product_tax_multicompany_default.field_product_template__divergent_company_taxes
+msgid "Has divergent cross-company taxes"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.model,name:product_tax_multicompany_default.model_product_template
+msgid "Product"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.model,name:product_tax_multicompany_default.model_product_product
+msgid "Product Variant"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model:ir.actions.server,name:product_tax_multicompany_default.action_set_multicompany_taxes
+#: model_terms:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
+msgid "Propagate Taxes"
+msgstr ""
