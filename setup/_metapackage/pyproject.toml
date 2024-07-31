@@ -1,9 +1,10 @@
 [project]
 name = "odoo-addons-oca-multi-company"
-version = "17.0.20240725.0"
+version = "17.0.20240731.0"
 dependencies = [
     "odoo-addon-base_multi_company>=17.0dev,<17.1dev",
     "odoo-addon-mail_multicompany>=17.0dev,<17.1dev",
+    "odoo-addon-product_tax_multicompany_default>=17.0dev,<17.1dev",
 ]
 classifiers=[
     "Programming Language :: Python",
