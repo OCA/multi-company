@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="multi_company_event_tag" model="ir.rule">
+        <field name="name">Multi-company event tag</field>
+        <field name="model_id" ref="model_event_tag" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False),
+            ('company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+    <record id="multi_company_event_tag_category" model="ir.rule">
+        <field name="name">Multi-company event tag category</field>
+        <field name="model_id" ref="model_event_tag_category" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <field name="domain_force">['|', ('company_id', '=', False),
+            ('company_id', 'in', company_ids)]
+        </field>
+    </record>
+</odoo>
