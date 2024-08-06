@@ -227,15 +227,6 @@ class AccountMove(models.Model):
             "auto_invoice_id": self.id,
             "auto_generated": True,
         }
-        # CHECK ME: This field is created by module sale, maybe we need add dependency?
-        if (
-            hasattr(self, "partner_shipping_id")
-            and self.partner_shipping_id
-            and not self.partner_shipping_id.company_id
-        ):
-            # if shipping partner is shared you may want to propagate its value
-            # to supplier invoice allowing to analyse invoices
-            vals["partner_shipping_id"] = self.partner_shipping_id.id
         return vals
 
     def button_draft(self):
