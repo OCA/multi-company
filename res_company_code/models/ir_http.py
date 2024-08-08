@@ -13,24 +13,22 @@ class Http(models.AbstractModel):
         result = super().session_info()
         user = request.env.user
 
-        display_switch_company_menu = (
-            user.has_group("base.group_multi_company") and len(user.company_ids) > 1
-        )
+        if user.has_group("base.group_multi_company") and len(user.company_ids) > 1:
+            # Replace company name by company complete name in the session
+            # The values are used in the switch_company_menu widget (web module)
+            result["user_companies"]["current_company"] = user.company_id.id
 
-        # Replace company name by company complete name in the session
-        # The values are used in the switch_company_menu widget (web module)
-        result["user_companies"]["current_company"] = user.company_id.id
+            # Assuming 'allowed_companies' is the original list of tuples
+            allowed_companies = [
+                (comp.id, comp.complete_name) for comp in user.company_ids
+            ]
 
-        # Assuming 'allowed_companies' is the original list of tuples
-        allowed_companies = [(comp.id, comp.complete_name) for comp in user.company_ids]
+            # Convert the list of tuples to a dictionary of dictionaries
+            new_allowed_companies = {
+                comp_id: {"id": comp_id, "name": comp_name, "sequence": 0}
+                for comp_id, comp_name in allowed_companies
+            }
 
-        # Convert the list of tuples to a dictionary of dictionaries
-        new_allowed_companies = {
-            comp_id: {"id": comp_id, "name": comp_name, "sequence": 0}
-            for comp_id, comp_name in allowed_companies
-        }
-
-        if display_switch_company_menu:
             result["user_companies"]["allowed_companies"] = new_allowed_companies
 
         return result
