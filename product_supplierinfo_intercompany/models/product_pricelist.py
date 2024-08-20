@@ -43,3 +43,11 @@ class ProductPricelist(models.Model):
         self.sudo().with_context(automatic_intercompany_sync=True).mapped(
             "generated_supplierinfo_ids"
         ).unlink()
+
+    def toggle_active(self):
+        super().toggle_active()
+        for rec in self:
+            if rec.active:
+                rec._active_intercompany()
+            else:
+                rec._unactive_intercompany()

@@ -149,6 +149,14 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         supplierinfo = self._get_supplier_info()
         self.assertEqual(len(supplierinfo), 0)
 
+    def test_unactive_pricelist_intercompany(self):
+        self.pricelist_intercompany.toggle_active()
+        supplierinfo = self._get_supplier_info()
+        self.assertEqual(len(supplierinfo), 0)
+        self.pricelist_intercompany.toggle_active()
+        supplierinfo = self._get_supplier_info()
+        self.assertEqual(len(supplierinfo), 4)
+
     def test_intercompany_access_rule(self):
         # Check that supplier this supplier info are not visible
         # with the current user "demo"
