@@ -57,3 +57,11 @@ class ProductPricelist(models.Model):
             else:
                 to_sync._unactive_intercompany()
         return res
+
+    def toggle_active(self):
+        super().toggle_active()
+        for rec in self:
+            if rec.active:
+                rec._active_intercompany()
+            else:
+                rec._unactive_intercompany()

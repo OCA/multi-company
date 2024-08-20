@@ -157,6 +157,12 @@ class TestIntercompanySupplier(TestIntercompanySupplierCase):
         supplierinfo = self._get_supplier_info()
         self.assertEqual(len(supplierinfo), 0)
         self.pricelist_intercompany.active = True
+
+    def test_unactive_pricelist_intercompany(self):
+        self.pricelist_intercompany.toggle_active()
+        supplierinfo = self._get_supplier_info()
+        self.assertEqual(len(supplierinfo), 0)
+        self.pricelist_intercompany.toggle_active()
         supplierinfo = self._get_supplier_info()
         self.assertEqual(len(supplierinfo), 4)
 
