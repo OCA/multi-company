@@ -30,6 +30,11 @@ msgid "Block PO manual picking validation"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields.selection,name:purchase_sale_inter_company.selection__res_company__sync_picking_failure_action__raise
+msgid "Block and raise error"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__block_po_manual_picking_validation
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__block_po_manual_picking_validation
 msgid "Block manual validation of picking in the destination company"
@@ -43,6 +48,11 @@ msgstr "Sociétés"
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_res_config_settings
 msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields.selection,name:purchase_sale_inter_company.selection__res_company__sync_picking_failure_action__notify
+msgid "Continue, but create activity to notify someone"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -82,6 +92,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_move_line__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_stock_picking__display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
+#, python-format
+msgid ""
+"Failure to confirm picking for PO %s. Original picking %s still confirmed, "
+"please check the other side manually."
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -175,9 +193,22 @@ msgid ""
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sync_picking_failure_action
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__sync_picking_failure_action
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "On sync picking failure"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: code:addons/purchase_sale_inter_company/models/stock_picking.py:0
 #, python-format
 msgid "PO does not exist or has no receipts"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_company__sync_picking_failure_action
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__sync_picking_failure_action
+msgid "Pick action to perform on sync picking failure"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -278,6 +309,17 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_stock_picking
 msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__notify_user_id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_config_settings__notify_user_id
+msgid "User to Notify"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model.fields,help:purchase_sale_inter_company.field_res_config_settings__notify_user_id
+msgid "User to notify incase of sync picking failure."
 msgstr ""
 
 #. module: purchase_sale_inter_company
