@@ -4,7 +4,7 @@
 {
     "name": "Stock Intercompany Delivery-Reception",
     "Summary": "Module that adds possibility for intercompany Delivery-Reception",
-    "version": "16.0.1.0.0",
+    "version": "16.0.1.0.1",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "category": "Warehouse Management",

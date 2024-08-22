@@ -3,7 +3,7 @@
 {
     "name": "Stock Intercompany Bidirectional",
     "summary": "Bidirectional operations for the Stock Intercomany module",
-    "version": "16.0.1.0.0",
+    "version": "16.0.1.0.1",
     "category": "Inventory/Inventory",
     "website": "https://github.com/OCA/multi-company",
     "author": "Cetmix, Odoo Community Association (OCA)",
