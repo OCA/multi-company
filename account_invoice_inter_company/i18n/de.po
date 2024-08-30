@@ -41,7 +41,9 @@ msgstr "Automatisch erstelltes Dokument"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-msgid "Common Product Catalog"
+msgid ""
+"Automatically generate counterpart documents for orders/invoices between "
+"companies"
 msgstr ""
 
 #. module: account_invoice_inter_company
@@ -63,22 +65,17 @@ msgstr "Rechnungsstellung zwischen Unternehmen"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-msgid ""
-"Inter Company OCA features\n"
-"                    <span class=\"fa fa-lg fa-building-o\" title=\"Values "
-"set here are company-specific.\" aria-label=\"Values set here are company-"
-"specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
-msgstr ""
-
-#. module: account_invoice_inter_company
-#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 #, fuzzy
-msgid "Intercompany user for invoices"
+msgid "Inter Company OCA features"
 msgstr "Rechnungsstellung zwischen Unternehmen"
 
 #. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__invoice_auto_validation
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__invoice_auto_validation
 msgid "Invoice Auto Validation"
 msgstr "Automatische Rechnungsprüfung"
 
@@ -89,9 +86,8 @@ msgstr "automatische Rechnungsprüfung"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
-#, fuzzy
-msgid "Invoicing"
-msgstr "Rechnungszeile"
+msgid "Invoices User"
+msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model,name:account_invoice_inter_company.model_account_move
@@ -102,13 +98,6 @@ msgstr ""
 #: model:ir.model,name:account_invoice_inter_company.model_account_move_line
 msgid "Journal Item"
 msgstr ""
-
-#. module: account_invoice_inter_company
-#. odoo-python
-#: code:addons/account_invoice_inter_company/tests/test_inter_company_invoice.py:0
-#, python-format
-msgid "No Chart of Account Template has been defined !"
-msgstr "Es wurde keine Kontenplanvorlage definiert!"
 
 #. module: account_invoice_inter_company
 #. odoo-python
@@ -136,23 +125,6 @@ msgstr ""
 #: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
 msgid "Service Multi Company"
 msgstr "Service mehrere Unternehmen"
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__company_share_product
-#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__company_share_product
-msgid "Share product to all companies"
-msgstr ""
-
-#. module: account_invoice_inter_company
-#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__company_share_product
-#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__company_share_product
-msgid ""
-"Share your product to all companies defined in your instance.\n"
-" * Checked : Product are visible for every company, even if a company is "
-"defined on the partner.\n"
-" * Unchecked : Each company can see only its product (product where company "
-"is defined). Product not related to a company are visible for all companies."
-msgstr ""
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_invoice_id
@@ -232,6 +204,18 @@ msgid ""
 "'%(product_name)s' because it is not multicompany"
 msgstr ""
 
+#, fuzzy
+#~ msgid "Intercompany user for invoices"
+#~ msgstr "Rechnungsstellung zwischen Unternehmen"
+
+#, fuzzy
+#~ msgid "Invoicing"
+#~ msgstr "Rechnungszeile"
+
+#, python-format
+#~ msgid "No Chart of Account Template has been defined !"
+#~ msgstr "Es wurde keine Kontenplanvorlage definiert!"
+
 #, python-format
 #~ msgid "%s - Canceled Invoice: %s"
 #~ msgstr "%s Stornierte Rechnung: %s"
@@ -266,13 +250,6 @@ msgstr ""
 
 #~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
 #~ msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
-
-#, fuzzy
-#~ msgid "Inter Company OCA features"
-#~ msgstr "Rechnungsstellung zwischen Unternehmen"
-
-#~ msgid "Invoice"
-#~ msgstr "Rechnung"
 
 #~ msgid "Automate inter-company invoicing"
 #~ msgstr "Automatisierung der zwischenbetrieblichen Rechnungsstellung"
