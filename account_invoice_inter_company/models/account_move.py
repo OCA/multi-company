@@ -135,6 +135,7 @@ class AccountMove(models.Model):
             force_number = inter_invoice.name
             inter_invoice.with_context(force_delete=True).unlink()
         # create destination invoice
+        self = self.with_context(**clean_context(self.env.context))
         dest_invoice_data = self._prepare_invoice_data(dest_company)
         if force_number:
             dest_invoice_data["name"] = force_number
@@ -214,7 +215,6 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        self = self.with_context(**clean_context(self.env.context))
         # check if the journal is define in dest company
         self._check_dest_journal(dest_company)
         vals = {
