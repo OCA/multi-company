@@ -135,7 +135,7 @@ class AccountMove(models.Model):
             force_number = inter_invoice.name
             inter_invoice.with_context(force_delete=True).unlink()
         # create destination invoice
-        self = self.with_context(**clean_context(self.env.context))
+        self = self.with_context(clean_context(self.env.context))
         dest_invoice_data = self._prepare_invoice_data(dest_company)
         if force_number:
             dest_invoice_data["name"] = force_number
