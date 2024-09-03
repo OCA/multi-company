@@ -5,7 +5,7 @@
     "name": "Login All Company",
     "summary": """
         Access all your companies when you log in""",
-    "version": "15.0.0.0.0",
+    "version": "16.0.1.0.0",
     "license": "AGPL-3",
     "author": "Creu Blanca,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
