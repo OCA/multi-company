@@ -51,3 +51,8 @@ class ResCompany(models.Model):
         string="Block manual validation of picking in the destination company",
     )
     notify_user_id = fields.Many2one("res.users", "User to Notify")
+    notification_side = fields.Selection(
+        [("so", "Sale Order Source Company"), ("po", "Purchase Destination Company")],
+        default="so",
+        help="Select which Company side to notify",
+    )

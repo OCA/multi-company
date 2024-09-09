@@ -58,21 +58,14 @@ class StockPicking(models.Model):
                     ).mapped("move_line_ids")
                 )
                 if len(move_lines) != len(po_move_lines):
-                    note = _(
-                        "Mismatch between move lines with the "
-                        "corresponding PO %s for assigning "
-                        "quantities and lots from %s for product %s"
-                    ) % (purchase.name, pick.name, move.product_id.name)
-                    self.activity_schedule(
-                        "mail.mail_activity_data_warning",
-                        fields.Date.today(),
-                        note=note,
-                        # Try to notify someone relevant
-                        user_id=(
-                            pick.sale_id.user_id.id
-                            or pick.sale_id.team_id.user_id.id
-                            or SUPERUSER_ID,
-                        ),
+                    self._notify_picking_problem(
+                        purchase,
+                        additional_note=_(
+                            "Mismatch between move lines with the "
+                            "corresponding PO %s for assigning "
+                            "quantities and lots from %s for product %s"
+                        )
+                        % (purchase.name, pick.name, move.product_id.name),
                     )
                 # check and assign lots here
                 for ml, po_ml in zip(move_lines, po_move_lines):
@@ -103,25 +96,32 @@ class StockPicking(models.Model):
             else:
                 self._notify_picking_problem(purchase)
 
-    def _notify_picking_problem(self, purchase):
+    def _notify_picking_problem(self, purchase, additional_note=False):
         self.ensure_one()
         note = _(
             "Failure to confirm picking for PO %s. "
             "Original picking %s still confirmed, please check "
             "the other side manually."
         ) % (purchase.name, self.name)
-        self.activity_schedule(
+        if additional_note:
+            note += _(" Additional info: ") + additional_note
+        user_id = self.sudo()._get_user_to_notify(purchase)
+        self.sudo().activity_schedule(
             "mail.mail_activity_data_warning",
             fields.Date.today(),
             note=note,
-            # Try to notify someone relevant
-            user_id=(
+            user_id=user_id or SUPERUSER_ID,
+        )
+
+    def _get_user_to_notify(self, purchase):
+        """Notify user based on res.config.settings"""
+        if self.company_id.notification_side == "so":
+            return (
                 self.company_id.notify_user_id.id
                 or self.sale_id.user_id.id
                 or self.sale_id.team_id.user_id.id
-                or SUPERUSER_ID,
-            ),
-        )
+            )
+        return purchase.user_id.id
 
     def button_validate(self):
         res = super().button_validate()

@@ -723,6 +723,43 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             warning_activity.user_id, so_picking_id.company_id.notify_user_id
         )
 
+    def test_notify_picking_problem_dest_company(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        self.company_a.sync_picking_failure_action = "notify"
+        self.company_b.sync_picking_failure_action = "notify"
+        self.company_a.notification_side = "po"
+        self.company_b.notification_side = "po"
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        purchase_2 = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        purchase.order_line += purchase.order_line.copy({"product_qty": 2})
+        sale = self._approve_po(purchase)
+        sale.action_confirm()
+
+        # validate the SO picking
+        so_picking_id = sale.picking_ids
+        # Set as purchase_2 user user_company_a
+        purchase_2.user_id = self.user_company_a
+        # Link to a new purchase order so it can trigger
+        # `PO does not exist or has no receipts` in _sync_receipt_with_delivery
+        sale.auto_purchase_order_id = purchase_2
+
+        # Set quantities done on the picking and validate
+        for move in so_picking_id.move_lines:
+            move.quantity_done = move.product_uom_qty
+        so_picking_id.button_validate()
+
+        activity_warning = self.env.ref("mail.mail_activity_data_warning")
+        warning_activity = so_picking_id.activity_ids.filtered(
+            lambda a: a.activity_type_id == activity_warning
+        )
+        # Test the user assigned to the activity
+        self.assertEqual(warning_activity.user_id, self.user_company_a)
+
     def test_raise_picking_problem(self):
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
