@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="mailing_list_view_tree_inherit">
+        <field name="name">mailing.list.view.tree</field>
+        <field name="model">mailing.list</field>
+        <field name="inherit_id" ref="mass_mailing.mailing_list_view_tree" />
+        <field name="arch" type="xml">
+            <field name="contact_count" position="after">
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mailing_list_view_form_inherit">
+        <field name="name">mailing.list.form</field>
+        <field name="model">mailing.list</field>
+        <field name="inherit_id" ref="mass_mailing.mailing_list_view_form" />
+        <field name="arch" type="xml">
+            <field name="is_public" position="after">
+                <field
+                    name="company_id"
+                    options="{'no_create': True}"
+                    groups="base.group_multi_company"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record id="mailing_list_view_form_simplified_inherit" model="ir.ui.view">
+        <field name="name">mailing.list.form.simplified</field>
+        <field name="model">mailing.list</field>
+        <field name="inherit_id" ref="mass_mailing.mailing_list_view_form_simplified" />
+        <field name="arch" type="xml">
+            <field name="is_public" position="after">
+                <field
+                    name="company_id"
+                    options="{'no_create': True}"
+                    groups="base.group_multi_company"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

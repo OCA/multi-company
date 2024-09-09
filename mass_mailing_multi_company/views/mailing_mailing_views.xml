@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="view_mail_mass_mailing_tree_inherit">
+        <field name="name">mailing.mailing.tree</field>
+        <field name="model">mailing.mailing</field>
+        <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_tree" />
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field
+                    name="company_id"
+                    groups="base.group_multi_company"
+                    optional="hide"
+                />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_mail_mass_mailing_form_inherit">
+        <field name="name">mailing.mailing.form</field>
+        <field name="model">mailing.mailing</field>
+        <field name="inherit_id" ref="mass_mailing.view_mail_mass_mailing_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//form//header" position="after">
+                <div
+                    class="alert alert-warning oe_edit_only"
+                    role="alert"
+                    attrs="{'invisible': ['|', ('company_id', '=', False), ('mailing_model_name', '=', 'mailing.list')]}"
+                >
+                    Since the newsletter company field is specified, an additional filter will be applied to the domain, ensuring records are filtered by the company ID.
+                </div>
+            </xpath>
+            <xpath expr="//page[@name='settings']/group" position="inside">
+                 <group string="MISC">
+                     <field
+                        name="company_id"
+                        options="{'no_create': True}"
+                        groups="base.group_multi_company"
+                    />
+                 </group>
+            </xpath>
+            <xpath expr="//sheet" position="inside">
+                <field name="company_id" invisible="1" />
+            </xpath>
+            <field name="contact_list_ids" position="attributes">
+                <attribute name="domain">
+                    ['|',('company_id', '=', company_id),('company_id', '=', False)]
+                </attribute>
+            </field>
+        </field>
+    </record>
+</odoo>
