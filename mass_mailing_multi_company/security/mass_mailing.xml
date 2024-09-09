@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <!-- mailing.mailing -->
+    <record model="ir.rule" id="mailing_mailing_rule">
+        <field name="name">mailing.mailing multi-company</field>
+        <field name="model_id" ref="mass_mailing.model_mailing_mailing" />
+        <field name="domain_force">
+            ['|',('company_id','=',False),('company_id','in',company_ids)]
+        </field>
+    </record>
+    <!-- mailing.list -->
+    <record model="ir.rule" id="mailing_list_rule">
+        <field name="name">mailing.list multi-company</field>
+        <field name="model_id" ref="mass_mailing.model_mailing_list" />
+        <field name="domain_force">
+            ['|',('company_id','=',False),('company_id','in',company_ids)]
+        </field>
+    </record>
+    <!-- mailing.contact -->
+    <record model="ir.rule" id="mailing_contact_rule">
+        <field name="name">mailing.contact multi-company</field>
+        <field name="model_id" ref="mass_mailing.model_mailing_contact" />
+        <field name="domain_force">
+            ['|',('company_id','=',False),('company_id','in',company_ids)]
+        </field>
+    </record>
+</odoo>
