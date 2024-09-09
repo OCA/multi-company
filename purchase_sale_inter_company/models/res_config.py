@@ -61,3 +61,6 @@ class InterCompanyRulesConfig(models.TransientModel):
         help="User to notify incase of sync picking failure.",
         readonly=False,
     )
+    notification_side = fields.Selection(
+        related="company_id.notification_side", string="Notify", readonly=False
+    )
