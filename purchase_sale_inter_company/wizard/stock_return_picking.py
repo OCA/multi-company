@@ -1,6 +1,7 @@
 import logging
 
 from odoo import SUPERUSER_ID, _, fields, models
+from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -62,7 +63,28 @@ class ReturnPicking(models.TransientModel):
             .create(vals)
         )
         return_wizard._onchange_picking_id()
-        action = return_wizard.create_returns()
+        try:
+            action = return_wizard.create_returns()
+        except UserError:
+            note = _(
+                "This inter-company shipment was returned, but also has a "
+                "counterpart in company {}: {}. This could not be automatically returned; "
+                "please take care to do this manually."
+            ).format(ic_pick.company_id.name, ic_pick.name, pick.name)
+            _logger.warning(note)
+            pick.activity_schedule(
+                "mail.mail_activity_data_todo",
+                fields.Date.today(),
+                note=note,
+                # Try to notify someone relevant
+                user_id=(
+                    pick.sale_id.user_id.id
+                    or pick.sale_id.team_id.user_id.id
+                    or SUPERUSER_ID,
+                ),
+            )
+            return res
+
         ic_return_pick_id = action["res_id"]
         return_pick.intercompany_return_picking_id = ic_return_pick_id
 
