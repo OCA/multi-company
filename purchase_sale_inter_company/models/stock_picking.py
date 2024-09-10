@@ -115,13 +115,13 @@ class StockPicking(models.Model):
 
     def _get_user_to_notify(self, purchase):
         """Notify user based on res.config.settings"""
-        if self.company_id.notification_side == "so":
+        if purchase.company_id.notification_side == "so":
             return (
                 self.company_id.notify_user_id.id
                 or self.sale_id.user_id.id
                 or self.sale_id.team_id.user_id.id
             )
-        return purchase.user_id.id
+        return purchase.company_id.notify_user_id.id or purchase.user_id.id
 
     def button_validate(self):
         res = super().button_validate()

@@ -71,7 +71,7 @@
                     />
                     <field
                         name="notify_user_id"
-                        attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')], 'required': [('sync_picking_failure_action', '=', 'notify'), ('notification_side', '=', 'so')]}"
+                        attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')], 'required': [('sync_picking_failure_action', '=', 'notify')]}"
                         class="oe_inline"
                     />
                     <br />
