@@ -90,11 +90,11 @@ class StockPicking(models.Model):
                         dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
                     po_ml.lot_id = dest_lot_id
 
-        except Exception:
+        except Exception as e:
             if self.env.company_id.sync_picking_failure_action == "raise":
                 raise
             else:
-                self._notify_picking_problem(purchase)
+                self._notify_picking_problem(purchase, additional_note=str(e))
 
     def _notify_picking_problem(self, purchase, additional_note=False):
         self.ensure_one()
