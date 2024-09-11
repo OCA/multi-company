@@ -46,6 +46,7 @@ class ResCompany(models.Model):
         string="On sync picking failure",
         default="raise",
         help="Pick action to perform on sync picking failure",
+    )
     sync_picking_state = fields.Boolean(
         string="Sync the receipt state with the delivery state",
         default=lambda p: p.sync_picking,
