@@ -387,6 +387,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     def test_sync_picking_no_backorder(self):
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
+        self.company_a.sync_picking_state = True
+        self.company_b.sync_picking_state = True
 
         purchase = self._create_purchase_order(
             self.partner_company_b, self.consumable_product
@@ -683,6 +685,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         """
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
+        self.company_a.sync_picking_state = True
+        self.company_b.sync_picking_state = True
         self.company_a.block_po_manual_picking_validation = True
         self.company_b.block_po_manual_picking_validation = True
         purchase = self._create_purchase_order(
