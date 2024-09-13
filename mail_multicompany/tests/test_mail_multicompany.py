@@ -25,6 +25,13 @@ class TestMailMultiCompany(TransactionCase):
         )
         cls.server1 = server_obj.create({"name": "server 1", "smtp_host": "teset.smtp"})
         cls.server2 = server_obj.create({"name": "server 1", "smtp_host": "test.smtp"})
+        cls.mail_thread = cls.env["mail.thread"]
+        cls.fetchmail_server = cls.env["fetchmail.server"].create(
+            {
+                "name": "Test Server",
+                "company_id": cls.company2.id,
+            }
+        )
 
     def _create_message(self):
         return (
@@ -86,3 +93,54 @@ class TestMailMultiCompany(TransactionCase):
         msg = self._create_message()
         self.assertEqual(msg.mail_server_id.id, self.server1.id)
         self.assertEqual(msg.email_from, "test.from@example.com")
+
+    def test_message_process(self):
+        fetchmail_server = self.fetchmail_server
+        self.server2.write({"company_id": self.company2.id})
+
+        # Create a mail alias and a message that can be processed
+        # to see that the company context is correctly set
+        res_partner_model = self.env["ir.model"].search([("model", "=", "res.partner")])
+        customer = self.env["res.partner"].create({"name": "Test Partner"})
+
+        self.env["mail.alias"].create(
+            {
+                "alias_name": "test_alias",
+                "alias_model_id": res_partner_model.id,
+                "alias_parent_model_id": res_partner_model.id,
+                "alias_parent_thread_id": customer.id,
+            }
+        )
+        self.env["ir.config_parameter"].sudo().set_param(
+            "mail.catchall.domain", "my_domain.com"
+        )
+        model = "res.partner"
+        message = """MIME-Version: 1.0
+            Date: Thu, 27 Dec 2018 16:27:45 +0100
+            Message-ID: <thisisanid1>
+            Subject: test message on test partner
+            From:  Test Partner <test_partner@someprovider.com>
+            To: test_alias@my_domain.com
+            Content-Type: multipart/alternative; boundary="000000000000a47519057e029630"
+
+            --000000000000a47519057e029630
+            Content-Type: text/plain; charset="UTF-8"
+
+
+            --000000000000a47519057e029630
+            Content-Type: text/html; charset="UTF-8"
+            Content-Transfer-Encoding: quoted-printable
+
+            <div>Message content</div>
+
+            --000000000000a47519057e029630--
+            """
+        context = {"default_fetchmail_server_id": fetchmail_server.id}
+
+        # Call the message_process method
+        result_id = self.mail_thread.with_context(**context).message_process(
+            model, message
+        )
+        result = self.env["res.partner"].browse(result_id)
+        # Add your assertions here to validate the result
+        self.assertEqual(result.message_ids[0].mail_server_id, self.server2)
