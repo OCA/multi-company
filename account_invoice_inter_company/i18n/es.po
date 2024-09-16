@@ -64,6 +64,35 @@ msgid "Display Name"
 msgstr "Nombre mostrado"
 
 #. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
+msgid ""
+"Enable intercompany invoicing: \n"
+" * Generate a Customer Invoice when a bill with this company is created.\n"
+" * Generate a Vendor Bill when an invoice with this company as a customer is "
+"created."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoicing
+msgid ""
+"Enable intercompany invoicing: \n"
+"* Generate a Customer Invoice when a bill with this company is created.\n"
+"* Generate a Vendor Bill when an invoice with this company as a customer is "
+"created."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoicing
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
+msgid "Generate Inter company Invoices"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Generate Intercompany Invoices"
+msgstr ""
+
+#. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__id
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__id
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__id
@@ -87,9 +116,9 @@ msgid ""
 msgstr ""
 "Características de OCA entre empresas\n"
 "                                             <span class=\"fa fa-lg fa-"
-"building-o\" title=\"Values set here are company-specific.\" aria-label="
-"\"Values set here are company-specific.\" groups=\"base.group_multi_company\""
-" role=\"img\"/>"
+"building-o\" title=\"Values set here are company-specific.\" aria-"
+"label=\"Values set here are company-specific.\" groups=\"base."
+"group_multi_company\" role=\"img\"/>"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.view_move_form_inherit
