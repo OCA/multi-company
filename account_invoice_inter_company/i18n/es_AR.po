@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 13.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-11-02 05:17+0000\n"
+"PO-Revision-Date: 2024-09-17 02:06+0000\n"
 "Last-Translator: Ignacio Buioli <ibuioli@gmail.com>\n"
 "Language-Team: none\n"
 "Language: es_AR\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.6.2\n"
 
 #. module: account_invoice_inter_company
 #. odoo-python
@@ -60,6 +60,11 @@ msgid ""
 " * Generate a Vendor Bill when an invoice with this company as a customer is "
 "created."
 msgstr ""
+"Habilitar facturación entre compañías:\n"
+"* Generar una factura de cliente cuando se crea una factura con esta "
+"compañía.\n"
+"* Generar una factura de proveedor cuando se crea una factura con esta "
+"compañía como cliente."
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoicing
@@ -69,17 +74,22 @@ msgid ""
 "* Generate a Vendor Bill when an invoice with this company as a customer is "
 "created."
 msgstr ""
+"Habilitar la facturación entre empresas:\n"
+"* Generar una factura de cliente cuando se crea una factura con esta "
+"compañía.\n"
+"* Generar una factura de proveedor cuando se crea una factura con esta "
+"compañía como cliente."
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoicing
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
 msgid "Generate Inter company Invoices"
-msgstr ""
+msgstr "Generar Facturas entre Compañías"
 
 #. module: account_invoice_inter_company
 #: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
 msgid "Generate Intercompany Invoices"
-msgstr ""
+msgstr "Generar Facturas Entre-compañías"
 
 #. module: account_invoice_inter_company
 #: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
