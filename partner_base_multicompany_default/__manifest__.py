@@ -3,20 +3,17 @@
 # License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0)
 
 {
-    "name": "Partner Account Multi-Company Default",
-    "summary": "Set a default account for all companies of a partners",
+    "name": "Partner Base Multi-Company Default",
+    "summary": "Base module to set a default values for all companies of a partners",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
-    "category": "Accounting/Accounting",
+    "category": "Technical",
     "website": "https://github.com/OCA/multi-company",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "maintainers": ["camptocamp"],
     "license": "LGPL-3",
     "depends": [
-        "partner_base_multicompany_default",
-        "account",
+        "base",
     ],
-    "data": [
-        "views/partner_view.xml",
-    ],
+    "data": [],
 }
