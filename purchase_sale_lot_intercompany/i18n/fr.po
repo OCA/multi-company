@@ -1,0 +1,77 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_sale_lot_intercompany
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-13 18:52+0000\n"
+"PO-Revision-Date: 2023-03-13 19:54+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 3.2.2\n"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model,name:purchase_sale_lot_intercompany.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model,name:purchase_sale_lot_intercompany.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paramètres de config"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_purchase_order__display_name
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_company__display_name
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_stock_production_lot__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_purchase_order__id
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_company__id
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_config_settings__id
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_stock_production_lot__id
+msgid "ID"
+msgstr ""
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_purchase_order____last_update
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_company____last_update
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_config_settings____last_update
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_stock_production_lot____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model,name:purchase_sale_lot_intercompany.model_stock_production_lot
+msgid "Lot/Serial"
+msgstr "Lot/N° série"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_company__propagated_serial_number
+msgid "Lots/Serial Numbers are propogated in this company"
+msgstr "Lot/N° série copiés dans cette société"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_config_settings__propagated_serial_number
+msgid "Lots/Serial Numbers propagated in sale"
+msgstr "Lot/N° série copiés dans les commandes de ventes"
+
+#. module: purchase_sale_lot_intercompany
+#: model_terms:ir.ui.view,arch_db:purchase_sale_lot_intercompany.res_config_settings_view_form
+msgid "Propagated Lots from purchase to sale"
+msgstr "Lot/N° série copiés des achats vers les commandes de ventes de cette société"
+
+#. module: purchase_sale_lot_intercompany
+#: model:ir.model,name:purchase_sale_lot_intercompany.model_purchase_order
+msgid "Purchase Order"
+msgstr "Commande fournisseur"
