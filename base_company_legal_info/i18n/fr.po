@@ -1,0 +1,75 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* base_company_legal_info
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-17 13:45+0000\n"
+"PO-Revision-Date: 2019-07-17 13:45+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base_company_legal_info
+#: code:addons/base_company_legal_info/models/res_company.py:33
+#, python-format
+msgid "%s, %s"
+msgstr "%s, %s"
+
+#. module: base_company_legal_info
+#: model:ir.model.fields,help:base_company_legal_info.field_res_company__legal_name
+msgid "Also called 'Business Name'.\n"
+" Set the official name of the company, and in the regular 'name' field, the Trade name of the company."
+msgstr "Aussi appelé 'Nom de la société'.\n"
+" Définissez le nom officiel de l'entreprise, et dans le champ 'nom' habituel, le nom commercial de l'entreprise."
+
+#. module: base_company_legal_info
+#: model:ir.model,name:base_company_legal_info.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: base_company_legal_info
+#: model:res.company,overdue_msg:base_company_legal_info.company_akretion
+#: model:res.company,overdue_msg:base_company_legal_info.company_grap
+msgid "Dear Sir/Madam,\n"
+"\n"
+"Our records indicate that some payments on your account are still due. Please find details below.\n"
+"If the amount has already been paid, please disregard this notice. Otherwise, please forward us the total amount stated below.\n"
+"If you have any queries regarding your account, Please contact us.\n"
+"\n"
+"Thank you in advance for your cooperation.\n"
+"Best Regards,"
+msgstr "Cher Madame/Monsieur,\n"
+"\n"
+"Nos dossiers indiquent que certains paiements sur votre compte sont encore dus. Veuillez trouver les détails ci-dessous.\n"
+"Si le montant a déjà été payé, veuillez ne pas tenir compte de cet avis. Sinon, veuillez nous faire parvenir le montant total indiqué ci-dessous.\n"
+"Si vous avez des questions concernant votre compte, veuillez nous contacter.\n"
+"\n"
+"Merci d'avance pour votre coopération.\n"
+"Meilleures salutations,"
+
+#. module: base_company_legal_info
+#: model:ir.model.fields,field_description:base_company_legal_info.field_res_company__legal_name
+msgid "Legal Name"
+msgstr "Dénomination sociale"
+
+#. module: base_company_legal_info
+#: model:ir.model.fields,field_description:base_company_legal_info.field_res_company__legal_type
+msgid "Legal Type"
+msgstr "Type juridique"
+
+#. module: base_company_legal_info
+#: model:ir.model.fields,field_description:base_company_legal_info.field_res_company__report_legal_description
+msgid "Report Legal Description"
+msgstr "Description juridique pour les rapports"
+
+#. module: base_company_legal_info
+#: model:ir.model.fields,help:base_company_legal_info.field_res_company__legal_type
+msgid "Type of Company, e.g. Ltd., SARL, GmbH ..."
+msgstr "Type d'entreprise, ex. SARL, SCOP, SCIC ..."
+
