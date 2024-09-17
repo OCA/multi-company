@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+
+    <record id="group_all_supplierinfo" model="res.groups">
+        <field name="name">Access to all supplier info</field>
+        <field name="category_id" ref="base.module_category_hidden" />
+    </record>
+
+    <record model="ir.rule" id="product_supplierinfo_intercomp_rule">
+        <field name="name">product supplierinfo intercompany rule</field>
+        <field name="model_id" ref="model_product_supplierinfo" />
+        <field name="global" eval="False" />
+        <field name="groups" eval="[(4, ref('base.group_multi_company'))]" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field
+            name="domain_force"
+        >['|', ('intercompany_pricelist_id', '=', False), '&amp;', ('intercompany_pricelist_id', '!=', False), ('intercompany_pricelist_id.company_id', '!=', company_id)]</field>
+    </record>
+
+    <record model="ir.rule" id="product_supplierinfo_intercomp_rule_all">
+        <field name="name">product supplierinfo intercompany rule all</field>
+        <field name="model_id" ref="model_product_supplierinfo" />
+        <field name="global" eval="False" />
+        <field name="groups" eval="[(4, ref('group_all_supplierinfo'))]" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">[(1,'=', 1)]</field>
+    </record>
+
+</odoo>

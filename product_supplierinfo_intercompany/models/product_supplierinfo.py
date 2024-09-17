@@ -1,0 +1,44 @@
+# © 2019 Akretion (http://www.akretion.com)
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
+from odoo import _, fields, models
+from odoo.exceptions import UserError
+
+
+class IntercompanySupplierinfoMixin(models.AbstractModel):
+    _name = "intercompany.supplierinfo.mixin"
+    _description = "Intercompany Supplierinfo Mixin"
+
+    def write(self, vals):
+        # allow to change sequence only
+        if len(vals) == 1 and "sequence" in vals:
+            self = self.with_context(automatic_intercompany_sync=True)
+        return super(IntercompanySupplierinfoMixin, self).write(vals)
+
+    def check_intercompany_pricelist(self):
+        if not self._context.get("automatic_intercompany_sync"):
+            for record in self:
+                if record.mapped("intercompany_pricelist_id"):
+                    raise UserError(
+                        _(
+                            "This supplier info can not be edited as it's "
+                            "linked to an intercompany 'sale' pricelist.\n "
+                            "Please modify the information on the 'sale' "
+                            "pricelist"
+                        )
+                    )
+
+
+class ProductSupplierinfo(models.Model):
+    _inherit = ["product.supplierinfo", "intercompany.supplierinfo.mixin"]
+    _name = "product.supplierinfo"
+
+    intercompany_pricelist_id = fields.Many2one(
+        comodel_name="product.pricelist",
+    )
+
+    def check_access_rule(self, operation):
+        super().check_access_rule(operation)
+        if operation in ("write", "create", "unlink"):
+            self.check_intercompany_pricelist()
+        return True
