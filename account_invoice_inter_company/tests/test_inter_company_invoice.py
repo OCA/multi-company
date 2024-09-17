@@ -52,6 +52,14 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.partner_company_b = cls.env["res.partner"].create(
             {"name": cls.company_b.name, "is_company": True}
         )
+        cls.child_partner_company_a = cls.env["res.partner"].create(
+            {
+                "name": "Child, Company A",
+                "is_company": False,
+                "company_id": False,
+                "parent_id": cls.partner_company_a.id,
+            }
+        )
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
                 "name": "Child, Company B",
@@ -549,3 +557,12 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertFalse(invoices)
+
+    def test_no_propagation_of_partner_shipping(self):
+        self.invoice_company_a.with_context(
+            default_partner_shipping_id=self.child_partner_company_a.id
+        ).with_user(self.user_company_a.id).action_post()
+        invoice = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(invoice.partner_shipping_id, self.partner_company_a)
