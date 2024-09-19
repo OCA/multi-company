@@ -10,6 +10,7 @@ class TestMailMultiCompany(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user_demo = cls.env.ref("base.user_demo")
+        cls.user_demo.partner_id.company_id = False
         company_obj = cls.env["res.company"]
         server_obj = cls.env["ir.mail_server"]
         cls.company1 = company_obj.create({"name": "Company 1"})
