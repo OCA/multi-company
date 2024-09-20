@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2024 - Today: GRAP (http://www.grap.coop)
+@author: Sylvain LE GAL (https://twitter.com/legalsylvain)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+-->
+<odoo>
+
+    <record id="view_res_company_tree" model="ir.ui.view">
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_tree" />
+        <field name="mode">primary</field>
+        <field name="priority">1000</field>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </xpath>
+            <field name="name" position="after">
+                <field name="period_lock_date"/>
+                <field name="fiscalyear_lock_date"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_res_company" model="ir.actions.act_window">
+        <field name="name">Companies Accounting Locks</field>
+        <field name="res_model">res.company</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_res_company_tree"/>
+    </record>
+
+    <menuitem id="menu_res_company"
+        parent="account.account_account_menu" sequence="50"
+        action="action_res_company"/>
+
+</odoo>
