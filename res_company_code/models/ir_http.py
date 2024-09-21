@@ -16,11 +16,12 @@ class Http(models.AbstractModel):
         display_switch_company_menu = user.has_group(
             'base.group_multi_company') and len(user.company_ids) > 1
 
-        # Replace company name by company complete name in the session
-        # The values are used in the switch_company_menu widget (web module)
-        result["user_companies"]["current_company"] = (
-            user.company_id.id, user.company_id.complete_name)
         if display_switch_company_menu:
+            # Replace company name by company complete name in the session
+            # The values are used in the switch_company_menu widget
+            # (web module)
+            result["user_companies"]["current_company"] = (
+                user.company_id.id, user.company_id.complete_name)
             result["user_companies"]["allowed_companies"] = [
                 (comp.id, comp.complete_name) for comp in user.company_ids
             ]
