@@ -62,6 +62,12 @@
                         attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')], 'required': [('sync_picking_failure_action', '=', 'notify')]}"
                         class="oe_inline"
                     />
+                    <field name="sync_picking_state" class="oe_inline" />
+                    <label
+                        string="Sync picking state"
+                        class="o_light_label"
+                        for="sync_picking_state"
+                    />
                     <br />
                     <field
                         name="block_po_manual_picking_validation"
