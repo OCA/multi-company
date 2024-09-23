@@ -53,6 +53,18 @@
                     />
                     <br />
                     <label
+                        for="notification_side"
+                        class="o_light_label"
+                        attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')]}"
+                    />
+                    <field
+                        name="notification_side"
+                        widget="radio"
+                        attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')], 'required': [('sync_picking_failure_action', '=', 'notify')]}"
+                        class="oe_inline"
+                    />
+                    <br />
+                    <label
                         for="notify_user_id"
                         class="o_light_label"
                         attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')]}"
