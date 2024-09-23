@@ -26,3 +26,13 @@ class PurchaseOrder(models.Model):
         if self.env.context.get("update_order_container_deposit_quantity", False):
             self = self.with_context(allow_update_locked_sales=True)
         return super().write(vals)
+
+
+class PurchaseOrderLine(models.Model):
+    _inherit = "purchase.order.line"
+
+    def write(self, vals):
+        # Allow update of locked sales while updating container deposit quantity
+        if self.env.context.get("update_order_container_deposit_quantity", False):
+            self = self.with_context(allow_update_locked_sales=True)
+        return super().write(vals)
