@@ -1,0 +1,1 @@
+from . import test_check_current_company_for_validation
