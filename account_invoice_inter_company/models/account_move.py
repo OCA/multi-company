@@ -40,6 +40,12 @@ class AccountMove(models.Model):
         )
         return company or False
 
+    def _set_intercompany_supplier_invoice_ref(self):
+        self.ensure_one()
+        supplier_invoice = self.auto_invoice_id
+        if not supplier_invoice.ref:
+            supplier_invoice.write({"ref": self.name})
+
     def action_post(self):
         """Validated invoice generate cross invoice base on company rules"""
         res = super().action_post()
@@ -65,6 +71,12 @@ class AccountMove(models.Model):
             src_invoice.with_company(dest_company.id).with_context(
                 skip_check_amount_difference=True
             )._inter_company_create_invoice(dest_company)
+        # set invoice ref on supplier invoice when the customer invoice is validated
+        # (case where the source invoice was the supplier one)
+        for invoice in self.filtered(
+            lambda i: i.is_sale_document() and i.auto_generated
+        ):
+            invoice.sudo()._set_intercompany_supplier_invoice_ref()
         return res
 
     def _check_intercompany_product(self, dest_company):
