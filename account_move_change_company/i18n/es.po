@@ -1,0 +1,51 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_move_change_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2024-03-01 13:34+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
+
+#. module: account_move_change_company
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_bank_statement_line__allowed_company_ids
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_move__allowed_company_ids
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_payment__allowed_company_ids
+msgid "Allowed Company"
+msgstr "Compañía Permitida"
+
+#. module: account_move_change_company
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_bank_statement_line__company_id
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_move__company_id
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_payment__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: account_move_change_company
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_move__display_name
+msgid "Display Name"
+msgstr "Mostrar Nombre"
+
+#. module: account_move_change_company
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_move__id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_move_change_company
+#: model:ir.model,name:account_move_change_company.model_account_move
+msgid "Journal Entry"
+msgstr "Entrada de Diario"
+
+#. module: account_move_change_company
+#: model:ir.model.fields,field_description:account_move_change_company.field_account_move____last_update
+msgid "Last Modified on"
+msgstr "Última Modificación el"
