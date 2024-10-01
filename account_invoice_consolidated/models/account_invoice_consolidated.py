@@ -98,7 +98,8 @@ class AccountInvoiceConsolidation(models.Model):
     )
 
     invoice_line_ids = fields.One2many(
-        "account.move.line", "consolidated_by_id", string="Invoice Line Ids"
+        "account.move.line",
+        "consolidated_by_id",
     )
 
     @api.constrains("name")
@@ -210,10 +211,8 @@ class AccountInvoiceConsolidation(models.Model):
                     or not company.due_fromto_payment_journal_id
                 ):
                     raise ValidationError(
-                        _(
-                            "Intercompany Payment Configuration is missing for"
-                            " %s." % (company.display_name)
-                        )
+                        _("Intercompany Payment Configuration is missing for" " %s.")
+                        % (company.display_name)
                     )
             invoice_consolidated_seq = self.env["ir.sequence"].next_by_code(
                 "consolidated.invoice"
@@ -318,11 +317,12 @@ class AccountInvoiceConsolidation(models.Model):
             "amount": invoice.amount_residual,
             "journal_id": journal_id.id,
             "payment_type": "inbound",
-            "payment_method_id": journal_id.inbound_payment_method_ids[0].id,
+            "payment_method_line_id": journal_id.inbound_payment_method_line_ids[0].id,
             "date": fields.Datetime.now(),
             "consolidation_id": self.id,
             "company_id": invoice.company_id.id,
             "reconciled_invoice_ids": [(4, invoice.id, None)],
             "move_type": "entry",
         }
+
         return res

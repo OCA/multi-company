@@ -213,10 +213,8 @@
         <field name="code">SAJ-A</field>
         <field name="type">sale</field>
         <field name="secure_sequence_id" ref="sequence_sale_journal_company_a" />
-        <field name="payment_credit_account_id" ref="a_sale_company_a" />
-        <field name="payment_debit_account_id" ref="a_sale_company_a" />
         <field
-            name="inbound_payment_method_ids"
+            name="inbound_payment_method_line_ids"
             eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
         />
 <!--         <field name="update_posted" eval="True"/>
@@ -231,9 +229,7 @@
         <field name="code">SAJ-B</field>
         <field name="type">sale</field>
         <field name="secure_sequence_id" ref="sequence_sale_journal_company_b" />
-        <field name="payment_credit_account_id" ref="a_sale_company_b" />
-        <field name="payment_debit_account_id" ref="a_sale_company_b" />
-<!--         <field name="update_posted" eval="True"/>
+        <!--         <field name="update_posted" eval="True"/>
  -->        <field
             name="company_id"
             ref="company_b"
@@ -244,8 +240,6 @@
         <field name="name">Bank Journal - (Company A)</field>
         <field name="code">BNK-A</field>
         <field name="type">bank</field>
-        <field name="payment_credit_account_id" ref="a_sale_company_a" />
-        <field name="payment_debit_account_id" ref="a_sale_company_a" />
         <field name="company_id" ref="company_a" />
     </record>
 
@@ -254,9 +248,7 @@
         <field name="code">EXJ-B</field>
         <field name="type">purchase</field>
         <field name="secure_sequence_id" ref="sequence_purchase_journal_company_b" />
-        <field name="payment_credit_account_id" ref="a_expense_company_b" />
-        <field name="payment_debit_account_id" ref="a_expense_company_b" />
-<!--         <field name="update_posted" eval="True"/>
+        <!--         <field name="update_posted" eval="True"/>
  -->        <field
             name="company_id"
             ref="company_b"
@@ -267,10 +259,8 @@
         <field name="name">Bank Journal - (Company B)</field>
         <field name="code">BNK-B</field>
         <field name="type">bank</field>
-        <field name="payment_credit_account_id" ref="a_sale_company_b" />
-        <field name="payment_debit_account_id" ref="a_sale_company_b" />
         <field
-            name="inbound_payment_method_ids"
+            name="inbound_payment_method_line_ids"
             eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
         />
         <field name="company_id" ref="company_b" />
@@ -415,6 +405,20 @@
         <field name="company_id" ref="" />
     </record>
 
+    <record id="company_a" model="res.company">
+       <field name="account_journal_payment_credit_account_id" ref="a_sale_company_a" />
+        <field name="account_journal_payment_debit_account_id" ref="a_sale_company_a" />
+    </record>
+    <record id="company_b" model="res.company">
+        <field
+            name="account_journal_payment_credit_account_id"
+            ref="a_expense_company_b"
+        />
+        <field
+            name="account_journal_payment_debit_account_id"
+            ref="a_expense_company_b"
+        />
+    </record>
     <!--
         Create draft invoice
         -->

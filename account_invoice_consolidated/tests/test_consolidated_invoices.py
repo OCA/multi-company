@@ -8,11 +8,11 @@ from dateutil.relativedelta import relativedelta
 from odoo import _
 from odoo.exceptions import ValidationError
 from odoo.modules.module import get_resource_path
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 from odoo.tools import convert_file
 
 
-class TestConsolidatedInvoice(SavepointCase):
+class TestConsolidatedInvoice(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super(TestConsolidatedInvoice, cls).setUpClass()
@@ -92,14 +92,10 @@ class TestConsolidatedInvoice(SavepointCase):
         cls.env.user.company_id = cls.company_a
 
         cls.company_a.due_fromto_payment_journal_id = cls.env.ref(
-            "account_invoice_consolidated.sales_journal_company_a"
+            "account_invoice_consolidated.bank_journal_company_a"
         )
         cls.company_b.due_fromto_payment_journal_id = cls.env.ref(
             "account_invoice_consolidated.bank_journal_company_b"
-        )
-
-        cls.company_b.due_fromto_payment_journal_id.payment_debit_account_id = (
-            cls.env.ref("account_invoice_consolidated.a_expense_company_b")
         )
 
         cls.company_a.due_from_account_id = cls.env.ref(
@@ -178,15 +174,14 @@ class TestConsolidatedInvoice(SavepointCase):
             inv.update(vals)
 
         with self.assertRaises(ValidationError):
-            self.consolidated_inv_obj.create(
-                {
-                    "company_id": self.company_a.id,
-                    "date_from": datetime.today() + relativedelta(months=-6),
-                    "date_to": datetime.today(),
-                    "partner_id": self.partner_user.id,
-                }
-            )
-
+            vals = {
+                "company_id": self.company_a.id,
+                "date_from": datetime.today() + relativedelta(months=-6),
+                "date_to": datetime.today(),
+                "partner_id": self.partner_user.id,
+            }
+            self.consolidated_inv_obj.create(vals)
+            self.consolidated_inv_obj.create(vals)
         with self.assertRaises(ValidationError):
             inv.sudo().unlink()
         inv.sudo().write({"state": "draft"})

@@ -56,9 +56,12 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="row">
+                                <div class="row d-block">
                                     <div class="d-inline">
-                                        <p style="color: #924eb9">CONTACT US:
+                                        <p
+                                            class="d-inline"
+                                            style="color: #924eb9;"
+                                        >CONTACT US:
                                             <span
                                                 t-field="company.partner_id.phone"
                                                 style="color: #000; font-weight: bold;"
