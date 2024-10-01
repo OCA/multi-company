@@ -1,0 +1,15 @@
+<odoo noupdate='1'>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         Copyright (C) 2019 Serpent Consulting Services Pvt. Ltd.
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id='account_invoice_consolidated_sequence' model='ir.sequence'>
+        <field name="name">Consolidated Invoice Sequence</field>
+        <field name="code">consolidated.invoice</field>
+        <field name="prefix">CONSINV</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False" />
+    </record>
+
+</odoo>

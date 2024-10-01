@@ -1,0 +1,46 @@
+<odoo>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         Copyright (C) 2019 Serpent Consulting Services Pvt. Ltd.
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id="inherit_res_company_form" model="ir.ui.view">
+        <field name="name">res.company.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='social_media']" position="before">
+                <separator string="To be Shown on Consolidated Invoice Report" />
+                <field name="cons_invoice_text" />
+            </xpath>
+            <xpath expr='//notebook/page[last()]' position='after'>
+                <page
+                    name='intercompany_payment'
+                    string='Intercompany Payment Configuration'
+                >
+                    <group>
+                        <group>
+                            <field
+                                name='due_from_account_id'
+                                domain="[('company_id', '=', active_id)]"
+                                options="{'no_create': True}"
+                            />
+                            <field
+                                name='due_to_account_id'
+                                domain="[('company_id', '=', active_id)]"
+                                options="{'no_create': True}"
+                            />
+                            <field
+                                name='due_fromto_payment_journal_id'
+                                domain="[('company_id', '=', active_id),
+                                             ('type', 'in', ('bank', 'cash'))]"
+                                options="{'no_create': True}"
+                            />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

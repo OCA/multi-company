@@ -1,0 +1,21 @@
+<odoo>
+
+    <!-- Copyright (C) 2019 Open Source Integrators
+         Copyright (C) 2019 Serpent Consulting Services Pvt. Ltd.
+         License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="fiscal_position_id" position="after">
+                <field
+                    name="consolidated_by_id"
+                    attrs="{'invisible':[('consolidated_by_id', '=', False)]}"
+                />
+            </field>
+        </field>
+    </record>
+
+</odoo>
