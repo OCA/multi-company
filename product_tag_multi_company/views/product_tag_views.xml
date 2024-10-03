@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="product_tag_form_view" model="ir.ui.view">
+        <field name="name">product.tag.form</field>
+        <field name="model">product.tag</field>
+        <field name="inherit_id" ref="product.product_tag_form_view" />
+        <field name="arch" type="xml">
+            <field name="color" position="after">
+                <field name="company_id" groups="base.group_multi_company" />
+            </field>
+        </field>
+    </record>
+
+    <record id="product_tag_tree_view" model="ir.ui.view">
+        <field name="name">product.tag.tree</field>
+        <field name="model">product.tag</field>
+        <field name="inherit_id" ref="product.product_tag_tree_view" />
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field
+                    name="company_id"
+                    optional="show"
+                    groups="base.group_multi_company"
+                />
+            </field>
+        </field>
+    </record>
+
+</odoo>
