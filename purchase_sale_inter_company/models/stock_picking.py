@@ -98,7 +98,7 @@ class StockPicking(models.Model):
                     po_ml.lot_id = dest_lot_id
 
         except Exception:
-            if self.env.company_id.sync_picking_failure_action == "raise":
+            if self.env.company.sync_picking_failure_action == "raise":
                 raise
             else:
                 self._notify_picking_problem(purchase)
