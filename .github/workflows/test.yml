@@ -43,6 +43,13 @@ jobs:
             name: test with OCB
             makepot: "true"
           - container: ghcr.io/oca/oca-ci/py3.6-odoo14.0:latest
+            include: "product_supplierinfo_intercompany,product_supplierinfo_intercompany_multi_company,product_supplierinfo_group_intercompany"
+            name: test with Odoo
+          - container: ghcr.io/oca/oca-ci/py3.6-ocb14.0:latest
+            include: "product_supplierinfo_intercompany,product_supplierinfo_intercompany_multi_company,product_supplierinfo_group_intercompany"
+            name: test with OCB
+            makepot: "true"
+          - container: ghcr.io/oca/oca-ci/py3.6-odoo14.0:latest
             include: "stock_intercompany"
             name: test with Odoo
           - container: ghcr.io/oca/oca-ci/py3.6-ocb14.0:latest
@@ -50,10 +57,10 @@ jobs:
             name: test with OCB
             makepot: "true"
           - container: ghcr.io/oca/oca-ci/py3.6-odoo14.0:latest
-            exclude: "product_tax_multicompany_default,stock_intercompany"
+            exclude: "product_tax_multicompany_default,product_supplierinfo_intercompany,product_supplierinfo_intercompany_multi_company,product_supplierinfo_group_intercompany,stock_intercompany"
             name: test with Odoo
           - container: ghcr.io/oca/oca-ci/py3.6-ocb14.0:latest
-            exclude: "product_tax_multicompany_default,stock_intercompany"
+            exclude: "product_tax_multicompany_default,product_supplierinfo_intercompany,product_supplierinfo_intercompany_multi_company,product_supplierinfo_group_intercompany,stock_intercompany"
             name: test with OCB
             makepot: "true"
     services:

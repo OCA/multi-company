@@ -1,5 +1,5 @@
 # Do NOT update manually; changes here will be overwritten by Copier
-_commit: v1.21.1
+_commit: v1.22
 _src_path: gh:oca/oca-addons-repo-template
 ci: GitHub
 convert_readme_fragments_to_markdown: false
@@ -17,6 +17,8 @@ org_name: Odoo Community Association (OCA)
 org_slug: OCA
 rebel_module_groups:
 - product_tax_multicompany_default
+- product_supplierinfo_intercompany,product_supplierinfo_intercompany_multi_company,product_supplierinfo_group_intercompany
+- stock_intercompany
 repo_description: Addons for the management of multi company instances as well as
 repo_name: Multi company modules
 repo_slug: multi-company
