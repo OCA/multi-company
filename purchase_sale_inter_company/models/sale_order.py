@@ -20,7 +20,13 @@ class SaleOrder(models.Model):
         for order in self.filtered("auto_purchase_order_id"):
             for line in order.order_line.sudo():
                 if line.auto_purchase_line_id:
-                    line.auto_purchase_line_id.price_unit = line.price_unit
+                    qty = line.product_uom_qty
+                    if qty:
+                        line.auto_purchase_line_id.price_unit = (
+                            line.price_subtotal / qty
+                        )
+                    else:
+                        line.auto_purchase_line_id.price_unit = 0.0
         res = super().action_confirm()
         for sale_order in self.sudo():
             dest_company = sale_order.partner_id.ref_company_ids
