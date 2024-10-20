@@ -30,6 +30,7 @@ setuptools.setup(
         'odoo12-addon-product_intercompany_account',
         'odoo12-addon-product_multi_company',
         'odoo12-addon-product_tax_multicompany_default',
+        'odoo12-addon-project_multi_company',
         'odoo12-addon-purchase_sale_inter_company',
         'odoo12-addon-res_company_active',
         'odoo12-addon-res_company_category',

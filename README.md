@@ -43,6 +43,7 @@ addon | version | maintainers | summary
 [product_intercompany_account](product_intercompany_account/) | 12.0.1.0.4 |  | Change the income and COGS accounts in intercompany transactions
 [product_multi_company](product_multi_company/) | 12.0.1.0.0 |  | Select individually the product template visibility on each company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 12.0.1.0.1 |  | Product Tax Multi Company Default
+[project_multi_company](project_multi_company/) | 12.0.1.0.0 | [![legalsylvain](https://github.com/legalsylvain.png?size=30px)](https://github.com/legalsylvain) | This module adds support for multi company on Project Module.
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 12.0.1.3.1 |  | Intercompany PO/SO rules
 [res_company_active](res_company_active/) | 12.0.1.0.0 |  | Add the 'active' feature on company model
 [res_company_category](res_company_category/) | 12.0.1.0.0 |  | Company Categories
