@@ -98,15 +98,10 @@ class MultiCompanyAbstract(models.AbstractModel):
         return new_args
 
     @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
+    def _search_display_name(self, operator="ilike", value=dict):
+        domain = super()._search_display_name(operator=operator, value=value)
         new_domain = self._patch_company_domain(domain)
-        return super()._name_search(
-            name,
-            domain=new_domain,
-            operator=operator,
-            limit=limit,
-            order=order,
-        )
+        return new_domain
 
     @api.model
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
