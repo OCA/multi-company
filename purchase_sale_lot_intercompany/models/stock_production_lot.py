@@ -9,6 +9,13 @@ from odoo import models
 class StockProductionLot(models.Model):
     _inherit = "stock.lot"
 
+    def prepare_intercompany_lot_values(self, company):
+        return {
+            "name": self.name,
+            "product_id": self.product_id.id,
+            "company_id": company.id,
+        }
+
     def get_inter_company_lot(self, company):
         self.ensure_one()
         lot = self.sudo().search(
@@ -19,11 +26,5 @@ class StockProductionLot(models.Model):
             ]
         )
         if not lot:
-            lot = self.sudo().create(
-                {
-                    "name": self.name,
-                    "product_id": self.product_id.id,
-                    "company_id": company.id,
-                }
-            )
+            lot = self.sudo().create(self.prepare_intercompany_lot_values(company))
         return lot
