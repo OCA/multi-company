@@ -1,0 +1,4 @@
+- [Akretion](https://akretion.com):
+  - David BEAL \<<david.beal@akretion.com>\>
+- [Dynapps](https://dynapps.eu):
+  - Bert Van Groenendael \<<bert.vangroenendael@dynapps.eu>\>
