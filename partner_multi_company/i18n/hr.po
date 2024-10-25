@@ -16,8 +16,18 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_ids
+msgid "Companies"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_id
+msgid "Company"
+msgstr ""
 
 #. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_partner
@@ -30,9 +40,20 @@ msgid "Display Name"
 msgstr ""
 
 #. module: partner_multi_company
+#. odoo-python
+#: code:addons/partner_multi_company/models/res_partner.py:0
+#, python-format
+msgid ""
+"The partner must have at least all the companies associated with the user."
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_users
-msgid "Users"
-msgstr "Korisnici"
+msgid "User"
+msgstr ""
+
+#~ msgid "Users"
+#~ msgstr "Korisnici"
 
 #~ msgid "Partner"
 #~ msgstr "Partner"

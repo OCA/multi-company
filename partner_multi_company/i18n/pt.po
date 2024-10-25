@@ -19,6 +19,16 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_ids
+msgid "Companies"
+msgstr ""
+
+#. module: partner_multi_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_id
+msgid "Company"
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_partner
 msgid "Contact"
 msgstr ""
@@ -29,9 +39,20 @@ msgid "Display Name"
 msgstr ""
 
 #. module: partner_multi_company
+#. odoo-python
+#: code:addons/partner_multi_company/models/res_partner.py:0
+#, python-format
+msgid ""
+"The partner must have at least all the companies associated with the user."
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_users
-msgid "Users"
-msgstr "Utilizadores"
+msgid "User"
+msgstr ""
+
+#~ msgid "Users"
+#~ msgstr "Utilizadores"
 
 #~ msgid "Partner"
 #~ msgstr "Parceiro"
