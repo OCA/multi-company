@@ -11,6 +11,7 @@ class PartnerDefaultPricelistCase(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         # A pricelist with same name on both companies
         cls.pricelist_a1 = cls.env["product.pricelist"].create(
             {
