@@ -11,6 +11,7 @@ class PartnerDefaultPurchaseCurrencyCase(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         cls.currency_1 = cls.env.ref("base.EUR")
 
     def test_creation_propagation_currency(self):
