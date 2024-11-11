@@ -71,7 +71,7 @@ To use this module, you need to:
 Known issues / Roadmap
 ======================
 
-Since this module propagates product accounts based on the account code, it
+Since this module propagates partner accounts based on the account code, it
 should only be used in a database where all companies belong to the same country.
 
 We could add a wizard that allows the user to select multiple products and propagate

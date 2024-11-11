@@ -15,7 +15,8 @@ _logger = logging.getLogger(__name__)
 
 
 class Partner(models.Model):
-    """Adds helpers to create default values across companies
+    """Adds helpers to create default values across companies.
+    It will set the same or corresponding value of the created partner to other companies.
 
     For each M2O property field for records that are not shared, define:
 
@@ -47,11 +48,13 @@ class Partner(models.Model):
             ),
         ]
 
-    def _propagate_multicompany_m2o_by_key(self, field):
+    def _propagate_multicompany_m2o_by_key(self, field: str):
         """Set the corresponding record accross all companies
         based on a domain to match record on other comanies
 
-        eg. account are matched by code
+        :param str field:
+                The field to propagate. E.g. "property_account_payable_id"
+                or "property_account_receivable_id".
         """
         companies = self._get_alien_companies()
         comodel = self._fields[field].comodel_name
@@ -93,19 +96,27 @@ class Partner(models.Model):
                     continue
                 partners.with_company(alien_company)[field] = target_record
 
-    def _propagate_multicompany_m2o(self, field):
+    def _propagate_multicompany_m2o(self, field: str):
         """Propagate a property record to other companies
 
         If the related record is without company, set the same.
         otherwise try to match it.
+
+        :param str field:
+                The field to propagate. E.g. "property_account_payable_id"
+                or "property_account_receivable_id".
         """
         company_specific = self.filtered(f"{field}.company_id")
         company_shared = self - company_specific
         company_specific._propagate_multicompany_m2o_by_key(field)
         company_shared._propagate_multicompany_value(field)
 
-    def _propagate_multicompany_value(self, field):
-        """Set the same value accross all companies"""
+    def _propagate_multicompany_value(self, field: str):
+        """Set the same value accross all companies
+
+        :param str field:
+                The field to propagate.
+        """
         # Gain access to all companies of current user
         companies = self._get_alien_companies()
         self = self.with_context(
@@ -128,11 +139,10 @@ class Partner(models.Model):
             )
         return alien_companies
 
-    def _propagate_multicompany_field(self, field):
-        """Set the same account for all companies.
+    def _propagate_multicompany_field(self, field: str):
+        """Set the same or corresponding values of property fields for all companies.
 
-        Args:
-            field (str):
+        :param str field:
                 The field to propagate. E.g. "property_account_payable_id"
                 or "property_account_receivable_id".
         """
