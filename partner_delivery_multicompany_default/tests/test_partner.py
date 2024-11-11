@@ -11,6 +11,7 @@ class PartnerDefaultCarrierCase(AccountTestInvoicingCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
         # A carrier with same name on both companies
         product_a1 = cls.env.ref("delivery.product_product_delivery_poste")
         product_a2 = product_a1.copy()
