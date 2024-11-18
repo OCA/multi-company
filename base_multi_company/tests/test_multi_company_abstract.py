@@ -111,6 +111,13 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         )
         self.assertEqual([{"id": self.record_1.id, "name": self.record_1.name}], result)
 
+    def test_search_in_false_company(self):
+        """Records with no company are shared across companies but we need to convert
+        those queries with an or operator"""
+        self.record_1.company_ids = False
+        result = self.test_model.search([("company_id", "in", [1, False])])
+        self.assertEqual(result, self.record_1)
+
     def test_patch_company_domain(self):
         new_domain = self.test_model._patch_company_domain(
             [["company_id", "in", [False, self.company_2.id]]]
