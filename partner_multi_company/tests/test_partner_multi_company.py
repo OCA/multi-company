@@ -255,3 +255,24 @@ class TestPartnerMultiCompany(common.TransactionCase):
             self.user_company_1.partner_id.write(
                 {"company_ids": [Command.set(self.company_2.ids)]}
             )
+
+    def test_partner_create_write_company(self):
+        self.user_company_1.groups_id += self.env.ref("base.group_system")
+        self.assertEqual(len(self.user_company_1.company_ids), 1)
+        self.assertEqual(self.user_company_1.company_ids, self.company_1)
+
+        company_3 = (
+            self.env["res.company"]
+            .with_user(self.user_company_1)
+            .create([{"name": "Test company 3"}])
+        )
+
+        self.assertEqual(len(self.user_company_1.company_ids), 2)
+        self.assertEqual(self.user_company_1.company_ids, self.company_1 + company_3)
+        self.assertEqual(len(self.user_company_2.company_ids), 1)
+        self.assertEqual(self.user_company_2.company_ids, self.company_2)
+
+        company_3.user_ids += self.user_company_2
+
+        self.assertEqual(len(self.user_company_2.company_ids), 2)
+        self.assertEqual(self.user_company_2.company_ids, self.company_2 + company_3)
