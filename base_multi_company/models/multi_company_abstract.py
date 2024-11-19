@@ -106,4 +106,6 @@ class MultiCompanyAbstract(models.AbstractModel):
     @api.model
     def search_read(self, domain=None, fields=None, offset=0, limit=None, order=None):
         new_domain = self._patch_company_domain(domain)
-        return super().search_read(new_domain, fields, offset, limit, order)
+        return super().search_read(
+            domain=new_domain, fields=fields, offset=offset, limit=limit, order=order
+        )
