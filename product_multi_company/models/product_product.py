@@ -3,7 +3,7 @@
 # Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
-from odoo import fields, models
+from odoo import api, fields, models
 
 
 class ProductProduct(models.Model):
@@ -19,3 +19,8 @@ class ProductProduct(models.Model):
         readonly=False,
         store=True,
     )
+
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        dom = self.env["multi.company.abstract"]._patch_company_domain(args)
+        return super().search(dom, offset=offset, limit=limit, order=order, count=count)
