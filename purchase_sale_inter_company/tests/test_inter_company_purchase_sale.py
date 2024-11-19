@@ -275,3 +275,11 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             purchase.order_line[0].with_context(allow_update_locked_sales=True).write(
                 {"product_qty": 99}
             )
+
+    def test_change_delivery_date_sale(self):
+        from dateutil.relativedelta import relativedelta
+
+        sale = self._approve_po()
+        self.assertEqual(self.purchase_company_a.date_planned, sale.commitment_date)
+        sale.commitment_date = sale.commitment_date + relativedelta(days=3)
+        self.assertEqual(self.purchase_company_a.date_planned, sale.commitment_date)

@@ -22,3 +22,10 @@ class SaleOrder(models.Model):
                 if line.auto_purchase_line_id:
                     line.auto_purchase_line_id.price_unit = line.price_unit
         return super().action_confirm()
+
+    def write(self, vals):
+        res = super().write(vals)
+        purchase_id = self.auto_purchase_order_id
+        if "commitment_date" in vals and purchase_id:
+            purchase_id.sudo().write({"date_planned": vals["commitment_date"]})
+        return res
