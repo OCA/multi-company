@@ -114,6 +114,29 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
             self.product_company_both.product_tmpl_id.company_ids,
         )
 
+    def test_search_product(self):
+        """Products with no company are shared across companies but we need to convert
+        those queries with an or operator"""
+        expected_products = (
+            self.product_company_both
+            + self.product_company_1
+            + self.product_company_none
+        )
+        searched_templates = self.env["product.template"].search(
+            [
+                ("company_id", "in", [self.company_1.id, False]),
+                ("id", "in", expected_products.product_tmpl_id.ids),
+            ]
+        )
+        self.assertEqual(searched_templates, expected_products.product_tmpl_id)
+        searched_products = self.product_obj.search(
+            [
+                ("company_id", "in", [self.company_1.id, False]),
+                ("id", "in", expected_products.ids),
+            ]
+        )
+        self.assertEqual(searched_products, expected_products)
+
     def test_uninstall(self):
         from ..hooks import uninstall_hook
 
