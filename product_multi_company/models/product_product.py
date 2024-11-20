@@ -21,6 +21,6 @@ class ProductProduct(models.Model):
     )
 
     @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
+    def search(self, args, offset=0, limit=None, order=None):
         dom = self.env["multi.company.abstract"]._patch_company_domain(args)
-        return super().search(dom, offset=offset, limit=limit, order=order, count=count)
+        return super().search(dom, offset=offset, limit=limit, order=order)
