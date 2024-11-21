@@ -111,6 +111,7 @@ class PurchaseOrder(models.Model):
         # Validation of sale order
         if dest_company.sale_auto_validation:
             sale_order.with_user(intercompany_user.id).sudo().action_confirm()
+        return sale_order
 
     def _prepare_sale_order_data(
         self, name, partner, dest_company, direct_delivery_address
