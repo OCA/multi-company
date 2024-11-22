@@ -114,10 +114,40 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
             self.product_company_both.product_tmpl_id.company_ids,
         )
 
+    def test_search_product(self):
+        """Products with no company are shared across companies but we need to convert
+        those queries with an or operator"""
+        expected_products = (
+            self.product_company_both
+            + self.product_company_1
+            + self.product_company_none
+        )
+        searched_templates = self.env["product.template"].search(
+            [
+                ("id", "in", expected_products.product_tmpl_id.ids),
+                "|",
+                ("company_id", "=", self.company_1.id),
+                ("company_id", "=", False),
+            ]
+        )
+        self.assertEqual(searched_templates, expected_products.product_tmpl_id)
+        searched_products = self.product_obj.search(
+            [
+                ("id", "in", expected_products.ids),
+                "|",
+                ("company_id", "=", self.company_1.id),
+                ("company_id", "=", False),
+            ]
+        )
+        self.assertEqual(searched_products, expected_products)
+
     def test_uninstall(self):
         from ..hooks import uninstall_hook
 
-        uninstall_hook(self.env.cr, None)
+        uninstall_hook(self.env)
         rule = self.env.ref("product.product_comp_rule")
-        domain = " [('company_id', 'in', [False, user.company_id.id])]"
+        domain = (
+            " ['|', ('company_id', 'parent_of', company_ids), "
+            "('company_id', '=', False)]"
+        )
         self.assertEqual(rule.domain_force, domain)

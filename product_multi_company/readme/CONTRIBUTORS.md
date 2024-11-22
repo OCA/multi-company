@@ -7,3 +7,5 @@
 - [Sodexis](https://sodexis.com):
   - Prabakaran \<<prabakaran@sodexis.com>\>
   - Karthik \<<karthik@sodexis.com>\>
+- [Dynapps](https://www.dynapps.eu):
+  - Bert Van Groenendael \<<bert.vangroenendael@dynapps.eu>\>
