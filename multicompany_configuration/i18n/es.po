@@ -68,8 +68,8 @@ msgstr "Producto"
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_product_category
-msgid "Product Category"
-msgstr "Categoría de Producto"
+msgid "Product Category (Multi-Company)"
+msgstr ""
 
 #. module: multicompany_configuration
 #: model:ir.actions.act_window,name:multicompany_configuration.product_template_form_multicompany_action
@@ -90,3 +90,6 @@ msgstr "Categoría de producto"
 #: model:ir.actions.act_window,name:multicompany_configuration.product_product_form_multicompany_action
 msgid "Product product"
 msgstr "Producto producto"
+
+#~ msgid "Product Category"
+#~ msgstr "Categoría de Producto"
