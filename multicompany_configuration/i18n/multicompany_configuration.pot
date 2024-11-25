@@ -65,7 +65,7 @@ msgstr ""
 
 #. module: multicompany_configuration
 #: model:ir.model,name:multicompany_configuration.model_product_category
-msgid "Product Category"
+msgid "Product Category (Multi-Company)"
 msgstr ""
 
 #. module: multicompany_configuration
