@@ -124,15 +124,19 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
         )
         searched_templates = self.env["product.template"].search(
             [
-                ("company_id", "in", [self.company_1.id, False]),
                 ("id", "in", expected_products.product_tmpl_id.ids),
+                "|",
+                ("company_id", "=", self.company_1.id),
+                ("company_id", "=", False),
             ]
         )
         self.assertEqual(searched_templates, expected_products.product_tmpl_id)
         searched_products = self.product_obj.search(
             [
-                ("company_id", "in", [self.company_1.id, False]),
                 ("id", "in", expected_products.ids),
+                "|",
+                ("company_id", "=", self.company_1.id),
+                ("company_id", "=", False),
             ]
         )
         self.assertEqual(searched_products, expected_products)
