@@ -210,6 +210,7 @@ class AccountMove(models.Model):
             "move_type": self._get_destination_invoice_type(),
             "partner_id": self.company_id.partner_id.id,
             "ref": self.name,
+            "payment_reference": self.payment_reference,
             "invoice_date": self.invoice_date,
             "invoice_origin": _("%(company_name)s - Invoice: %(invoice_name)s")
             % {"company_name": self.company_id.name, "invoice_name": self.name},

@@ -358,6 +358,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         )
         cls.invoice_company_a.partner_id = cls.partner_company_b
         cls.invoice_company_a.journal_id = cls.sales_journal_company_a
+        cls.invoice_company_a.payment_reference = "Test Payment Ref"
 
         with cls.invoice_company_a.invoice_line_ids.new() as line_form:
             line_form.product_id = cls.product_consultant_multi_company
@@ -418,6 +419,9 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(
             invoices[0].company_id.partner_id,
             self.invoice_company_a.partner_id,
+        )
+        self.assertEqual(
+            invoices[0].payment_reference, self.invoice_company_a.payment_reference
         )
         self.assertEqual(
             len(invoices[0].invoice_line_ids),
