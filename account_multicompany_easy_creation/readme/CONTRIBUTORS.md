@@ -2,5 +2,6 @@
   - Carlos Dauden
   - Ernesto Tejeda
   - Carlos Roca
+  - Víctor Martínez
 - [Moduon](https://www.moduon.team):
   - Eduardo de Miguel

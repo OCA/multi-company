@@ -1,9 +1,9 @@
 # Copyright 2018 Tecnativa - Carlos Dauden
 # Copyright 2022 Moduon - Eduardo de Miguel
+# Copyright 2025 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo import api, fields, models
 from odoo.tools import ormcache
 from odoo.tools.safe_eval import safe_eval
 
@@ -40,11 +40,11 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         comodel_name="res.currency",
         string="Currency",
         required=True,
-        default=lambda s: s.env.user.company_id.currency_id,
+        default=lambda s: s.env.company.currency_id,
     )
-    chart_template_id = fields.Many2one(
-        comodel_name="account.chart.template",
-        string="Chart Template",
+    chart_template = fields.Selection(
+        selection="_chart_template_selection",
+        required=True,
     )
     bank_ids = fields.One2many(
         comodel_name="account.multicompany.bank.wiz",
@@ -74,19 +74,22 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     update_default_taxes = fields.Boolean(
         help="Update default taxes applied to local transactions",
     )
-    default_sale_tax_id = fields.Many2one(
-        comodel_name="account.tax.template",
+    default_sale_tax = fields.Selection(
+        selection="_tax_selection",
         string="Default Sales Tax",
     )
+    default_sale_tax_options = fields.Char(compute="_compute_default_sale_tax_options")
     force_sale_tax = fields.Boolean(
         string="Force Sale Tax In All Products",
         help="Set default sales tax to all products.\n"
         "If smart search product tax is also enabled matches founded "
         "will overwrite default taxes, but not founded will remain",
     )
-    default_purchase_tax_id = fields.Many2one(
-        comodel_name="account.tax.template",
-        string="Default Purchase Tax",
+    default_purchase_tax = fields.Selection(
+        selection="_tax_selection",
+    )
+    default_purchase_tax_options = fields.Char(
+        compute="_compute_default_purchase_tax_options"
     )
     force_purchase_tax = fields.Boolean(
         string="Force Purchase Tax In All Products",
@@ -106,25 +109,61 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         help="Go over partner fiscal positions in actual company to match "
         "and set equivalent fiscal positions in the new company.",
     )
-    update_default_accounts = fields.Boolean(
-        help="Update default accounts defined in account chart template",
-    )
-    account_receivable_id = fields.Many2one(
-        comodel_name="account.account.template",
-        string="Default Receivable Account",
-    )
-    account_payable_id = fields.Many2one(
-        comodel_name="account.account.template",
-        string="Default Payable Account",
-    )
-    account_income_categ_id = fields.Many2one(
-        comodel_name="account.account.template",
-        string="Default Category Income Account",
-    )
-    account_expense_categ_id = fields.Many2one(
-        comodel_name="account.account.template",
-        string="Default Category Expense Account",
-    )
+
+    def _chart_template_selection(self):
+        """We obtain those actually installed."""
+        chart_template_options = []
+        chart_template = self.env["account.chart.template"]
+        for key, name in chart_template.with_context(
+            chart_template_only_installed=True
+        )._select_chart_template(self.env.company.country_id):
+            chart_template_mapping = chart_template._get_chart_template_mapping()[key]
+            if chart_template_mapping["installed"]:
+                chart_template_options.append((key, name))
+        return chart_template_options
+
+    def _tax_selection(self):
+        """We need to define in the selection all possible options."""
+        tax_data_options = []
+        for key, _name in self._chart_template_selection():
+            tax_data = self.env["account.chart.template"]._get_chart_template_data(key)[
+                "account.tax"
+            ]
+            for tax_key in list(tax_data.keys()):
+                tax_key_custom = f"{key}-{tax_key}"
+                tax_name_key = self.env.user.lang.split("_")[0]
+                tax_data_item = tax_data[tax_key]
+                description_key = f"description@{tax_name_key}"
+                if "description" in tax_data_item and description_key in tax_data_item:
+                    tax_name = tax_data_item[description_key]
+                else:
+                    tax_name = tax_data_item["name"]
+                tax_data_options.append((tax_key_custom, tax_name))
+        return tax_data_options
+
+    def _get_tax_options(self, type_tax_use="sale"):
+        tax_options = []
+        if self.chart_template:
+            chart_template = self.chart_template
+            tax_data = self.env["account.chart.template"]._get_chart_template_data(
+                chart_template
+            )["account.tax"]
+            for key in list(tax_data.keys()):
+                if tax_data[key]["type_tax_use"] == type_tax_use:
+                    tax_options.append(f"{chart_template}-{key}")
+        return tax_options
+
+    @api.depends("chart_template")
+    def _compute_default_sale_tax_options(self):
+        for item in self:
+            allowed_options = item._get_tax_options(type_tax_use="sale")
+            item.default_sale_tax_options = ",".join(allowed_options)
+
+    @api.depends("chart_template")
+    def _compute_default_purchase_tax_options(self):
+        for item in self:
+            allowed_options = item._get_tax_options(type_tax_use="purchase")
+            item.default_purchase_tax_options = ",".join(allowed_options)
 
     def create_bank_journals(self):
         AccountJournal = self.env["account.journal"].sudo()
@@ -191,9 +230,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         new_company = self.new_company_id.with_context(
             allowed_company_ids=allowed_company_ids
         )
-        self.sudo().with_context(
-            allowed_company_ids=allowed_company_ids
-        ).chart_template_id.try_loading(company=new_company)
+        self.env["account.chart.template"].try_loading(self.chart_template, new_company)
         self.create_bank_journals()
         self.create_sequences()
 
@@ -224,19 +261,9 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             return True
         return False
 
-    def match_tax(self, tax_template):
-        """We can only match the new company tax if the chart was used"""
-        xml_id = tax_template and tax_template.get_external_id().get(tax_template.id)
-        if not xml_id:
-            raise ValidationError(
-                _("This tax template can't be match without xml_id: '%s'")
-                % tax_template.name
-            )
-        module, name = xml_id.split(".", 1)
-        return self.sudo().env.ref(f"{module}.{self.new_company_id.id}_{name}")
-
-    def set_product_taxes(self):
+    def set_product_taxes(self, default_sale_tax, default_purchase_tax):
         user_company = self.env.user.company_id
+        new_company = self.new_company_id
         products = (
             self.env["product.product"]
             .sudo()
@@ -256,9 +283,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 if self.update_product_taxes(product, "taxes_id", user_company):
                     updated_sale |= product
         if self.update_default_taxes and self.force_sale_tax:
-            (products - updated_sale).update(
-                {"taxes_id": [(4, self.match_tax(self.default_sale_tax_id).id)]}
-            )
+            sale_tax = default_sale_tax or new_company.account_sale_tax_id
+            (products - updated_sale).update({"taxes_id": [(4, sale_tax.id)]})
         if self.smart_search_product_tax:
             for product in products.filtered("supplier_taxes_id"):
                 if self.update_product_taxes(
@@ -266,36 +292,52 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 ):
                     updated_purchase |= product
         if self.update_default_taxes and self.force_purchase_tax:
+            purchase_tax = default_purchase_tax or new_company.account_purchase_tax_id
             (products - updated_purchase).update(
                 {
-                    "supplier_taxes_id": [
-                        (4, self.match_tax(self.default_purchase_tax_id).id)
-                    ],
+                    "supplier_taxes_id": [(4, purchase_tax.id)],
                 }
             )
 
     def update_taxes(self):
         if self.update_default_taxes:
             IrDefault = self.env["ir.default"].sudo()
-            default_sale_tax = self.match_tax(self.default_sale_tax_id)
-            default_purchase_tax = self.match_tax(self.default_purchase_tax_id)
-            if self.default_sale_tax_id:
+            new_company = self.new_company_id
+            sale_tax = False
+            if self.default_sale_tax:
+                tax_key = self.default_sale_tax.replace(f"{self.chart_template}-", "")
+                full_xmlid = (
+                    f"account.{new_company.id}_{tax_key}"
+                    if "." not in tax_key
+                    else tax_key
+                )
+                sale_tax = self.env.ref(full_xmlid, raise_if_not_found=False)
                 IrDefault.set(
                     model_name="product.template",
                     field_name="taxes_id",
-                    value=default_sale_tax.ids,
-                    company_id=self.new_company_id.id,
+                    value=sale_tax.ids,
+                    company_id=new_company.id,
                 )
-            if self.default_purchase_tax_id:
+                new_company.account_sale_tax_id = sale_tax
+            purchase_tax = False
+            if self.default_purchase_tax:
+                tax_key = self.default_purchase_tax.replace(
+                    f"{self.chart_template}-", ""
+                )
+                full_xmlid = (
+                    f"account.{new_company.id}_{tax_key}"
+                    if "." not in tax_key
+                    else tax_key
+                )
+                purchase_tax = self.env.ref(full_xmlid, raise_if_not_found=False)
                 IrDefault.set(
                     model_name="product.template",
                     field_name="supplier_taxes_id",
-                    value=default_purchase_tax.ids,
-                    company_id=self.new_company_id.id,
+                    value=purchase_tax.ids,
+                    company_id=new_company.id,
                 )
-            self.new_company_id.account_sale_tax_id = default_sale_tax.id
-            self.new_company_id.account_purchase_tax_id = default_purchase_tax.id
-        self.set_product_taxes()
+                new_company.account_purchase_tax_id = purchase_tax
+        self.set_product_taxes(sale_tax, purchase_tax)
 
     def set_specific_properties(self, model, match_field):
         user_company = self.env.user.company_id
@@ -329,80 +371,11 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     }
                 )
 
-    def match_account(self, account_template):
-        return (
-            self.sudo()
-            .env["account.account"]
-            .search(
-                [
-                    ("company_id", "=", self.new_company_id.id),
-                    ("code", "=", account_template.code),
-                ],
-                limit=1,
-            )
-        )
-
-    def set_global_properties(self):
-        IrProperty = self.env["ir.property"].sudo()
-        todo_list = [
-            (
-                "property_account_receivable_id",
-                "res.partner",
-                "account.account",
-                self.match_account(self.account_receivable_id).id,
-            ),
-            (
-                "property_account_payable_id",
-                "res.partner",
-                "account.account",
-                self.match_account(self.account_payable_id).id,
-            ),
-            (
-                "property_account_expense_categ_id",
-                "product.category",
-                "account.account",
-                self.match_account(self.account_expense_categ_id).id,
-            ),
-            (
-                "property_account_income_categ_id",
-                "product.category",
-                "account.account",
-                self.match_account(self.account_income_categ_id).id,
-            ),
-        ]
-        new_company = self.new_company_id
-        for record in todo_list:
-            if not record[3]:
-                continue
-            field = self.env["ir.model.fields"].search(
-                [
-                    ("name", "=", record[0]),
-                    ("model", "=", record[1]),
-                    ("relation", "=", record[2]),
-                ],
-                limit=1,
-            )
-            vals = {
-                "name": record[0],
-                "company_id": new_company.id,
-                "fields_id": field.id,
-                "value": f"{record[2]},{record[3]}",
-            }
-            properties = IrProperty.search(
-                [("name", "=", record[0]), ("company_id", "=", new_company.id)]
-            )
-            if properties:
-                properties.write(vals)
-            else:
-                IrProperty.create(vals)
-
     def update_properties(self):
         if self.smart_search_specific_account:
             self.set_specific_properties("account.account", "code")
         if self.smart_search_fiscal_position:
             self.set_specific_properties("account.fiscal.position", "name")
-        if self.update_default_accounts:
-            self.set_global_properties()
 
     def action_res_company_form(self):
         action = self.env["ir.actions.act_window"]._for_xml_id(
@@ -419,14 +392,16 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         self.update_properties()
         return self.action_res_company_form()
 
-    @api.onchange("chart_template_id")
-    def onchange_chart_template_id(self):
-        if self.chart_template_id:
-            self.currency_id = (
-                self.chart_template_id.currency_id
-                if self.chart_template_id.currency_id != self.currency_id
-                else self.currency_id
-            )
+    @api.onchange("chart_template")
+    def onchange_chart_template(self):
+        if self.chart_template:
+            chart_template_mapping = self.env[
+                "account.chart.template"
+            ]._get_chart_template_mapping()[self.chart_template]
+            country_id = chart_template_mapping.get("country_id")
+            if country_id:
+                country = self.env["res.country"].browse(country_id)
+                self.currency_id = country.currency_id
 
 
 class AccountMulticompanyBankWiz(models.TransientModel):

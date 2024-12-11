@@ -13,12 +13,12 @@
                         <field name="name" />
                     </group>
                     <notebook>
-                        <page string='Account' name="account">
+                        <page string="Account" name="account">
                             <group string="Currency" groups="base.group_multi_currency">
                                 <field name="currency_id" />
                             </group>
                             <group string="Chart Template">
-                                <field name="chart_template_id" />
+                                <field name="chart_template" />
                             </group>
                             <group col="1" string="Accounts">
                                 <group
@@ -31,29 +31,6 @@
                                 >
                                     <field name="smart_search_fiscal_position" />
                                 </group>
-                                <group string="Update default accounts">
-                                    <field name="update_default_accounts" />
-                                </group>
-                                <group
-                                    attrs="{'invisible': [('update_default_accounts','=', False)]}"
-                                >
-                                    <field
-                                        name="account_receivable_id"
-                                        options="{'no_open': True, 'no_create': True}"
-                                    />
-                                    <field
-                                        name="account_payable_id"
-                                        options="{'no_open': True, 'no_create': True}"
-                                    />
-                                    <field
-                                        name="account_income_categ_id"
-                                        options="{'no_open': True, 'no_create': True}"
-                                    />
-                                    <field
-                                        name="account_expense_categ_id"
-                                        options="{'no_open': True, 'no_create': True}"
-                                    />
-                                </group>
                             </group>
                         </page>
                         <page string="Taxes">
@@ -63,21 +40,26 @@
                             <group string="Update default taxes">
                                 <field name="update_default_taxes" />
                             </group>
-                            <group
-                                attrs="{'invisible': [('update_default_taxes','=', False)]}"
-                            >
+                            <group invisible="not update_default_taxes">
+                                <field name="default_sale_tax_options" invisible="1" />
                                 <field
-                                    name="default_sale_tax_id"
-                                    domain="[('type_tax_use', '=', 'sale')]"
-                                    attrs="{'required': [('force_sale_tax','=', True)]}"
-                                    options="{'no_open': True, 'no_create': True}"
+                                    name="default_sale_tax"
+                                    widget="dynamic_selection"
+                                    options="{'available_field': 'default_sale_tax_options'}"
+                                    invisible="not chart_template"
                                 />
                                 <field name="force_sale_tax" />
+                            </group>
+                            <group invisible="not update_default_taxes">
                                 <field
-                                    name="default_purchase_tax_id"
-                                    domain="[('type_tax_use', '=', 'purchase')]"
-                                    attrs="{'required': [('force_purchase_tax','=', True)]}"
-                                    options="{'no_open': True, 'no_create': True}"
+                                    name="default_purchase_tax_options"
+                                    invisible="1"
+                                />
+                                <field
+                                    name="default_purchase_tax"
+                                    widget="dynamic_selection"
+                                    options="{'available_field': 'default_purchase_tax_options'}"
+                                    invisible="not chart_template"
                                 />
                                 <field name="force_purchase_tax" />
                             </group>

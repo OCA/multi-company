@@ -339,25 +339,3 @@ msgstr "Asistente Cuenta Banco Multi-compañía"
 #: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
 msgid "Wizard Account Multi-company Easy Creation"
 msgstr "Asistente de creación fácil de cuenta multi-compañía"
-
-#, fuzzy
-#~ msgid "Account Holder"
-#~ msgstr "Cuenta"
-
-#, fuzzy
-#~ msgid "Account Journal"
-#~ msgstr "Cuenta"
-
-#, fuzzy
-#~ msgid "Sequence"
-#~ msgstr "Secuencias"
-
-#, python-format
-#~ msgid "Description not set in tax template: '%s'"
-#~ msgstr "Descripción no establecida en plantilla del impuesto: '%s'"
-
-#~ msgid "account.multicompany.bank.wiz"
-#~ msgstr "'account.multicompany.bank.wiz'"
-
-#~ msgid "or"
-#~ msgstr "o"
