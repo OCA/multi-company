@@ -20,5 +20,5 @@ class ProductCategory(models.Model):
     @api.model
     def _search(self, domain, *args, **kwargs):
         if "company_id" not in (item[0] for item in domain):
-            domain += [("company_id", "in", self.env.user.company_ids.ids)]
+            domain += [("company_id", "in", [False] + self.env.user.company_ids.ids)]
         return super()._search(domain, *args, **kwargs)
