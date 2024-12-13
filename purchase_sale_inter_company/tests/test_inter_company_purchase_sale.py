@@ -11,7 +11,7 @@ from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice 
 )
 
 
-class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
+class TestPurchaseSaleInterCompanyBase(TestAccountInvoiceInterCompanyBase):
     @classmethod
     def _configure_user(cls, user):
         for xml in [
@@ -53,12 +53,13 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # if product_multi_company is installed
         if "company_ids" in cls.env["product.template"]._fields:
             # We have to do that because the default method added a company
+            cls.product.company_ids = False
             cls.service_product_2.company_ids = False
 
         if "company_ids" in cls.env["res.partner"]._fields:
             # We have to do that because the default method added a company
-            cls.partner_company_a.company_ids = [(6, 0, cls.company_a.ids)]
-            cls.partner_company_b.company_ids = [(6, 0, cls.company_b.ids)]
+            cls.partner_company_a.company_ids = False
+            cls.partner_company_b.company_ids = False
 
         # Configure Company B (the supplier)
         cls.company_b.so_from_po = True
@@ -89,6 +90,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
         )
 
+
+class TestPurchaseSaleInterCompany(TestPurchaseSaleInterCompanyBase):
     def test_purchase_sale_inter_company(self):
         self.purchase_company_a.notes = "Test note"
         sale = self._approve_po()
