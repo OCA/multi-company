@@ -132,22 +132,8 @@ class StockPicking(models.Model):
                     if not lot_id:
                         continue
                     # search if the same lot exists in destination company
-                    dest_lot_id = (
-                        self.env["stock.production.lot"]
-                        .sudo()
-                        .search(
-                            [
-                                ("product_id", "=", lot_id.product_id.id),
-                                ("name", "=", lot_id.name),
-                                ("company_id", "=", po_ml.company_id.id),
-                            ],
-                            limit=1,
-                        )
-                    )
-                    if not dest_lot_id:
-                        # if it doesn't exist, create it by copying from original company
-                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
-                    po_ml.lot_id = dest_lot_id
+                    dest_lot = ml._get_or_create_lot_intercompany(po_ml.company_id)
+                    po_ml.lot_id = dest_lot
 
         except Exception:
             if self.env.company.sync_picking_failure_action == "raise":
