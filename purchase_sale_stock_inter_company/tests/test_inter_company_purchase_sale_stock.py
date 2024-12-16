@@ -66,6 +66,12 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         cls.serial_3 = cls._create_serial_and_quant(
             cls.stockable_product_serial, "333", cls.company_b
         )
+        cls.serial_4 = cls._create_serial_and_quant(
+            cls.stockable_product_serial, "444", cls.company_b
+        )
+        cls.serial_5 = cls._create_serial_and_quant(
+            cls.stockable_product_serial, "555", cls.company_b
+        )
     
     @classmethod
     def _create_serial_and_quant(cls, product, name, company, quant=True):
@@ -381,6 +387,24 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             serial_3_company_a,
             po_lots,
             msg="Serial 333 already existed, a new one shouldn't have been created",
+        )
+        # create a new lot in the picking done
+        move_line_vals = so_move._prepare_move_line_vals()
+        move_line_vals.update({"lot_id": self.serial_4.id, "qty_done": 1})
+        new_move_line = self.env["stock.move.line"].create(move_line_vals)
+        self.assertIn(
+            self.serial_4.name,
+            po_picking_id.mapped("move_lines.move_line_ids.lot_id.name"),
+        )
+        # change the lot in the picking done
+        new_move_line.lot_id = self.serial_5
+        self.assertIn(
+            self.serial_5.name,
+            po_picking_id.mapped("move_lines.move_line_ids.lot_id.name"),
+        )
+        self.assertNotIn(
+            self.serial_4.name,
+            po_picking_id.mapped("move_lines.move_line_ids.lot_id.name"),
         )
 
     def test_sync_picking_same_product_multiple_lines(self):
