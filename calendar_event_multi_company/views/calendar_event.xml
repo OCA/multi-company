@@ -2,7 +2,6 @@
 <!-- Copyright 2019 ACSONE SA/NV
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
-
     <record model="ir.ui.view" id="view_calendar_event_form">
         <field name="name">calendar.event.form (in calendar_event_multi_company)</field>
         <field name="model">calendar.event</field>
@@ -14,7 +13,6 @@
         </field>
     </record>
 
-
     <record model="ir.ui.view" id="view_calendar_event_tree">
         <field name="name">calendar.event.tree (in calendar_event_multi_company)</field>
         <field name="model">calendar.event</field>
@@ -25,5 +23,4 @@
             </tree>
         </field>
     </record>
-
 </odoo>
