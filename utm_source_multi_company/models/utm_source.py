@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class UtmSource(models.Model):
-
     _inherit = "utm.source"
 
     company_id = fields.Many2one(
