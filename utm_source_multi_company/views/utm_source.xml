@@ -18,9 +18,9 @@
         <field name="model">utm.source</field>
         <field name="inherit_id" ref="utm.utm_source_view_tree" />
         <field name="arch" type="xml">
-            <tree position="inside">
+            <list position="inside">
                 <field name="company_id" groups="base.group_multi_company" />
-            </tree>
+            </list>
         </field>
     </record>
 </odoo>
