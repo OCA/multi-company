@@ -17,13 +17,13 @@ Mail Template Multi Company
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/16.0/mail_template_multi_company
+    :target: https://github.com/OCA/multi-company/tree/18.0/mail_template_multi_company
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-mail_template_multi_company
+    :target: https://translation.odoo-community.org/projects/multi-company-18-0/multi-company-18-0-mail_template_multi_company
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=16.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=18.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
@@ -38,19 +38,19 @@ This module add multi-company management to mail templates.
 Configuration
 =============
 
-* Go to *Settings > General Settings*
-* Activate the multi-company
-* Go to *Settings > User & Companies > Users*
-* Select your user to edit it and active the multi-company
+- Go to *Settings > General Settings*
+- Activate the multi-company
+- Go to *Settings > User & Companies > Users*
+- Select your user to edit it and active the multi-company
 
 Usage
 =====
 
-* Go to *Settings*
-* Activate the developer mode
-* Go to *Settings > Technical > Email > Templates*
-* Open a template and set the company field if the template is specific to a
-  company
+- Go to *Settings*
+- Activate the developer mode
+- Go to *Settings > Technical > Email > Templates*
+- Open a template and set the company field if the template is specific
+  to a company
 
 Bug Tracker
 ===========
@@ -58,7 +58,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20mail_template_multi_company%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20mail_template_multi_company%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -66,20 +66,21 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * ACSONE SA/NV
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* Olivier Laurent <olivier.laurent@acsone.eu>
-* Souheil Bejaoui <souheil.bejaoui@acsone.eu>
-* Andrea Stirpe <a.stirpe@onestein.nl>
-* Alberto Nieto de Pablos <alberto.nieto@braintec.com> (https://braintec.com)
+- Olivier Laurent <olivier.laurent@acsone.eu>
+- Souheil Bejaoui <souheil.bejaoui@acsone.eu>
+- Andrea Stirpe <a.stirpe@onestein.nl>
+- Alberto Nieto de Pablos <alberto.nieto@braintec.com>
+  (https://braintec.com)
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -99,6 +100,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-Olivier-LAURENT| 
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/16.0/mail_template_multi_company>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/18.0/mail_template_multi_company>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
