@@ -23,17 +23,17 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="inherit_id" ref="base.view_company_tree" />
         <field name="arch" type="xml">
             <field name="sequence" position="attributes">
-                <attribute name="invisible">1</attribute>
+                <attribute name="column_invisible">1</attribute>
                 <!-- In odoo V16, if a field has a widget='handle'
                 it change the order of the display of the tree view...
                 We so remove the widget value -->
-                <attribute name="widget" eval="False" />
+                <attribute name="widget" />
             </field>
             <field name="name" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
             <field name="name" position="before">
-                <field name="complete_name" />
+                <field name="display_name" />
             </field>
         </field>
     </record>

@@ -10,7 +10,7 @@ class TestResCompanyCode(TransactionCase):
 
     def test_complete_name(self):
         company = self._create_company("aName", "aCode")
-        self.assertEqual(company.complete_name, "aCode - aName")
+        self.assertEqual(company.display_name, "aCode - aName")
 
     def test_search_res_company(self):
         company = self._create_company("aName", "aCode")

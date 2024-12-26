@@ -11,19 +11,17 @@ class ResCompany(models.Model):
 
     code = fields.Char()
 
-    complete_name = fields.Char(compute="_compute_complete_name", store=True)
-
     _sql_constraints = [
         ("code_uniq", "unique (code)", "The company code must be unique !")
     ]
 
     @api.depends("code", "name")
-    def _compute_complete_name(self):
+    def _compute_display_name(self):
         for company in self:
             if not company.code:
-                company.complete_name = company.name
+                company.display_name = company.name
             else:
-                company.complete_name = f"{company.code} - {company.name}"
+                company.display_name = f"{company.code} - {company.name}"
 
     @api.model
     def name_search(self, name, args=None, operator="ilike", limit=100):
@@ -32,4 +30,4 @@ class ResCompany(models.Model):
         if name:
             domain = ["|", ("code", operator, name), ("name", operator, name)]
         company = self.search(domain + args, limit=limit)
-        return company.name_get()
+        return [(record.id, record.display_name) for record in company]
