@@ -22,7 +22,6 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_company_tree" />
         <field name="arch" type="xml">
-
             <field name="sequence" position="attributes">
                 <attribute name="invisible">1</attribute>
                 <!-- In odoo V16, if a field has a widget='handle'
@@ -70,5 +69,4 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
             </field>
         </field>
     </record>
-
 </odoo>
