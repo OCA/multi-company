@@ -22,26 +22,20 @@ msgid "Company"
 msgstr "Empresa"
 
 #. module: ir_config_parameter_multi_company
-#: model:ir.model.fields,field_description:ir_config_parameter_multi_company.field_ir_config_parameter__display_name
-msgid "Display Name"
-msgstr "Mostrar Nombre"
-
-#. module: ir_config_parameter_multi_company
-#: model:ir.model.fields,field_description:ir_config_parameter_multi_company.field_ir_config_parameter__id
-msgid "ID"
-msgstr "ID"
-
-#. module: ir_config_parameter_multi_company
 #: model:ir.model.constraint,message:ir_config_parameter_multi_company.constraint_ir_config_parameter_key_uniq
 msgid "Key must be unique per company."
 msgstr "La clave debe ser única por empresa."
 
 #. module: ir_config_parameter_multi_company
-#: model:ir.model.fields,field_description:ir_config_parameter_multi_company.field_ir_config_parameter____last_update
-msgid "Last Modified on"
-msgstr "Última Modificación el"
-
-#. module: ir_config_parameter_multi_company
 #: model:ir.model,name:ir_config_parameter_multi_company.model_ir_config_parameter
 msgid "System Parameter"
 msgstr "Parámetro del Sistema"
+
+#~ msgid "Display Name"
+#~ msgstr "Mostrar Nombre"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Última Modificación el"
