@@ -1,4 +1,5 @@
 from odoo import api, fields, models
+from odoo.tools.sql import column_exists
 
 
 class IrConfigMultiCompany(models.Model):
@@ -14,7 +15,10 @@ class IrConfigMultiCompany(models.Model):
         company_id = self.env.company.id
         if self.env.context.get("force_config_parameter_company"):
             company_id = self.env.context["force_config_parameter_company"].id
-        if company_id:
+        company_field_exists = column_exists(
+            self.env.cr, "ir_config_parameter", "company_id"
+        )
+        if company_id and company_field_exists:
             self.flush_model(["key", "value", "company_id"])
             self.env.cr.execute(
                 "SELECT value FROM ir_config_parameter WHERE key = %s "
