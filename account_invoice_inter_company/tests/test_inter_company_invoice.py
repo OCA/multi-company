@@ -425,7 +425,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.product_a.with_user(
             self.user_company_b.id
         ).sudo().supplier_taxes_id = False
-        # Confirm the invoice of company A
+        # Confirm the invoice for company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
         invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
@@ -454,13 +454,13 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             invoice_line.product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
-        # Cancel the invoice of company A
-        invoice_origin = "{company_name} - Canceled Invoice: {invoice_name}".format(
-            company_name=self.invoice_company_a.company_id.name,
-            invoice_name=self.invoice_company_a.name,
+        # Cancel the invoice for company A
+        invoice_origin = (
+            f"{self.invoice_company_a.company_id.name} -"
+            f"Canceled Invoice: {self.invoice_company_a.name}"
         )
         self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()
-        # Check invoices after to cancel invoice of company A
+        # Check invoices after to cancel invoice for company A
         self.assertEqual(self.invoice_company_a.state, "cancel")
         self.assertEqual(invoices[0].state, "cancel")
         self.assertEqual(invoices[0].invoice_origin, invoice_origin)
@@ -489,7 +489,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         # When a contact of the company is defined as partner,
         # it also must trigger the intercompany workflow
         self.invoice_company_a.write({"partner_id": self.child_partner_company_b.id})
-        # Confirm the invoice of company A
+        # Confirm the invoice for company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
         invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
@@ -569,7 +569,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         invoice_company_b.action_post()
 
     def _confirm_invoice_with_product(self):
-        # Confirm the invoice of company A
+        # Confirm the invoice for company A
         self.invoice_company_a.with_user(self.user_company_a.id).action_post()
         # Check destination invoice created in company B
         invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
