@@ -3,9 +3,9 @@
 # Copyright 2020 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from odoo import Command
 from odoo.exceptions import UserError
-from odoo.tests import tagged
-from odoo.tests.common import Form, TransactionCase
+from odoo.tests import Form, TransactionCase, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -89,102 +89,13 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 ],
             }
         )
-        cls.sequence_sale_journal_company_a = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Sales Journal Company A",
-                "padding": 3,
-                "prefix": "SAJ-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.sequence_misc_journaal_company_a = cls.env["ir.sequence"].create(
-            {
-                "name": "Miscellaneous Journal Company A",
-                "padding": 3,
-                "prefix": "MISC-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.sequence_purchase_journal_company_a = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Expenses Journal Company A",
-                "padding": 3,
-                "prefix": "EXJ-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.sequence_sale_journal_company_b = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Sales Journal Company B",
-                "padding": 3,
-                "prefix": "SAJ-B/%(year)s/",
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.sequence_misc_journal_company_b = cls.env["ir.sequence"].create(
-            {
-                "name": "Miscellaneous Journal Company B",
-                "padding": 3,
-                "prefix": "MISC-B/%(year)s/",
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.sequence_purchase_journal_company_b = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Expenses Journal Company B",
-                "padding": 3,
-                "prefix": "EXJ-B/%(year)s/",
-                "company_id": cls.company_b.id,
-            }
-        )
-
-        cls.sequence_misc_journal_company_a = cls.env["ir.sequence"].create(
-            {
-                "name": "Miscellaneous Journal Company A",
-                "padding": 3,
-                "prefix": "MISC-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.sequence_purchase_journal_company_a = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Expenses Journal Company A",
-                "padding": 3,
-                "prefix": "EXJ-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
-        cls.sequence_sale_journal_company_b = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Sales Journal Company B",
-                "padding": 3,
-                "prefix": "SAJ-B/%(year)s/",
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.sequence_misc_journal_company_b = cls.env["ir.sequence"].create(
-            {
-                "name": "Miscellaneous Journal Company B",
-                "padding": 3,
-                "prefix": "MISC-B/%(year)s/",
-                "company_id": cls.company_b.id,
-            }
-        )
-        cls.sequence_purchase_journal_company_b = cls.env["ir.sequence"].create(
-            {
-                "name": "Account Expenses Journal Company B",
-                "padding": 3,
-                "prefix": "EXJ-B/%(year)s/",
-                "company_id": cls.company_b.id,
-            }
-        )
 
         cls.a_sale_company_a = cls.account_obj.create(
             {
                 "code": "X2001.A",
                 "name": "Product Sales - (company A)",
                 "account_type": "income_other",
-                "company_id": cls.company_a.id,
+                "company_ids": [Command.link(cls.company_a.id)],
             }
         )
         cls.a_expense_company_a = cls.account_obj.create(
@@ -192,7 +103,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "code": "X2110.A",
                 "name": "Expenses - (company A)",
                 "account_type": "income_other",
-                "company_id": cls.company_a.id,
+                "company_ids": [Command.link(cls.company_a.id)],
             }
         )
         cls.a_bank_company_a = cls.account_obj.create(
@@ -200,7 +111,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "code": "512001.A",
                 "name": "Bank - (company A)",
                 "account_type": "asset_cash",
-                "company_id": cls.company_a.id,
+                "company_ids": [Command.link(cls.company_a.id)],
             }
         )
         cls.a_recv_company_b = cls.account_obj.create(
@@ -209,7 +120,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Debtors - (company B)",
                 "account_type": "asset_receivable",
                 "reconcile": "True",
-                "company_id": cls.company_b.id,
+                "company_ids": [Command.link(cls.company_b.id)],
             }
         )
         cls.a_pay_company_b = cls.account_obj.create(
@@ -218,7 +129,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Creditors - (company B)",
                 "account_type": "liability_payable",
                 "reconcile": "True",
-                "company_id": cls.company_b.id,
+                "company_ids": [Command.link(cls.company_b.id)],
             }
         )
         cls.a_sale_company_b = cls.account_obj.create(
@@ -226,7 +137,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "code": "X2001.B",
                 "name": "Product Sales - (company B)",
                 "account_type": "income_other",
-                "company_id": cls.company_b.id,
+                "company_ids": [Command.link(cls.company_b.id)],
             }
         )
         cls.a_expense_company_b = cls.account_obj.create(
@@ -234,7 +145,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "code": "X2110.B",
                 "name": "Expenses - (company B)",
                 "account_type": "expense",
-                "company_id": cls.company_b.id,
+                "company_ids": [Command.link(cls.company_b.id)],
             }
         )
         cls.a_bank_company_b = cls.account_obj.create(
@@ -242,7 +153,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "code": "512001.B",
                 "name": "Bank - (company B)",
                 "account_type": "asset_cash",
-                "company_id": cls.company_b.id,
+                "company_ids": [Command.link(cls.company_b.id)],
             }
         )
 
@@ -251,7 +162,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Sales Journal - (Company A)",
                 "code": "SAJ-A",
                 "type": "sale",
-                "secure_sequence_id": cls.sequence_sale_journal_company_a.id,
                 "default_account_id": cls.a_sale_company_a.id,
                 "company_id": cls.company_a.id,
             }
@@ -261,7 +171,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Sales Journal - (Company B)",
                 "code": "SAJ-A",
                 "type": "sale",
-                "secure_sequence_id": cls.sequence_sale_journal_company_b.id,
                 "default_account_id": cls.a_sale_company_b.id,
                 "company_id": cls.company_b.id,
             }
@@ -281,7 +190,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Miscellaneous Operations - (Company A)",
                 "code": "MISC-A",
                 "type": "general",
-                "secure_sequence_id": cls.sequence_misc_journal_company_a.id,
                 "company_id": cls.company_a.id,
             }
         )
@@ -290,7 +198,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Purchases Journal - (Company A)",
                 "code": "EXJ-B",
                 "type": "purchase",
-                "secure_sequence_id": cls.sequence_purchase_journal_company_a.id,
                 "default_account_id": cls.a_expense_company_a.id,
                 "company_id": cls.company_a.id,
             }
@@ -300,7 +207,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Purchases Journal - (Company B)",
                 "code": "EXJ-B",
                 "type": "purchase",
-                "secure_sequence_id": cls.sequence_purchase_journal_company_b.id,
                 "default_account_id": cls.a_expense_company_b.id,
                 "company_id": cls.company_b.id,
             }
@@ -319,7 +225,6 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Miscellaneous Operations - (Company B)",
                 "code": "MISC-B",
                 "type": "general",
-                "secure_sequence_id": cls.sequence_misc_journal_company_b.id,
                 "company_id": cls.company_b.id,
             }
         )
@@ -331,20 +236,13 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             # We have to do that because the default method added a company
             cls.product_consultant_multi_company.company_ids = False
 
-        cls.env["ir.sequence"].create(
-            {
-                "name": "Account Sales Journal Company A",
-                "prefix": "SAJ-A/%(year)s/",
-                "company_id": cls.company_a.id,
-            }
-        )
         cls.a_recv_company_a = cls.account_obj.create(
             {
                 "code": "X11002.A",
                 "name": "Debtors - (company A)",
                 "account_type": "asset_receivable",
                 "reconcile": "True",
-                "company_id": cls.company_a.id,
+                "company_ids": [Command.link(cls.company_a.id)],
             }
         )
         cls.a_pay_company_a = cls.account_obj.create(
@@ -353,7 +251,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "name": "Creditors - (company A)",
                 "account_type": "liability_payable",
                 "reconcile": "True",
-                "company_id": cls.company_a.id,
+                "company_ids": [Command.link(cls.company_a.id)],
             }
         )
 
@@ -456,7 +354,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         # Cancel the invoice for company A
         invoice_origin = (
-            f"{self.invoice_company_a.company_id.name} -"
+            f"{self.invoice_company_a.company_id.name} - "
             f"Canceled Invoice: {self.invoice_company_a.name}"
         )
         self.invoice_company_a.with_user(self.user_company_a.id).button_cancel()

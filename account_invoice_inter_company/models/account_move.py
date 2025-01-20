@@ -110,7 +110,7 @@ class AccountMove(models.Model):
                     dest_user
                 ).with_context(
                     **{"allowed_company_ids": [dest_company.id]}
-                ).check_access_rule("read")
+                ).check_access("read")
             except AccessError as e:
                 raise UserError(
                     _(
