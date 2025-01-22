@@ -146,6 +146,10 @@ class Partner(models.Model):
                 The field to propagate. E.g. "property_account_payable_id"
                 or "property_account_receivable_id".
         """
+        # Skip propagation if the field is not updated
+        if field not in self.env.context.get("updated_properties", []):
+            return
+
         sorted_partners = (self - self.filtered("company_id")).sorted(field)
         if self and not sorted_partners:
             raise UserError(
@@ -155,3 +159,14 @@ class Partner(models.Model):
             sorted_partners._propagate_multicompany_m2o(field)
         else:
             sorted_partners._propagate_multicompany_value(field)
+
+    def write(self, vals):
+        updated_properties = []
+        for key in vals:
+            if key in self._fields and self._fields[key].company_dependent:
+                updated_properties.append(key)
+        if updated_properties:
+            return super(
+                Partner, self.with_context(updated_properties=updated_properties)
+            ).write(vals)
+        return super().write(vals)
