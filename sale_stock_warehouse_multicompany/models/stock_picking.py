@@ -9,7 +9,9 @@ class StockPicking(models.Model):
 
     def _get_allowed_companies(self):
         return (
-            self.company_id | self.sudo().move_ids.sale_line_id.company_id
+            self.company_id
+            | self.sudo().move_ids.sale_line_id.company_id
+            | self.sudo().sale_id.company_id
         ) & self.env.user.company_ids
 
     def button_validate(self):
