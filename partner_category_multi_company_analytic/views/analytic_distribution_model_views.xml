@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="account_analytic_distribution_model_form_inherit" model="ir.ui.view">
+        <field name="name">account.analytic.distribution.model.inherit.form</field>
+        <field name="model">account.analytic.distribution.model</field>
+        <field
+            name="inherit_id"
+            ref="analytic.account_analytic_distribution_model_form_view"
+        />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="company_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+
+    <record
+        id="account_analytic_distribution_model_tree_view_inherit"
+        model="ir.ui.view"
+    >
+        <field name="name">account.analytic.distribution.model.inherit.tree</field>
+        <field name="model">account.analytic.distribution.model</field>
+        <field
+            name="inherit_id"
+            ref="analytic.account_analytic_distribution_model_tree_view"
+        />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="company_id" invisible="1" />
+            </field>
+        </field>
+    </record>
+</odoo>
