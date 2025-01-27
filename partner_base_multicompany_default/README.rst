@@ -59,15 +59,6 @@ To configure this module, you need to:
 #. Install some module that lets you manage partners, such as contact, sale, purchase...
    (if not already installed).
 
-Usage
-=====
-
-To use this module, you need to:
-
-#. Go to a partner's form view.
-#. Enter the "Accounting" tab.
-#. Click on "Propagate receivable/payable account to other companies".
-
 Known issues / Roadmap
 ======================
 
@@ -104,6 +95,7 @@ Contributors
 
 * Jairo Llopis (`Moduon <https://www.moduon.team/>`__)
 * Yannick Payot <yannick.payot@camptocamp.com>
+* Telmo Santos <telmo.santos@camptocamp.com>
 
 Maintainers
 ~~~~~~~~~~~
