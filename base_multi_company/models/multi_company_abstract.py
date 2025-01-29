@@ -2,6 +2,8 @@
 # Copyright 2023 Tecnativa - Pedro M. Baeza
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
+import warnings
+
 from odoo import api, fields, models
 
 
@@ -48,7 +50,12 @@ class MultiCompanyAbstract(models.AbstractModel):
             record.company_ids = [(6, 0, record.company_id.ids)]
 
     def _search_company_id(self, operator, value):
-        return [("company_ids", operator, value)]
+        domain = [("company_ids", operator, value)]
+        new_op = {"in": "=", "not in": "!="}.get(operator)
+        if new_op and (False in value or None in value):
+            # We need to workaround an ORM issue to find records with no company
+            domain = ["|", ("company_ids", new_op, False)] + domain
+        return domain
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -66,6 +73,7 @@ class MultiCompanyAbstract(models.AbstractModel):
 
     @api.model
     def _patch_company_domain(self, args):
+        warnings.warn("This method is deprecated.", DeprecationWarning, stacklevel=2)
         # In some situations the 'in' operator is used with company_id in a
         # name_search or search_read.
         # ORM does not convert to a proper WHERE clause when using the 'in' operator.
@@ -99,28 +107,3 @@ class MultiCompanyAbstract(models.AbstractModel):
             else:
                 new_args.append(arg)
         return new_args
-
-    @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
-        new_domain = self._patch_company_domain(domain)
-        return super()._name_search(
-            name,
-            domain=new_domain,
-            operator=operator,
-            limit=limit,
-            order=order,
-        )
-
-    @api.model
-    def search_read(
-        self, domain=None, fields=None, offset=0, limit=None, order=None, **read_kwargs
-    ):
-        new_domain = self._patch_company_domain(domain)
-        return super().search_read(
-            new_domain, fields, offset, limit, order, **read_kwargs
-        )
-
-    @api.model
-    def search(self, domain, offset=0, limit=None, order=None):
-        domain = self._patch_company_domain(domain)
-        return super().search(domain, offset=offset, limit=limit, order=order)
