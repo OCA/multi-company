@@ -12,26 +12,7 @@ except ImportError:
 
 
 def post_init_hook(env):
-    hooks.post_init_hook(
+    hooks.fill_company_ids(
         env,
-        "product.product_comp_rule",
         "product.template",
     )
-
-
-def uninstall_hook(env):
-    """Restore product rule to base value.
-
-    Args:
-        env (Environment): Environment to use for operation.
-    """
-    rule = env.ref("product.product_comp_rule")
-    if rule:  # safeguard if it's deleted
-        rule.write(
-            {
-                "domain_force": (
-                    " ['|', ('company_id', 'parent_of', company_ids),"
-                    " ('company_id', '=', False)]"
-                ),
-            }
-        )

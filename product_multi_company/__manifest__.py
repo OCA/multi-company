@@ -12,5 +12,4 @@
     "depends": ["base_multi_company", "product"],
     "data": ["views/product_template_view.xml"],
     "post_init_hook": "post_init_hook",
-    "uninstall_hook": "uninstall_hook",
 }
