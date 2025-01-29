@@ -48,79 +48,29 @@ class MultiCompanyAbstract(models.AbstractModel):
             record.company_ids = [(6, 0, record.company_id.ids)]
 
     def _search_company_id(self, operator, value):
-        return [("company_ids", operator, value)]
+        domain = [("company_ids", operator, value)]
+        new_op = {"in": "=", "not in": "!="}.get(operator)
+        if new_op and (False in value or None in value):
+            # We need to workaround an ORM issue to find records with no company
+            domain = ["|", ("company_ids", new_op, False)] + domain
+        return domain
+
+    def _multicompany_patch_vals(self, vals):
+        """Patch vals to remove company_id and company_ids duplicity."""
+        if "company_ids" in vals and "company_id" in vals:
+            company_id = vals.pop("company_id")
+            if company_id:
+                vals["company_ids"].append(fields.Command.link(company_id))
+        return vals
 
     @api.model_create_multi
     def create(self, vals_list):
         """Discard changes in company_id field if company_ids has been given."""
         for vals in vals_list:
-            if "company_ids" in vals and "company_id" in vals:
-                del vals["company_id"]
+            self._multicompany_patch_vals(vals)
         return super().create(vals_list)
 
     def write(self, vals):
         """Discard changes in company_id field if company_ids has been given."""
-        if "company_ids" in vals and "company_id" in vals:
-            del vals["company_id"]
+        self._multicompany_patch_vals(vals)
         return super().write(vals)
-
-    @api.model
-    def _patch_company_domain(self, args):
-        # In some situations the 'in' operator is used with company_id in a
-        # name_search or search_read.
-        # ORM does not convert to a proper WHERE clause when using the 'in' operator.
-        # e.g: ```
-        #     WHERE "res_partner"."id" in (SELECT "res_partner_id"
-        #     FROM "res_company_res_partner_rel" WHERE "res_company_id" IN (False, 1)
-        # ```
-        # patching the args to expand the cumbersome args int a OR clause fix
-        # the issue.
-        # e.g: ```
-        #     WHERE "res_partner"."id" not in (SELECT "res_partner_id"
-        #             FROM "res_company_res_partner_rel"
-        #             where "res_partner_id" is not null)
-        #         OR  ("res_partner"."id" in (SELECT "res_partner_id"
-        #             FROM "res_company_res_partner_rel" WHERE "res_company_id" IN 1)
-        # ```
-        new_args = []
-        if args is None:
-            args = []
-        for arg in args:
-            if (isinstance(arg, list) or isinstance(arg, tuple)) and list(arg[:2]) == [
-                "company_id",
-                "in",
-            ]:
-                fix = []
-                for _i in range(len(arg[2]) - 1):
-                    fix.append("|")
-                for val in arg[2]:
-                    fix.append(["company_id", "=", val])
-                new_args.extend(fix)
-            else:
-                new_args.append(arg)
-        return new_args
-
-    @api.model
-    def _name_search(self, name, domain=None, operator="ilike", limit=None, order=None):
-        new_domain = self._patch_company_domain(domain)
-        return super()._name_search(
-            name,
-            domain=new_domain,
-            operator=operator,
-            limit=limit,
-            order=order,
-        )
-
-    @api.model
-    def search_read(
-        self, domain=None, fields=None, offset=0, limit=None, order=None, **read_kwargs
-    ):
-        new_domain = self._patch_company_domain(domain)
-        return super().search_read(
-            new_domain, fields, offset, limit, order, **read_kwargs
-        )
-
-    @api.model
-    def search(self, domain, offset=0, limit=None, order=None):
-        domain = self._patch_company_domain(domain)
-        return super().search(domain, offset=offset, limit=limit, order=order)

@@ -36,11 +36,11 @@ Abstract
 
 Odoo traditional implementation of multi-company:
 
--  Some models contain a field named Company (company_id) that allows to
-   set one company or None in order to:
+- Some models contain a field named Company (company_id) that allows to
+  set one company or None in order to:
 
-   -  Limit access to that company if set.
-   -  not limiting access to any company if not set.
+  - Limit access to that company if set.
+  - not limiting access to any company if not set.
 
 This module changes that in order to introduce a finer company access.
 e.g.: If you want to give record access to company A and B but not for
@@ -79,13 +79,14 @@ Authors
 Contributors
 ------------
 
--  Dave Lasley <dave@laslabs.com>
--  Pedro M. Baeza <pedro.baeza@tecnativa.com>
--  Laurent Mignon <laurent.mignon@acsone.eu>
--  Cédric Pigeon <cedric.pigeon@acsone.eu>
--  Rodrigo Ferreira <rodrigosferreira91@gmail.com>
--  Florian da Costa <florian.dacosta@akretion.com>
--  Denis Roussel <denis.roussel@acsone.eu>
+- Dave Lasley <dave@laslabs.com>
+- Pedro M. Baeza <pedro.baeza@tecnativa.com>
+- Laurent Mignon <laurent.mignon@acsone.eu>
+- Cédric Pigeon <cedric.pigeon@acsone.eu>
+- Rodrigo Ferreira <rodrigosferreira91@gmail.com>
+- Florian da Costa <florian.dacosta@akretion.com>
+- Denis Roussel <denis.roussel@acsone.eu>
+- Jairo Llopis (``Moduon <https://www.moduon.team/>``\ \_\_)
 
 Maintainers
 -----------
