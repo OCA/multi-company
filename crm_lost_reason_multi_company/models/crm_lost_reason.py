@@ -7,12 +7,14 @@ from odoo import fields, models
 class CrmLostReason(models.Model):
 
     _inherit = "crm.lost.reason"
+    _check_company_auto = True
 
     company_id = fields.Many2one(
         "res.company",
         "Company",
-        default=lambda self: self.env["res.company"]._company_default_get(
-            "crm.lost.reason"
-        ),
         ondelete="cascade",
+        help="Company that uses this lost reason. "
+        "Other companies will not be able to see or use it.",
+        index=True,
+        default=lambda self: self.env.company,
     )
