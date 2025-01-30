@@ -11,4 +11,5 @@
     "data": ["views/ir_config_parameter_view.xml", "security/parameter_security.xml"],
     "images": [],
     "installable": True,
+    "pre_init_hook": "pre_init_hook",
 }
