@@ -5,7 +5,7 @@
 {
     "name": "Company Active",
     "summary": "Add the 'active' feature on company model",
-    "version": "16.0.1.0.0",
+    "version": "15.0.1.0.0",
     "category": "Tools",
     "author": "GRAP, Odoo Community Association (OCA)",
     "maintainers": ["legalsylvain"],
