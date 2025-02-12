@@ -16,19 +16,29 @@ class MailMessage(models.Model):
                 current_object = self.env[vals["model"]].browse(vals["res_id"])
                 if hasattr(current_object, "company_id") and current_object.company_id:
                     vals["company_id"] = current_object.company_id.id
+
+            if not vals.get("company_id") and self.env.context.get("active_id") and \
+               self.env.context.get("active_model"):
+                vals["model"] = self.env.context.get("active_model")
+                vals["res_id"] = self.env.context.get("active_id")
+                current_object = self.env[vals["model"]].browse(vals["res_id"])
+                if hasattr(current_object, "company_id") and current_object.company_id:
+                    vals["company_id"] = current_object.company_id.id
+
             if not vals.get("company_id"):
                 vals["company_id"] = self.env.user.company_id.id
+
             # Search SMTP server with company_id or shared SMTP server
             if not vals.get("mail_server_id"):
                 vals["mail_server_id"] = (
                     self.sudo()
                     .env["ir.mail_server"]
                     .search(
-                        ['|', ("company_id", "=", vals.get("company_id", False)),
+                        ['|', ("company_id", "=", vals["company_id"]),
                             ("company_id", "=", False)],
                         order="sequence",
                         limit=1,
                     )
                     .id
                 )
-        return super(MailMessage, self).create(vals)
+        return super(MailMessage, self).create(values_list)
