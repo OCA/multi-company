@@ -25,7 +25,8 @@ class ProductProduct(models.Model):
         # use sudo to evaluate the access rule as we may not have the access
         # rigth when evaluating the field intercompany_pricelist_id.company_id
         seller_ids = sellers.sudo().filtered_domain(domain).ids
-        return sellers.browse(seller_ids)
+        # return the sellers in the same order as the original sellers
+        return sellers.browse(seller_ids).sorted(key=lambda s: sellers.ids.index(s.id))
 
     def _get_intercompany_supplier_info_domain(self, pricelist):
         return [
