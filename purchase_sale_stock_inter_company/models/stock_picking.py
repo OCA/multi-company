@@ -62,6 +62,8 @@ class StockPicking(models.Model):
 
     def _action_done(self):
         # Only DropShip pickings
+        if not self.env.company.link_purchase_sale_picking:
+            return super()._action_done()
         po_picks = self.browse()
         for pick in self.filtered(
             lambda x: x.location_dest_id.usage == "customer"

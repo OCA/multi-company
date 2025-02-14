@@ -18,3 +18,12 @@ class InterCompanyRulesConfig(models.TransientModel):
         "based on Purchase Orders made to this company.",
         readonly=False,
     )
+
+    link_purchase_sale_picking = fields.Boolean(
+        related="company_id.link_purchase_sale_picking",
+        string="Link Purchase and Sale Pickings",
+        help="If checked, the pickings of the purchase and sale "
+        "orders will be linked together. This will validate "
+        "the purchase pickings when the sale pickings are validated.",
+        readonly=False,
+    )

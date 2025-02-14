@@ -55,6 +55,8 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             line_form.product_qty = 3.0
             line_form.price_unit = 450.0
         cls.kit_po = po.save()
+        cls.company_a.write({"link_purchase_sale_picking": True})
+        cls.company_b.write({"link_purchase_sale_picking": True})
 
     def test_purchase_sale_stock_inter_company_mrp_sale_kit(self):
         self.kit_po.with_user(self.user_company_a).button_approve()

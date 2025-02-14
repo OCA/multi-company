@@ -16,3 +16,9 @@ class ResCompany(models.Model):
         help="Default value to set on Sale Orders that "
         "will be created based on Purchase Orders made to this company",
     )
+    link_purchase_sale_picking = fields.Boolean(
+        string="Link Purchase and Sale Pickings",
+        help="If checked, the pickings of the purchase and sale "
+        "orders will be linked together. This will validate "
+        "the purchase pickings when the sale pickings are validated.",
+    )

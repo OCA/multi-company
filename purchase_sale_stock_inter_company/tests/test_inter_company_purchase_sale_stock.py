@@ -3,7 +3,7 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
-
+from odoo.tests.common import Form
 
 from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
     TestPurchaseSaleInterCompany,
@@ -24,8 +24,22 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         )
 
     @classmethod
+    def _create_purchase_order_with_product(cls, partner):
+        po = Form(cls.env["purchase.order"])
+        po.company_id = cls.company_a
+        po.partner_id = partner
+
+        cls.product_a.invoice_policy = "order"
+
+        with po.order_line.new() as line_form:
+            line_form.product_id = cls.product_a
+            line_form.product_qty = 280
+        return po.save()
+
+    @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context={"test_queue_job_no_delay": 1})
         # Configure 2 Warehouse per company
         cls.warehouse_a = cls.env["stock.warehouse"].search(
             [("company_id", "=", cls.company_a.id)]
@@ -37,6 +51,26 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         )
         cls.warehouse_d = cls._create_warehouse("CB-WD", cls.company_b)
         cls.company_b.warehouse_id = cls.warehouse_c
+        cls.product_a = cls.env["product.product"].create(
+            {
+                "name": "Product A",
+                "type": "product",
+                "categ_id": cls.env.ref("product.product_category_all").id,
+            }
+        )
+        # Configure User
+        cls.user_company_a.groups_id += cls.env.ref("stock.group_stock_user")
+        cls._configure_user(cls.user_company_a)
+        cls._configure_user(cls.user_company_b)
+
+        # Configure Company B (the supplier)
+        cls.company_b.so_from_po = True
+        cls.company_b.sale_auto_validation = 1
+
+        cls.intercompany_sale_user_id.company_ids |= cls.company_a
+        cls.company_b.intercompany_sale_user_id = cls.intercompany_sale_user_id
+        companies = cls.env["res.company"].search([])
+        companies.write({"link_purchase_sale_picking": True})
 
     def test_deliver_to_warehouse_a(self):
         self.purchase_company_a.picking_type_id = self.warehouse_a.in_type_id
@@ -66,6 +100,53 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             self.purchase_company_a.picking_type_id.warehouse_id.partner_id,
         )
         self.assertEqual(sale.warehouse_id, self.warehouse_c)
+
+    def test_purchase_sale_stock_inter_company_without_linking_pickings(self):
+        self.company_b.link_purchase_sale_picking = False
+        self.partner_company_b.company_id = self.company_a
+        purchase = self._create_purchase_order_with_product(self.partner_company_b)
+        purchase.with_user(self.user_company_a).sudo().button_approve()
+        sale = (
+            self.env["sale.order"]
+            .with_user(self.user_company_b)
+            .search([("auto_purchase_order_id", "=", purchase.id)])
+        )
+        sale.action_confirm()
+        self.assertEqual(
+            sale.partner_shipping_id,
+            purchase.picking_type_id.warehouse_id.partner_id,
+        )
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
+        purchase_picking_id = purchase.picking_ids
+        sale_picking_id = sale.picking_ids
+        for move_id in sale_picking_id.move_ids:
+            move_id.quantity_done = move_id.product_uom_qty
+        sale_picking_id._action_done()
+        self.assertEqual(purchase_picking_id.state, "assigned")
+        self.assertEqual(sale_picking_id.state, "done")
+
+    def test_purchase_sale_stock_inter_company_linking_pickings(self):
+        self.partner_company_b.company_id = self.company_a
+        purchase = self._create_purchase_order_with_product(self.partner_company_b)
+        purchase.with_user(self.user_company_a).sudo().button_approve()
+        sale = (
+            self.env["sale.order"]
+            .with_user(self.user_company_b)
+            .search([("auto_purchase_order_id", "=", purchase.id)])
+        )
+        sale.action_confirm()
+        self.assertEqual(
+            sale.partner_shipping_id,
+            purchase.picking_type_id.warehouse_id.partner_id,
+        )
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
+        purchase_picking_id = purchase.picking_ids
+        sale_picking_id = sale.picking_ids
+        for move_id in sale_picking_id.move_ids:
+            move_id.quantity_done = move_id.product_uom_qty
+        sale_picking_id._action_done()
+        self.assertEqual(purchase_picking_id.state, "done")
+        self.assertEqual(sale_picking_id.state, "done")
 
     def test_sync_intercompany_picking_qty_with_backorder(self):
         self.product.type = "product"
