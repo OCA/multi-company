@@ -9,7 +9,11 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <form>
-                <field name="multicompany_data" widget="multicompany_data" />
+                <field
+                    name="multicompany_data"
+                    widget="multicompany_data"
+                    class="col-12"
+                />
                 <footer>
                     <button
                         string="Apply"
@@ -33,7 +37,6 @@
         <field name="name">res.partner.form (in multicompany_configuration)</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form" />
-        <field name="groups_id" eval="[(4, ref('base.group_multi_company'))]" />
         <field name="arch" type="xml">
             <div name="button_box" position="inside">
                 <button
@@ -41,6 +44,7 @@
                     type="object"
                     string="Multicompany Data"
                     icon="fa-building"
+                    groups="base.group_multi_company"
                 />
             </div>
         </field>

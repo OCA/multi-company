@@ -25,7 +25,11 @@
         <field name="priority">99</field>
         <field name="arch" type="xml">
             <form>
-                <field name="multicompany_data" widget="multicompany_data" />
+                <field
+                    name="multicompany_data"
+                    widget="multicompany_data"
+                    class="col-12"
+                />
                 <footer>
                     <button
                         string="Apply"

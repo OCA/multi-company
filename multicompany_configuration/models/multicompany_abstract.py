@@ -71,9 +71,18 @@ class MulticompanyAbstract(models.AbstractModel):
         result = {
             "type": field.type,
             "attrs": attrs,
+            "name": self.env["ir.model.fields"]
+            .get_field_string(self._name)
+            .get(field.name)
+            or field.name,
         }
+        if isinstance(field, fields._Relational):
+            result["relation"] = field.comodel_name
+            result["domain"] = field.domain
         if isinstance(field, fields.Float):
             result["digits"] = json.dumps(field.get_digits(self.env))
+        if isinstance(field, fields.Selection):
+            result["selection"] = field.selection
         return result
 
     def _get_field_attrs(self, field):

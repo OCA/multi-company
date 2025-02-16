@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+
+   <t t-name="multicompany_configuration.MultiCompanyDataField" owl="1">
+        <t t-foreach="props.value.companies" t-as="company" t-key="company">
+            <div class="o_group row align-items-start">
+                <div
+                    class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small"
+                    t-esc="company[1]"
+                />
+                <div class="o_inner_group grid col-lg-12">
+                <t t-foreach="props.value.data[company[0]]" t-as="field" t-key="field">
+                    <div
+                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"
+                        >
+                        <div
+                                class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                style=""
+                            >
+                            <label class="o_form_label o_td_label" t-att-for="field">
+                                <t t-esc="props.value.fields[field].name" />
+                            </label>
+                        </div>
+                        <div
+                                class="o_cell flex-grow-1 flex-sm-grow-0"
+                                style="width: 100%;"
+                            >
+                            <Field t-props="field_props(company, field)" />
+                        </div>
+                    </div>
+                </t>
+                </div>
+            </div>
+        </t>
+    <!--<Field t-props="field_props" t-if="props.record.data.value_type" />-->
+
+    </t>
+</templates>
