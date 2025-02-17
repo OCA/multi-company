@@ -9,7 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//setting[@id='inter_company_oca']" position='inside'>
                 <div class="text-decoration-underline mt8 mb8">Purchase / Sale</div>
-                <div class="content-group">
+                <div id="purchase_sale_inter_company" class="content-group">
                     <div>
                         <label
                             string="Sale from purchase"

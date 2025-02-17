@@ -4,7 +4,7 @@
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 from odoo.exceptions import UserError
-from odoo.tests.common import Form
+from odoo.tests import Form
 
 from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice import (
     TestAccountInvoiceInterCompanyBase,
@@ -68,6 +68,18 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         cls.intercompany_sale_user_id.company_ids |= cls.company_a
         cls.company_b.intercompany_sale_user_id = cls.intercompany_sale_user_id
 
+        # Create a generic pricelist
+        pricelist = cls.env["product.pricelist"].create(
+            {
+                "name": "Generic Pricelist USD",
+                "company_id": False,
+                "currency_id": cls.env.ref("base.USD").id,
+            }
+        )
+
+        # Create a test pricelist to use for company A
+        cls.partner_company_a.specific_property_product_pricelist = pricelist
+
         # Configure User
         cls._configure_user(cls.user_company_a)
         cls._configure_user(cls.user_company_b)
@@ -81,7 +93,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "name": "test_account_income",
                 "code": "987",
                 "account_type": "income",
-                "company_id": cls.company_b.id,
+                "company_ids": [(6, 0, [cls.company_a.id])],
             }
         )
         expense_account = cls.env["account.account"].create(
@@ -90,7 +102,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "code": "765",
                 "account_type": "expense",
                 "reconcile": True,
-                "company_id": cls.company_a.id,
+                "company_ids": [(6, 0, [cls.company_a.id])],
             }
         )
         # Create journal
@@ -99,7 +111,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "name": "Customer Invoices - Test",
                 "code": "TEST1",
                 "type": "sale",
-                "company_id": cls.company_b.id,
+                "company_id": cls.company_a.id,
                 "default_account_id": income_account.id,
             }
         )
@@ -341,7 +353,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         purchase = self.purchase_company_a
         sale = self._approve_po()
         # Now, the SO is in Locked state
-        self.assertEqual(sale.state, "done")
+        self.assertEqual(sale.locked, True)
+        self.assertEqual(sale.state, "sale")
         # Without `allow_update_locked_sales` ctx
         with self.assertRaisesRegex(
             UserError,

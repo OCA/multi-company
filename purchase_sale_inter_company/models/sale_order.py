@@ -17,8 +17,11 @@ class SaleOrder(models.Model):
     )
 
     def action_confirm(self):
+        self._sync_auto_purchase_order_id_price_unit()
+        return super().action_confirm()
+
+    def _sync_auto_purchase_order_id_price_unit(self):
         for order in self.filtered("auto_purchase_order_id"):
             for line in order.order_line.sudo():
                 if line.auto_purchase_line_id:
                     line.auto_purchase_line_id.price_unit = line.price_unit
-        return super().action_confirm()

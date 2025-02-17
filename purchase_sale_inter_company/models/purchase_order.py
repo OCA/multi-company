@@ -29,7 +29,7 @@ class PurchaseOrder(models.Model):
 
     def button_approve(self, force=False):
         """Generate inter company sale order base on conditions."""
-        res = super().button_approve(force)
+        res = super().button_approve(force=force)
         for purchase_order in self.sudo():
             # get the company from partner then trigger action of
             # intercompany relation
@@ -76,7 +76,7 @@ class PurchaseOrder(models.Model):
         self._check_intercompany_product(dest_company)
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
-        company_partner = self.company_id.partner_id
+        company_partner = self.company_id.partner_id.with_user(intercompany_user)
         # check pricelist currency should be same with PO/SO document
         if self.currency_id.id != (
             company_partner.property_product_pricelist.currency_id.id
