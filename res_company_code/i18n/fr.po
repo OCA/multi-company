@@ -27,11 +27,6 @@ msgid "Companies"
 msgstr "Sociétés"
 
 #. module: res_company_code
-#: model:ir.model.fields,field_description:res_company_code.field_res_company__complete_name
-msgid "Complete Name"
-msgstr "Nom Complet"
-
-#. module: res_company_code
 #: model:ir.model,name:res_company_code.model_ir_http
 msgid "HTTP Routing"
 msgstr "Routage HTTP"
@@ -40,3 +35,6 @@ msgstr "Routage HTTP"
 #: model:ir.model.constraint,message:res_company_code.constraint_res_company_code_uniq
 msgid "The company code must be unique !"
 msgstr "Le code de la société doit être unique !"
+
+#~ msgid "Complete Name"
+#~ msgstr "Nom Complet"
