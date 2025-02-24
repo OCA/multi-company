@@ -16,12 +16,28 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 4.3.2\n"
 
-#. module: res_partner_category_multi_company
-#: model:ir.model.fields,field_description:res_partner_category_multi_company.field_res_partner_category__company_id
+#. module: partner_category_multi_company
+#: model:ir.model.fields,field_description:partner_category_multi_company.field_res_partner_category__company_id
 msgid "Company"
 msgstr "Empresa"
 
-#. module: res_partner_category_multi_company
-#: model:ir.model,name:res_partner_category_multi_company.model_res_partner_category
+#. module: partner_category_multi_company
+#: model:ir.model,name:partner_category_multi_company.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: partner_category_multi_company
+#: model:ir.model.fields,field_description:partner_category_multi_company.field_res_partner_category__parent_id
+msgid "Parent Category"
+msgstr ""
+
+#. module: partner_category_multi_company
+#: model:ir.model,name:partner_category_multi_company.model_res_partner_category
 msgid "Partner Tags"
 msgstr "Etiquetas de Parceiro"
+
+#. module: partner_category_multi_company
+#: model:ir.model.fields,field_description:partner_category_multi_company.field_res_partner__category_id
+#: model:ir.model.fields,field_description:partner_category_multi_company.field_res_users__category_id
+msgid "Tags"
+msgstr ""
