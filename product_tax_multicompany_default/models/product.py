@@ -1,6 +1,7 @@
 # Copyright 2017 Carlos Dauden - Tecnativa <carlos.dauden@tecnativa.com>
 # Copyright 2018 Vicent Cubells - Tecnativa <vicent.cubells@tecnativa.com>
 # Copyright 2023 Eduardo de Miguel - Moduon <edu@moduon.team>
+# Copyright 2025 Sergio Bustamante - FactorLibre <sergio.bustamante@factorlibre.com>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from typing import List
@@ -101,6 +102,8 @@ class ProductTemplate(models.Model):
 
     def set_multicompany_taxes(self):
         self.ensure_one()
+        ignored_company_ids = self.env.context.get("ignored_company_ids", [])
+        ignored_taxes_id = self._get_ignored_taxes_id(ignored_company_ids) or []
         user_company = self.env.company
         customer_tax = self.taxes_id
         customer_tax_ids = customer_tax.ids
@@ -119,8 +122,8 @@ class ProductTemplate(models.Model):
         )
         # Clean taxes from other companies (cannot replace it with sudo)
         self._delete_product_taxes(
-            excl_customer_tax_ids=customer_tax_ids,
-            excl_supplier_tax_ids=supplier_tax_ids,
+            excl_customer_tax_ids=customer_tax_ids + ignored_taxes_id,
+            excl_supplier_tax_ids=supplier_tax_ids + ignored_taxes_id,
         )
         # Use list() to copy list
         match_customer_tax_ids = (
@@ -133,7 +136,10 @@ class ProductTemplate(models.Model):
             if default_supplier_tax_ids != supplier_tax_ids
             else None
         )
-        for company in obj.env["res.company"].search([("id", "!=", user_company.id)]):
+        company_ids = ignored_company_ids + [user_company.id]
+        if self.env.context.get("from_create", False):
+            company_ids = [user_company.id]
+        for company in obj.env["res.company"].search([("id", "not in", company_ids)]):
             customer_tax_ids.extend(
                 obj.taxes_by_company(
                     "account_sale_tax_id", company, match_customer_tax_ids
@@ -146,8 +152,8 @@ class ProductTemplate(models.Model):
             )
         self.write(
             {
-                "taxes_id": [(6, 0, customer_tax_ids)],
-                "supplier_taxes_id": [(6, 0, supplier_tax_ids)],
+                "taxes_id": [[4, tax] for tax in customer_tax_ids],
+                "supplier_taxes_id": [[4, tax] for tax in supplier_tax_ids],
             }
         )
 
@@ -155,8 +161,19 @@ class ProductTemplate(models.Model):
     def create(self, vals_list):
         new_products = super().create(vals_list)
         for product in new_products:
-            product.set_multicompany_taxes()
+            product.with_context(from_create=True).set_multicompany_taxes()
         return new_products
+
+    def _get_ignored_taxes_id(self, ignored_company_ids):
+        ignored_taxes_ids = False
+        if ignored_company_ids:
+            ignored_taxes_ids = (
+                self.env["account.tax"]
+                .sudo()
+                .search([("company_id", "in", ignored_company_ids)])
+                .ids
+            )
+        return ignored_taxes_ids
 
 
 class ProductProduct(models.Model):

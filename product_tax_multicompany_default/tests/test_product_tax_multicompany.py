@@ -265,3 +265,49 @@ class TestsProductTaxMulticompany(TransactionCase):
         self.assertTrue(product.divergent_company_taxes)
         product.set_multicompany_taxes()
         self.assertFalse(product.divergent_company_taxes)
+
+    @users("user_12")
+    def test_set_multicompany_taxes_ignored_company_ids(self):
+        # If purchase module is installed
+        # add purchase manager group to user_12
+        # to access the supplier_taxes_id field in the product view
+        try:
+            self.env.ref(
+                "purchase.group_purchase_manager", raise_if_not_found=True
+            ).sudo().users = [(4, self.user_12.id)]
+        except ValueError as e:
+            logging.info(e)  # Skipping configuration of purchase module
+        # # Create product with empty taxes
+        pf_u3_c1 = Form(self.env["product.product"].with_company(self.company_1))
+        pf_u3_c1.name = "Testing Product"
+        pf_u3_c1.taxes_id.clear()
+        pf_u3_c1.supplier_taxes_id.clear()
+        product = pf_u3_c1.save()
+        self.assertFalse(
+            product.sudo().taxes_id,
+            "Taxes not empty when initializing product",
+        )
+        # Fill taxes
+        pf_u3_c1.taxes_id.add(self.tax_30_cc1)
+        pf_u3_c1.supplier_taxes_id.add(self.tax_30_sc1)
+        product = pf_u3_c1.save()
+        self.assertEqual(
+            product.sudo().taxes_id,
+            self.tax_30_cc1,
+            "Taxes has been propagated before calling set_multicompany_taxes",
+        )
+        product.with_context(ignored_company_ids=self.company_2.ids).with_company(
+            self.company_1
+        ).set_multicompany_taxes()
+        company_1_taxes_fill = product.sudo().taxes_id.filtered(
+            lambda t: t.company_id == self.company_1
+        )
+        company_2_taxes_fill = product.sudo().taxes_id.filtered(
+            lambda t: t.company_id == self.company_2
+        )
+        self.assertEqual(
+            company_1_taxes_fill,
+            self.tax_30_cc1,
+            "Incorrect taxes when setting it for the first time in Company 1",
+        )
+        self.assertFalse(company_2_taxes_fill)
