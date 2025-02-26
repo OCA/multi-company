@@ -2,22 +2,13 @@
 # Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html.html
 
-from odoo import Command, _, api, fields, models
+from odoo import Command, _, api, models
 from odoo.exceptions import ValidationError
 
 
 class ResPartner(models.Model):
     _inherit = ["multi.company.abstract", "res.partner"]
     _name = "res.partner"
-
-    # This is needed because after installation this field becomes
-    # unsearchable and unsortable. Which is not explicitly changed in this
-    # module and as such can be considered an undesired yield.
-    display_name = fields.Char(
-        compute="_compute_display_name",
-        store=True,
-        index=True,
-    )
 
     @api.model_create_multi
     def create(self, vals_list):
