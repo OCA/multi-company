@@ -35,11 +35,6 @@ msgid "Contact"
 msgstr "Contacto"
 
 #. module: partner_multi_company
-#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__display_name
-msgid "Display Name"
-msgstr "Nombre mostrado"
-
-#. module: partner_multi_company
 #. odoo-python
 #: code:addons/partner_multi_company/models/res_partner.py:0
 #, python-format
@@ -51,6 +46,9 @@ msgstr ""
 #: model:ir.model,name:partner_multi_company.model_res_users
 msgid "User"
 msgstr "Usuario"
+
+#~ msgid "Display Name"
+#~ msgstr "Nombre mostrado"
 
 #~ msgid "Users"
 #~ msgstr "Usuarios"
