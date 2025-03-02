@@ -66,3 +66,27 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             self.purchase_company_a.picking_type_id.warehouse_id.partner_id,
         )
         self.assertEqual(sale.warehouse_id, self.warehouse_c)
+
+    def test_sync_intercompany_picking_qty_with_backorder(self):
+        self.product.type = "product"
+        self.partner_company_b.company_id = False
+        purchase = self.purchase_company_a
+        sale = self._approve_po()
+        sale.action_confirm()
+        sale_picking = sale.picking_ids[0]
+        sale_picking.sudo().action_confirm()
+        sale_picking.move_ids.quantity_done = 1.0
+        res_dict = sale_picking.sudo().button_validate()
+        self.env["stock.backorder.confirmation"].with_context(
+            **res_dict["context"]
+        ).process()
+        sale_picking2 = sale.picking_ids.filtered(lambda p: p.state != "done")
+        self.assertEqual(purchase.picking_ids[0].move_line_ids.qty_done, 1)
+        self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 0)
+        self.assertEqual(purchase.order_line.qty_received, 1)
+        sale_picking2.move_ids.quantity_done = 2.0
+        sale_picking2.sudo().action_confirm()
+        sale_picking2.sudo().button_validate()
+        self.assertEqual(purchase.picking_ids[0].move_line_ids.qty_done, 1)
+        self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 2)
+        self.assertEqual(purchase.order_line.qty_received, 3)
