@@ -52,7 +52,7 @@ class StockPicking(models.Model):
                     if po_move_line.reserved_qty >= qty_done:
                         po_move_line.qty_done = qty_done
                         qty_done = 0.0
-                    else:
+                    elif po_move_line.reserved_qty:
                         po_move_line.qty_done = po_move_line.reserved_qty
                         qty_done -= po_move_line.reserved_qty
                     po_picks |= po_move_line.picking_id
