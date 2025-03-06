@@ -64,6 +64,9 @@ Contributors
 - Sylvain LE GAL <https://twitter.com/legalsylvain>
 - Julien WESTE
 - Quentin DUPONT
+- `Heliconia Solutions Pvt. Ltd. <https://www.heliconia.io>`__
+
+  - Bhavesh Heliconia
 
 Maintainers
 -----------
