@@ -14,8 +14,12 @@ class ProductCategory(models.Model):
         string="Company",
         index=True,
     )
-    parent_id = fields.Many2one(check_company=True)
-    child_id = fields.One2many(check_company=True)
+    parent_id = fields.Many2one(
+        check_company=True,
+    )
+    child_id = fields.One2many(
+        check_company=True,
+    )
 
     @api.model
     def _search(self, domain, *args, **kwargs):
