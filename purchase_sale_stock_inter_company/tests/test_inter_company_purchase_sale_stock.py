@@ -90,3 +90,27 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(purchase.picking_ids[0].move_line_ids.qty_done, 1)
         self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 2)
         self.assertEqual(purchase.order_line.qty_received, 3)
+
+    def test_purchase_sale_with_two_products_no_backorder(self):
+        self.product.type = "product"
+        self.partner_company_b.company_id = False
+        self.product2 = self.env["product.product"].create(
+            {"name": "Product 2", "type": "product"}
+        )
+        self.purchase_company_a.write(
+            {
+                "order_line": [
+                    (0, 0, {"product_id": self.product2.id, "product_qty": 1}),
+                ]
+            }
+        )
+        sale = self._approve_po()
+        sale.action_confirm()
+        sale_picking = sale.picking_ids
+        self.assertEqual(len(sale.picking_ids), 1)
+        sale_picking.sudo().action_confirm()
+        for move in sale_picking.move_ids:
+            move.quantity_done = move.product_uom_qty
+        sale_picking.sudo().button_validate()
+        self.assertEqual(len(self.purchase_company_a.picking_ids), 1)
+        self.assertEqual(len(self.purchase_company_a.picking_ids.move_line_ids), 2)
