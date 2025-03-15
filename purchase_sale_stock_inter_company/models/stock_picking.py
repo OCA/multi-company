@@ -58,7 +58,7 @@ class StockPicking(models.Model):
                     po_picks |= po_move_line.picking_id
                 if qty_done and product_po_mls:
                     product_po_mls[-1:].qty_done += qty_done
-            return po_picks
+        return po_picks
 
     def _action_done(self):
         # Only DropShip pickings
