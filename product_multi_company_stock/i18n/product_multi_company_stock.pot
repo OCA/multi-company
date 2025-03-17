@@ -1,0 +1,35 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_multi_company_stock
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: product_multi_company_stock
+#: code:addons/product_multi_company_stock/models/product_template.py:0
+#, python-format
+msgid ""
+"Cannot remove the following companies because there are stock moves "
+"associated with them: %s"
+msgstr ""
+
+#. module: product_multi_company_stock
+#: code:addons/product_multi_company_stock/models/product_template.py:0
+#, python-format
+msgid ""
+"Cannot remove the following companies because there are stock quantities "
+"associated with them: %s"
+msgstr ""
+
+#. module: product_multi_company_stock
+#: model:ir.model,name:product_multi_company_stock.model_product_template
+msgid "Product Template (Multi-Company)"
+msgstr ""
