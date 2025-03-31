@@ -196,10 +196,8 @@ class AccountMove(models.Model):
 
     def _create_destination_account_move_line(self, dest_invoice, dest_company):
         dest_move_line_data = []
-        for src_line in self.invoice_line_ids.filtered(
-            lambda x: x.display_type == "product"
-        ):
-            if not src_line.product_id:
+        for src_line in self.invoice_line_ids:
+            if src_line.display_type == "product" and not src_line.product_id:
                 raise UserError(
                     self.env._(
                         "The invoice line '%(line_name)s' doesn't have a product. "
@@ -365,6 +363,8 @@ class AccountMoveLine(models.Model):
             "move_id": dest_move.id,
             "sequence": self.sequence,
             "auto_invoice_line_id": self.id,
+            "name": self.name,
+            "display_type": self.display_type,
         }
         # Compatibility with module account_invoice_start_end_dates
         if hasattr(self, "start_date") and hasattr(self, "end_date"):

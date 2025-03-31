@@ -302,7 +302,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             line_form.quantity = 1
             line_form.product_uom_id = cls.env.ref("uom.product_uom_hour")
             line_form.account_id = cls.a_sale_company_a
-            line_form.name = "Service Multi Company"
+            line_form.name = "Service Multi Company test"
             line_form.price_unit = 450.0
         cls.invoice_company_a = cls.invoice_company_a.save()
         cls.invoice_line_a = cls.invoice_company_a.invoice_line_ids[0]
@@ -373,6 +373,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             invoice_line.product_uom_id,
             self.invoice_company_a.invoice_line_ids[0].product_uom_id,
         )
+        self.assertEqual(invoice_line.name, "Service Multi Company test")
         # Cancel the invoice for company A
         invoice_origin = (
             f"{self.invoice_company_a.company_id.name} - "
