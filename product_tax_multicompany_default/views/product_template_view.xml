@@ -15,7 +15,6 @@
                 <label for="taxes_id" />
                 <div name="taxes_id">
                     <t>$0</t>
-                    <field name="divergent_company_taxes" invisible="True" />
                     <button
                         name="set_multicompany_taxes"
                         icon="fa-clone"
