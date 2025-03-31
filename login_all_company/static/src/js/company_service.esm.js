@@ -1,20 +1,63 @@
 /** @odoo-module **/
 
 import {companyService} from "@web/webclient/company_service";
-import {patch} from "web.utils";
+import {cookie} from "@web/core/browser/cookie";
+import {patch} from "@web/core/utils/patch";
 import {session} from "@web/session";
 
-patch(companyService, "login_all_company/static/src/js/company_service.esm.js", {
-    start(env, {router, cookie}) {
-        if (!cookie.current.cids && !router.current.hash.cids) {
-            var companies = [session.company_id];
-            _.forEach(session.user_companies.allowed_companies, function (company) {
-                if (company.id !== session.company_id) {
-                    companies.push(company.id);
-                }
-            });
-            cookie.setCookie("cids", companies.join(","));
+const CIDS_HASH_SEPARATOR = "-";
+
+function parseCompanyIds(cids, separator = ",") {
+    if (typeof cids === "string") {
+        return cids.split(separator).map(Number);
+    } else if (typeof cids === "number") {
+        return [cids];
+    }
+    return [];
+}
+
+function formatCompanyIds(cids, separator = ",") {
+    return cids.join(separator);
+}
+
+function getCompanyIdsFromBrowser(hash) {
+    let cids = null;
+    if ("cids" in hash) {
+        cids = parseCompanyIds(hash.cids, CIDS_HASH_SEPARATOR);
+    } else if (cookie.get("cids")) {
+        cids = parseCompanyIds(cookie.get("cids"));
+    }
+    return cids || [];
+}
+
+function computeAllCompanyIds() {
+    const {
+        user_companies: {
+            allowed_companies: availableCompaniesFromSession,
+            current_company: currentCompany,
+        },
+    } = session;
+    const cids = [];
+    Object.keys(availableCompaniesFromSession)
+        .map(Number)
+        .forEach((cid) => {
+            if (currentCompany === cid) {
+                cids.unshift(cid);
+            } else {
+                cids.push(cid);
+            }
+        });
+
+    return cids;
+}
+
+patch(companyService, {
+    start(env, {router}) {
+        const cids = getCompanyIdsFromBrowser(router.current.hash);
+        if (!cids.length) {
+            const allCids = computeAllCompanyIds(cids);
+            cookie.set("cids", formatCompanyIds(allCids));
         }
-        return this._super(...arguments);
+        return super.start(...arguments);
     },
 });
