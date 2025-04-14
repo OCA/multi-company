@@ -488,3 +488,12 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             [("auto_invoice_id", "=", self.invoice_company_a.id)]
         )
         self.assertFalse(invoices)
+
+    def test_invoice_date(self):
+        self.invoice_company_a.invoice_date = "2025-01-01"
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(invoices.invoice_date.strftime("%Y-%m-%d"), "2025-01-01")
+        self.assertEqual(invoices.date.strftime("%Y-%m-%d"), "2025-01-01")

@@ -252,6 +252,7 @@ class AccountMove(models.Model):
             "ref": self.name,
             "payment_reference": self.payment_reference,
             "invoice_date": self.invoice_date,
+            "date": self.date,
             "invoice_origin": _("%(company_name)s - Invoice: %(invoice_name)s")
             % {"company_name": self.company_id.name, "invoice_name": self.name},
             "auto_invoice_id": self.id,
