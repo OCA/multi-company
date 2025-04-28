@@ -1,5 +1,4 @@
 <odoo>
-
     <!--
         Create partner for each company (A and B)
         -->
@@ -86,10 +85,10 @@
         Create transfer account template
         -->
     <record id="pcg_X58" model="account.account.template">
-      <field name="name">Internal Transfers</field>
-      <field name="code">X58</field>
-      <field name="user_type_id" ref="account.data_account_type_current_assets" />
-      <field name="reconcile" eval="True" />
+        <field name="name">Internal Transfers</field>
+        <field name="code">X58</field>
+        <field name="user_type_id" ref="account.data_account_type_current_assets" />
+        <field name="reconcile" eval="True" />
     </record>
 
     <!--
@@ -219,11 +218,9 @@
             name="inbound_payment_method_ids"
             eval="[(6, 0, [ref('account.account_payment_method_manual_in')])]"
         />
-<!--         <field name="update_posted" eval="True"/>
- -->        <field
-            name="company_id"
-            ref="company_a"
-        />
+        <!--         <field name="update_posted" eval="True"/>
+ -->
+        <field name="company_id" ref="company_a" />
     </record>
 
     <record id="sales_journal_company_b" model="account.journal">
@@ -233,11 +230,9 @@
         <field name="secure_sequence_id" ref="sequence_sale_journal_company_b" />
         <field name="payment_credit_account_id" ref="a_sale_company_b" />
         <field name="payment_debit_account_id" ref="a_sale_company_b" />
-<!--         <field name="update_posted" eval="True"/>
- -->        <field
-            name="company_id"
-            ref="company_b"
-        />
+        <!--         <field name="update_posted" eval="True"/>
+ -->
+        <field name="company_id" ref="company_b" />
     </record>
 
     <record id="bank_journal_company_a" model="account.journal">
@@ -256,11 +251,9 @@
         <field name="secure_sequence_id" ref="sequence_purchase_journal_company_b" />
         <field name="payment_credit_account_id" ref="a_expense_company_b" />
         <field name="payment_debit_account_id" ref="a_expense_company_b" />
-<!--         <field name="update_posted" eval="True"/>
- -->        <field
-            name="company_id"
-            ref="company_b"
-        />
+        <!--         <field name="update_posted" eval="True"/>
+ -->
+        <field name="company_id" ref="company_b" />
     </record>
 
     <record id="bank_journal_company_b" model="account.journal">
@@ -277,7 +270,7 @@
         <field name="currency_id" ref="base.USD" />
     </record>
 
-     <!--
+    <!--
         Properties for each company (A and B)
         -->
     <record
@@ -433,5 +426,4 @@
         <field name="company_id" ref="company_b" />
         <field name="state">draft</field>
     </record>
-
 </odoo>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -9,10 +8,11 @@
 
 /*
 :Author: David Goodger (goodger@python.org)
-:Id: $Id: html4css1.css 8954 2022-01-20 10:10:25Z milde $
+:Id: $Id: html4css1.css 9511 2024-01-13 09:50:07Z milde $
 :Copyright: This stylesheet has been placed in the public domain.
 
 Default cascading style sheet for the HTML output of Docutils.
+Despite the name, some widely supported CSS2 features are used.
 
 See https://docutils.sourceforge.io/docs/howto/html-stylesheets.html for how to
 customize this style sheet.
@@ -275,7 +275,7 @@ pre.literal-block, pre.doctest-block, pre.math, pre.code {
   margin-left: 2em ;
   margin-right: 2em }
 
-pre.code .ln { color: grey; } /* line numbers */
+pre.code .ln { color: gray; } /* line numbers */
 pre.code, code { background-color: #eeeeee }
 pre.code .comment, code .comment { color: #5C6576 }
 pre.code .keyword, code .keyword { color: #3B0D06; font-weight: bold }
@@ -301,7 +301,7 @@ span.option {
 span.pre {
   white-space: pre }
 
-span.problematic {
+span.problematic, pre.problematic {
   color: red }
 
 span.section-subtitle {
@@ -369,79 +369,19 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:9d95d648546d3f42006042ffab11fb95a6eb7a4c0df95db72ca0c8e49d2a4912
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/14.0/account_invoice_consolidated"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-14-0/multi-company-14-0-account_invoice_consolidated"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=14.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module allows organizations with multiples companies to transfer the
-liability of a customer to another company and provide the customer with a
-unique consolidated invoice to pay.</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/18.0/account_invoice_consolidated"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-18-0/multi-company-18-0-account_invoice_consolidated"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This module allows organizations with multiples companies to transfer
+the liability of a customer to another company and provide the customer
+with a unique consolidated invoice to pay.</p>
 <div class="section" id="workflow">
 <h1>Workflow</h1>
 <div class="section" id="company1-create-and-validate-invoice">
 <h2>Company1 - Create and validate invoice</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="18%" />
-<col width="26%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Account</th>
-<th class="head">Partner</th>
-<th class="head">Reconciliation</th>
-<th class="head">Debit</th>
-<th class="head">Credit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Accounts Receivables</td>
-<td>Customer</td>
-<td>R1</td>
-<td>100</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>Sales</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>100</td>
-</tr>
-</tbody>
-</table>
+<p>[TABLE]</p>
 </div>
 <div class="section" id="company2-create-and-validate-invoice">
 <h2>Company2 - Create and validate invoice</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="18%" />
-<col width="26%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Account</th>
-<th class="head">Partner</th>
-<th class="head">Reconciliation</th>
-<th class="head">Debit</th>
-<th class="head">Credit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Accounts Receivables</td>
-<td>Customer</td>
-<td>R2</td>
-<td>121</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>Sales</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>121</td>
-</tr>
-</tbody>
-</table>
+<p>[TABLE]</p>
 </div>
 <div class="section" id="company3-create-consolidated-invoice">
 <h2>Company3 - Create consolidated invoice</h2>
@@ -449,158 +389,28 @@ unique consolidated invoice to pay.</p>
 </div>
 <div class="section" id="company3-click-on-consolidate">
 <h2>Company3 - Click on Consolidate</h2>
-<p>Payment of company1’s invoice - In company1 using due from payment method</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="18%" />
-<col width="26%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Account</th>
-<th class="head">Partner</th>
-<th class="head">Reconciliation</th>
-<th class="head">Debit</th>
-<th class="head">Credit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Accounts Receivables</td>
-<td>Customer</td>
-<td>R1</td>
-<td>&nbsp;</td>
-<td>100</td>
-</tr>
-<tr><td>Due From</td>
-<td>Company3</td>
-<td>&nbsp;</td>
-<td>100</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
-<p>Payment of company2’s invoice - In company2 using due from payment method</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="18%" />
-<col width="26%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Account</th>
-<th class="head">Partner</th>
-<th class="head">Reconciliation</th>
-<th class="head">Debit</th>
-<th class="head">Credit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Accounts Receivables</td>
-<td>Customer</td>
-<td>R2</td>
-<td>&nbsp;</td>
-<td>121</td>
-</tr>
-<tr><td>Due From</td>
-<td>Company3</td>
-<td>&nbsp;</td>
-<td>121</td>
-<td>&nbsp;</td>
-</tr>
-</tbody>
-</table>
+<p>Payment of company1’s invoice - In company1 using due from payment
+method</p>
+<p>[TABLE]</p>
+<p>Payment of company2’s invoice - In company2 using due from payment
+method</p>
+<p>[TABLE]</p>
 <p>Creation of company3’s invoice - In company3</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="18%" />
-<col width="26%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Account</th>
-<th class="head">Partner</th>
-<th class="head">Reconciliation</th>
-<th class="head">Debit</th>
-<th class="head">Credit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Accounts Receivables</td>
-<td>Customer</td>
-<td>R3</td>
-<td>221</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>A/R Due To</td>
-<td>Company1</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>100</td>
-</tr>
-<tr><td>A/R Due To</td>
-<td>Company2</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>121</td>
-</tr>
-</tbody>
-</table>
+<p>[TABLE]</p>
 </div>
 </div>
 <div class="section" id="customer-payment">
 <h1>Customer payment</h1>
 <div class="section" id="customer-payment-company3">
 <h2>Customer Payment (company3)</h2>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="18%" />
-<col width="26%" />
-<col width="12%" />
-<col width="12%" />
-</colgroup>
-<thead valign="bottom">
-<tr><th class="head">Account</th>
-<th class="head">Partner</th>
-<th class="head">Reconciliation</th>
-<th class="head">Debit</th>
-<th class="head">Credit</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr><td>Bank Account</td>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td>221</td>
-<td>&nbsp;</td>
-</tr>
-<tr><td>Accounts Receivables</td>
-<td>Customer</td>
-<td>R3</td>
-<td>&nbsp;</td>
-<td>221</td>
-</tr>
-</tbody>
-</table>
+<p>[TABLE]</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a></li>
 <li><a class="reference internal" href="#usage" id="toc-entry-2">Usage</a></li>
 <li><a class="reference internal" href="#bug-tracker" id="toc-entry-3">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-4">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-5">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="toc-entry-6">Contributors</a></li>
-<li><a class="reference internal" href="#other-credits" id="toc-entry-7">Other credits</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-8">Maintainers</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#credits" id="toc-entry-4">Credits</a></li>
 </ul>
 </div>
 <div class="section" id="configuration">
@@ -623,14 +433,15 @@ unique consolidated invoice to pay.</p>
 <li>Go to Accounting &gt; Sales &gt; Consolidate Invoices</li>
 <li>Create a new invoice consolidation<ul>
 <li>Select the same customer</li>
-<li>Select a period wide enough to include the invoices of the children company</li>
+<li>Select a period wide enough to include the invoices of the
+children company</li>
 </ul>
 </li>
 <li>Click on “Consolidate”:<ul>
-<li>The customer invoices in the children companies are paid.
-The payments are available in the “Payments” tab.</li>
-<li>A new invoice is created and validated in the parent company.
-The new invoice is available in the “Consolidated Invoice”.</li>
+<li>The customer invoices in the children companies are paid. The
+payments are available in the “Payments” tab.</li>
+<li>A new invoice is created and validated in the parent company. The
+new invoice is available in the “Consolidated Invoice”.</li>
 </ul>
 </li>
 <li>Register the customer payment of that invoice as usual.</li>
@@ -641,20 +452,23 @@ The new invoice is available in the “Consolidated Invoice”.</li>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/multi-company/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20account_invoice_consolidated%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20account_invoice_consolidated%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
 <h3><a class="toc-backref" href="#toc-entry-4">Credits</a></h3>
+</div>
+</div>
+</div>
 <div class="section" id="authors">
-<h4><a class="toc-backref" href="#toc-entry-5">Authors</a></h4>
+<h1>Authors</h1>
 <ul class="simple">
 <li>Open Source Integrators</li>
 <li>Serpent Consulting Services Pvt. Ltd.</li>
 </ul>
 </div>
 <div class="section" id="contributors">
-<h4><a class="toc-backref" href="#toc-entry-6">Contributors</a></h4>
+<h1>Contributors</h1>
 <ul class="simple">
 <li>Balaji Kannan &lt;<a class="reference external" href="mailto:bkannan&#64;opensourceintegrators.com">bkannan&#64;opensourceintegrators.com</a>&gt;</li>
 <li>Swapnesh Shah &lt;<a class="reference external" href="mailto:s.shah.serpentcs&#64;gmail.com">s.shah.serpentcs&#64;gmail.com</a>&gt;</li>
@@ -664,26 +478,25 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="other-credits">
-<h4><a class="toc-backref" href="#toc-entry-7">Other credits</a></h4>
+<h1>Other credits</h1>
 <ul class="simple">
 <li>Open Source Integrators &lt;<a class="reference external" href="https://www.opensourceintegrators.com">https://www.opensourceintegrators.com</a>&gt;</li>
 <li>Serpent Consulting Services Pvt Ltd &lt;<a class="reference external" href="https://www.serpentcs.com">https://www.serpentcs.com</a>&gt;</li>
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h4><a class="toc-backref" href="#toc-entry-8">Maintainers</a></h4>
+<h1>Maintainers</h1>
 <p>This module is maintained by the OCA.</p>
-<a class="reference external image-reference" href="https://odoo-community.org"><img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" /></a>
+<a class="reference external image-reference" href="https://odoo-community.org">
+<img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />
+</a>
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
 <p>Current <a class="reference external" href="https://odoo-community.org/page/maintainer-role">maintainers</a>:</p>
 <p><a class="reference external image-reference" href="https://github.com/max3903"><img alt="max3903" src="https://github.com/max3903.png?size=40px" /></a> <a class="reference external image-reference" href="https://github.com/swapnesh-serpentcs"><img alt="swapnesh-serpentcs" src="https://github.com/swapnesh-serpentcs.png?size=40px" /></a></p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/14.0/account_invoice_consolidated">OCA/multi-company</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/18.0/account_invoice_consolidated">OCA/multi-company</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
-</div>
-</div>
-</div>
 </div>
 </div>
 </body>

@@ -15,7 +15,7 @@ from odoo.tools import convert_file
 class TestConsolidatedInvoice(SavepointCase):
     @classmethod
     def setUpClass(cls):
-        super(TestConsolidatedInvoice, cls).setUpClass()
+        super().setUpClass()
         module = "account_invoice_consolidated"
         convert_file(
             cls.cr,
