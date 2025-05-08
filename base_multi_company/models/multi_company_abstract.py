@@ -57,18 +57,24 @@ class MultiCompanyAbstract(models.AbstractModel):
             domain = ["|", ("company_ids", new_op, False)] + domain
         return domain
 
+    def _multicompany_patch_vals(self, vals):
+        """Patch vals to remove company_id and company_ids duplicity."""
+        if "company_ids" in vals and "company_id" in vals:
+            company_id = vals.pop("company_id")
+            if company_id:
+                vals["company_ids"].append(fields.Command.link(company_id))
+        return vals
+
     @api.model_create_multi
     def create(self, vals_list):
         """Discard changes in company_id field if company_ids has been given."""
         for vals in vals_list:
-            if "company_ids" in vals and "company_id" in vals:
-                del vals["company_id"]
+            self._multicompany_patch_vals(vals)
         return super().create(vals_list)
 
     def write(self, vals):
         """Discard changes in company_id field if company_ids has been given."""
-        if "company_ids" in vals and "company_id" in vals:
-            del vals["company_id"]
+        self._multicompany_patch_vals(vals)
         return super().write(vals)
 
     @api.model
