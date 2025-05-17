@@ -65,7 +65,7 @@ class ProductTemplate(models.Model):
     @api.model_create_multi
     def create(self, vals):
         res = super().create(vals)
-        for rec in self:
+        for rec in res:
             if rec.sale_ok and rec.purchase_ok:
                 rec._synchronise_supplier_info()
         return res
