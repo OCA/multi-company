@@ -11,6 +11,11 @@
                     groups="base.group_multi_company"
                 />
                 <field
+                    name="intercompany_supplier_lead_time"
+                    attrs="{'invisible': [('is_intercompany_supplier', '=', False)]}"
+                    groups="base.group_multi_company"
+                />
+                <field
                     name="is_intercompany_supplier"
                     invisible="1"
                     groups="!base.group_multi_company"

@@ -72,7 +72,14 @@ class ProductTemplate(models.Model):
 
     def write(self, vals):
         res = super().write(vals)
-        if "sale_ok" in vals or "purchase_ok" in vals:
+        if (
+            "sale_ok" in vals
+            or "purchase_ok" in vals
+            or "list_price" in vals
+            or "standard_price" in vals
+            or "company_id" in vals
+            or "company_ids" in vals
+        ):
             for rec in self:
                 rec._synchronise_supplier_info()
         return res

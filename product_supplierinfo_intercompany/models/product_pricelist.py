@@ -12,6 +12,10 @@ class ProductPricelist(models.Model):
         default=False, inverse="_inverse_intercompany_supplier"
     )
 
+    intercompany_supplier_lead_time = fields.Float(
+        default=0, help="Vendor pricelist lead time, in days."
+    )
+
     generated_supplierinfo_ids = fields.One2many(
         comodel_name="product.supplierinfo",
         inverse_name="intercompany_pricelist_id",

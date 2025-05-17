@@ -17,7 +17,14 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
 
     def _prepare_intercompany_supplier_info(self, pricelist, min_qty):
         self.ensure_one()
-        price = pricelist._get_product_price(self, min_qty, self.uom_po_id)
+
+        # Set context to ensure we are taking the list price / cost / etc. fields
+        # from the company set in the pricelist as it is a company-dependent field!
+        product_with_context = self.with_company(pricelist.company_id.id)
+
+        price = pricelist._get_product_price(
+            product_with_context, min_qty, self.uom_po_id
+        )
         res = {
             "intercompany_pricelist_id": pricelist.id,
             "partner_id": pricelist.company_id.partner_id.id,
@@ -25,6 +32,7 @@ class ProductIntercompanySupplierMixin(models.AbstractModel):
             "min_qty": min_qty,
             "price": price,
             "currency_id": pricelist.currency_id.id,
+            "delay": pricelist.intercompany_supplier_lead_time,
         }
         return res
 
