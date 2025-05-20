@@ -5,7 +5,7 @@
     "name": "Crm Tag Multi Company",
     "summary": """
         This module add multi-company management to crm tag""",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV," "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
