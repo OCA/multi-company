@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class CrmTag(models.Model):
-
     _inherit = "crm.tag"
     _check_company_auto = True
 
