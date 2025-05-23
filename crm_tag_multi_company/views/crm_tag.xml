@@ -7,22 +7,20 @@
         <field name="model">crm.tag</field>
         <field name="inherit_id" ref="sales_team.sales_team_crm_tag_view_form" />
         <field name="arch" type="xml">
-            <field name="name" position="after">
+            <field name="color" position="before">
                 <field name="company_id" groups="base.group_multi_company" />
-                <field name="company_id" invisible="1" />
             </field>
         </field>
     </record>
 
     <record model="ir.ui.view" id="sales_team_crm_tag_view_tree">
-        <field name="name">crm.tag.tree (in crm_tag_multi_company)</field>
+        <field name="name">crm.tag.list (in crm_tag_multi_company)</field>
         <field name="model">crm.tag</field>
         <field name="inherit_id" ref="sales_team.sales_team_crm_tag_view_tree" />
         <field name="arch" type="xml">
-            <tree position="inside">
+            <field name="color" position="before">
                 <field name="company_id" groups="base.group_multi_company" />
-                <field name="company_id" invisible="1" />
-            </tree>
+            </field>
         </field>
     </record>
 </odoo>
