@@ -2,7 +2,6 @@
 <!-- Copyright 2019 ACSONE SA/NV
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
-
     <record model="ir.ui.view" id="sales_team_crm_tag_view_form">
         <field name="name">crm.tag.form (in crm_tag_multi_company)</field>
         <field name="model">crm.tag</field>
@@ -15,7 +14,6 @@
         </field>
     </record>
 
-
     <record model="ir.ui.view" id="sales_team_crm_tag_view_tree">
         <field name="name">crm.tag.tree (in crm_tag_multi_company)</field>
         <field name="model">crm.tag</field>
@@ -27,5 +25,4 @@
             </tree>
         </field>
     </record>
-
 </odoo>

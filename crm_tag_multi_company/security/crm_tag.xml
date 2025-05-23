@@ -5,7 +5,7 @@
     <record id="crm_tag_comp_rule" model="ir.rule">
         <field name="name">Crm Tag multi company rule</field>
         <field name="model_id" ref="sales_team.model_crm_tag" />
-	    <field name="domain_force">
+        <field name="domain_force">
 	        [('company_id', 'in', company_ids + [False])]
         </field>
     </record>
