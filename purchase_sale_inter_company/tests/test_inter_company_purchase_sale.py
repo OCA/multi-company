@@ -124,11 +124,6 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # Create purchase order
         cls.purchase_company_a = cls._create_purchase_order(cls.partner_company_b)
 
-        # Configure pricelist to USD
-        cls.env["product.pricelist"].sudo().search([]).write(
-            {"currency_id": cls.env.ref("base.USD").id}
-        )
-
         # Add quants for product tracked by serial to supplier
         cls.serial_1 = cls._create_serial_and_quant(
             cls.stockable_product_serial, "111", cls.company_b
@@ -256,6 +251,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             self._approve_po(self.purchase_company_a)
 
     def test_raise_currency(self):
+        # Configure pricelist to USD
+        self.env["product.pricelist"].sudo().search([]).write(
+            {"currency_id": self.env.ref("base.USD").id}
+        )
         currency = self.env.ref("base.EUR")
         self.purchase_company_a.currency_id = currency
         with self.assertRaises(UserError):
