@@ -34,6 +34,9 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             }
         )
         cls.chart.try_loading(cls.company_a)
+        # Depending on chart account template installed the currency is changed so
+        # after loading chart we ensure that the company has EUR currency
+        cls.company_a.currency_id = cls.env.ref("base.EUR").id
         cls.partner_company_a = cls.company_a.partner_id
         cls.company_b = cls.env["res.company"].create(
             {
@@ -46,6 +49,9 @@ class TestAccountInvoiceInterCompanyBase(SavepointCase):
             }
         )
         cls.chart.try_loading(cls.company_b)
+        # Depending on chart account template installed the currency is changed so
+        # after loading chart we ensure that the company has EUR currency
+        cls.company_b.currency_id = cls.env.ref("base.EUR").id
         cls.partner_company_b = cls.company_b.partner_id
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
