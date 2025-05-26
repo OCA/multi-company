@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class CrmLostReason(models.Model):
-
     _inherit = "crm.lost.reason"
     _check_company_auto = True
 

@@ -2,7 +2,6 @@
 <!-- Copyright 2019 ACSONE SA/NV
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
-
     <record model="ir.ui.view" id="crm_lost_reason_form_view">
         <field
             name="name"
@@ -18,17 +17,14 @@
     </record>
 
     <record model="ir.ui.view" id="crm_lost_reason_tree_view">
-        <field name="name">crm.lost.reason.tree</field>
+        <field name="name">crm.lost.reason.list</field>
         <field name="model">crm.lost.reason</field>
         <field name="inherit_id" ref="crm.crm_lost_reason_view_tree" />
         <field name="arch" type="xml">
-            <tree>
+            <list>
                 <field name="company_id" groups="base.group_multi_company" />
-                <field name="company_id" invisible="1" />
-            </tree>
+                <field name="company_id" column_invisible="1" />
+            </list>
         </field>
     </record>
-
-
-
 </odoo>
