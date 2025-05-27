@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class CrmStage(models.Model):
-
     _inherit = "crm.stage"
     _check_company_auto = True
 

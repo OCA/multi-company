@@ -2,7 +2,6 @@
 <!-- Copyright 2019 ACSONE SA/NV
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <odoo>
-
     <record model="ir.ui.view" id="crm_stage_form">
         <field name="name">crm.stage.form (in crm_stage_multi_company)</field>
         <field name="model">crm.stage</field>
@@ -30,7 +29,7 @@
                     groups="base.group_multi_company"
                     optional="hide"
                 />
-                <field name="company_id" invisible="1" />
+                <field name="company_id" column_invisible="1" />
             </field>
         </field>
     </record>
@@ -46,7 +45,4 @@
             </field>
         </field>
     </record>
-
-
-
 </odoo>

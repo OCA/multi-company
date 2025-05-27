@@ -7,7 +7,7 @@ from odoo.tests.common import TransactionCase
 
 class TestCrmStageMultiCompany(TransactionCase):
     def setUp(self):
-        super(TestCrmStageMultiCompany, self).setUp()
+        super().setUp()
         self.company = self.env["res.company"].create({"name": "Company"})
         self.stage_1 = self.env["crm.stage"].create(
             {"name": "Stage 1", "company_id": self.company.id}
