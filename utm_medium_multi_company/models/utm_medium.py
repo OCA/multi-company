@@ -5,14 +5,11 @@ from odoo import fields, models
 
 
 class UtmMedium(models.Model):
-
-    _inherit = 'utm.medium'
+    _inherit = "utm.medium"
 
     company_id = fields.Many2one(
-        'res.company',
-        'Company',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'utm.medium'
-        ),
-        ondelete='cascade',
+        "res.company",
+        "Company",
+        default=lambda self: self.env.company,
+        ondelete="cascade",
     )
