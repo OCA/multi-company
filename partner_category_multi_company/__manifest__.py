@@ -5,7 +5,7 @@
     "name": "Partner Category Multi Company",
     "summary": """
         This module add multi-company management to partner categories""",
-    "version": "16.0.1.0.0",
+    "version": "18.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV," "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
@@ -13,6 +13,5 @@
     "data": [
         "security/res_partner_category.xml",
         "views/res_partner_category.xml",
-        "views/res_partner_views.xml",
     ],
 }
