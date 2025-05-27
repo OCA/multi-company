@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class ResPartnerCategory(models.Model):
-
     _inherit = "res.partner.category"
     _check_company_auto = True
 
