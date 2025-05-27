@@ -5,14 +5,11 @@ from odoo import fields, models
 
 
 class IrFilters(models.Model):
-
-    _inherit = 'ir.filters'
+    _inherit = "ir.filters"
 
     company_id = fields.Many2one(
-        'res.company',
-        'Company',
-        default=lambda self: self.env['res.company']._company_default_get(
-            'ir.filters'
-        ),
-        ondelete='cascade',
+        "res.company",
+        "Company",
+        default=lambda self: self.env.company,
+        ondelete="cascade",
     )
