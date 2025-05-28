@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (C) 2025 Akretion (<http://www.akretion.com>).
+@author Kévin Roche <kevin.roche@akretion.com>
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="product_supplierinfo_form_view" model="ir.ui.view">
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field
+                    name="mav_price_indication"
+                    attrs="{'invisible': [('mav_price_indication', '!=', True)]}"
+                />
+                <field name="intercompany_mav_price_info" />
+            </xpath>
+        </field>
+    </record>
+
+    <record
+        model="ir.ui.view"
+        id="product_supplierinfo_intercompany_mav_price_info_view"
+    >
+        <field name="name">product.supplierinfo.form</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="priority">9999</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <form string="Intercompany Multi Attribute Value Info">
+                <sheet>
+                    <group>
+                        <field name="intercompany_mav_price_info" readonly="1" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_supplierinfo_tree_view" model="ir.ui.view">
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='price']" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'invisible': [('intercompany_mav_pricelist_item_id', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute
+                    name="attrs"
+                >{'invisible': [('intercompany_mav_pricelist_item_id', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="intercompany_mav_pricelist_item_id" invisible="1" />
+                <field
+                    name="mav_price_indication"
+                    attrs="{'invisible': [('intercompany_mav_pricelist_item_id', '=', False)]}"
+                />
+                <button
+                    name="open_intercompany_mav_price_info"
+                    string="Additional Price"
+                    type="object"
+                    class="btn btn-link"
+                    attrs="{'invisible': [('intercompany_mav_pricelist_item_id', '=', False)]}"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>

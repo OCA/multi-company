@@ -1,0 +1,62 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_pricelist_item_multi_attribute_value_intercompany
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-05-27 14:50+0000\n"
+"PO-Revision-Date: 2025-05-27 16:51+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.6\n"
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model_terms:ir.ui.view,arch_db:product_pricelist_item_multi_attribute_value_intercompany.product_supplierinfo_tree_view
+msgid "Additional Price"
+msgstr "Prix additionnel"
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model:ir.model.fields,field_description:product_pricelist_item_multi_attribute_value_intercompany.field_product_supplierinfo__mav_price_indication
+msgid "Dynamic Price"
+msgstr "Prix dynamique"
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model:ir.model.fields,field_description:product_pricelist_item_multi_attribute_value_intercompany.field_product_supplierinfo__intercompany_mav_price_info
+#: model_terms:ir.ui.view,arch_db:product_pricelist_item_multi_attribute_value_intercompany.product_supplierinfo_intercompany_mav_price_info_view
+msgid "Intercompany Multi Attribute Value Info"
+msgstr "Informations sur les prix multi-attributs inter-sociétés"
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model:ir.model.fields,field_description:product_pricelist_item_multi_attribute_value_intercompany.field_product_supplierinfo__intercompany_mav_pricelist_item_id
+msgid "Intercompany Pricelist Item"
+msgstr ""
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model:ir.model,name:product_pricelist_item_multi_attribute_value_intercompany.model_product_product
+msgid "Product Variant"
+msgstr "Variante de produit"
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model:ir.model.fields,field_description:product_pricelist_item_multi_attribute_value_intercompany.field_product_product__smart_search
+#: model:ir.model.fields,field_description:product_pricelist_item_multi_attribute_value_intercompany.field_product_supplierinfo__smart_search
+msgid "Smart Search"
+msgstr ""
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#. odoo-python
+#: code:addons/product_pricelist_item_multi_attribute_value_intercompany/models/product_supplierinfo.py:0
+#, python-format
+msgid "Start at "
+msgstr ""
+
+#. module: product_pricelist_item_multi_attribute_value_intercompany
+#: model:ir.model,name:product_pricelist_item_multi_attribute_value_intercompany.model_product_supplierinfo
+msgid "Supplier Pricelist"
+msgstr "Liste de prix du fournisseur"
