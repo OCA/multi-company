@@ -1,0 +1,1 @@
+odoo-addon-account_invoice_consolidated @ git+https://github.com/OCA/multi-company.git@refs/pull/839/head#subdirectory=account_invoice_consolidated
