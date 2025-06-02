@@ -1,5 +1,4 @@
 <odoo>
-
     <record id="res_company_accounting_billing_rule" model="ir.rule">
         <field name="name">res.company.billing</field>
         <field name="model_id" ref="base.model_res_company" />
@@ -11,5 +10,4 @@
         <field name="perm_unlink" eval="0" />
         <field name="perm_read" eval="1" />
     </record>
-
 </odoo>

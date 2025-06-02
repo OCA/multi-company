@@ -3,7 +3,7 @@ import odoo.tests.common as common
 
 class TestAccountMove(common.TransactionCase):
     def setUp(self):
-        super(TestAccountMove, self).setUp()
+        super().setUp()
 
         self.company = self.env.ref("base.main_company")
         self.partner_company_one = (
@@ -313,7 +313,7 @@ class TestAccountMove(common.TransactionCase):
                             0,
                             0,
                             {
-                                "account_id": self.account_salary_expense_main_company.id,
+                                "account_id": self.account_salary_expense_main_company.id,  # noqa: E501
                                 "partner_id": self.employee_B.id,
                                 "debit": 1000,
                             },
@@ -322,7 +322,7 @@ class TestAccountMove(common.TransactionCase):
                             0,
                             0,
                             {
-                                "account_id": self.account_salary_expense_main_company.id,
+                                "account_id": self.account_salary_expense_main_company.id,  # noqa: E501
                                 "partner_id": self.employee_A.id,
                                 "debit": 500,
                             },
@@ -331,7 +331,7 @@ class TestAccountMove(common.TransactionCase):
                             0,
                             0,
                             {
-                                "account_id": self.account_salary_expense_main_company.id,
+                                "account_id": self.account_salary_expense_main_company.id,  # noqa: E501
                                 "partner_id": self.employee_C.id,
                                 "debit": 500,
                                 "transfer_to_company_id": self.company_two.id,
@@ -341,7 +341,7 @@ class TestAccountMove(common.TransactionCase):
                             0,
                             0,
                             {
-                                "account_id": self.account_salary_expense_main_company.id,
+                                "account_id": self.account_salary_expense_main_company.id,  # noqa: E501
                                 "partner_id": self.employee_B.id,
                                 "debit": 600,
                                 "transfer_to_company_id": self.company_one.id,
@@ -351,7 +351,7 @@ class TestAccountMove(common.TransactionCase):
                             0,
                             0,
                             {
-                                "account_id": self.account_salary_expense_main_company.id,
+                                "account_id": self.account_salary_expense_main_company.id,  # noqa: E501
                                 "partner_id": self.employee_A.id,
                                 "debit": 400,
                                 "transfer_to_company_id": self.company_one.id,
@@ -361,7 +361,7 @@ class TestAccountMove(common.TransactionCase):
                             0,
                             0,
                             {
-                                "account_id": self.account_payroll_clearing_main_company.id,
+                                "account_id": self.account_payroll_clearing_main_company.id,  # noqa: E501
                                 "credit": 3000,
                             },
                         ),
