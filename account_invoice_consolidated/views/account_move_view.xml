@@ -9,10 +9,7 @@
         <field name="inherit_id" ref="account.view_move_form" />
         <field name="arch" type="xml">
             <field name="fiscal_position_id" position="after">
-                <field
-                    name="consolidated_by_id"
-                    attrs="{'invisible':[('consolidated_by_id', '=', False)]}"
-                />
+                <field name="consolidated_by_id" invisible="not consolidated_by_id" />
             </field>
         </field>
     </record>

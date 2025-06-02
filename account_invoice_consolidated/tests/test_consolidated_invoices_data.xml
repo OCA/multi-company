@@ -82,97 +82,79 @@
     </record>
 
     <!--
-        Create transfer account template
-        -->
-    <record id="pcg_X58" model="account.account.template">
-        <field name="name">Internal Transfers</field>
-        <field name="code">X58</field>
-        <field name="user_type_id" ref="account.data_account_type_current_assets" />
-        <field name="reconcile" eval="True" />
-    </record>
-
-    <!--
         Create account account for each company (A and B)
         -->
     <record id="a_recv_company_a" model="account.account">
-        <field name="code">X11002-A</field>
+        <field name="code">X11002A</field>
         <field name="name">Debtors - (company A)</field>
-        <field name="internal_type">receivable</field>
+        <field name="account_type">liability_payable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_receivable" />
-        <field name="company_id" ref="company_a" />
+        <field name="company_ids" eval="[(4, ref('company_a'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_pay_company_a" model="account.account">
-        <field name="code">X1111-A</field>
+        <field name="code">X1111A</field>
         <field name="name">Creditors - (company A)</field>
-        <field name="internal_type">payable</field>
+        <field name="account_type">liability_payable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_payable" />
-        <field name="company_id" ref="company_a" />
+        <field name="company_ids" eval="[(4, ref('company_a'))]" />
     </record>
     <record id="a_sale_company_a" model="account.account">
-        <field name="code">X2001-A</field>
+        <field name="code">X2001A</field>
         <field name="name">Product Sales - (company A)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_revenue" />
-        <field name="company_id" ref="company_a" />
+        <field name="account_type">asset_receivable</field>
+        <field name="company_ids" eval="[(4, ref('company_a'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_expense_company_a" model="account.account">
-        <field name="code">X2110-A</field>
+        <field name="code">X2110A</field>
         <field name="name">Expenses - (company A)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_expenses" />
-        <field name="company_id" ref="company_a" />
+        <field name="account_type">expense</field>
+        <field name="company_ids" eval="[(4, ref('company_a'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_bank_company_a" model="account.account">
-        <field name="code">512001-A</field>
+        <field name="code">512001A</field>
         <field name="name">Bank - (company A)</field>
-        <field name="user_type_id" ref="account.data_account_type_liquidity" />
-        <field name="company_id" ref="company_a" />
+        <field name="account_type">asset_cash</field>
+        <field name="company_ids" eval="[(4, ref('company_a'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_recv_company_b" model="account.account">
-        <field name="code">X11002-B</field>
+        <field name="code">X11002B</field>
         <field name="name">Debtors - (company B)</field>
-        <field name="internal_type">receivable</field>
+        <field name="account_type">asset_receivable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_receivable" />
-        <field name="company_id" ref="company_b" />
+        <field name="company_ids" eval="[(4, ref('company_b'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_pay_company_b" model="account.account">
-        <field name="code">X1111-B</field>
+        <field name="code">X1111B</field>
         <field name="name">Creditors - (company B)</field>
-        <field name="internal_type">payable</field>
+        <field name="account_type">liability_payable</field>
         <field name="reconcile" eval="True" />
-        <field name="user_type_id" ref="account.data_account_type_payable" />
-        <field name="company_id" ref="company_b" />
+        <field name="company_ids" eval="[(4, ref('company_b'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_sale_company_b" model="account.account">
-        <field name="code">X2001-B</field>
+        <field name="code">X2001B</field>
         <field name="name">Product Sales - (company B)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_revenue" />
-        <field name="company_id" ref="company_b" />
+        <field name="account_type">income</field>
+        <field name="company_ids" eval="[(4, ref('company_b'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_expense_company_b" model="account.account">
-        <field name="code">X2110-B</field>
+        <field name="code">X2110B</field>
         <field name="name">Expenses - (company B)</field>
-        <field name="internal_type">other</field>
-        <field name="user_type_id" ref="account.data_account_type_expenses" />
-        <field name="company_id" ref="company_b" />
+        <field name="account_type">expense</field>
+        <field name="company_ids" eval="[(4, ref('company_b'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
     <record id="a_bank_company_b" model="account.account">
-        <field name="code">512001-B</field>
+        <field name="code">512001B</field>
         <field name="name">Bank - (company B)</field>
-        <field name="user_type_id" ref="account.data_account_type_liquidity" />
-        <field name="company_id" ref="company_b" />
+        <field name="account_type">asset_cash</field>
+        <field name="company_ids" eval="[(4, ref('company_b'))]" />
         <field name="currency_id" ref="base.USD" />
     </record>
 

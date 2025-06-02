@@ -13,9 +13,9 @@
                 <button
                     name='view_consolidated_invoice'
                     string='Consolidated Invoices'
-                    attrs="{'invisible':[('customer_rank', '=', 0)]}"
+                    invisible="customer_rank == 0"
                     type='object'
-                    context="{'default_partner_id': active_id}"
+                    context="{'default_partner_id': id}"
                     class="oe_stat_button"
                     icon="fa-file"
                 />

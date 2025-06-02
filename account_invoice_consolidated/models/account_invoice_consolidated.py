@@ -47,16 +47,17 @@ class AccountInvoiceConsolidation(models.Model):
 
     name = fields.Char(readonly=True, default="Draft")
     date_from = fields.Date(
-        required=True, readonly=True, states={"draft": [("readonly", False)]}
+        required=True,
+        readonly=True,
     )
     date_to = fields.Date(
-        required=True, readonly=True, states={"draft": [("readonly", False)]}
+        required=True,
+        readonly=True,
     )
     company_id = fields.Many2one(
         "res.company",
         required=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
         tracking=True,
         default=lambda self: self.env.user.company_id,
     )
@@ -64,7 +65,6 @@ class AccountInvoiceConsolidation(models.Model):
         "res.partner",
         required=True,
         readonly=True,
-        states={"draft": [("readonly", False)]},
         tracking=True,
     )
     currency_id = fields.Many2one(related="company_id.currency_id", readonly=True)
@@ -81,14 +81,12 @@ class AccountInvoiceConsolidation(models.Model):
         "account.move",
         string="Consolidated Invoice",
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     invoice_ids = fields.One2many("account.move", "consolidated_by_id")
     payment_ids = fields.One2many(
         "account.payment",
         "consolidation_id",
         readonly=True,
-        states={"draft": [("readonly", False)]},
     )
     state = fields.Selection(
         [("draft", "Draft"), ("invoice", "Invoice"), ("done", "Done")],
@@ -98,7 +96,8 @@ class AccountInvoiceConsolidation(models.Model):
     )
 
     invoice_line_ids = fields.One2many(
-        "account.move.line", "consolidated_by_id", string="Invoice Line Ids"
+        "account.move.line",
+        "consolidated_by_id",
     )
 
     @api.constrains("name")
@@ -212,7 +211,7 @@ class AccountInvoiceConsolidation(models.Model):
                     raise ValidationError(
                         _(
                             "Intercompany Payment Configuration is missing for"
-                            " %s." % (company.display_name)
+                            f" {company.display_name}."
                         )
                     )
             invoice_consolidated_seq = self.env["ir.sequence"].next_by_code(

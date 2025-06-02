@@ -7,20 +7,20 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _
 from odoo.exceptions import ValidationError
-from odoo.modules.module import get_resource_path
-from odoo.tests.common import SavepointCase
+from odoo.tests.common import TransactionCase
 from odoo.tools import convert_file
+from odoo.tools.misc import file_path
 
 
-class TestConsolidatedInvoice(SavepointCase):
+class TestConsolidatedInvoice(TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
         module = "account_invoice_consolidated"
         convert_file(
-            cls.cr,
+            cls.env,
             module,
-            get_resource_path(module, "tests", "test_consolidated_invoices_data.xml"),
+            file_path(f"{module}/tests/test_consolidated_invoices_data.xml"),
             None,
             "init",
             False,

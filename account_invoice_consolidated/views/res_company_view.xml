@@ -21,17 +21,17 @@
                         <group>
                             <field
                                 name='due_from_account_id'
-                                domain="[('company_id', '=', active_id)]"
+                                domain="[('company_ids', '=', id)]"
                                 options="{'no_create': True}"
                             />
                             <field
                                 name='due_to_account_id'
-                                domain="[('company_id', '=', active_id)]"
+                                domain="[('company_ids', '=', id)]"
                                 options="{'no_create': True}"
                             />
                             <field
                                 name='due_fromto_payment_journal_id'
-                                domain="[('company_id', '=', active_id),
+                                domain="[('company_id', '=', id),
                                              ('type', 'in', ('bank', 'cash'))]"
                                 options="{'no_create': True}"
                             />
