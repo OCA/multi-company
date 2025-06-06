@@ -4,12 +4,15 @@
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-
+from odoo import Command
 from odoo.exceptions import UserError
+from odoo.tests.common import Form
 
-from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
-    TestPurchaseSaleInterCompany,
+from odoo.addons.purchase_sale_inter_company.tests import (
+    test_inter_company_purchase_sale as test_icps,
 )
+
+TestPurchaseSaleInterCompany = test_icps.TestPurchaseSaleInterCompany
 
 
 class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
@@ -24,6 +27,34 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
                 "company_id": company.id,
             }
         )
+
+    @classmethod
+    def _create_serial_and_quant(cls, product, name, company, quant=True):
+        lot = cls.lot_obj.create(
+            {"product_id": product.id, "name": name, "company_id": company.id}
+        )
+        if quant:
+            cls.quant_obj.create(
+                {
+                    "product_id": product.id,
+                    "location_id": cls.warehouse_a.lot_stock_id.id,
+                    "quantity": 1,
+                    "lot_id": lot.id,
+                }
+            )
+        return lot
+
+    @classmethod
+    def _create_purchase_order_for_stockable_product_serial(cls, partner, quantity=1):
+        po = Form(cls.env["purchase.order"])
+        po.company_id = cls.company_a
+        po.partner_id = partner
+
+        with po.order_line.new() as line_form:
+            line_form.product_id = cls.stockable_product_serial
+            line_form.product_qty = quantity
+            line_form.price_unit = 450.0
+        return po.save()
 
     @classmethod
     def setUpClass(cls):
@@ -124,23 +155,23 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.partner_company_b.company_id = False
         purchase = self.purchase_company_a
         sale = self._approve_po()
-        sale.action_confirm()
         sale_picking = sale.picking_ids[0]
-        sale_picking.sudo().action_confirm()
-        sale_picking.move_ids.quantity_done = 1.0
-        res_dict = sale_picking.sudo().button_validate()
-        self.env["stock.backorder.confirmation"].with_context(
-            **res_dict["context"]
-        ).process()
+        sale_picking.with_company(sale_picking.company_id).action_confirm()
+        sale_picking.move_ids.quantity = 1.0
+        res_dict = sale_picking.with_company(sale_picking.company_id).button_validate()
+        if isinstance(res_dict, dict) and "context" in res_dict:
+            self.env["stock.backorder.confirmation"].with_context(
+                **res_dict["context"]
+            ).process()
         sale_picking2 = sale.picking_ids.filtered(lambda p: p.state != "done")
-        self.assertEqual(purchase.picking_ids[0].move_line_ids.qty_done, 1)
-        self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 0)
+        self.assertEqual(purchase.picking_ids[0].move_line_ids.quantity, 1)
+        self.assertEqual(purchase.picking_ids[1].move_line_ids.quantity, 2)
         self.assertEqual(purchase.order_line.qty_received, 1)
-        sale_picking2.move_ids.quantity_done = 2.0
-        sale_picking2.sudo().action_confirm()
-        sale_picking2.sudo().button_validate()
-        self.assertEqual(purchase.picking_ids[0].move_line_ids.qty_done, 1)
-        self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 2)
+        sale_picking2.move_ids.quantity = 2.0
+        sale_picking2.with_company(sale_picking2.company_id).action_confirm()
+        sale_picking2.with_company(sale_picking2.company_id).button_validate()
+        self.assertEqual(purchase.picking_ids[0].move_line_ids.quantity, 1)
+        self.assertEqual(purchase.picking_ids[1].move_line_ids.quantity, 2)
         self.assertEqual(purchase.order_line.qty_received, 3)
 
     def test_purchase_sale_with_two_products_no_backorder(self):
@@ -152,18 +183,17 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.purchase_company_a.write(
             {
                 "order_line": [
-                    (0, 0, {"product_id": self.product2.id, "product_qty": 1}),
+                    Command.create({"product_id": self.product2.id, "product_qty": 1}),
                 ]
             }
         )
         sale = self._approve_po()
-        sale.action_confirm()
         sale_picking = sale.picking_ids
         self.assertEqual(len(sale.picking_ids), 1)
-        sale_picking.sudo().action_confirm()
+        sale_picking.with_company(sale_picking.company_id).action_confirm()
         for move in sale_picking.move_ids:
-            move.quantity_done = move.product_uom_qty
-        sale_picking.sudo().button_validate()
+            move.quantity = move.product_uom_qty
+        sale_picking.with_company(sale_picking.company_id).button_validate()
         self.assertEqual(len(self.purchase_company_a.picking_ids), 1)
         self.assertEqual(len(self.purchase_company_a.picking_ids.move_line_ids), 2)
 

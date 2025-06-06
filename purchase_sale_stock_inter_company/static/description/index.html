@@ -370,12 +370,19 @@ ul.auto-toc {
 !! source digest: sha256:94426490230688dfaec009199b08ce4bd7d916315a363e73c74bb7469a3cf705
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/17.0/purchase_sale_stock_inter_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-17-0/multi-company-17-0-purchase_sale_stock_inter_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=17.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module considers the propagation of the warehouse into the sale
-orders.</p>
 <p>This module is a glue module and is auto installed if
 purchase_sale_inter_company, sale_stock and purchase_stock modules are
 installed. Full purpose description can be found in
 purchase_sale_inter_company.</p>
+<p>In addition to the features provided by purchase_sale_inter_company,
+which automatically creates inter-company Sale Orders from Purchase
+Orders, this module extends the functionality by automatically
+validating the corresponding inter-company receipts when the Delivery
+Order is confirmed. During this process, lot/serial numbers and
+quantities are synchronized to ensure consistency across companies.</p>
+<p>The configuration includes an option to specify a default Warehouse that
+will be automatically assigned to Sale Orders generated from Purchase
+Orders addressed to this company.</p>
 <p>When Company A sends a product tracked by lot or serial number, a new
 lot/serial number with the same name is created in Company B to match
 it, if one doesn’t already exist.</p>
@@ -462,6 +469,12 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </ul>
 </li>
 <li>Eduard Brahas &lt;<a class="reference external" href="mailto:eduardbrhas&#64;outlook.it">eduardbrhas&#64;outlook.it</a>&gt;</li>
+<li>`Komit
+&lt;<a class="reference external" href="https://komit-consulting.com&gt;`">https://komit-consulting.com\&gt;\`</a>:<ul>
+<li>Cuong Nguyen Mtm &lt;<a class="reference external" href="mailto:cuong.nmtm&#64;komit-consulting.com">cuong.nmtm&#64;komit-consulting.com</a>&gt;</li>
+<li>Nam TNT &lt;<a class="reference external" href="mailto:nam-tnt&#64;komit-consulting.com">nam-tnt&#64;komit-consulting.com</a>&gt;</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="maintainers">
