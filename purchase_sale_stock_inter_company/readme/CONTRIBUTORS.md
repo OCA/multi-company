@@ -11,3 +11,6 @@
 - Ooops404 \<<info@ooops404.com>\>
   - Francesco Foresti \<<francesco.foresti@ooops404.com>\>
 - Eduard Brahas \<<eduardbrhas@outlook.it>\>
+- \`Komit \<https://komit-consulting.com\>\`:
+  - Cuong Nguyen Mtm \<cuong.nmtm@komit-consulting.com\>
+  - Nam TNT \<nam-tnt@komit-consulting.com\>
