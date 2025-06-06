@@ -19,15 +19,15 @@ class StockPicking(models.Model):
 
     def _set_intercompany_picking_qty(self, purchase):
         po_picks = self.browse()
-        sale_line_ids = self.move_line_ids.mapped("move_id.sale_line_id")
+        sale_line_ids = self.move_line_ids.move_id.sale_line_id
         for sale_line in sale_line_ids:
             sale_move_lines = self.move_line_ids.filtered(
                 lambda ml: ml.move_id.sale_line_id == sale_line
             )
-            po_move_lines = sale_line.auto_purchase_line_id.move_ids.mapped(
-                "move_line_ids"
+            po_moves_open = sale_line.auto_purchase_line_id.move_ids.filtered(
+                lambda sm: sm.state not in ["draft", "done", "cancel"]
             )
-            if not po_move_lines:
+            if not po_moves_open:
                 raise UserError(
                     _(
                         "There's no corresponding line in PO %(po)s for assigning "
@@ -41,23 +41,34 @@ class StockPicking(models.Model):
                         }
                     )
                 )
+            po_moves_open.picking_id.action_assign()
             product_qty_done = self._get_product_intercompany_qty_done_dict(
-                sale_move_lines, po_move_lines
+                sale_move_lines, po_moves_open.move_line_ids
             )
+            po_move_lots = self.env["stock.lot"]
+            for sale_lot in sale_move_lines.lot_id:
+                po_move_lots |= sale_lot.get_inter_company_lot(po_moves_open.company_id)
             for product, qty_done in product_qty_done.items():
-                product_po_mls = po_move_lines.filtered(
+                product_po_moves = po_moves_open.filtered(
                     lambda x: x.product_id == product
                 )
-                for po_move_line in product_po_mls:
-                    if po_move_line.reserved_qty >= qty_done:
-                        po_move_line.qty_done = qty_done
+                product_po_lots = po_move_lots.filtered(
+                    lambda x: x.product_id == product
+                )
+                for po_move in product_po_moves:
+                    if po_move.product_uom_qty >= qty_done:
+                        po_move.quantity_done = qty_done
+                        po_move.lot_ids = product_po_lots
                         qty_done = 0.0
-                    elif po_move_line.reserved_qty:
-                        po_move_line.qty_done = po_move_line.reserved_qty
-                        qty_done -= po_move_line.reserved_qty
-                    po_picks |= po_move_line.picking_id
-                if qty_done and product_po_mls:
-                    product_po_mls[-1:].qty_done += qty_done
+                    else:
+                        po_move.quantity_done = po_move.product_uom_qty
+                        po_move.lot_ids = product_po_lots[: po_move.product_uom_qty]
+                        product_po_lots = product_po_lots[po_move.product_uom_qty :]
+                        qty_done -= po_move.product_uom_qty
+                    po_picks |= po_move.picking_id
+                if qty_done and product_po_moves:
+                    product_po_moves[-1:].quantity_done += qty_done
+                    product_po_moves[-1:].lot_ids |= product_po_lots
         return po_picks
 
     def _action_done(self):
