@@ -53,7 +53,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # if product_multi_company is installed
         if "company_ids" in cls.env["product.template"]._fields:
             # We have to do that because the default method added a company
-            cls.service_product_2.company_ids = False
+            cls.service_product_2.company_id = False
 
         if "company_ids" in cls.env["res.partner"]._fields:
             # Intercompany contacts should not have a company set
