@@ -14,5 +14,5 @@
     "installable": True,
     "auto_install": True,
     "depends": ["purchase_sale_inter_company", "sale_stock", "purchase_stock"],
-    "data": ["views/res_config_view.xml"],
+    "data": ["views/res_config_view.xml", "views/stock_picking_type_views.xml"],
 }
