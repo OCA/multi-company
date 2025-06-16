@@ -1,0 +1,1 @@
+This module syncs the expected date from Company A purchase order line to Company B sale order line in an inter-company environment.

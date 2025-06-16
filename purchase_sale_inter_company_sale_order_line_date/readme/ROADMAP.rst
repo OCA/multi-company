@@ -1,0 +1,1 @@
+* No synchronization is made from the generated sale order back to the purchase order (just like purchase_sale_inter_company).
