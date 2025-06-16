@@ -44,7 +44,7 @@ class StockPicking(models.Model):
 
     def _compute_kit_quantities_done(self, move_ids, product_id, kit_qty, kit_bom):
         """Based on Odoo standard _compute_kit_quantities method.
-        We use the quantity_done of the moves instead of the product_qty.
+        We use the quantity of the moves instead of the product_qty.
         """
         qty_ratios = []
         boms, bom_sub_lines = kit_bom.explode(product_id, kit_qty)
@@ -70,8 +70,8 @@ class StockPicking(models.Model):
                 )
                 if not qty_per_kit:
                     continue
-                # Use quantity_done to get the qty_processed of each component
-                qty_processed = sum(bom_line_moves.mapped("quantity_done"))
+                # Use quantity to get the qty_processed of each component
+                qty_processed = sum(bom_line_moves.mapped("quantity"))
                 # We compute a ratio to know how many kits we can produce with this
                 # quantity of that specific component
                 qty_ratios.append(

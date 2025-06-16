@@ -71,12 +71,12 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         component_2_move = sale_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_2
         )
-        component_1_move.write({"quantity_done": 3.0})
-        component_2_move.write({"quantity_done": 9.0})
+        component_1_move.write({"quantity": 3.0})
+        component_2_move.write({"quantity": 9.0})
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 1)
-        self.assertEqual(purchase_picking.move_ids.quantity_done, 3.0)
+        self.assertEqual(purchase_picking.move_ids.quantity, 3.0)
 
     def test_purchase_sale_stock_inter_company_mrp_sale_kit_partial(self):
         self.kit_po.with_user(self.user_company_a).button_approve()
@@ -94,12 +94,12 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             lambda m: m.product_id == self.component_2
         )
         # Deliver only 2 kits
-        component_1_move.write({"quantity_done": 2.0})
-        component_2_move.write({"quantity_done": 6.0})
+        component_1_move.write({"quantity": 2.0})
+        component_2_move.write({"quantity": 6.0})
         sale_picking.with_context(skip_backorder=True).button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 1)
-        self.assertEqual(purchase_picking.move_ids.quantity_done, 2.0)
+        self.assertEqual(purchase_picking.move_ids.quantity, 2.0)
 
     def test_purchase_sale_stock_inter_company_mrp_purchase_kit(self):
         self.bom.write({"company_id": self.company_a.id})
@@ -111,7 +111,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         )
         sale_picking = sale.picking_ids[0]
         self.assertEqual(len(sale_picking.move_ids), 1)
-        sale_picking.move_ids.write({"quantity_done": 3.0})
+        sale_picking.move_ids.write({"quantity": 3.0})
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 2)
@@ -121,8 +121,8 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         component_2_move = purchase_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_2
         )
-        self.assertEqual(component_1_move.quantity_done, 3.0)
-        self.assertEqual(component_2_move.quantity_done, 9.0)
+        self.assertEqual(component_1_move.quantity, 3.0)
+        self.assertEqual(component_2_move.quantity, 9.0)
 
     def test_purchase_sale_stock_inter_company_mrp_purchase_kit_partial(self):
         self.bom.write({"company_id": self.company_a.id})
@@ -135,7 +135,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         sale_picking = sale.picking_ids[0]
         self.assertEqual(len(sale_picking.move_ids), 1)
         # Deliver only 2 kits
-        sale_picking.move_ids.write({"quantity_done": 2.0})
+        sale_picking.move_ids.write({"quantity": 2.0})
         sale_picking.with_context(skip_backorder=True).button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 2)
@@ -145,8 +145,8 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         component_2_move = purchase_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_2
         )
-        self.assertEqual(component_1_move.quantity_done, 2.0)
-        self.assertEqual(component_2_move.quantity_done, 6.0)
+        self.assertEqual(component_1_move.quantity, 2.0)
+        self.assertEqual(component_2_move.quantity, 6.0)
 
     def test_purchase_sale_stock_inter_company_mrp_sale_purchase_kit(self):
         # Create a different BoM for Company A
@@ -185,8 +185,8 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         component_2_move = sale_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_2
         )
-        component_1_move.write({"quantity_done": 3.0})
-        component_2_move.write({"quantity_done": 9.0})
+        component_1_move.write({"quantity": 3.0})
+        component_2_move.write({"quantity": 9.0})
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 3)
@@ -199,6 +199,6 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         component_3_move = purchase_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_3
         )
-        self.assertEqual(component_1_move.quantity_done, 3.0)
-        self.assertEqual(component_2_move.quantity_done, 6.0)
-        self.assertEqual(component_3_move.quantity_done, 15.0)
+        self.assertEqual(component_1_move.quantity, 3.0)
+        self.assertEqual(component_2_move.quantity, 6.0)
+        self.assertEqual(component_3_move.quantity, 15.0)
