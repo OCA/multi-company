@@ -3,7 +3,7 @@
 
 from odoo.tests.common import Form
 
-from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
+from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (  # noqa: E501
     TestPurchaseSaleInterCompany,
 )
 
