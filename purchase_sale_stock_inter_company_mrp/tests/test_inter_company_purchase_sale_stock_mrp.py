@@ -22,13 +22,13 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         cls.component_1 = cls.env["product.product"].create(
             {
                 "name": "Component 1",
-                "type": "product",
+                "is_storable": True,
             }
         )
         cls.component_2 = cls.env["product.product"].create(
             {
                 "name": "Component 2",
-                "type": "product",
+                "is_storable": True,
             }
         )
         cls.partner_company_a.company_id = False
@@ -153,7 +153,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self.component_3 = self.env["product.product"].create(
             {
                 "name": "Component 3",
-                "type": "product",
+                "is_storable": True,
             }
         )
         bom = Form(self.env["mrp.bom"])

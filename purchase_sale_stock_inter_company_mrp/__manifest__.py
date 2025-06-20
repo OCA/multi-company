@@ -4,7 +4,7 @@
 {
     "name": "Inter Company Module for Purchase to Sale Order with MRP",
     "summary": "Intercompany PO/SO rules with MRP",
-    "version": "17.0.1.0.0",
+    "version": "18.0.1.0.0",
     "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "ForgeFlow, Odoo Community Association (OCA)",
