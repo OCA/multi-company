@@ -5,7 +5,7 @@
 {
     "name": "Purchase Sale Lot Intercompany",
     "summary": "Intercompany PO/SO lot number propagation",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Odoo Community Association (OCA)",
