@@ -16,6 +16,7 @@
     "depends": [
         "purchase_lot",
         "purchase_sale_stock_inter_company",
+        "sale_order_lot_selection",
     ],
     "data": [
         "views/res_config_settings_views.xml",
