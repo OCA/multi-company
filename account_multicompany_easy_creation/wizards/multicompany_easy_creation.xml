@@ -41,6 +41,7 @@
                                 <field name="update_default_taxes" />
                             </group>
                             <group invisible="not update_default_taxes">
+                                <!-- The invisible default_sale_tax_options field should not be deleted, it is necessary for the correct functioning of the dynamic_selection widget. !-->
                                 <field name="default_sale_tax_options" invisible="1" />
                                 <field
                                     name="default_sale_tax"
@@ -51,6 +52,7 @@
                                 <field name="force_sale_tax" />
                             </group>
                             <group invisible="not update_default_taxes">
+                                <!-- The invisible default_purchase_tax_options field should not be deleted, it is necessary for the correct functioning of the dynamic_selection widget. !-->
                                 <field
                                     name="default_purchase_tax_options"
                                     invisible="1"
@@ -66,14 +68,14 @@
                         </page>
                         <page string="Banks">
                             <field name="bank_ids">
-                                <tree editable="bottom">
+                                <list editable="bottom">
                                     <field name="acc_number" />
                                     <field name="bank_id" />
                                     <field
                                         name="allow_out_payment"
                                         widget="boolean_toggle"
                                     />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                         <page string="Users">
@@ -81,14 +83,14 @@
                         </page>
                         <page string="Sequences">
                             <field name="sequence_ids">
-                                <tree>
+                                <list>
                                     <field name="code" />
                                     <field name="name" />
                                     <field name="prefix" />
                                     <field name="padding" />
                                     <field name="number_increment" />
                                     <field name="implementation" />
-                                </tree>
+                                </list>
                             </field>
                         </page>
                     </notebook>
