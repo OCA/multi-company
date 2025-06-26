@@ -105,10 +105,7 @@
             </form>
         </field>
     </record>
-     <record
-        model="ir.actions.act_window"
-        id="wizard_multicompany_easy_creation_action"
-    >
+    <record model="ir.actions.act_window" id="wizard_multicompany_easy_creation_action">
         <field name="name">Company easy creation</field>
         <field name="res_model">account.multicompany.easy.creation.wiz</field>
         <field name="view_mode">form</field>
