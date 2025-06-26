@@ -3,7 +3,7 @@
 # Copyright 2025 Tecnativa - Víctor Martínez
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from odoo.tools import ormcache
 from odoo.tools.safe_eval import safe_eval
 
@@ -65,6 +65,10 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         comodel_name="res.company",
         string="Company",
     )
+    country_id = fields.Many2one(
+        comodel_name="res.country",
+        compute="_compute_country_id",
+    )
     # TAXES
     smart_search_product_tax = fields.Boolean(
         default=True,
@@ -122,6 +126,15 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 chart_template_options.append((key, name))
         return chart_template_options
 
+    @api.depends("chart_template")
+    def _compute_country_id(self):
+        for item in self:
+            chart_template = self.env["account.chart.template"]
+            key = item.chart_template
+            item.country_id = chart_template._get_chart_template_mapping()[key].get(
+                "country_id"
+            )
+
     def _tax_selection(self):
         """We need to define in the selection all possible options."""
         tax_data_options = []
@@ -149,7 +162,10 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 chart_template
             )["account.tax"]
             for key in list(tax_data.keys()):
-                if tax_data[key]["type_tax_use"] == type_tax_use:
+                tax_data_item = tax_data[key]
+                if tax_data_item["type_tax_use"] == type_tax_use:
+                    if "active" in tax_data_item and not tax_data_item["active"]:
+                        continue
                     tax_options.append(f"{chart_template}-{key}")
         return tax_options
 
@@ -200,7 +216,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                         "code": f"57200{i + 1}",
                         "name": vals["name"],
                         "account_type": "asset_cash",
-                        "company_id": vals["company_id"],
+                        "company_ids": [Command.link(vals["company_id"])],
                     }
                 )
                 vals.update(
@@ -217,11 +233,13 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             sequence.copy({"company_id": self.new_company_id.id})
 
     def create_company(self):
+        self = self.with_context(skip_install_l10n_modules=True)
         self.new_company_id = self.env["res.company"].create(
             {
                 "name": self.name,
-                "user_ids": [(6, 0, self.user_ids.ids)],
+                "user_ids": [Command.set(self.user_ids.ids)],
                 "currency_id": self.currency_id.id,
+                "country_id": self.country_id.id,
             }
         )
         allowed_company_ids = (
@@ -257,7 +275,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             self.new_company_id.id, product_taxes
         )
         if tax_ids:
-            product.update({taxes_field: [(4, tax_id) for tax_id in tax_ids]})
+            product.update({taxes_field: [Command.link(tax_id) for tax_id in tax_ids]})
             return True
         return False
 
@@ -284,7 +302,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     updated_sale |= product
         if self.update_default_taxes and self.force_sale_tax:
             sale_tax = default_sale_tax or new_company.account_sale_tax_id
-            (products - updated_sale).update({"taxes_id": [(4, sale_tax.id)]})
+            (products - updated_sale).update({"taxes_id": [Command.link(sale_tax.id)]})
         if self.smart_search_product_tax:
             for product in products.filtered("supplier_taxes_id"):
                 if self.update_product_taxes(
@@ -295,15 +313,16 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             purchase_tax = default_purchase_tax or new_company.account_purchase_tax_id
             (products - updated_purchase).update(
                 {
-                    "supplier_taxes_id": [(4, purchase_tax.id)],
+                    "supplier_taxes_id": [Command.link(purchase_tax.id)],
                 }
             )
 
     def update_taxes(self):
+        sale_tax = False
+        purchase_tax = False
         if self.update_default_taxes:
             IrDefault = self.env["ir.default"].sudo()
             new_company = self.new_company_id
-            sale_tax = False
             if self.default_sale_tax:
                 tax_key = self.default_sale_tax.replace(f"{self.chart_template}-", "")
                 full_xmlid = (
@@ -319,7 +338,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                     company_id=new_company.id,
                 )
                 new_company.account_sale_tax_id = sale_tax
-            purchase_tax = False
             if self.default_purchase_tax:
                 tax_key = self.default_purchase_tax.replace(
                     f"{self.chart_template}-", ""
@@ -339,43 +357,32 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 new_company.account_purchase_tax_id = purchase_tax
         self.set_product_taxes(sale_tax, purchase_tax)
 
-    def set_specific_properties(self, model, match_field):
+    def set_company_depend_values(self, model, match_field):
         user_company = self.env.user.company_id
-        self_sudo = self.sudo()
         new_company_id = self.new_company_id.id
-        IrProperty = self_sudo.env["ir.property"]
-        properties = IrProperty.search(
-            [
-                ("company_id", "=", user_company.id),
-                ("type", "=", "many2one"),
-                ("res_id", "!=", False),
-                ("value_reference", "=like", f"{model},%"),
-            ]
-        )
-        Model = self_sudo.env[model]
-        for prop in properties:
-            ref = Model.browse(int(prop.value_reference.split(",")[1]))
-            new_ref = Model.search(
+        env_model = self.env[model]
+        f_name = "company_ids" if "company_ids" in env_model._fields else "company_id"
+        records_user_company = (
+            self.env[model]
+            .with_company(user_company)
+            .search(
                 [
-                    ("company_id", "=", new_company_id),
-                    (match_field, "=", ref[match_field]),
+                    (match_field, "!=", False),
+                    "|",
+                    (f_name, "=", user_company.id),
+                    (f_name, "=", False),
                 ]
             )
-            if new_ref:
-                prop.copy(
-                    {
-                        "company_id": new_company_id,
-                        "value_reference": f"{model},{new_ref.id}",
-                        "value_float": False,
-                        "value_integer": False,
-                    }
-                )
+        )
+        for record in records_user_company:
+            record_new_company = record.with_company(new_company_id)
+            record_new_company[match_field] = record[match_field]
 
-    def update_properties(self):
+    def update_company_depend_misc(self):
         if self.smart_search_specific_account:
-            self.set_specific_properties("account.account", "code")
+            self.set_company_depend_values("account.account", "code")
         if self.smart_search_fiscal_position:
-            self.set_specific_properties("account.fiscal.position", "name")
+            self.set_company_depend_values("account.fiscal.position", "name")
 
     def action_res_company_form(self):
         action = self.env["ir.actions.act_window"]._for_xml_id(
@@ -389,7 +396,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     def action_accept(self):
         self.create_company()
         self.update_taxes()
-        self.update_properties()
+        self.update_company_depend_misc()
         return self.action_res_company_form()
 
     @api.onchange("chart_template")

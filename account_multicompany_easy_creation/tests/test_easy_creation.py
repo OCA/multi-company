@@ -1,13 +1,14 @@
 # Copyright 2021-2025 Tecnativa - Víctor Martínez
 # Copyright 2022 Moduon - Eduardo de Miguel
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl)
-
-from odoo.tests import Form, new_test_user
+from odoo import Command
+from odoo.tests import Form, new_test_user, tagged
 from odoo.tests.common import users
 
 from odoo.addons.base.tests.common import BaseCommon
 
 
+@tagged("post_install", "-at_install")
 class TestEasyCreation(BaseCommon):
     @classmethod
     def setUpClass(cls):
@@ -15,8 +16,8 @@ class TestEasyCreation(BaseCommon):
         cls.env.ref("base.user_admin").write(
             {
                 "groups_id": [
-                    (4, cls.env.ref("account.group_account_manager").id),
-                    (4, cls.env.ref("account.group_account_user").id),
+                    Command.link(cls.env.ref("account.group_account_manager").id),
+                    Command.link(cls.env.ref("account.group_account_user").id),
                 ],
             }
         )
@@ -42,20 +43,20 @@ class TestEasyCreation(BaseCommon):
         cls.product = cls.env["product.product"].create(
             {
                 "name": "Test product",
-                "taxes_id": [(6, 0, cls.sale_tax.ids)],
-                "supplier_taxes_id": [(6, 0, cls.purchase_tax.ids)],
+                "taxes_id": [Command.set(cls.sale_tax.ids)],
+                "supplier_taxes_id": [Command.set(cls.purchase_tax.ids)],
             }
         )
         cls.sale_product = cls.env["product.product"].create(
             {
                 "name": "Test sale product",
-                "taxes_id": [(6, 0, cls.sale_tax.ids)],
+                "taxes_id": [Command.set(cls.sale_tax.ids)],
             }
         )
         cls.purchase_product = cls.env["product.product"].create(
             {
                 "name": "Test purchase product",
-                "supplier_taxes_id": [(6, 0, cls.purchase_tax.ids)],
+                "supplier_taxes_id": [Command.set(cls.purchase_tax.ids)],
             }
         )
         cls.extra_product = cls.env["product.product"].create(
@@ -63,11 +64,12 @@ class TestEasyCreation(BaseCommon):
                 "name": "Test extra product",
             }
         )
+        cls.bank = cls.env["res.bank"].create({"name": "Test bank"})
 
-    def _test_model_items(self, model, company_id):
-        self.assertGreaterEqual(
-            self.env[model].search_count([("company_id", "=", company_id.id)]), 1
-        )
+    def _test_model_items(self, model, company):
+        env_model = self.env[model]
+        f_name = "company_ids" if "company_ids" in env_model._fields else "company_id"
+        self.assertGreaterEqual(env_model.search_count([(f_name, "=", company.id)]), 1)
 
     def test_wizard_easy_creation(self):
         wizard_form = Form(
@@ -85,6 +87,12 @@ class TestEasyCreation(BaseCommon):
         wizard_form.force_purchase_tax = True
         wizard_form.user_ids.add(self.test_user)
         wizard_form.user_ids.add(self.test_extra_user)
+        with wizard_form.bank_ids.new() as bank_line_form:
+            bank_line_form.acc_number = "acc_number-1"
+            bank_line_form.bank_id = self.bank
+        with wizard_form.bank_ids.new() as bank_line_form:
+            bank_line_form.acc_number = "acc_number-2"
+            bank_line_form.bank_id = self.bank
         record = wizard_form.save()
         record.action_accept()
         self.assertEqual(record.new_company_id.name, "test_company")
@@ -110,6 +118,13 @@ class TestEasyCreation(BaseCommon):
         self.assertGreater(len(self.product.supplier_taxes_id), 1)
         self.assertGreater(len(self.sale_product.taxes_id), 1)
         self.assertGreater(len(self.purchase_product.supplier_taxes_id), 1)
+        # bank_journals
+        bank_journals = self.env["account.journal"].search(
+            [("type", "=", "bank"), ("company_id", "=", record.new_company_id.id)]
+        )
+        self.assertEqual(len(bank_journals), 2)
+        self.assertIn("acc_number-1", bank_journals.mapped("bank_acc_number"))
+        self.assertIn("acc_number-2", bank_journals.mapped("bank_acc_number"))
 
     @users("test-user")
     def test_wizard_easy_creation_test_user(self):
