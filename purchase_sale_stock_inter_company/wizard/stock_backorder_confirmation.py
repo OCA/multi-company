@@ -11,7 +11,7 @@ class StockBackorderConfirmation(models.TransientModel):
 
     @api.model
     def default_get(self, fields):
-        res = super(StockBackorderConfirmation, self).default_get(fields)
+        res = super().default_get(fields)
         picking = self.env["stock.picking"].browse(
             self.env.context.get("picking_id", False)
         )
