@@ -7,7 +7,6 @@ from odoo import fields, models
 
 
 class InterCompanyRulesConfig(models.TransientModel):
-
     _inherit = "res.config.settings"
 
     warehouse_id = fields.Many2one(

@@ -369,42 +369,67 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !! source digest: sha256:94426490230688dfaec009199b08ce4bd7d916315a363e73c74bb7469a3cf705
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
-<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/16.0/purchase_sale_stock_inter_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-purchase_sale_stock_inter_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=16.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
-<p>This module considers the propagation of the warehouse into the sale orders.</p>
-<p>This module is a glue module and is auto installed if <cite>purchase_sale_inter_company</cite>, <cite>sale_stock</cite> and <cite>purchase_stock</cite> modules are installed.
-Full purpose description can be found in <cite>purchase_sale_inter_company</cite>.</p>
+<p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/17.0/purchase_sale_stock_inter_company"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-17-0/multi-company-17-0-purchase_sale_stock_inter_company"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=17.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
+<p>This module considers the propagation of the warehouse into the sale
+orders.</p>
+<p>This module is a glue module and is auto installed if
+purchase_sale_inter_company, sale_stock and purchase_stock modules are
+installed. Full purpose description can be found in
+purchase_sale_inter_company.</p>
+<p>When Company A sends a product tracked by lot or serial number, a new
+lot/serial number with the same name is created in Company B to match
+it, if one doesn’t already exist.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
 <li><a class="reference internal" href="#configuration" id="toc-entry-1">Configuration</a></li>
-<li><a class="reference internal" href="#bug-tracker" id="toc-entry-2">Bug Tracker</a></li>
-<li><a class="reference internal" href="#credits" id="toc-entry-3">Credits</a><ul>
-<li><a class="reference internal" href="#authors" id="toc-entry-4">Authors</a></li>
-<li><a class="reference internal" href="#contributors" id="toc-entry-5">Contributors</a></li>
-<li><a class="reference internal" href="#maintainers" id="toc-entry-6">Maintainers</a></li>
+<li><a class="reference internal" href="#known-issues-roadmap" id="toc-entry-2">Known issues / Roadmap</a></li>
+<li><a class="reference internal" href="#bug-tracker" id="toc-entry-3">Bug Tracker</a></li>
+<li><a class="reference internal" href="#credits" id="toc-entry-4">Credits</a><ul>
+<li><a class="reference internal" href="#authors" id="toc-entry-5">Authors</a></li>
+<li><a class="reference internal" href="#contributors" id="toc-entry-6">Contributors</a></li>
+<li><a class="reference internal" href="#maintainers" id="toc-entry-7">Maintainers</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="configuration">
 <h1><a class="toc-backref" href="#toc-entry-1">Configuration</a></h1>
-<p>To configure this module, you need to:
-#. Go to the menu <em>Settings &gt; General Settings</em>.
-#. Go to the tab <em>Companies / Inter Company OCA features</em>, in the group <em>Purchase/Sale</em>, check the option <em>Sale from purchase</em>.
-#. Then, select the <em>Warehouse for Sale Orders</em>, it is the warehouse that will be used to automatically generate the sale order in the other company.</p>
+<p>To configure this module, you need to: #. Go to the menu <em>Settings &gt;
+General Settings</em>. #. Go to the tab <em>Companies / Inter Company OCA
+features</em>, in the group <em>Purchase/Sale</em>, check the option <em>Sale from
+purchase</em>. #. Then, select the <em>Warehouse for Sale Orders</em>, it is the
+warehouse that will be used to automatically generate the sale order in
+the other company.</p>
+<ol class="arabic simple">
+<li>If you check the option “Sync picking” (for both companies),
+validating a picking generated by an inter-company purchase/sale will
+validate the respective picking for the other company.</li>
+<li>If you check the option “Block manual validation of picking in the
+destination company” is not possible to validate manually the picking
+in the destination company.</li>
+</ol>
+</div>
+<div class="section" id="known-issues-roadmap">
+<h1><a class="toc-backref" href="#toc-entry-2">Known issues / Roadmap</a></h1>
+<ul class="simple">
+<li>Module is not very robust in complex situations, such as multi-step
+receipts and multi-step deliveries, with backorders. Multi-step
+receipts could be improved further.</li>
+</ul>
 </div>
 <div class="section" id="bug-tracker">
-<h1><a class="toc-backref" href="#toc-entry-2">Bug Tracker</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-3">Bug Tracker</a></h1>
 <p>Bugs are tracked on <a class="reference external" href="https://github.com/OCA/multi-company/issues">GitHub Issues</a>.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20purchase_sale_stock_inter_company%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
+<a class="reference external" href="https://github.com/OCA/multi-company/issues/new?body=module:%20purchase_sale_stock_inter_company%0Aversion:%2017.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**">feedback</a>.</p>
 <p>Do not contact contributors directly about support or help with technical issues.</p>
 </div>
 <div class="section" id="credits">
-<h1><a class="toc-backref" href="#toc-entry-3">Credits</a></h1>
+<h1><a class="toc-backref" href="#toc-entry-4">Credits</a></h1>
 <div class="section" id="authors">
-<h2><a class="toc-backref" href="#toc-entry-4">Authors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-5">Authors</a></h2>
 <ul class="simple">
 <li>Odoo SA</li>
 <li>Akretion</li>
@@ -412,26 +437,35 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 </ul>
 </div>
 <div class="section" id="contributors">
-<h2><a class="toc-backref" href="#toc-entry-5">Contributors</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-6">Contributors</a></h2>
 <ul class="simple">
 <li>Adria Gil Sorribes &lt;<a class="reference external" href="mailto:adria.gil&#64;forgeflow.com">adria.gil&#64;forgeflow.com</a>&gt;</li>
-<li><cite>Akretion &lt;https://www.akretion.com&gt;</cite>:<ul>
+<li>`Akretion &lt;<a class="reference external" href="https://www.akretion.com">https://www.akretion.com</a>&gt;`:<ul>
 <li>Chafique Delli &lt;<a class="reference external" href="mailto:chafique.delli&#64;akretion.com">chafique.delli&#64;akretion.com</a>&gt;</li>
 <li>Pierrick Brun &lt;<a class="reference external" href="mailto:pierrick.brun&#64;akretion.com">pierrick.brun&#64;akretion.com</a>&gt;</li>
 </ul>
 </li>
-<li><cite>Tecnativa &lt;https://www.tecnativa.com&gt;</cite>:<ul>
+<li>`Tecnativa &lt;<a class="reference external" href="https://www.tecnativa.com">https://www.tecnativa.com</a>&gt;`:<ul>
 <li>Pedro M. Baeza</li>
 </ul>
 </li>
-<li><cite>Camptocamp &lt;https://www.camptocamp.com&gt;</cite>:<ul>
+<li>`Camptocamp &lt;<a class="reference external" href="https://www.camptocamp.com">https://www.camptocamp.com</a>&gt;`:<ul>
 <li>Maksym Yankin &lt;<a class="reference external" href="mailto:maksym.yankin&#64;camptocamp.com">maksym.yankin&#64;camptocamp.com</a>&gt;</li>
 </ul>
 </li>
+<li><a class="reference external" href="mailto:info&#64;pytech.it">PyTech SRL</a>:<ul>
+<li>Alessandro Uffreduzzi &lt;<a class="reference external" href="mailto:alessandro.uffreduzzi&#64;pytech.it">alessandro.uffreduzzi&#64;pytech.it</a>&gt;</li>
+</ul>
+</li>
+<li>Ooops404 &lt;<a class="reference external" href="mailto:info&#64;ooops404.com">info&#64;ooops404.com</a>&gt;<ul>
+<li>Francesco Foresti &lt;<a class="reference external" href="mailto:francesco.foresti&#64;ooops404.com">francesco.foresti&#64;ooops404.com</a>&gt;</li>
+</ul>
+</li>
+<li>Eduard Brahas &lt;<a class="reference external" href="mailto:eduardbrhas&#64;outlook.it">eduardbrhas&#64;outlook.it</a>&gt;</li>
 </ul>
 </div>
 <div class="section" id="maintainers">
-<h2><a class="toc-backref" href="#toc-entry-6">Maintainers</a></h2>
+<h2><a class="toc-backref" href="#toc-entry-7">Maintainers</a></h2>
 <p>This module is maintained by the OCA.</p>
 <a class="reference external image-reference" href="https://odoo-community.org">
 <img alt="Odoo Community Association" src="https://odoo-community.org/logo.png" />
@@ -439,7 +473,7 @@ If you spotted it first, help us to smash it by providing a detailed and welcome
 <p>OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.</p>
-<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/16.0/purchase_sale_stock_inter_company">OCA/multi-company</a> project on GitHub.</p>
+<p>This module is part of the <a class="reference external" href="https://github.com/OCA/multi-company/tree/17.0/purchase_sale_stock_inter_company">OCA/multi-company</a> project on GitHub.</p>
 <p>You are welcome to contribute. To learn how please visit <a class="reference external" href="https://odoo-community.org/page/Contribute">https://odoo-community.org/page/Contribute</a>.</p>
 </div>
 </div>

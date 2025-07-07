@@ -5,10 +5,11 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 
+from odoo.exceptions import UserError
+
 from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
     TestPurchaseSaleInterCompany,
 )
-from odoo.exceptions import UserError
 
 
 class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
@@ -72,7 +73,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         cls.serial_5 = cls._create_serial_and_quant(
             cls.stockable_product_serial, "555", cls.company_b
         )
-    
+
     @classmethod
     def _create_serial_and_quant(cls, product, name, company, quant=True):
         lot = cls.lot_obj.create(
@@ -219,7 +220,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         # A backorder should have been made for both
         self.assertTrue(len(sale.picking_ids) > 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
-    
+
     def test_confirm_several_picking(self):
         """
         Ensure that confirming several picking is not broken
@@ -237,7 +238,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             move.quantity_done = move.product_uom_qty
         pickings.button_validate()
         self.assertEqual(pickings.mapped("state"), ["done", "done"])
-    
+
     def test_sync_picking_no_backorder(self):
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
@@ -299,7 +300,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         # No backorder should have been made for both
         self.assertEqual(len(sale.picking_ids), 1)
         self.assertEqual(len(purchase.picking_ids), len(sale.picking_ids))
-    
+
     def test_sync_picking_lot(self):
         """
         Test that the lot is synchronized on the moves
@@ -528,7 +529,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             move.quantity_done = move.product_uom_qty
         with self.assertRaises(UserError):
             so_picking_id.button_validate()
-        
+
     def test_sync_picking_multi_step(self):
         self.company_a.sync_picking = True
         self.warehouse_a.reception_steps = "two_steps"
