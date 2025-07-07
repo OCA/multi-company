@@ -12,7 +12,6 @@ SELECTION_SYNC_FAILURE_ACTIONS = [
 
 
 class ResCompany(models.Model):
-
     _inherit = "res.company"
 
     warehouse_id = fields.Many2one(

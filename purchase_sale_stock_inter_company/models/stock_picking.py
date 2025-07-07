@@ -105,10 +105,12 @@ class StockPicking(models.Model):
             pick = self
             for move in pick.move_lines:
                 move_lines = move.move_line_ids.filtered(lambda x: x.qty_done > 0)
-                po_move_pending = move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
-                    lambda x, ic_pick=pick.intercompany_picking_id: x.picking_id
-                    == ic_pick
-                    and x.state not in ["done", "cancel"]
+                po_move_pending = (
+                    move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                        lambda x, ic_pick=pick.intercompany_picking_id: x.picking_id
+                        == ic_pick
+                        and x.state not in ["done", "cancel"]
+                    )
                 )
                 po_move_lines = po_move_pending.mapped("move_line_ids")
                 move_line_diff = len(move_lines) - len(po_move_lines)

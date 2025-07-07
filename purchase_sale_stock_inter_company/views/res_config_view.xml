@@ -9,11 +9,7 @@
         <field name="arch" type="xml">
             <xpath expr="//label[@for='intercompany_sale_user_id']" position='before'>
                 <field name="sync_picking" class="oe_inline" />
-                <label
-                    string="Sync picking"
-                    class="o_light_label"
-                    for="sync_picking"
-                />
+                <label string="Sync picking" class="o_light_label" for="sync_picking" />
                 <br />
                 <field name="sync_picking_failure_action" class="oe_inline" />
                 <label
@@ -33,10 +29,7 @@
                     class="oe_inline"
                 />
                 <br />
-                <field
-                    name="block_po_manual_picking_validation"
-                    class="oe_inline"
-                />
+                <field name="block_po_manual_picking_validation" class="oe_inline" />
                 <label
                     string="Block PO manual picking validation"
                     class="o_light_label"
