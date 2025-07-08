@@ -8,39 +8,42 @@
         />
         <field name="arch" type="xml">
             <xpath expr="//label[@for='intercompany_sale_user_id']" position='before'>
-                <field name="sync_picking" class="oe_inline" />
-                <label string="Sync picking" class="o_light_label" for="sync_picking" />
+                <label
+                    string="Sync picking"
+                    class="o_light_label mr8"
+                    for="sync_picking"
+                />
+                <field name="sync_picking" />
                 <br />
-                <field name="sync_picking_failure_action" class="oe_inline" />
                 <label
                     string="On sync picking failure"
-                    class="o_light_label"
+                    class="o_light_label mr8"
                     for="sync_picking_failure_action"
                 />
+                <field name="sync_picking_failure_action" />
                 <br />
                 <label
                     for="notify_user_id"
-                    class="o_light_label"
-                    attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')]}"
+                    class="o_light_label mr8"
+                    invisible="sync_picking_failure_action != 'notify'"
                 />
                 <field
                     name="notify_user_id"
-                    attrs="{'invisible': [('sync_picking_failure_action', '!=', 'notify')], 'required': [('sync_picking_failure_action', '=', 'notify')]}"
-                    class="oe_inline"
+                    invisible="sync_picking_failure_action != 'notify'"
+                    required="sync_picking_failure_action == 'notify'"
                 />
                 <br />
-                <field name="block_po_manual_picking_validation" class="oe_inline" />
                 <label
                     string="Block PO manual picking validation"
-                    class="o_light_label"
+                    class="o_light_label mr8"
                     for="block_po_manual_picking_validation"
                 />
+                <field name="block_po_manual_picking_validation" />
                 <br />
-                <label for="warehouse_id" class="o_light_label" />
+                <label for="warehouse_id" class="o_light_label mr8" />
                 <field
                     name="warehouse_id"
                     required="so_from_po"
-                    class="oe_inline"
                     domain="[('company_id', '=', company_id)]"
                 />
             </xpath>

@@ -11,14 +11,14 @@ class StockMoveLine(models.Model):
             po_moves = move_line._get_stock_moves_to_sync()
             for po_move in po_moves:
                 po_move_line_vals = po_move._prepare_move_line_vals(
-                    quantity=move_line.qty_done
+                    quantity=move_line.quantity
                 )
                 if move_line.lot_id:
                     dest_lot = move_line._get_or_create_lot_intercompany(
                         po_move.company_id
                     )
                     po_move_line_vals["lot_id"] = dest_lot.id
-                po_move_line_vals["qty_done"] = move_line.qty_done
+                po_move_line_vals["quantity"] = move_line.quantity
                 self.sudo().create(po_move_line_vals)
         return new_move_lines
 
@@ -78,14 +78,14 @@ class StockMoveLine(models.Model):
 
     @api.model
     def _get_fields_to_sync_intercompany(self):
-        return {"qty_done", "lot_id"}
+        return {"quantity", "lot_id"}
 
     def _get_or_create_lot_intercompany(self, dest_company):
         # search if the same lot exists in destination company
         self.ensure_one()
-        ProductionLot = self.env["stock.production.lot"].sudo()
-        lot = self.lot_id
-        dest_lot = ProductionLot.search(
+        StockLot = self.env["stock.lot"].sudo()
+        lot = self.lot_id.sudo()
+        dest_lot = StockLot.search(
             [
                 ("product_id", "=", lot.product_id.id),
                 ("name", "=", lot.name),
@@ -95,5 +95,5 @@ class StockMoveLine(models.Model):
         )
         if not dest_lot:
             # if it doesn't exist, create it by copying from original company
-            dest_lot = lot.sudo().copy({"company_id": dest_company.id})
+            dest_lot = lot.copy({"company_id": dest_company.id, "name": lot.name})
         return dest_lot
