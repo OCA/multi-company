@@ -14,8 +14,5 @@
     "installable": True,
     "auto_install": True,
     "depends": ["purchase_sale_inter_company", "sale_stock", "purchase_stock"],
-    "data": [
-        "views/res_config_view.xml",
-        "wizard/stock_backorder_confirmation_views.xml",
-    ],
+    "data": ["views/res_config_view.xml"],
 }

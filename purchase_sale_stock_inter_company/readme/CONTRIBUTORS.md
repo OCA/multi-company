@@ -4,6 +4,7 @@
   - Pierrick Brun \<<pierrick.brun@akretion.com>\>
 - \`Tecnativa \<<https://www.tecnativa.com>\>\`:
   - Pedro M. Baeza
+  - Carlos Lopez
 - \`Camptocamp \<<https://www.camptocamp.com>\>\`:
   - Maksym Yankin \<<maksym.yankin@camptocamp.com>\>
 - [PyTech SRL](info@pytech.it):
