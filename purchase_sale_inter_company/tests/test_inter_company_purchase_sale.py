@@ -23,18 +23,21 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             user.groups_id |= cls.env.ref(xml)
 
     @classmethod
-    def _create_purchase_order(cls, partner):
+    def _create_purchase_order(cls, partner, products=None):
+        if not products:
+            products = [None]
+
         po = Form(cls.env["purchase.order"])
         po.company_id = cls.company_a
         po.partner_id = partner
 
         cls.product.invoice_policy = "order"
 
-        with po.order_line.new() as line_form:
-            line_form.product_id = cls.product
-            line_form.product_qty = 3.0
-            line_form.name = "Service Multi Company"
-            line_form.price_unit = 450.0
+        for product in products:
+            with po.order_line.new() as line_form:
+                line_form.product_id = product or cls.product
+                line_form.product_qty = 3.0
+                line_form.price_unit = 450.0
         return po.save()
 
     @classmethod
@@ -113,19 +116,21 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             }
         )
 
-    def _approve_po(self):
+    def _approve_po(self, purchase_to_approve=None):
         """Confirm the PO in company A and return the related sale of Company B"""
-        parnter_company = self.purchase_company_a.company_id.partner_id.company_id
+        if not purchase_to_approve:
+            purchase_to_approve = self.purchase_company_a
+        parnter_company = purchase_to_approve.company_id.partner_id.company_id
         assert not parnter_company, (
             "The partner should not have a company set, otherwise the "
             "intercompany_sale_order_id will not be computed properly. Current "
             f"partner company_id: {parnter_company.name}"
         )
-        self.purchase_company_a.with_user(self.user_company_a).button_approve()
+        purchase_to_approve.with_user(self.user_company_a).button_approve()
         return (
             self.env["sale.order"]
             .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.purchase_company_a.id)])
+            .search([("auto_purchase_order_id", "=", purchase_to_approve.id)])
         )
 
     def test_purchase_sale_inter_company(self):
