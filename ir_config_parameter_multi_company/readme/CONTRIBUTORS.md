@@ -1,3 +1,5 @@
 - [Innovyou](https://www.innovyou.co/):  
   - Lorenzo Battistini \<lorenzo.battistini@innovyou.co\>
   - Denis G. Craciun \<denis.craciun@innovyou.co\>
+- [SMILE] (https://smile.eu/en):
+  - Théo Martin \<theo.martin@smile.fr\>
