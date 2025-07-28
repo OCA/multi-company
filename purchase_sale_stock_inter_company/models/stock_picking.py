@@ -48,7 +48,7 @@ class StockPicking(models.Model):
         ):
             dest_company = record.partner_id.commercial_partner_id.ref_company_ids
             if (
-                dest_company and record.picking_type_code == "incoming"
+                dest_company and record.picking_type_code in ["incoming", "dropship"]
             ) and record.state in ["done", "waiting", "assigned"]:
                 raise UserError(
                     _(
