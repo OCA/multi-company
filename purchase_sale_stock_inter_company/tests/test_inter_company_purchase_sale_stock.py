@@ -454,7 +454,9 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         # The picking should be in waiting state
         self.assertEqual(po_picking_id.state, "waiting")
         # The manual validation should be blocked
-        with self.assertRaises(UserError):
+        with self.assertRaisesRegex(
+            UserError, "Manual validation of the picking is not allowed"
+        ):
             po_picking_id.with_user(self.user_company_a).button_validate()
 
     def test_notify_picking_problem(self):
