@@ -23,10 +23,8 @@ class StockPicking(models.Model):
         """
         res = super()._compute_state()
         for picking in self.filtered(
-            lambda pick: pick.picking_type_code == "incoming"
+            lambda pick: pick._is_intercompany_reception()
             and pick.state not in ["done", "cancel"]
-            and pick.purchase_id
-            and pick.purchase_id.intercompany_sale_order_id
         ):
             # intercompany_picking_id is set when the picking is validated
             # meanwhile, the state should remain in 'waiting'
@@ -43,31 +41,25 @@ class StockPicking(models.Model):
     def button_validate(self):
         # if the flag is set,
         # block the validation of the picking in the destination company
-        for record in self.filtered(
+        if self.filtered(
             lambda picking: picking.company_id.block_po_manual_picking_validation
+            and picking._is_intercompany_reception()
+            and picking.state in ["done", "waiting", "assigned"]
         ):
-            dest_company = record.partner_id.commercial_partner_id.ref_company_ids
-            if (
-                dest_company and record.picking_type_code in ["incoming", "dropship"]
-            ) and record.state in ["done", "waiting", "assigned"]:
-                raise UserError(
-                    _(
-                        "Manual validation of the picking is not allowed"
-                        " in the destination company."
-                    )
+            raise UserError(
+                _(
+                    "Manual validation of the picking is not allowed"
+                    " in the destination company."
                 )
+            )
         return super().button_validate()
 
     def _action_done(self):
         res = super()._action_done()
         # Only DropShip pickings
-        for pick in self.filtered(
-            lambda x: x.location_dest_id.usage == "customer"
-        ).sudo():
-            purchase = pick.sale_id.auto_purchase_order_id.sudo()
-            if not purchase:
-                continue
-            pick._action_done_intercompany_actions(purchase)
+        for picking in self.filtered(lambda pick: pick._is_intercompany_delivery()):
+            purchase = picking.sale_id.sudo().auto_purchase_order_id
+            picking.sudo()._action_done_intercompany_actions(purchase)
         return res
 
     def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
@@ -204,4 +196,24 @@ class StockPicking(models.Model):
                 or self.sale_id.team_id.user_id.id
                 or SUPERUSER_ID,
             ),
+        )
+
+    def _is_intercompany_reception(self):
+        """
+        Check if the picking is an inter-company reception.
+        :return: bool
+        """
+        return (
+            self.location_id.usage == "supplier"
+            and self.purchase_id.sudo().intercompany_sale_order_id
+        )
+
+    def _is_intercompany_delivery(self):
+        """
+        Check if the picking is an inter-company delivery.
+        :return: bool
+        """
+        return (
+            self.location_dest_id.usage == "customer"
+            and self.sale_id.sudo().auto_purchase_order_id
         )
