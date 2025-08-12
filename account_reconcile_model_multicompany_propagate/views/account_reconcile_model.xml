@@ -2,8 +2,6 @@
 <!-- Copyright 2023 Moduon Team S.L.
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl-3.0) -->
 <odoo>
-
-
     <record
         id="account_reconcile_model_inherit_account_reconcile_model_multicompany_propagate"
         model="ir.ui.view"
@@ -30,13 +28,12 @@
                     groups="account.group_account_user"
                     class="alert alert-info mb-0"
                     role="alert"
-                    attrs="{'invisible': [('same_name_other_companies', '=', False)]}"
+                    invisible="same_name_other_companies == False"
                 >
                     <field name="same_name_other_companies" invisible="1" />
                     <span
                     >Other reconcile model has same name and its company has same chart of accounts. If you propagate this model, they will be overwritten in the other companies.</span>
                 </div>
-
             </xpath>
         </field>
     </record>
