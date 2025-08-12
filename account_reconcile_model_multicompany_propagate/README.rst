@@ -17,18 +17,20 @@ Account Reconcile Model Multicompany Propagate
     :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
     :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/16.0/account_reconcile_model_multicompany_propagate
+    :target: https://github.com/OCA/multi-company/tree/18.0/account_reconcile_model_multicompany_propagate
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/multi-company-16-0/multi-company-16-0-account_reconcile_model_multicompany_propagate
+    :target: https://translation.odoo-community.org/projects/multi-company-18-0/multi-company-18-0-account_reconcile_model_multicompany_propagate
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=16.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=18.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-Module for a multi-company environment. This module allows for the propagation of reconciliation models to be shared across all companies in the database.
+Module for a multi-company environment. This module allows for the
+propagation of reconciliation models to be shared across all companies
+in the database.
 
 .. IMPORTANT::
    This is an alpha version, the data model and design can change at any time without warning.
@@ -45,21 +47,30 @@ Configuration
 
 To configure this module, you need to:
 
-#. User must have group "Show Full Accounting Features".
-#. User need to be granted access to other companies that share the same Chart of Accounts.
+1. User must have group "Show Full Accounting Features".
+2. User need to be granted access to other companies that share the same
+   Chart of Accounts.
 
 Usage
 =====
 
-#. Go to Invoicing > Settings > Conciliation Models
-#. Create a new conciliation model.
-#. Click on "Propagate to companies".
+1. Go to Invoicing > Settings > Conciliation Models
+2. Create a new conciliation model.
+3. Click on "Propagate to companies".
 
 Points to consider:
 
-  #. If it is propagated and there is no reconciliation model with the same name in another company, with the same chart of accounts (i.e., the country's chart of accounts), it creates one with the same values except for the journal.
-  #. If the account and tax codes of the lines are located by code or name, they will also be propagated.
-  #. If it is propagated and there is a reconciliation model with the same name in another company that shares the chart of accounts, it will replace (NOT duplicate) the values except for the journal. It will also propagate the account and tax codes of the lines if they are located by code or name, respectively.
+   1. If it is propagated and there is no reconciliation model with the
+      same name in another company, with the same chart of accounts
+      (i.e., the country's chart of accounts), it creates one with the
+      same values except for the journal.
+   2. If the account and tax codes of the lines are located by code or
+      name, they will also be propagated.
+   3. If it is propagated and there is a reconciliation model with the
+      same name in another company that shares the chart of accounts, it
+      will replace (NOT duplicate) the values except for the journal. It
+      will also propagate the account and tax codes of the lines if they
+      are located by code or name, respectively.
 
 Bug Tracker
 ===========
@@ -67,7 +78,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20account_reconcile_model_multicompany_propagate%0Aversion:%2016.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20account_reconcile_model_multicompany_propagate%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -75,18 +86,18 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Moduon
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* Emilio Pascual (`Moduon <https://www.moduon.team/>`__)
-* Loida Vilaplana (`Moduon <https://www.moduon.team/>`__)
+- Emilio Pascual (`Moduon <https://www.moduon.team/>`__)
+- Loida Vilaplana (`Moduon <https://www.moduon.team/>`__)
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -106,6 +117,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-EmilioPascual| 
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/16.0/account_reconcile_model_multicompany_propagate>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/18.0/account_reconcile_model_multicompany_propagate>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.

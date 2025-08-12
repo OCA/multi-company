@@ -10,21 +10,31 @@ from odoo.addons.account.tests.common import AccountTestInvoicingCommon
 @tagged("post_install", "-at_install")
 class TestPropagateReconcileModel(AccountTestInvoicingCommon):
     @classmethod
-    def setUpClass(cls, chart_template_ref=None):
-        super().setUpClass(chart_template_ref=chart_template_ref)
+    def setUpClass(cls):
+        super().setUpClass()
         cls.company = cls.company_data["company"]
-        cls.partner_1 = cls.env["res.partner"].create(
-            {"name": "partner_1", "company_id": cls.company.id}
+        companies_ids = cls.env["res.company"].search([]).ids
+        cls.env.user.write(
+            {
+                "company_ids": [(6, 0, companies_ids)],
+                "company_id": companies_ids[0],  # principal
+            }
         )
-        cls.partner_2 = cls.env["res.partner"].create(
-            {"name": "partner_2", "company_id": cls.company.id}
+
+        cls.env = cls.env(
+            context=dict(
+                cls.env.context,
+                allowed_company_ids=companies_ids,
+            )
         )
+        cls.partner_1 = cls.env["res.partner"].create({"name": "partner_1"})
+        cls.partner_2 = cls.env["res.partner"].create({"name": "partner_2"})
         cls.category_8 = cls.env.ref("base.res_partner_category_8")
         cls.category_11 = cls.env.ref("base.res_partner_category_11")
         cls.rule_1 = cls.env["account.reconcile.model"].create(
             {
                 "name": "Invoices Matching Rule Test",
-                "sequence": "1000",
+                "sequence": 1000,
                 "rule_type": "invoice_matching",
                 "auto_reconcile": True,
                 "to_check": True,
@@ -116,7 +126,7 @@ class TestPropagateReconcileModel(AccountTestInvoicingCommon):
         rule_1_company_2 = self.env["account.reconcile.model"].search(
             [
                 ("name", "=", self.rule_1.name),
-                ("company_id", "=", self.company_data_2["company"].id),
+                ("company_id", "=", self.company_data["company"].id),
             ]
         )
         self.assertTrue(rule_1_company_2)
@@ -158,17 +168,17 @@ class TestPropagateReconcileModel(AccountTestInvoicingCommon):
             rule_1_company_2["line_ids"],
             [
                 {
-                    "account_id": self.company_data_2["default_account_payable"].id,
+                    "account_id": self.company_data["default_account_payable"].id,
                     "amount_string": "150",
                     "label": "label line",
                     "force_tax_included": True,
                     "tax_ids": (
-                        self.company_data_2["default_tax_sale"]
-                        | self.company_data_2["default_tax_purchase"]
+                        self.company_data["default_tax_sale"]
+                        | self.company_data["default_tax_purchase"]
                     ).ids,
                 },
                 {
-                    "account_id": self.company_data_2["default_account_revenue"].id,
+                    "account_id": self.company_data["default_account_revenue"].id,
                     "amount_string": "200",
                     "label": "label line 2",
                     "force_tax_included": False,

@@ -109,7 +109,7 @@ class AccountReconcileModel(models.Model):
 
             # Update lines
             rec_model._propagate_line_ids(
-                self.line_ids, company, accounts_map, taxes_map
+                self.line_ids, self.company_id, company, accounts_map, taxes_map
             )
 
             # Update partner mapping lines
@@ -128,19 +128,29 @@ class AccountReconcileModel(models.Model):
 
     def _get_account_map_propagate(self, companies):
         """Get map accounts by company and code from accounts in line_ids."""
-        accounts = self.env["account.account"].search(
-            [
-                ("company_id", "in", companies.ids),
-                (
-                    "code",
-                    "in",
-                    self.line_ids.account_id.mapped("code"),
-                ),
-            ]
-        )
+        codes = self.with_company(self.company_id.id).line_ids.account_id.mapped("code")
+        if not codes:
+            return defaultdict(dict)
         accounts_map = defaultdict(dict)
-        for account in accounts:
-            accounts_map[account.company_id.id][account.code] = account.id
+
+        for com_id in companies.ids:
+            accounts = (
+                self.env["account.account"]
+                .with_company(com_id)
+                .search(
+                    [
+                        ("company_ids", "in", companies.ids),
+                        (
+                            "code",
+                            "in",
+                            codes,
+                        ),
+                    ]
+                )
+            )
+            for account in accounts:
+                accounts_map[com_id][account.code] = account.id
+
         return accounts_map
 
     def _get_taxes_map_propagate(self, companies):
@@ -169,20 +179,24 @@ class AccountReconcileModel(models.Model):
         vals.update({field: self[field] for field in self._propagated_fields()})
         return vals
 
-    def _propagate_line_ids(self, lines, company, accounts_map, taxes_map):
+    def _propagate_line_ids(
+        self, lines, origin_company, company, accounts_map, taxes_map
+    ):
         """Propagate lines"""
         if not lines:
             return
         rec_model_lines_ids = []
         for line in lines:
             try:
-                target_account = accounts_map[company.id][line.account_id.code]
+                target_account = accounts_map[company.id][
+                    line.with_company(origin_company.id).account_id.code
+                ]
             except KeyError:
                 _logger.warning(
                     "Not propagating account to company because it does "
                     "not exist there: company=%s, account=%s",
                     company,
-                    line.account_id.code,
+                    line.with_company(origin_company.id).account_id.code,
                 )
                 continue
             target_taxes_ids = []
