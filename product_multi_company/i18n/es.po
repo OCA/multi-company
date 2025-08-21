@@ -20,7 +20,6 @@ msgstr ""
 "X-Generator: Weblate 4.17\n"
 
 #. module: product_multi_company
-#: model:ir.model.fields,field_description:product_multi_company.field_product_product__company_ids
 #: model:ir.model.fields,field_description:product_multi_company.field_product_template__company_ids
 msgid "Companies"
 msgstr "Compañías"
@@ -33,11 +32,6 @@ msgstr "Compañía"
 #. module: product_multi_company
 #: model:ir.model,name:product_multi_company.model_product_template
 msgid "Product"
-msgstr ""
-
-#. module: product_multi_company
-#: model:ir.model,name:product_multi_company.model_product_product
-msgid "Product Variant"
 msgstr ""
 
 #~ msgid "Product Template (Multi-Company)"
