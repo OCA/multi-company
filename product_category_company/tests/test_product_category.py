@@ -98,10 +98,10 @@ class TestProductCategoryMultiCompany(TransactionCase):
             .create(
                 {
                     "name": "Test Product",
-                    "categ_id": self.categ_1.id,
+                    "categ_id": self.categ_3.id,
                 }
             )
         )
         # User 2 can read the category. The user must be able to read it,
         # otherwise the product breaks for the user.
-        self.assertEqual(product.with_user(self.user2).categ_id.name, self.categ_1.name)
+        self.assertEqual(product.with_user(self.user2).categ_id.name, self.categ_3.name)
