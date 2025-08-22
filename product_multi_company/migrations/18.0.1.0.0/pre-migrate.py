@@ -16,7 +16,9 @@ PREVIOUS_DOMAIN = [
 ]
 
 
-UPSTREAM_DOMAIN = " [('company_id', 'in', company_ids + [False])]"
+UPSTREAM_DOMAIN = (
+    "['|', ('company_id', 'parent_of', company_ids), ('company_id', '=', False)]"
+)
 
 
 @openupgrade.migrate()
