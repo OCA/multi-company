@@ -70,7 +70,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         cls.stockable_product_serial = cls.env["product.product"].create(
             {
                 "name": "Stockable Product Tracked by Serial",
-                "type": "product",
+                "is_storable": True,
                 "tracking": "serial",
                 "categ_id": cls.env.ref("product.product_category_all").id,
             }
@@ -122,7 +122,8 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(sale.warehouse_id, self.warehouse_c)
 
     def test_sync_intercompany_picking_qty_with_backorder(self):
-        self.product.type = "product"
+        self.product.type = "consu"
+        self.product.is_storable = True
         self.company_a.sync_picking = True
         self.partner_company_b.company_id = False
         purchase = self.purchase_company_a
@@ -151,10 +152,11 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(purchase.order_line.qty_received, 3)
 
     def test_purchase_sale_with_two_products_no_backorder(self):
-        self.product.type = "product"
+        self.product.type = "consu"
+        self.product.is_storable = True
         self.partner_company_b.company_id = False
         self.product2 = self.env["product.product"].create(
-            {"name": "Product 2", "type": "product"}
+            {"name": "Product 2", "is_storable": True}
         )
         self.purchase_company_a.write(
             {
