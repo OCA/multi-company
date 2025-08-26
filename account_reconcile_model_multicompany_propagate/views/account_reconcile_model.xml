@@ -30,7 +30,6 @@
                     role="alert"
                     invisible="same_name_other_companies == False"
                 >
-                    <field name="same_name_other_companies" invisible="1" />
                     <span
                     >Other reconcile model has same name and its company has same chart of accounts. If you propagate this model, they will be overwritten in the other companies.</span>
                 </div>

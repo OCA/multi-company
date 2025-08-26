@@ -21,8 +21,8 @@ class AccountReconcileModel(models.Model):
         for record in self:
             alien_companies = self.env.user.company_ids - record.company_id
             companies_chart_template_equal = alien_companies.filtered(
-                lambda c, record=record: c.chart_template_id
-                == record.company_id.chart_template_id
+                lambda c, record=record: c.account_fiscal_country_id
+                == record.company_id.account_fiscal_country_id
             )
             record = record.with_context(
                 allowed_company_ids=(
@@ -75,7 +75,8 @@ class AccountReconcileModel(models.Model):
 
         # Filter companies with same chart template
         companies_chart_template_equal = (alien_companies - self.company_id).filtered(
-            lambda c: c.chart_template_id == self.company_id.chart_template_id
+            lambda c: c.account_fiscal_country_id
+            == self.company_id.account_fiscal_country_id
         )
         if not companies_chart_template_equal:
             raise UserError(
@@ -139,7 +140,7 @@ class AccountReconcileModel(models.Model):
                 .with_company(com_id)
                 .search(
                     [
-                        ("company_ids", "in", companies.ids),
+                        ("company_ids", "in", [com_id]),
                         (
                             "code",
                             "in",
