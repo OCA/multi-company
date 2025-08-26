@@ -3,15 +3,15 @@
 
 {
     "name": "Account Reconcile Model Multicompany Propagate",
-    "summary": {
-        "Propagate account reconcile model in companies " "with same chart template"
-    },
+    "summary": (
+        "Propagate account reconcile model in companies with same chart template"
+    ),
     "version": "18.0.1.0.0",
     "development_status": "Alpha",
     "category": "Accounting/Accounting",
     "website": "https://github.com/OCA/multi-company",
     "author": "Moduon, Odoo Community Association (OCA)",
-    "maintainers": ["EmilioPascual"],
+    "maintainers": ["rafaelbn", "EmilioPascual"],
     "license": "LGPL-3",
     "application": False,
     "installable": True,

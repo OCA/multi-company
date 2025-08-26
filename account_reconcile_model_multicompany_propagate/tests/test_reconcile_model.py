@@ -13,11 +13,13 @@ class TestPropagateReconcileModel(AccountTestInvoicingCommon):
     def setUpClass(cls):
         super().setUpClass()
         cls.company = cls.company_data["company"]
-        companies_ids = cls.env["res.company"].search([]).ids
+        cls.company_data_2 = cls.setup_other_company()
+        cls.company_2 = cls.company_data_2["company"]
+        companies_ids = (cls.company + cls.company_2).ids
         cls.env.user.write(
             {
                 "company_ids": [(6, 0, companies_ids)],
-                "company_id": companies_ids[0],  # principal
+                "company_id": cls.company.id,
             }
         )
 
@@ -126,7 +128,7 @@ class TestPropagateReconcileModel(AccountTestInvoicingCommon):
         rule_1_company_2 = self.env["account.reconcile.model"].search(
             [
                 ("name", "=", self.rule_1.name),
-                ("company_id", "=", self.company_data["company"].id),
+                ("company_id", "=", self.company_2.id),
             ]
         )
         self.assertTrue(rule_1_company_2)
@@ -168,17 +170,17 @@ class TestPropagateReconcileModel(AccountTestInvoicingCommon):
             rule_1_company_2["line_ids"],
             [
                 {
-                    "account_id": self.company_data["default_account_payable"].id,
+                    "account_id": self.company_data_2["default_account_payable"].id,
                     "amount_string": "150",
                     "label": "label line",
                     "force_tax_included": True,
                     "tax_ids": (
-                        self.company_data["default_tax_sale"]
-                        | self.company_data["default_tax_purchase"]
+                        self.company_data_2["default_tax_sale"]
+                        | self.company_data_2["default_tax_purchase"]
                     ).ids,
                 },
                 {
-                    "account_id": self.company_data["default_account_revenue"].id,
+                    "account_id": self.company_data_2["default_account_revenue"].id,
                     "amount_string": "200",
                     "label": "label line 2",
                     "force_tax_included": False,

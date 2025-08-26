@@ -109,13 +109,16 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
+.. |maintainer-rafaelbn| image:: https://github.com/rafaelbn.png?size=40px
+    :target: https://github.com/rafaelbn
+    :alt: rafaelbn
 .. |maintainer-EmilioPascual| image:: https://github.com/EmilioPascual.png?size=40px
     :target: https://github.com/EmilioPascual
     :alt: EmilioPascual
 
-Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
+Current `maintainers <https://odoo-community.org/page/maintainer-role>`__:
 
-|maintainer-EmilioPascual| 
+|maintainer-rafaelbn| |maintainer-EmilioPascual| 
 
 This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/18.0/account_reconcile_model_multicompany_propagate>`_ project on GitHub.
 
