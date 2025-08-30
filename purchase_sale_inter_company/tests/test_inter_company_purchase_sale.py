@@ -3,8 +3,10 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+
+from odoo import Command
 from odoo.exceptions import UserError
-from odoo.tests.common import Form
+from odoo.tests import Form
 
 from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice import (
     TestAccountInvoiceInterCompanyBase,
@@ -84,7 +86,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "name": "test_account_income",
                 "code": "987",
                 "account_type": "income",
-                "company_id": cls.company_b.id,
+                "company_ids": [Command.set([cls.company_b.id])],
             }
         )
         expense_account = cls.env["account.account"].create(
@@ -93,7 +95,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "code": "765",
                 "account_type": "expense",
                 "reconcile": True,
-                "company_id": cls.company_a.id,
+                "company_ids": [Command.set([cls.company_a.id])],
             }
         )
         # Create journal
@@ -166,15 +168,23 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         product_rule.active = True
         # if product_multi_company is installed
         if "company_ids" in self.env["product.template"]._fields:
-            self.product.company_ids = [(6, 0, [self.company_a.id])]
+            self.product.company_ids = [Command.set([self.company_a.id])]
         self.product.company_id = self.company_a
-        with self.assertRaises(UserError):
+        with self.assertRaisesRegex(
+            UserError,
+            f"You cannot create SO from PO because product '{self.product.name}' is "
+            "not intercompany",
+        ):
             self._approve_po()
 
     def test_raise_currency(self):
         currency = self.env.ref("base.EUR")
         self.purchase_company_a.currency_id = currency
-        with self.assertRaises(UserError):
+        with self.assertRaisesRegex(
+            UserError,
+            "You cannot create SO from PO because sale price list currency is "
+            "different than purchase price list currency.",
+        ):
             self._approve_po()
 
     def test_purchase_invoice_relation(self):
@@ -201,8 +211,10 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
     def test_cancel_confirmed_po_so(self):
         self.company_b.sale_auto_validation = True
-        self._approve_po()
-        with self.assertRaises(UserError):
+        sale = self._approve_po()
+        with self.assertRaisesRegex(
+            UserError, f"You can't cancel an order that is {sale.state}"
+        ):
             self.purchase_company_a.with_user(self.user_company_a).button_cancel()
 
     def test_so_change_price(self):
@@ -316,9 +328,17 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         sale.action_confirm()
         purchase_line = self.purchase_company_a.order_line
         sale._action_cancel()
-        with self.assertRaises(UserError):
+        with self.assertRaisesRegex(
+            UserError,
+            f"The generated sale orders with reference {sale.name} can't be modified. "
+            "They're either unconfirmed or locked for modifications.",
+        ):
             purchase_line[0].product_qty = 5
-        with self.assertRaises(UserError):
+        with self.assertRaisesRegex(
+            UserError,
+            "You can't change this purchase order as the corresponding sale is "
+            f"{sale.state}",
+        ):
             self.env["purchase.order.line"].create(
                 {
                     "order_id": self.purchase_company_a.id,

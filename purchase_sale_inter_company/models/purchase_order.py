@@ -3,7 +3,7 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 
@@ -83,7 +83,7 @@ class PurchaseOrder(models.Model):
             or dest_company.currency_id.id
         ):
             raise UserError(
-                _(
+                self.env._(
                     "You cannot create SO from PO because "
                     "sale price list currency is different than "
                     "purchase price list currency."
@@ -181,7 +181,9 @@ class PurchaseOrder(models.Model):
         )
         for so in sale_orders:
             if so.state not in ["draft", "sent", "cancel"]:
-                raise UserError(_("You can't cancel an order that is %s") % so.state)
+                raise UserError(
+                    self.env._("You can't cancel an order that is %s", so.state)
+                )
         for so in sale_orders:
             so.action_cancel()
         self.write({"partner_ref": False})

@@ -5,7 +5,7 @@
 
 from markupsafe import Markup
 
-from odoo import _, models
+from odoo import models
 
 
 class AccountMove(models.Model):
@@ -26,7 +26,8 @@ class AccountMove(models.Model):
             )
         orders = dest_invoice.invoice_line_ids.purchase_line_id.order_id
         if orders:
-            message = _("This vendor bill is related with: {}").format(
-                ",".join([o._get_html_link(o.name) for o in orders])
+            message = self.env._(
+                "This vendor bill is related with: %(origin)s",
+                origin=",".join([o._get_html_link(o.name) for o in orders]),
             )
             dest_invoice.message_post(body=Markup(message))

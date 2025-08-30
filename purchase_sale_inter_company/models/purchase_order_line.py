@@ -3,7 +3,7 @@
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -36,10 +36,10 @@ class PurchaseOrderLine(models.Model):
         ):
             if order.intercompany_sale_order_id.sudo().state in {"cancel", "done"}:
                 raise UserError(
-                    _(
+                    self.env._(
                         "You can't change this purchase order as the corresponding "
                         "sale is %(state)s",
-                        state=order.state,
+                        state=order.intercompany_sale_order_id.sudo().state,
                     )
                 )
             intercompany_user = (
@@ -90,7 +90,7 @@ class PurchaseOrderLine(models.Model):
         closed_sale_lines = sale_lines.filtered(lambda x: x.state != "sale")
         if closed_sale_lines:
             raise UserError(
-                _(
+                self.env._(
                     "The generated sale orders with reference %(orders)s can't be "
                     "modified. They're either unconfirmed or locked for modifications.",
                     orders=",".join(closed_sale_lines.order_id.mapped("name")),
@@ -117,7 +117,7 @@ class PurchaseOrderLine(models.Model):
             and self.product_id.company_id not in dest_user.company_ids
         ):
             raise UserError(
-                _(
+                self.env._(
                     "You cannot create SO from PO because product '%s' "
                     "is not intercompany"
                 )
