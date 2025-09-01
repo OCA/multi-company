@@ -11,20 +11,17 @@
             <field name="taxes_id" position="attributes">
                 <attribute name="class" separator=" " add="oe_inline" />
             </field>
-            <field name="taxes_id" position="replace">
-                <label for="taxes_id" />
-                <div name="taxes_id">
-                    <t>$0</t>
-                    <button
-                        name="set_multicompany_taxes"
-                        icon="fa-clone"
-                        string="Propagate Taxes"
-                        type="object"
-                        class="btn btn-link oe_inline"
-                        invisible="not divergent_company_taxes"
-                        groups="account.group_account_user"
-                    />
-                </div>
+            <field name="taxes_id" position="after">
+                <button
+                    name="set_multicompany_taxes"
+                    type="object"
+                    icon="fa-clone"
+                    string="Propagate Taxes"
+                    class="btn btn-link oe_inline"
+                    invisible="not divergent_company_taxes or not id"
+                    groups="account.group_account_user"
+                    title="This button propagates sales and purchase taxes if they have changed and if the companies have the same tax rate."
+                />
             </field>
         </field>
     </record>

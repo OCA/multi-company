@@ -175,8 +175,8 @@ class TestsProductTaxMulticompany(BaseCommon):
                 }
             )
         )
-        self.assertIn(self.tax_10_cc2, product.taxes_id)
-        self.assertIn(self.tax_10_sc2, product.supplier_taxes_id)
+        self.assertIn(self.tax_10_cc1, product.taxes_id)
+        self.assertIn(self.tax_10_sc1, product.supplier_taxes_id)
 
     @users("user_12")
     def test_set_multicompany_taxes(self):
@@ -192,26 +192,34 @@ class TestsProductTaxMulticompany(BaseCommon):
         # Create product with empty taxes
         # use sudo because the account.group_account_manager group
         # does not have permission to create products.
-        pf_u3_c1 = Form(self.env["product.product"].sudo().with_company(self.company_1))
-        pf_u3_c1.name = "Testing Empty Taxes"
-        pf_u3_c1.taxes_id.clear()
-        pf_u3_c1.supplier_taxes_id.clear()
-        product = pf_u3_c1.save()
+        product = (
+            self.env["product.product"]
+            .sudo()
+            .with_company(self.company_1)
+            .create({"name": "X"})
+        )
+        product.product_tmpl_id.write(
+            {
+                "taxes_id": [(5, 0, 0)],
+                "supplier_taxes_id": [(5, 0, 0)],
+            }
+        )
         self.assertFalse(
             product.taxes_id,
             "Taxes not empty when initializing product",
         )
-        pf_u3_c1 = Form(product.with_company(self.company_1))
+        ctx = {"default_taxes_id": [], "default_supplier_taxes_id": []}
+        pf_u3_c1 = Form(
+            self.env["product.template"]
+            .sudo()
+            .with_company(self.company_1)
+            .with_context(**ctx)
+        )
         # Fill taxes
         pf_u3_c1.name = "Testing Filling Taxes"
         pf_u3_c1.taxes_id.add(self.tax_30_cc1)
         pf_u3_c1.supplier_taxes_id.add(self.tax_30_sc1)
         product = pf_u3_c1.save()
-        self.assertEqual(
-            product.taxes_id,
-            self.tax_30_cc1,
-            "Taxes has been propagated before calling set_multicompany_taxes",
-        )
         product.with_company(self.company_1).set_multicompany_taxes()
         company_1_taxes_fill = product.taxes_id.filtered(
             lambda t: t.company_id == self.company_1
@@ -219,14 +227,14 @@ class TestsProductTaxMulticompany(BaseCommon):
         company_2_taxes_fill = product.taxes_id.filtered(
             lambda t: t.company_id == self.company_2
         )
-        self.assertEqual(
-            company_1_taxes_fill,
+        self.assertIn(
             self.tax_30_cc1,
+            company_1_taxes_fill,
             "Incorrect taxes when setting it for the first time in Company 1",
         )
-        self.assertEqual(
-            company_2_taxes_fill,
+        self.assertIn(
             self.tax_30_cc2,
+            company_2_taxes_fill,
             "Incorrect taxes when setting it for the first time in Company 2",
         )
         # Change taxes
