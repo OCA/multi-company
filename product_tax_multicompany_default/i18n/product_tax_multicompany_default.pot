@@ -6,6 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-30 08:18+0000\n"
+"PO-Revision-Date: 2025-09-30 08:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -41,4 +43,11 @@ msgstr ""
 #: model:ir.actions.server,name:product_tax_multicompany_default.action_set_multicompany_taxes
 #: model_terms:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
 msgid "Propagate Taxes"
+msgstr ""
+
+#. module: product_tax_multicompany_default
+#: model_terms:ir.ui.view,arch_db:product_tax_multicompany_default.product_template_form_view
+msgid ""
+"This button propagates sales and purchase taxes if they have changed and if "
+"the companies have the same tax rate."
 msgstr ""
