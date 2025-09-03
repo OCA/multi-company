@@ -14,7 +14,7 @@ class TestProductMultiCompanyStock(TestProductMultiCompany):
         product = self.env["product.product"].create(
             {
                 "name": "Test Product",
-                "type": "product",
+                "is_storable": True,
                 "company_ids": [(6, 0, [self.company_1.id, self.company_2.id])],
             }
         )
