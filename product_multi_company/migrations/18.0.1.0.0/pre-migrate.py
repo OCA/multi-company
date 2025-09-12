@@ -1,5 +1,5 @@
 # Copyright 2025 Moduon Team S.L.
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl-3.0)
+# License LGPL-3.0 - http://www.gnu.org/licenses/lgpl.html
 from logging import getLogger
 
 from openupgradelib import openupgrade

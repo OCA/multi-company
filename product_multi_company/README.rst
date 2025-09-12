@@ -1,7 +1,3 @@
-.. image:: https://odoo-community.org/readme-banner-image
-   :target: https://odoo-community.org/get-involved?utm_source=readme
-   :alt: Odoo Community Association
-
 =====================
 Product multi-company
 =====================
@@ -17,9 +13,9 @@ Product multi-company
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/license-AGPL--3-blue.png
-    :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
-    :alt: License: AGPL-3
+.. |badge2| image:: https://img.shields.io/badge/licence-LGPL--3-blue.png
+    :target: http://www.gnu.org/licenses/lgpl-3.0-standalone.html
+    :alt: License: LGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
     :target: https://github.com/OCA/multi-company/tree/18.0/product_multi_company
     :alt: OCA/multi-company
@@ -77,22 +73,22 @@ Authors
 Contributors
 ------------
 
-- Pedro M. Baeza <pedro.baeza@tecnativa.com>
-- Dave Lasley <dave@laslabs.com>
-- `Tecnativa <https://www.tecnativa.com>`__:
+-  Pedro M. Baeza <pedro.baeza@tecnativa.com>
+-  Dave Lasley <dave@laslabs.com>
+-  `Tecnativa <https://www.tecnativa.com>`__:
 
-  - Vicent Cubells <vicent.cubells@tecnativa.com>
-  - Pilar Vargas
+   -  Vicent Cubells <vicent.cubells@tecnativa.com>
+   -  Pilar Vargas
 
-- Denis Roussel <denis.roussel@acsone.eu>
-- `Sodexis <https://sodexis.com>`__:
+-  Denis Roussel <denis.roussel@acsone.eu>
+-  `Sodexis <https://sodexis.com>`__:
 
-  - Prabakaran <prabakaran@sodexis.com>
-  - Karthik <karthik@sodexis.com>
+   -  Prabakaran <prabakaran@sodexis.com>
+   -  Karthik <karthik@sodexis.com>
 
-- `Moduon <https://www.moduon.team/>`__:
+-  `Moduon <https://www.moduon.team/>`__:
 
-  - Jairo Llopis
+   -  Jairo Llopis
 
 Maintainers
 -----------
