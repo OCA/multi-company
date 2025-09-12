@@ -3,7 +3,6 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 from odoo import models
-from odoo.http import request
 
 
 class Http(models.AbstractModel):
@@ -11,7 +10,8 @@ class Http(models.AbstractModel):
 
     def session_info(self):
         result = super().session_info()
-        user = request.env.user
+        user = self.env.user
+
         display_switch_company_menu = (
             user.has_group("base.group_multi_company") and len(user.company_ids) > 1
         )
