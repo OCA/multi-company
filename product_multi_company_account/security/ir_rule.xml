@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="account.tax_comp_rule" model="ir.rule">
+        <field name="name">Tax multi-company (Fixed for product_multi_company)</field>
+        <field name="model_id" ref="account.model_account_tax" />
+        <field
+            name="domain_force"
+        >['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>
