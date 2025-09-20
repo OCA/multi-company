@@ -241,7 +241,9 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        self = self.with_context(**clean_context(self.env.context))
+        # Remove default_ context keys
+        # pylint: disable=W8121
+        self = self.with_context(clean_context(self.env.context))
         # check if the journal is define in dest company
         dest_journal = self._check_dest_journal(dest_company)
         vals = {
