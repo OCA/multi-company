@@ -4,7 +4,7 @@
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-
+from odoo.exceptions import UserError
 from odoo.tests import Form
 
 from odoo.addons.purchase_sale_inter_company.tests.test_inter_company_purchase_sale import (
@@ -117,7 +117,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(len(self.purchase_company_a.picking_ids), 1)
         self.assertEqual(len(self.purchase_company_a.picking_ids.move_line_ids), 2)
 
-    def test_sync_inter_company_picking_qty_with_lot(self):
+    def test_sync_inter_company_picking_qty_with_lot_same_creation_mode(self):
         self.product.type = "product"
         self.product.tracking = "serial"
         self.serial01 = self.env["stock.lot"].create(
@@ -136,6 +136,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             self.product, sale.warehouse_id.lot_stock_id, 1, lot_id=self.serial01
         )
         sale_picking = sale.picking_ids[0]
+        sale_picking.picking_type_id.sudo().intercompany_create_lots_mode = "same"
         sale_picking.sudo().action_confirm()
         sale_picking.sudo().action_assign()
         sale_picking.move_ids.quantity_done = 1.0
@@ -151,3 +152,87 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         )
         self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 0)
         self.assertEqual(purchase.order_line.qty_received, 1)
+
+    def test_sync_inter_company_picking_qty_with_lot_manual_mode_success(self):
+        self.product.type = "product"
+        self.product.tracking = "serial"
+        self.serial01 = self.env["stock.lot"].create(
+            {
+                "name": "Serial01",
+                "product_id": self.product.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        self.serial02 = self.env["stock.lot"].create(
+            {
+                "name": "Serial02",
+                "product_id": self.product.id,
+                "company_id": self.company_a.id,
+            }
+        )
+        self.partner_company_b.company_id = False
+        purchase = self.purchase_company_a
+        purchase.order_line.product_qty = 2.0
+        sale = self._approve_po()
+        sale.action_confirm()
+        self.env["stock.quant"]._update_available_quantity(
+            self.product, sale.warehouse_id.lot_stock_id, 1, lot_id=self.serial01
+        )
+        sale_picking = sale.picking_ids[0]
+        sale_picking.picking_type_id.sudo().intercompany_create_lots_mode = "manual"
+        sale_picking.sudo().action_confirm()
+        sale_picking.sudo().action_assign()
+        sale_picking.move_ids.quantity_done = 1.0
+        self.assertEqual(sale_picking.move_line_ids.lot_id, self.serial01)
+
+        purchase.picking_ids[0].move_ids[0].lot_ids = [(4, self.serial02.id)]
+
+        res_dict = sale_picking.sudo().button_validate()
+        backorder_wizard = Form(
+            self.env[res_dict["res_model"]].with_context(**res_dict["context"])
+        ).save()
+        backorder_wizard.process()
+        self.assertEqual(purchase.picking_ids[0].move_line_ids.qty_done, 1)
+        self.assertEqual(
+            purchase.picking_ids[0].move_line_ids.lot_id.name, self.serial02.name
+        )
+        self.assertEqual(purchase.picking_ids[1].move_line_ids.qty_done, 0)
+        self.assertEqual(purchase.order_line.qty_received, 1)
+
+    def test_sync_inter_company_picking_qty_with_lot_manual_mode_error(self):
+        self.product.type = "product"
+        self.product.tracking = "serial"
+        self.serial01 = self.env["stock.lot"].create(
+            {
+                "name": "Serial01",
+                "product_id": self.product.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        self.serial02 = self.env["stock.lot"].create(
+            {
+                "name": "Serial02",
+                "product_id": self.product.id,
+                "company_id": self.company_a.id,
+            }
+        )
+        self.partner_company_b.company_id = False
+        purchase = self.purchase_company_a
+        purchase.order_line.product_qty = 2.0
+        sale = self._approve_po()
+        sale.action_confirm()
+        self.env["stock.quant"]._update_available_quantity(
+            self.product, sale.warehouse_id.lot_stock_id, 1, lot_id=self.serial01
+        )
+        sale_picking = sale.picking_ids[0]
+        sale_picking.picking_type_id.sudo().intercompany_create_lots_mode = "manual"
+        sale_picking.sudo().action_confirm()
+        sale_picking.sudo().action_assign()
+        sale_picking.move_ids.quantity_done = 1.0
+        self.assertEqual(sale_picking.move_line_ids.lot_id, self.serial01)
+        res_dict = sale_picking.sudo().button_validate()
+        backorder_wizard = Form(
+            self.env[res_dict["res_model"]].with_context(**res_dict["context"])
+        ).save()
+        with self.assertRaises(UserError):
+            backorder_wizard.process()

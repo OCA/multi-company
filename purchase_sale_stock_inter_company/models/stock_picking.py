@@ -10,12 +10,45 @@ class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     intercompany_picking_id = fields.Many2one(comodel_name="stock.picking")
+    intercompany_create_lots_mode = fields.Selection(
+        related="picking_type_id.intercompany_create_lots_mode"
+    )
 
     def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
         product = po_move_lines[0].product_id
         qty_done = sum(sale_move_lines.mapped("qty_done"))
         res = {product: qty_done}
         return res
+
+    def _get_intercompany_move_lots(self, sale_move_lines, po_moves_open, **kwargs):
+        po_move_lots = self.env["stock.lot"]
+        lot_creation_mode = self.intercompany_create_lots_mode
+        if lot_creation_mode == "same":
+            for sale_lot in sale_move_lines.lot_id:
+                po_move_lots |= sale_lot.get_inter_company_lot(
+                    po_moves_open.company_id, **kwargs
+                )
+        elif lot_creation_mode == "manual":
+            po_move_lots |= po_moves_open.mapped("lot_ids")
+        return po_move_lots
+
+    def _check_manual_lots(self, move, product):
+        self.ensure_one()
+        lot_names = move.move_line_ids.mapped("lot_name")
+        lot_ids = move.lot_ids
+        if (
+            self.intercompany_create_lots_mode == "manual"
+            and product.tracking != "none"
+            and move.quantity_done
+            and not lot_names
+            and not lot_ids
+        ):
+            raise UserError(
+                _(
+                    "To validate the delivery, you must first assign lot/serial numbers"
+                    " manually on the receipt of the intercompany purchase."
+                )
+            )
 
     def _set_intercompany_picking_qty(self, purchase):
         po_picks = self.browse()
@@ -45,9 +78,9 @@ class StockPicking(models.Model):
             product_qty_done = self._get_product_intercompany_qty_done_dict(
                 sale_move_lines, po_moves_open.move_line_ids
             )
-            po_move_lots = self.env["stock.lot"]
-            for sale_lot in sale_move_lines.lot_id:
-                po_move_lots |= sale_lot.get_inter_company_lot(po_moves_open.company_id)
+            po_move_lots = self._get_intercompany_move_lots(
+                sale_move_lines, po_moves_open
+            )
             for product, qty_done in product_qty_done.items():
                 product_po_moves = po_moves_open.filtered(
                     lambda x: x.product_id == product
@@ -65,10 +98,12 @@ class StockPicking(models.Model):
                         po_move.lot_ids = product_po_lots[: po_move.product_uom_qty]
                         product_po_lots = product_po_lots[po_move.product_uom_qty :]
                         qty_done -= po_move.product_uom_qty
+                    self._check_manual_lots(po_move, product)
                     po_picks |= po_move.picking_id
                 if qty_done and product_po_moves:
                     product_po_moves[-1:].quantity_done += qty_done
                     product_po_moves[-1:].lot_ids |= product_po_lots
+                    self._check_manual_lots(product_po_moves[-1:], product)
         return po_picks
 
     def _action_done(self):
