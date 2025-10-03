@@ -1,0 +1,15 @@
+<odoo>
+    <record id="inherit_stock_package_type_stock" model="ir.ui.view">
+        <field name="name">stock.package.type.view.form.inherit</field>
+        <field name="model">stock.package.type</field>
+        <field name="inherit_id" ref="stock.stock_package_type_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+            <field name="company_id" position="after">
+                <field name="company_ids" widget="many2many_tags" />
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -11,13 +11,19 @@ class TestProductPackagingMultiCompany(
     ProductPackagingMultiCompanyCommon, common.TransactionCase
 ):
     def test_create_packaging_default_company(self):
-        packaging = self.env["product.packaging"].create({"name": "Test Packaging"})
+        packaging = self.env["product.packaging"].create(
+            {
+                "name": "Test Packaging",
+                "product_id": self.product_no_company.id,
+                "company_ids": [(6, 0, [self.env.company.id])],
+            }
+        )
         self.assertIn(self.env.company.id, packaging.company_ids.ids)
 
-    def test_packaging_company_none(self):
-        self.assertFalse(self.packaging_company_none.company_id)
-        self.packaging_company_none.with_user(self.user_company_1).barcode = "PK1"
-        self.packaging_company_none.with_user(self.user_company_2).barcode = "PK2"
+    def test_packaging_no_company(self):
+        self.assertFalse(self.packaging_no_company.company_id)
+        self.packaging_no_company.with_user(self.user_company_1).barcode = "PK1"
+        self.packaging_no_company.with_user(self.user_company_2).barcode = "PK2"
 
     def test_packaging_company_1_access(self):
         self.assertEqual(
@@ -44,6 +50,7 @@ class TestProductPackagingMultiCompany(
             self.env["product.packaging"].create(
                 {
                     "name": "Invalid Packaging",
+                    "product_id": self.product_company_1.id,
                     "company_ids": [(6, 0, self.company_2.ids)],
                     "package_type_id": self.package_type_company_1.id,
                 }
