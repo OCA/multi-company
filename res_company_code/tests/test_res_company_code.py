@@ -38,7 +38,7 @@ class TestLoginSession(HttpCase):
         self.authenticate(user="admin", password="admin")
         self.assertEqual(self.session.uid, self.admin_user.id)
 
-        # Check comapny name should be use display name
+        # Check company name should be use display name
         data = self._get_session_info()
         companies = data["result"]["user_companies"]["allowed_companies"]
         for company in self.admin_user.company_ids:
