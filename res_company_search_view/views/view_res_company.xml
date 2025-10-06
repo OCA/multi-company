@@ -17,10 +17,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     ('company_registry', 'ilike', self)]"
                 />
                 <field name="email" filter_domain="[('email', 'ilike', self)]" />
-                <field
-                    name="phone"
-                    filter_domain="['|', ('phone', 'ilike', self), ('mobile', 'ilike', self)]"
-                />
+                <field name="phone" filter_domain="[('phone', 'ilike', self)]" />
                 <field name="parent_id" operator="child_of" />
                 <separator />
                 <filter
@@ -29,7 +26,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     domain="[('active', '=', False)]"
                 />
                 <separator />
-                <group expand="0" name="group_by" string="Group By">
+                <group name="group_by">
                     <filter
                         name="group_country"
                         string="Country"
