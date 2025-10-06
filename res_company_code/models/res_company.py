@@ -12,9 +12,9 @@ class ResCompany(models.Model):
 
     code = fields.Char()
 
-    _sql_constraints = [
-        ("code_uniq", "unique (code)", "The company code must be unique !")
-    ]
+    _check_code_uniq = models.Constraint(
+        "UNIQUE (code)", "The company code must be unique !"
+    )
 
     @api.depends("code", "name")
     def _compute_display_name(self):
