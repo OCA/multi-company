@@ -11,11 +11,13 @@ class ResUsers(models.Model):
     def create(self, vals_list):
         users = super().create(vals_list)
         for user in users:
-            user.partner_id.company_ids = user.company_ids
+            # The new user might have a company even if it was not in `vals`
+            # because of defaults for example.
+            if user.company_ids:
+                user.partner_id.company_ids += user.company_ids
         return users
 
     def write(self, vals):
-        res = super(ResUsers, self.with_context(from_res_users=True)).write(vals)
         if "company_ids" in vals:
             for user in self.sudo():
                 commands = []
@@ -31,4 +33,4 @@ class ResUsers(models.Model):
                         else:
                             commands.append(Command.link(item))
                     user.partner_id.company_ids = commands
-        return res
+        return super(ResUsers, self.with_context(from_res_users=True)).write(vals)
