@@ -4,7 +4,7 @@
 
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tests import Form, common, tagged
+from odoo.tests import Form, common, new_test_user, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -255,3 +255,40 @@ class TestPartnerMultiCompany(common.TransactionCase):
             self.user_company_1.partner_id.write(
                 {"company_ids": [Command.set(self.company_2.ids)]}
             )
+
+    def test_company_creation_with_users(self):
+        """When creating a new company with users,
+        the users and their partners are linked to the new company."""
+        admin_user = self.env.ref("base.user_admin")
+        company = self.env["res.company"].create(
+            {
+                "name": "Test company creation with users",
+                "user_ids": [
+                    Command.link(admin_user.id),
+                ],
+            }
+        )
+        self.assertIn(company, admin_user.company_ids)
+        self.assertIn(company, admin_user.partner_id.company_ids)
+
+    def test_new_user_partner_company(self):
+        """When creating a new user, its partner has all the user's companies."""
+        new_user = new_test_user(self.env, login="test_new_user_partner_company")
+        companies = new_user.company_ids
+        self.assertTrue(companies)
+        self.assertIn(companies, new_user.partner_id.company_ids)
+
+    def test_assign_user_multi_companies(self):
+        """Multiple companies are assigned to the user,
+        check that partner companies are aligned."""
+        new_user = new_test_user(self.env, login="test_assign_user_multi_companies")
+        new_user.write(
+            {
+                "company_id": self.company_1.id,
+                "company_ids": [
+                    Command.link(self.company_1.id),
+                    Command.link(self.company_2.id),
+                ],
+            }
+        )
+        self.assertEqual(new_user.company_ids, new_user.partner_id.company_ids)
