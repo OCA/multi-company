@@ -72,6 +72,12 @@ class StockPicking(models.Model):
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
             po_picks |= pick._set_intercompany_picking_qty(purchase)
         # Transfer dropship pickings
-        for po_pick in po_picks.sudo():
-            po_pick.with_company(po_pick.company_id.id)._action_done()
+        pending_picks = po_picks.filtered(lambda p: p.state not in ("done", "cancel"))
+
+        for po_pick in pending_picks.sudo():
+            po_pick.with_context(
+                skip_backorder=True,
+                skip_immediate=True,
+                bypass_set_number_of_packages=True,
+            ).with_company(po_pick.company_id.id).button_validate()
         return super()._action_done()
