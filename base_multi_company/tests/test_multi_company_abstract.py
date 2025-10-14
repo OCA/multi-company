@@ -2,9 +2,8 @@
 # Copyright 2021 ACSONE SA/NV
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
 
-from odoo_test_helper import FakeModelLoader
-
 from odoo.fields import Command
+from odoo.orm.model_classes import add_to_registry
 from odoo.tests import common
 
 
@@ -12,13 +11,14 @@ class TestMultiCompanyAbstract(common.TransactionCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.loader = FakeModelLoader(cls.env, cls.__module__)
-        cls.loader.backup_registry()
-
         # The fake class is imported here !! After the backup_registry
         from .multi_company_abstract_tester import MultiCompanyAbstractTester
 
-        cls.loader.update_registry((MultiCompanyAbstractTester,))
+        add_to_registry(cls.registry, MultiCompanyAbstractTester)
+        cls.registry._setup_models__(cls.env.cr, ["multi.company.abstract.tester"])
+        cls.registry.init_models(
+            cls.env.cr, ["multi.company.abstract.tester"], {"models_to_check": True}
+        )
 
         cls.test_model = cls.env["multi.company.abstract.tester"]
 
@@ -46,7 +46,7 @@ class TestMultiCompanyAbstract(common.TransactionCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.loader.restore_registry()
+        cls.addClassCleanup(cls.registry.__delitem__, "multi.company.abstract.tester")
         return super().tearDownClass()
 
     def add_company(self, company):
