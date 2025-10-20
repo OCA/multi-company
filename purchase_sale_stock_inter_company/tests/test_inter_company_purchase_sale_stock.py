@@ -36,7 +36,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             cls.quant_obj.create(
                 {
                     "product_id": product.id,
-                    "location_id": cls.warehouse_a.lot_stock_id.id,
+                    "location_id": cls.warehouse_c.lot_stock_id.id,
                     "quantity": 1,
                     "lot_id": lot.id,
                 }
@@ -79,7 +79,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         )
         # Add quants for product tracked by serial to supplier
         cls.serial_1 = cls._create_serial_and_quant(
-            cls.stockable_product_serial, "111", cls.company_b
+            cls.stockable_product_serial, "111", cls.env["res.company"]
         )
         cls.serial_2 = cls._create_serial_and_quant(
             cls.stockable_product_serial, "222", cls.company_b
@@ -312,13 +312,6 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         Test that the lot is synchronized on the moves
         by searching or creating a new lot in the company of destination
         """
-        # lot 3 already exists in company_a
-        serial_3_company_a = self._create_serial_and_quant(
-            self.stockable_product_serial,
-            "333",
-            self.company_a,
-            quant=False,
-        )
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
 
@@ -333,6 +326,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
 
         so_move = so_picking_id.move_ids
         so_move.move_line_ids = [
+            Command.clear(),
             Command.create(
                 {
                     "location_id": so_move.location_id.id,
@@ -376,19 +370,15 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             len(po_lots),
             msg="There aren't the same number of lots on both moves",
         )
-        self.assertNotEqual(
-            so_lots, po_lots, msg="The lots of the moves should be different objects"
+        self.assertEqual(
+            so_lots, po_lots, msg="The lots of the moves should be the same"
         )
         self.assertEqual(
             so_lots.mapped("name"),
             po_lots.mapped("name"),
             msg="The lots should have the same name in both moves",
         )
-        self.assertIn(
-            serial_3_company_a,
-            po_lots,
-            msg="Serial 333 already existed, a new one shouldn't have been created",
-        )
+        self.assertFalse(so_lots.company_id, msg="Lots should not have a company.")
         # create a new lot in the picking done
         move_line_vals = so_move._prepare_move_line_vals()
         move_line_vals.update({"lot_id": self.serial_4.id, "quantity": 1})

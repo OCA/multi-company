@@ -161,9 +161,7 @@ class StockPicking(models.Model):
                     lot_id = ml.lot_id
                     if not lot_id:
                         continue
-                    # search if the same lot exists in destination company
-                    dest_lot = ml._get_or_create_lot_intercompany(po_ml.company_id)
-                    po_ml.lot_id = dest_lot
+                    po_ml.lot_id = ml._ensure_lot_multicompany()
             if dest_company.sync_picking and self.state == "done":
                 dest_picking.sudo().with_context(
                     cancel_backorder=bool(
