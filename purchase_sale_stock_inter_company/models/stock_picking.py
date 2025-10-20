@@ -16,12 +16,10 @@ class StockPicking(models.Model):
 
     @api.depends("intercompany_picking_id.move_ids.state")
     def _compute_state(self):
-        """
-        If the picking is inter-company, it's an 'incoming'
-        type of picking, and it has not been validated nor canceled
-        we compute it's state based on the other picking state
-        """
         res = super()._compute_state()
+        # If the picking is inter-company, it's an 'incoming'
+        # type of picking, and it has not been validated nor canceled
+        # we compute it's state based on the other picking state
         for picking in self.filtered(
             lambda pick: pick._is_intercompany_reception()
             and pick.state not in ["done", "cancel"]
@@ -90,7 +88,9 @@ class StockPicking(models.Model):
             po_picking_pending.intercompany_picking_id = self.id
             if not self.intercompany_picking_id and po_picking_pending:
                 self.intercompany_picking_id = po_picking_pending[0]
-            dest_picking = self.intercompany_picking_id.with_user(intercompany_user)
+            dest_picking = self.intercompany_picking_id.with_user(
+                intercompany_user
+            ).with_company(dest_company)
             for move in self.move_ids:
                 move_lines = move.move_line_ids.filtered(lambda x: x.quantity > 0)
                 # To identify the correct move to write to,
@@ -177,6 +177,10 @@ class StockPicking(models.Model):
                 self._notify_picking_problem(purchase)
 
     def _notify_picking_problem(self, purchase):
+        """
+        Create an activity to notify of a problem when syncing the intercompany picking.
+        :param purchase: browse_record(purchase.order)
+        """
         self.ensure_one()
         note = _(
             "Failure to confirm picking for PO %(purchase_name)s. "

@@ -7,6 +7,8 @@ class StockMoveLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         new_move_lines = super().create(vals_list)
+        # When a picking is unlocked, the user can add new moves.
+        # So, create the corresponding move lines in the intercompany picking.
         for move_line in new_move_lines.filtered(lambda x: x.state == "done"):
             po_moves = move_line._get_stock_moves_to_sync()
             for po_move in po_moves:
@@ -38,6 +40,12 @@ class StockMoveLine(models.Model):
         return res
 
     def _sync_intercompany_move(self, lot_name, vals):
+        """
+        Sync the intercompany stock move lines
+        with the changes made in this move line.
+        :param lot_name: the name of the lot to match the move lines
+        :param vals: the values to sync
+        """
         self.ensure_one()
         fields_to_sync = self._get_fields_to_sync_intercompany()
         po_moves = self._get_stock_moves_to_sync()
@@ -78,6 +86,10 @@ class StockMoveLine(models.Model):
 
     @api.model
     def _get_fields_to_sync_intercompany(self):
+        """
+        Get the fields that need to be synced with the intercompany move line.
+        :return: set of field names
+        """
         return {"quantity", "lot_id"}
 
     def _get_or_create_lot_intercompany(self, dest_company):

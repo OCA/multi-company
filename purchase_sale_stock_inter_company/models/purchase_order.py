@@ -12,6 +12,7 @@ class PurchaseOrder(models.Model):
     def _prepare_sale_order_data(
         self, name, partner, dest_company, direct_delivery_address
     ):
+        # Add additional fields when the purchase_stock module is installed.
         new_order = super()._prepare_sale_order_data(
             name, partner, dest_company, direct_delivery_address
         )
