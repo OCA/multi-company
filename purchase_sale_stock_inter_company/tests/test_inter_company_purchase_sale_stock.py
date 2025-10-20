@@ -63,6 +63,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             {
                 "name": "Consumable Product",
                 "type": "consu",
+                "is_storable": False,
                 "categ_id": cls.env.ref("product.product_category_all").id,
                 "qty_available": 100,
             }
@@ -70,7 +71,8 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         cls.stockable_product_serial = cls.env["product.product"].create(
             {
                 "name": "Stockable Product Tracked by Serial",
-                "type": "product",
+                "type": "consu",
+                "is_storable": True,
                 "tracking": "serial",
                 "categ_id": cls.env.ref("product.product_category_all").id,
             }
@@ -122,7 +124,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(sale.warehouse_id, self.warehouse_c)
 
     def test_sync_intercompany_picking_qty_with_backorder(self):
-        self.product.type = "product"
+        self.product.type = "consu"
         self.company_a.sync_picking = True
         self.partner_company_b.company_id = False
         purchase = self.purchase_company_a
@@ -151,10 +153,10 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(purchase.order_line.qty_received, 3)
 
     def test_purchase_sale_with_two_products_no_backorder(self):
-        self.product.type = "product"
+        self.product.type = "consu"
         self.partner_company_b.company_id = False
         self.product2 = self.env["product.product"].create(
-            {"name": "Product 2", "type": "product"}
+            {"name": "Product 2", "type": "consu", "is_storable": True}
         )
         self.purchase_company_a.write(
             {
@@ -545,81 +547,64 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         sale = self._approve_po(purchase)
 
         self.assertEqual(len(purchase.picking_ids), 1)
-        # the move in the receipt should have a "next move" due to "two_steps"
-        self.assertTrue(purchase.picking_ids.move_ids.move_dest_ids)
-        self.assertEqual(len(sale.picking_ids), 2)
-
-        po_picking_id = purchase.picking_ids
-        po_internal_pick_id = po_picking_id.move_ids.move_dest_ids.picking_id
-        so_picking_id = sale.picking_ids.filtered(
-            lambda x: x.location_dest_id.usage == "customer"
-        )
-        so_internal_pick_id = sale.picking_ids - so_picking_id
-
-        self.assertTrue(
-            all(
-                (po_picking_id, po_internal_pick_id, so_picking_id, so_internal_pick_id)
-            )
-        )
-
-        # check po_picking state
-        self.assertEqual(po_picking_id.state, "assigned")
-
+        # Only a single picking is created for the sale.
+        # When this picking is validated, two pickings should be created:
+        # one for the backorder and one for the delivery.
+        self.assertEqual(len(sale.picking_ids), 1)
         # validate the SO internal picking
-        so_internal_pick_id.move_ids.quantity = 2
-        so_internal_pick_id.move_ids.picked = True
-        wizard_data = so_internal_pick_id.with_user(
-            self.user_company_b
-        ).button_validate()
+        so_internal_pick = sale.picking_ids
+
+        so_internal_pick.move_ids.quantity = 2
+        so_internal_pick.move_ids.picked = True
+        wizard_data = so_internal_pick.with_user(self.user_company_b).button_validate()
         wizard = (
             self.env["stock.backorder.confirmation"]
             .with_context(**wizard_data.get("context"))
             .create({})
         )
         wizard.process()
-
+        po_picking = purchase.picking_ids
         # check po_picking state
-        self.assertEqual(po_picking_id.state, "assigned")
+        self.assertEqual(po_picking.state, "waiting")
 
         # validate the SO picking
-
-        so_picking_id.move_ids.quantity = 2
-        so_picking_id.move_ids.picked = True
-
-        self.assertNotEqual(po_picking_id, so_picking_id)
+        so_picking = sale.picking_ids.filtered(
+            lambda x: x.location_dest_id.usage == "customer"
+        )
+        so_picking.move_ids.quantity = 2
+        so_picking.move_ids.picked = True
+        self.assertNotEqual(po_picking, so_picking)
         self.assertNotEqual(
-            po_picking_id.move_ids.quantity,
-            so_picking_id.move_ids.quantity,
-        )
-        self.assertEqual(
-            po_picking_id.move_ids.product_qty,
-            so_picking_id.move_ids.product_qty,
+            po_picking.move_ids.quantity,
+            so_picking.move_ids.quantity,
         )
 
-        wizard_data = so_picking_id.with_user(self.user_company_b).button_validate()
-        wizard = (
-            self.env["stock.backorder.confirmation"]
-            .with_context(**wizard_data.get("context"))
-            .create({})
+        so_picking.with_user(self.user_company_b).button_validate()
+        self.assertEqual(so_picking.state, "done")
+        po_internal_pick = po_picking.move_ids.move_dest_ids.picking_id
+        # the move in the receipt should have a "next move" due to "two_steps"
+        self.assertTrue(purchase.picking_ids.move_ids.move_dest_ids)
+        self.assertEqual(len(sale.picking_ids), 3)  # Pick + Backorder + Delivery
+        self.assertTrue(
+            all((po_picking, po_internal_pick, so_picking, so_internal_pick))
         )
-        wizard.process()
-
         # Quantities should have been synced
-        self.assertNotEqual(po_picking_id, so_picking_id)
+        self.assertNotEqual(po_picking, so_picking)
         self.assertEqual(
-            po_picking_id.move_ids.quantity,
-            so_picking_id.move_ids.quantity,
+            po_picking.move_ids.quantity,
+            so_picking.move_ids.quantity,
         )
 
         # Check picking state
-        self.assertEqual(po_picking_id.state, so_picking_id.state)
+        self.assertEqual(po_picking.state, so_picking.state)
 
-        # A backorder should have been made for both steps of sale
-        self.assertEqual(len(sale.picking_ids), 4)
         # An additional receipt should have been created for the PO
         self.assertEqual(len(purchase.picking_ids), 2)
         done_purchase_picking = purchase.picking_ids.filtered(
             lambda x: x.state == "done"
         )
         self.assertEqual(len(done_purchase_picking), 1)
-        self.assertEqual(done_purchase_picking, po_picking_id)
+        self.assertEqual(done_purchase_picking, po_picking)
+        new_receipt_picking = done_purchase_picking._get_next_transfers()
+        self.assertEqual(len(new_receipt_picking), 1)
+        self.assertEqual(new_receipt_picking.state, "assigned")
