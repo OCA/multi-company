@@ -12,7 +12,7 @@
     "license": "AGPL-3",
     "depends": ["product"],
     "excludes": ["product_category_company"],
-    "data": ["" "views/view_product_category.xml", "views/product_template_views.xml"],
+    "data": ["views/view_product_category.xml", "views/product_template_views.xml"],
     "demo": ["demo/res_company.xml"],
     "images": ["static/description/product_category_tree.png"],
     "installable": True,
