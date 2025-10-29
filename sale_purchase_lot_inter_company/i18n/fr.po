@@ -1,0 +1,49 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_sale_lot_intercompany
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-13 18:52+0000\n"
+"PO-Revision-Date: 2023-03-13 19:54+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 3.2.2\n"
+
+#. module: sale_purchase_lot_inter_company
+#: model:ir.model,name:sale_purchase_lot_inter_company.model_res_company
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: sale_purchase_lot_inter_company
+#: model:ir.model,name:sale_purchase_lot_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "res.config.settings"
+
+#. module: sale_purchase_lot_inter_company
+#: model:ir.model,name:sale_purchase_lot_inter_company.model_stock_lot
+msgid "Lot/Serial"
+msgstr "Lot/N° série"
+
+#. module: sale_purchase_lot_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_lot_inter_company.field_res_company__propagated_serial_number_so_po
+#: model:ir.model.fields,field_description:sale_purchase_lot_inter_company.field_res_config_settings__propagated_serial_number_so_po
+#: model_terms:ir.ui.view,arch_db:sale_purchase_lot_inter_company.res_config_settings_view_form
+#, fuzzy
+msgid ""
+"Lots/Serial Numbers are propagated from sales in this company to purchase "
+"orders"
+msgstr "Lots/N° série copiés des ventes de cette société vers les achats inter-sociétés"
+
+#. module: sale_purchase_lot_inter_company
+#: model:ir.model,name:sale_purchase_lot_inter_company.model_sale_order
+#, fuzzy
+msgid "Sales Order"
+msgstr "Bon de commande de vente"
