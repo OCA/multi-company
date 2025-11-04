@@ -2,7 +2,7 @@
 # Copyright 2015-2019 Pedro M. Baeza <pedro.baeza@tecnativa.com>
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html.html
 
-from odoo import Command, _, api, models
+from odoo import Command, api, models
 from odoo.exceptions import ValidationError
 
 
@@ -64,7 +64,7 @@ class ResPartner(models.Model):
                     and partner_company_ids
                 ):
                     raise ValidationError(
-                        _(
+                        self.env._(
                             "The partner must have at least all the companies "
                             "associated with the user."
                         )
