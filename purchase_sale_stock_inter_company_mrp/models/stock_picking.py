@@ -17,7 +17,7 @@ class StockPicking(models.Model):
             )
         res = {}
         product = po_move_lines[0].product_id
-        sale_qty_done = sum(sale_move_lines.mapped("qty_done"))
+        sale_qty_done = sum(sale_move_lines.mapped("quantity"))
         # Sale Kit: get kit product qty done based on the move lines qty done
         if sale_bom:
             sale_line = sale_move_lines[0].move_id.sale_line_id
@@ -59,7 +59,9 @@ class StockPicking(models.Model):
                 # As BoMs allow components with 0 qty, a.k.a. optionnal components,
                 # we simply skip those to avoid a division by zero.
                 continue
-            bom_line_moves = move_ids.filtered(lambda m: m.bom_line_id == bom_line)
+            bom_line_moves = move_ids.filtered(
+                lambda m, bom_line=bom_line: m.bom_line_id == bom_line
+            )
             if bom_line_moves:
                 # We compute the quantities needed of each components to make one kit.
                 # Then, we collect every relevant moves related to a specific component
