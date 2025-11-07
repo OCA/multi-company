@@ -16,6 +16,17 @@ TestPurchaseSaleInterCompany = test_icps.TestPurchaseSaleInterCompany
 
 class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
     @classmethod
+    def _configure_user(cls, user):
+        res = super()._configure_user(user)
+        # Add stock user group to the user
+        # to prevent access errors during tests
+        # When `stock_picking_batch` is installed,
+        # the model stock.picking.batch
+        # has access rights that restrict access to the group_stock_user
+        user.groups_id |= cls.env.ref("stock.group_stock_user")
+        return res
+
+    @classmethod
     def _create_warehouse(cls, code, company):
         address = cls.env["res.partner"].create({"name": f"{code} address"})
         return cls.env["stock.warehouse"].create(
