@@ -6,7 +6,7 @@
 {
     "name": "Inter Company Module for Purchase to Sale Order with warehouse",
     "summary": "Intercompany PO/SO rules with warehouse",
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.0.1",
     "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Tecnativa, Odoo Community Association (OCA)",
