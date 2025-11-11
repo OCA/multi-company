@@ -37,8 +37,8 @@ class PurchaseOrder(models.Model):
                 purchase_order.partner_id.commercial_partner_id.ref_company_ids
             )
             if dest_company and dest_company.so_from_po:
-                purchase_order.with_company(
-                    dest_company.id
+                purchase_order.with_context(
+                    allowed_company_ids=dest_company.ids
                 )._inter_company_create_sale_order(dest_company)
         return res
 
@@ -111,7 +111,7 @@ class PurchaseOrder(models.Model):
             self.partner_ref = sale_order.name
         # Validation of sale order
         if dest_company.sale_auto_validation:
-            sale_order.with_user(intercompany_user.id).sudo().action_confirm()
+            sale_order.with_user(intercompany_user.id).action_confirm()
         return sale_order
 
     def _prepare_sale_order_data(

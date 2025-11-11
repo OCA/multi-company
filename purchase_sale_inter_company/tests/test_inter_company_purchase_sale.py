@@ -76,6 +76,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         # Configure User
         cls._configure_user(cls.user_company_a)
         cls._configure_user(cls.user_company_b)
+        cls._configure_user(cls.intercompany_sale_user_id)
 
         # Create purchase order
         cls.purchase_company_a = cls._create_purchase_order(cls.partner_company_b)
