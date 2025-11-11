@@ -102,7 +102,14 @@ class StockPicking(models.Model):
                     )
                 )
                 po_move_lines = po_move_pending.move_line_ids
-                if not po_move_lines:
+                # Don’t raise an error
+                # if there are no move_line_ids and the location is transit.
+                # In vendor locations, reservations are bypassed,
+                # but in transit locations,
+                # we need to create the move lines to assign lots/serials.
+                if not po_move_pending or (
+                    po_move_lines and move.location_dest_id.usage != "transit"
+                ):
                     raise UserError(
                         _(
                             "There's no corresponding line in PO %(po)s for assigning "
@@ -206,7 +213,7 @@ class StockPicking(models.Model):
         :return: bool
         """
         return (
-            self.location_id.usage == "supplier"
+            self.location_id.usage in ["supplier", "transit"]
             and self.purchase_id.sudo().intercompany_sale_order_id
         )
 
@@ -216,6 +223,6 @@ class StockPicking(models.Model):
         :return: bool
         """
         return (
-            self.location_dest_id.usage == "customer"
+            self.location_dest_id.usage in ["customer", "transit"]
             and self.sale_id.sudo().auto_purchase_order_id
         )
