@@ -409,6 +409,99 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             po_picking_id.mapped("move_ids.move_line_ids.lot_id.name"),
         )
 
+    def test_sync_picking_lot_with_transit_location(self):
+        """
+        Test that the lot is synchronized on the moves
+        when using inter-company transit locations
+        company B: Sale picking from Stock to Transit Location
+        company A: Purchase picking from Transit Location to Stock
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        # Set inter-company locations on partners
+        interco_location = self.env.ref("stock.stock_location_inter_company")
+        self.partner_company_b.with_company(self.company_a).write(
+            {
+                "property_stock_customer": interco_location.id,
+                "property_stock_supplier": interco_location.id,
+            }
+        )
+        self.partner_company_a.with_company(self.company_b).write(
+            {
+                "property_stock_customer": interco_location.id,
+                "property_stock_supplier": interco_location.id,
+            }
+        )
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.stockable_product_serial
+        )
+        sale = self._approve_po(purchase)
+
+        # validate the SO picking
+        po_picking_id = purchase.picking_ids
+        so_picking_id = sale.picking_ids
+
+        so_move = so_picking_id.move_ids
+        so_move.move_line_ids = [
+            Command.clear(),
+            Command.create(
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "quantity": 1,
+                    "lot_id": self.serial_1.id,
+                    "picking_id": so_picking_id.id,
+                },
+            ),
+            Command.create(
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "quantity": 1,
+                    "lot_id": self.serial_2.id,
+                    "picking_id": so_picking_id.id,
+                },
+            ),
+            Command.create(
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "quantity": 1,
+                    "lot_id": self.serial_3.id,
+                    "picking_id": so_picking_id.id,
+                },
+            ),
+        ]
+        so_picking_id.button_validate()
+        self.assertEqual(so_picking_id.location_id.usage, "internal")
+        self.assertEqual(so_picking_id.location_dest_id.usage, "transit")
+        self.assertEqual(po_picking_id.location_id.usage, "transit")
+        self.assertEqual(po_picking_id.location_dest_id.usage, "internal")
+
+        so_lots = so_move.mapped("move_line_ids.lot_id")
+        po_lots = po_picking_id.mapped("move_ids.move_line_ids.lot_id")
+        self.assertEqual(
+            len(so_lots),
+            len(po_lots),
+            msg="There aren't the same number of lots on both moves",
+        )
+        self.assertEqual(
+            so_lots, po_lots, msg="The lots of the moves should be the same"
+        )
+        self.assertEqual(
+            so_lots.mapped("name"),
+            po_lots.mapped("name"),
+            msg="The lots should have the same name in both moves",
+        )
+        self.assertFalse(so_lots.company_id, msg="Lots should not have a company.")
+
     def test_sync_picking_same_product_multiple_lines(self):
         """
         Picking synchronization should work even when there
@@ -533,7 +626,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         # Set quantities done on the picking and validate
         for move in so_picking_id.move_ids:
             move.quantity = move.product_uom_qty
-        with self.assertRaises(UserError):
+        with self.assertRaisesRegex(UserError, "There's no corresponding line in PO"):
             so_picking_id.button_validate()
 
     def test_sync_picking_multi_step(self):
@@ -609,3 +702,123 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         new_receipt_picking = done_purchase_picking._get_next_transfers()
         self.assertEqual(len(new_receipt_picking), 1)
         self.assertEqual(new_receipt_picking.state, "assigned")
+
+    def test_sync_picking_multi_step_with_transit(self):
+        """
+        Test that the lot is synchronized on the moves
+        when using inter-company transit locations
+        and warehouses are configured with multi-step routes.
+        company B: Sale picking
+            Picking 1: from Stock to Packing
+            Picking 2: from Packing to Transit Location
+        company A: Purchase picking
+            Picking 1: from Transit Location to Input
+            Picking 2: from Input to Stock
+        """
+        self.company_a.sync_picking = True
+        self.warehouse_a.reception_steps = "two_steps"
+        self.company_b.sync_picking = True
+        self.warehouse_c.delivery_steps = "pick_ship"
+        # Set inter-company locations on partners
+        interco_location = self.env.ref("stock.stock_location_inter_company")
+        self.partner_company_b.with_company(self.company_a).write(
+            {
+                "property_stock_customer": interco_location.id,
+                "property_stock_supplier": interco_location.id,
+            }
+        )
+        self.partner_company_a.with_company(self.company_b).write(
+            {
+                "property_stock_customer": interco_location.id,
+                "property_stock_supplier": interco_location.id,
+            }
+        )
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.stockable_product_serial
+        )
+        sale = self._approve_po(purchase)
+        self.assertEqual(len(purchase.picking_ids), 1)
+        # Only a single picking is created for the sale.
+        # When this picking is validated, two pickings should be created:
+        # one for the backorder and one for the delivery.
+        self.assertEqual(len(sale.picking_ids), 1)
+        # Check the locations
+        self.assertEqual(purchase.picking_ids.location_id.usage, "transit")
+        self.assertEqual(purchase.picking_ids.location_dest_id.usage, "internal")
+        self.assertEqual(sale.picking_ids.location_id.usage, "internal")
+        self.assertEqual(sale.picking_ids.location_dest_id.usage, "internal")
+        self.assertEqual(sale.picking_ids.move_ids.location_final_id.usage, "transit")
+        # validate the SO internal picking
+        so_internal_pick = sale.picking_ids
+        so_move = so_internal_pick.move_ids
+        so_move.move_line_ids = [
+            Command.clear(),
+            Command.create(
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "quantity": 1,
+                    "lot_id": self.serial_1.id,
+                    "picking_id": so_internal_pick.id,
+                },
+            ),
+            Command.create(
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "quantity": 1,
+                    "lot_id": self.serial_2.id,
+                    "picking_id": so_internal_pick.id,
+                },
+            ),
+            Command.create(
+                {
+                    "location_id": so_move.location_id.id,
+                    "location_dest_id": so_move.location_dest_id.id,
+                    "product_id": self.stockable_product_serial.id,
+                    "product_uom_id": self.stockable_product_serial.uom_id.id,
+                    "quantity": 1,
+                    "lot_id": self.serial_3.id,
+                    "picking_id": so_internal_pick.id,
+                },
+            ),
+        ]
+        so_internal_pick.with_user(self.user_company_b).button_validate()
+        self.assertEqual(so_internal_pick.state, "done")
+        po_picking = purchase.picking_ids
+        # check po_picking state
+        self.assertEqual(po_picking.state, "waiting")
+        # validate the SO picking
+        so_picking = sale.picking_ids.filtered(
+            lambda x: x.location_dest_id.usage == "customer"
+        )
+        so_picking.with_user(self.user_company_b).button_validate()
+        self.assertEqual(so_picking.state, "done")
+        # The location at the picking level is set to Customer by the operation type,
+        # but at the move level, it is Transit.
+        self.assertEqual(so_picking.location_dest_id.usage, "customer")
+        self.assertEqual(so_picking.move_ids.location_dest_id.usage, "transit")
+        # the move in the receipt should have a "next move" due to "two_steps"
+        self.assertTrue(purchase.picking_ids.move_ids.move_dest_ids)
+        self.assertEqual(len(sale.picking_ids), 2)  # Pick + Delivery
+        # Quantities should have been synced
+        self.assertEqual(
+            po_picking.move_ids.quantity,
+            so_picking.move_ids.quantity,
+        )
+        # Check picking state
+        self.assertEqual(po_picking.state, "done")
+        new_receipt_picking = po_picking._get_next_transfers()
+        self.assertEqual(len(new_receipt_picking), 1)
+        self.assertEqual(new_receipt_picking.state, "assigned")
+        # check the lots
+        so_lots = so_move.mapped("move_line_ids.lot_id")
+        po_lots = po_picking.mapped("move_ids.move_line_ids.lot_id")
+        self.assertEqual(
+            so_lots, po_lots, msg="The lots of the moves should be the same"
+        )
+        self.assertFalse(so_lots.company_id, msg="Lots should not have a company.")
