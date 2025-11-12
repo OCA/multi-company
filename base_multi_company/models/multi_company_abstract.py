@@ -35,7 +35,7 @@ class MultiCompanyAbstract(models.AbstractModel):
                 or self.env.context.get("force_company")
                 or self.env.company.id
             )
-            if company_id in record.company_ids.ids:
+            if company_id in record.sudo().company_ids.ids:
                 record.company_id = company_id
             else:
                 record.company_id = record.company_ids[:1].id
