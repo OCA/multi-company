@@ -45,6 +45,10 @@ class SaleOrder(models.Model):
                 _('Error. The following lines do not match on'
                   ' the remote order: %s') % "\n".join(unequal_line))
 
+    @api.model
+    def delete_purchase_moves(self, purchase_moves):
+        purchase_moves.unlink()
+
     @api.multi
     def action_confirm(self):
         for order in self.filtered('auto_purchase_order_id'):
@@ -155,7 +159,7 @@ class SaleOrder(models.Model):
                         new_pickings |= new_pick
                     purchase_move_lines.unlink()
                     purchase_moves._action_cancel()
-                    purchase_moves.unlink()
+                    sale_order.delete_purchase_moves(purchase_moves)
                     purchase_picking._update_extra_data_in_picking(pickings[:1])
                     new_pickings.action_assign()
 
