@@ -117,6 +117,11 @@ msgid "Purchase Order"
 msgstr ""
 
 #. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__state
 msgid "Status"
 msgstr ""
