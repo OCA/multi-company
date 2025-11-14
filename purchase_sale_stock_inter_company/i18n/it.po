@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-05 13:15+0000\n"
-"PO-Revision-Date: 2023-12-28 20:34+0000\n"
-"Last-Translator: Francesco Foresti <francesco.foresti@ooops404.com>\n"
+"PO-Revision-Date: 2025-11-14 17:43+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17\n"
+"X-Generator: Weblate 5.10.4\n"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_stock_picking__state
@@ -36,22 +36,39 @@ msgid ""
 " * Done: The transfer has been processed.\n"
 " * Cancelled: The transfer has been cancelled."
 msgstr ""
+" * Bozza: Il trasferimento non è ancora confermato. Non è possibile "
+"riservare.\n"
+" * Attesa altra operazione: questo trasferimento è in attesa di un'altra "
+"operazione prima di essere pronto.\n"
+" * In attesa: il trasferimento è in attesa della disponibilità di alcuni "
+"prodotti.\n"
+"(a) La politica di spedizione è \"Il prima possibile\": non è stato "
+"possibile riservare alcun prodotto.\n"
+"(b) La politica di spedizione è \"Quando tutti i prodotti sono pronti\": non "
+"è stato possibile riservare tutti i prodotti.\n"
+" * Pronto: il trasferimento è pronto per essere completato.\n"
+"(a) La politica di spedizione è \"Il prima possibile\": almeno un prodotto è "
+"stato riservato.\n"
+"(b) La politica di spedizione è \"Quando tutti i prodotti sono pronti\": "
+"tutti i prodotti sono stati riservati.\n"
+" * Fatto: il trasferimento è stato completato.\n"
+" * Annullato: il trasferimento è stato annullato."
 
 #. module: purchase_sale_stock_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
 msgid "Block PO manual picking validation"
-msgstr ""
+msgstr "Blocca validazione manuale dei prelievi in acquisto"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__raise
 msgid "Block and raise error"
-msgstr ""
+msgstr "Blocca e solleva errore"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__block_po_manual_picking_validation
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__block_po_manual_picking_validation
 msgid "Block manual validation of picking in the destination company"
-msgstr ""
+msgstr "Blocca validazione manuale dei prelievi nell'azienda di destinazione"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
@@ -66,7 +83,7 @@ msgstr "Impostazioni di configurazione"
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__notify
 msgid "Continue, but create activity to notify someone"
-msgstr ""
+msgstr "Continua, ma crea un'attività per notificare qualcuno"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
@@ -93,6 +110,9 @@ msgid ""
 "Failure to confirm picking for PO %(purchase_name)s. Original picking "
 "%(picking_name)s still confirmed, please check the other side manually."
 msgstr ""
+"Fallimento della conferma del prelievo per OA %(purchase_name)s. Il prelievo "
+"origine %(picking_name)s ancora confermato, controllare lato ordine "
+"manualmente."
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
@@ -105,24 +125,26 @@ msgstr "Prelievo interaziendale"
 msgid ""
 "Manual validation of the picking is not allowed in the destination company."
 msgstr ""
+"La validazione manuale del prelievo non è permessa nell'azienda di "
+"destinazione."
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
 msgid "On sync picking failure"
-msgstr ""
+msgstr "Al fallimento della sincronizzazione trasferimenti"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
 msgid "Pick action to perform on sync picking failure"
-msgstr ""
+msgstr "Azione trasferimento da compiere alla mancata sincronizzazione"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_move_line
 msgid "Product Moves (Stock Move Line)"
-msgstr ""
+msgstr "Movimenti prodotto (riga movimento di magazzino)"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_purchase_order
@@ -137,17 +159,17 @@ msgstr "Riga ordini di vendita"
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__state
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #. module: purchase_sale_stock_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
 msgid "Sync picking"
-msgstr ""
+msgstr "Sincronizza prelievo"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking
 msgid "Sync the receipt from the destination company with the delivery"
-msgstr ""
+msgstr "Sincronizza la ricezione dell'azienda di destinazione con la consegna"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking
@@ -156,11 +178,13 @@ msgid ""
 "Sync the receipt from the destination company with the delivery from the "
 "source company"
 msgstr ""
+"Sincronizza la ricezione dell'azienda di destinazione con la consegna "
+"dell'azienda di origine"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking
 msgid "Sync the receipt with the delivery"
-msgstr ""
+msgstr "Sincronizza la ricezione con la spedizione"
 
 #. module: purchase_sale_stock_inter_company
 #. odoo-python
@@ -181,12 +205,12 @@ msgstr "Trasferimento"
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__notify_user_id
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
 msgid "User to Notify"
-msgstr ""
+msgstr "Utente da avvisare"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
 msgid "User to notify incase of sync picking failure."
-msgstr ""
+msgstr "Utente da avvisare in caso di mancata sincronizzazione trasferimenti."
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
