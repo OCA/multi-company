@@ -13,9 +13,10 @@ class ProductTemplate(models.Model):
     def _check_company_ids(self):
         for record in self:
             if record.company_ids:
+                variants = record.with_context(active_test=False).product_variant_ids
                 quants = self.env["stock.quant"].search(
                     [
-                        ("product_id", "in", record.product_variant_ids.ids),
+                        ("product_id", "in", variants.ids),
                         ("company_id", "not in", record.company_ids.ids),
                         ("quantity", "!=", 0),
                         ("location_id.usage", "=", "internal"),
@@ -33,7 +34,7 @@ class ProductTemplate(models.Model):
                     )
                 moves = self.env["stock.move"].search(
                     [
-                        ("product_id", "in", record.product_variant_ids.ids),
+                        ("product_id", "in", variants.ids),
                         ("company_id", "not in", record.company_ids.ids),
                     ]
                 )
