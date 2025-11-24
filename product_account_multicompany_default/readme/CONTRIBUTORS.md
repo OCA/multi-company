@@ -1,0 +1,2 @@
+- Jairo Llopis ([Moduon](https://www.moduon.team/))
+- Telmo Santos \<<telmo.santos@camptocamp.com>\>
