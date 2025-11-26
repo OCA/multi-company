@@ -5,7 +5,6 @@ from odoo import models
 
 
 class ProductTemplate(models.Model):
-
     _name = "product.template"
     _inherit = ["product.template", "multicompany.abstract"]
 
@@ -28,7 +27,6 @@ class ProductTemplate(models.Model):
 
 
 class ProductProduct(models.Model):
-
     _name = "product.product"
     _inherit = ["product.product", "multicompany.abstract"]
 
