@@ -54,10 +54,10 @@ class MulticompanyAbstract(models.AbstractModel):
                         continue
                 for company in companies:
                     company_record = record.with_company(company.id)
-                    multicompany_data["data"][company.id][
-                        field_name
-                    ] = field.convert_to_read(
-                        company_record[field_name], company_record
+                    multicompany_data["data"][company.id][field_name] = (
+                        field.convert_to_read(
+                            company_record[field_name], company_record
+                        )
                     )
 
                 multicompany_data["fields"][field_name] = self._get_field_info(
