@@ -156,16 +156,32 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         for company in user.company_ids:
             user.write({"company_id": company.id})
             # Force recompute
-            tester.invalidate_model()
+            tester.invalidate_model(["company_id"])
             # Ensure that the current user is on the right company
             self.assertEqual(user.company_id, company)
             self.assertEqual(tester.company_id, company)
             # So can read company fields without Access error
             self.assertTrue(bool(tester.company_id.name))
+        # If current main company of the user does not match with the record's
+        # company_ids then one of the common companies between the two should be set
+        user_companies = company1 + company3
+        user.write(
+            {
+                "company_id": company1.id,
+                "company_ids": [(6, False, user_companies.ids)],
+            }
+        )
+        companies = company2 + company3
+        tester.write({"company_ids": [(6, False, companies.ids)]})
+        # Force recompute
+        tester.invalidate_model(["company_id"])
+        self.assertFalse(tester.company_ids <= user.company_ids)  # Is not subset
+        self.assertNotEqual(tester.company_id.id, user.company_id.id)
+        self.assertIn(tester.company_id.id, user.company_ids.ids)
         # Switch to a company not in tester.company_ids
         self.switch_user_company(user, company4)
         # Force recompute
-        tester.invalidate_model()
+        tester.invalidate_model(["company_id"])
         self.assertNotEqual(user.company_id.id, tester.company_ids.ids)
         self.assertTrue(bool(tester.company_id.id))
         self.assertTrue(bool(tester.company_id.name))
