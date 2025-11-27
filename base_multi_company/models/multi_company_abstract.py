@@ -22,23 +22,30 @@ class MultiCompanyAbstract(models.AbstractModel):
     )
 
     @api.depends("company_ids")
-    @api.depends_context("company", "_check_company_source_id")
+    @api.depends_context("companies", "company", "_check_company_source_id")
     def _compute_company_id(self):
         for record in self:
             # Set this priority computing the company (if included in the allowed ones)
             # for avoiding multi company incompatibility errors:
             # - If this call is done from method _check_company, the company of the
             #   record to be compared.
-            # - Otherwise, current company of the user.
-            company_id = (
-                self.env.context.get("_check_company_source_id")
-                or self.env.context.get("force_company")
-                or self.env.company.id
-            )
+            # - Otherwise, use current companies of the user, prioritizing main company.
+            # - As last resource, use the first allowed company.
+            company_id = self.env.context.get(
+                "_check_company_source_id"
+            ) or self.env.context.get("force_company")
             if company_id in record.company_ids.ids:
                 record.company_id = company_id
             else:
-                record.company_id = record.company_ids[:1].id
+                common_companies = self.env.companies & record.company_ids
+                # Prioritize main company
+                if common_companies and (self.env.company in common_companies):
+                    record.company_id = self.env.company.id
+                # Or use the first common company
+                elif common_companies:
+                    record.company_id = common_companies[0].id
+                else:  # Use the fallback as last resource
+                    record.company_id = record.company_ids[:1].id
 
     def _inverse_company_id(self):
         # To allow modifying allowed companies by non-aware base_multi_company
