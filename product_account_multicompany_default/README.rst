@@ -50,6 +50,8 @@ To configure this module, you need to:
 
 1. Install some module that lets you manage products, such as sale,
    purchase... (if not already installed).
+2. Add the allowed users to use that to the "Show Full Accounting
+   Features" group.
 
 Usage
 =====
@@ -60,6 +62,8 @@ To use this module, you need to:
    variant.
 2. Enter the "Accounting" tab.
 3. Click on "Propagate expense/income account to other companies".
+4. Go to a product category's form view.
+5. Click on "Propagate expense/income account to other companies".
 
 Known issues / Roadmap
 ======================
@@ -100,6 +104,7 @@ Contributors
 
 - Jairo Llopis (`Moduon <https://www.moduon.team/>`__)
 - Telmo Santos <telmo.santos@camptocamp.com>
+- Joel Estrada (`Moduon <https://www.moduon.team/>`__)
 
 Maintainers
 -----------

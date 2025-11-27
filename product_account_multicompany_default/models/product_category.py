@@ -32,29 +32,31 @@ class ProductCategory(models.Model):
                     "Make sure you have access to other companies."
                 )
             )
-        # Gain access to all companies of current user
-        self = self.with_context(
-            allowed_company_ids=self.env.company.ids + alien_companies.ids
-        )
-        # Map alien accounts by company and code
-        alien_accounts = self.env["account.account"].search(
-            [
-                ("company_id", "in", alien_companies.ids),
-                (
-                    "code",
-                    "in",
-                    self[field].mapped("code"),
-                ),
-            ]
-        )
-        accounts_map = defaultdict(dict)
-        for account in alien_accounts:
-            accounts_map[account.company_id.id][account.code] = account.id
+        # Get account codes from current company's field
+        codes = self[field].mapped("code")
+        if not codes:
+            accounts_map = defaultdict(dict)
+        else:
+            accounts_map = defaultdict(dict)
+            # Map accounts for each alien company
+            for com_id in alien_companies.ids:
+                accounts = (
+                    self.env["account.account"]
+                    .with_company(com_id)
+                    .search(
+                        [
+                            ("company_ids", "in", [com_id]),
+                            ("code", "in", codes),
+                        ]
+                    )
+                )
+                for account in accounts:
+                    accounts_map[com_id][account.code] = account.id
         # Group categories by account
         for good_account, categories_grouper in groupby(self, itemgetter(field)):
             categories = reduce(or_, categories_grouper)
             # Propagate account to alien companies if possible
-            target_code = good_account.code
+            target_code = good_account.code if good_account else False
             for alien_company in alien_companies:
                 try:
                     # False is a valid value, if you want to remove the account
@@ -64,7 +66,8 @@ class ProductCategory(models.Model):
                 except KeyError:
                     _logger.warning(
                         "Not propagating account to company because it does "
-                        "not exist there: product_categories=%s, company=%s, account=%s",
+                        "not exist there: product_categories=%s, "
+                        "company=%s, account=%s",
                         categories,
                         alien_company,
                         target_code,

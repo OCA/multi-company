@@ -15,13 +15,14 @@ class ProductDefaultAccountsCase(AccountTestInvoicingCommon, TestProductCommon):
     @mute_logger("odoo.addons.product_account_multicompany_default.models.product")
     def setUpClass(cls):
         super().setUpClass()
+        cls.company_data_2 = cls.setup_other_company()
         # An income account with same code on both companies
         cls.account_income_a1 = cls.env["account.account"].create(
             {
                 "name": "Income A1",
                 "code": "INC.A",
                 "account_type": "income",
-                "company_id": cls.company_data["company"].id,
+                "company_ids": [(6, 0, [cls.company_data["company"].id])],
             }
         )
         cls.account_income_a2 = cls.env["account.account"].create(
@@ -29,7 +30,7 @@ class ProductDefaultAccountsCase(AccountTestInvoicingCommon, TestProductCommon):
                 "name": "Income A2",
                 "code": "INC.A",
                 "account_type": "income",
-                "company_id": cls.company_data_2["company"].id,
+                "company_ids": [(6, 0, [cls.company_data_2["company"].id])],
             }
         )
         # An income account available only on company 1
@@ -38,7 +39,7 @@ class ProductDefaultAccountsCase(AccountTestInvoicingCommon, TestProductCommon):
                 "name": "Income B1",
                 "code": "INC.B",
                 "account_type": "income",
-                "company_id": cls.company_data["company"].id,
+                "company_ids": [(6, 0, [cls.company_data["company"].id])],
             }
         )
         # An expense account with same code on both companies
@@ -47,7 +48,7 @@ class ProductDefaultAccountsCase(AccountTestInvoicingCommon, TestProductCommon):
                 "name": "Expense A1",
                 "code": "EXP.A",
                 "account_type": "expense",
-                "company_id": cls.company_data["company"].id,
+                "company_ids": [(6, 0, [cls.company_data["company"].id])],
             }
         )
         cls.account_expense_a2 = cls.env["account.account"].create(
@@ -55,7 +56,7 @@ class ProductDefaultAccountsCase(AccountTestInvoicingCommon, TestProductCommon):
                 "name": "Expense A2",
                 "code": "EXP.A",
                 "account_type": "expense",
-                "company_id": cls.company_data_2["company"].id,
+                "company_ids": [(6, 0, [cls.company_data_2["company"].id])],
             }
         )
         # An expense account available only on company 1
@@ -64,7 +65,7 @@ class ProductDefaultAccountsCase(AccountTestInvoicingCommon, TestProductCommon):
                 "name": "Expense B1",
                 "code": "EXP.B",
                 "account_type": "expense",
-                "company_id": cls.company_data["company"].id,
+                "company_ids": [(6, 0, [cls.company_data["company"].id])],
             }
         )
 
