@@ -24,8 +24,9 @@ class ResPartner(models.Model):
             "sales_team.group_sale_salesman",
             "property_supplier_payment_term_id": "account.group_account_invoice,"
             "account.group_account_readonly",
-            "invoice_warn": "account.group_warning_account",
-            "property_payment_method_id": "account.group_account_invoice,"
+            "property_inbound_payment_method_line_id": "account.group_account_invoice,"
+            "account.group_account_readonly",
+            "property_outbound_payment_method_line_id": "account.group_account_invoice,"
             "account.group_account_readonly",
             # mrp
             "property_stock_subcontractor": "base.group_no_one",

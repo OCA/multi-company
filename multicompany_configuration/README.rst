@@ -63,6 +63,7 @@ Contributors
 
 - Enric Tobella
 - Lois Rilo <lois.rilo@forgeflow.com>
+- Jasmin Solanki <jasmin.solanki@forgeflow.com>
 
 Maintainers
 -----------

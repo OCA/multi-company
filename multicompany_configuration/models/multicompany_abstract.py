@@ -41,19 +41,21 @@ class MulticompanyAbstract(models.AbstractModel):
         field_attrs = self._multicompany_field_attrs()
         for record in self:
             multicompany_data = {
-                "companies": companies.name_get(),
+                "companies": [
+                    (company.id, company.display_name) for company in companies
+                ],
                 "data": {c.id: {} for c in companies},
                 "fields": {},
             }
             for field_name, field in company_fields.items():
                 if field_name in field_permissions:
-                    if not self.user_has_groups(field_permissions[field_name]):
+                    if not self.env.user.has_groups(field_permissions[field_name]):
                         continue
                 if field.groups:
-                    if not self.user_has_groups(field.groups):
+                    if not self.env.user.has_groups(field.groups):
                         continue
                 for company in companies:
-                    company_record = record.with_company(company.id)
+                    company_record = record.with_company(company)
                     multicompany_data["data"][company.id][field_name] = (
                         field.convert_to_read(
                             company_record[field_name], company_record
@@ -76,38 +78,48 @@ class MulticompanyAbstract(models.AbstractModel):
             .get(field.name)
             or field.name,
         }
-        if isinstance(field, fields._Relational):
+        if field.type in ("many2one", "one2many", "many2many"):
             result["relation"] = field.comodel_name
-            result["domain"] = field.domain
+            result["domain"] = field._description_domain(self.env)
         if isinstance(field, fields.Float):
             result["digits"] = json.dumps(field.get_digits(self.env))
         if isinstance(field, fields.Selection):
-            result["selection"] = field.selection
+            result["selection"] = field._description_selection(self.env)
         return result
 
     def _get_field_attrs(self, field):
-        if isinstance(field, fields._Relational):
-            return {"domain": field.get_domain_list(self)}
+        if field.type in ("many2one", "one2many", "many2many"):
+            return {"domain": field._description_domain(self.env)}
         return {}
+
+    def _convert_multicompany_value(self, field, value, record):
+        """Convert a value coming from the widget into a write value.
+
+        Values are either in the format returned by ``convert_to_read`` (as
+        computed by ``_compute_multicompany_data``) or in the format used by the
+        web client, where many2one values are dictionaries.
+        """
+        if isinstance(value, dict):
+            value = value.get("id", False)
+        elif isinstance(value, list):
+            value = tuple(value)
+        return field.convert_to_write(value, record)
 
     def _inverse_multicompany_data(self):
         for record in self:
             for company_id, vals in record.multicompany_data["data"].items():
-                company_record = record.with_company(company_id)
+                company_record = record.with_company(int(company_id))
                 new_vals = {}
                 for field, val in vals.items():
-                    if isinstance(val, list):
-                        val = tuple(val)
                     field_class = self._fields[field]
-                    if (
-                        field_class.convert_to_read(
-                            company_record[field], company_record
-                        )
-                        != val
-                    ):
-                        new_vals[field] = field_class.convert_to_write(
-                            val, company_record
-                        )
+                    new_val = self._convert_multicompany_value(
+                        field_class, val, company_record
+                    )
+                    current_val = field_class.convert_to_write(
+                        company_record[field], company_record
+                    )
+                    if current_val != new_val and (current_val or new_val):
+                        new_vals[field] = new_val
                 if new_vals:
                     company_record.write(new_vals)
 
