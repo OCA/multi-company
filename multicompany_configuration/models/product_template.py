@@ -17,7 +17,7 @@ class ProductTemplate(models.Model):
         return {
             "property_account_income_id": "account.group_account_readonly",
             "property_account_expense_id": "account.group_account_readonly",
-            "property_account_creditor_price_difference": "account.group_account_readonly",
+            "property_account_creditor_price_difference": "account.group_account_readonly",  # noqa E501
             "property_stock_production": "base.group_no_one",
             "property_stock_inventory": "base.group_no_one",
         }

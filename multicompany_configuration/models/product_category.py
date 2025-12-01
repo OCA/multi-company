@@ -19,7 +19,7 @@ class ProductCategory(models.Model):
             "property_account_expense_categ_id": "account.group_account_readonly",
             "property_account_creditor_price_difference_categ": "account."
             "group_account_readonly",
-            "property_valuation": "account.group_account_readonly,stock.group_stock_manager",
+            "property_valuation": "account.group_account_readonly,stock.group_stock_manager",  # noqa E501
             "property_stock_journal": "account.group_account_readonly",
             "property_stock_account_input_categ_id": "account.group_account_readonly",
             "property_stock_account_output_categ_id": "account.group_account_readonly",

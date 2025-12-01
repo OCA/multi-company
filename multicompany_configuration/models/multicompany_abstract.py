@@ -41,19 +41,19 @@ class MulticompanyAbstract(models.AbstractModel):
         field_attrs = self._multicompany_field_attrs()
         for record in self:
             multicompany_data = {
-                "companies": companies.name_get(),
+                "companies": [(company.id, company.name) for company in companies],
                 "data": {c.id: {} for c in companies},
                 "fields": {},
             }
             for field_name, field in company_fields.items():
                 if field_name in field_permissions:
-                    if not self.user_has_groups(field_permissions[field_name]):
+                    if not self.env.user._has_group(field_permissions[field_name]):
                         continue
                 if field.groups:
-                    if not self.user_has_groups(field.groups):
+                    if not self.env.user._has_group(field.groups):
                         continue
                 for company in companies:
-                    company_record = record.with_company(company.id)
+                    company_record = record.with_company(company[0])
                     multicompany_data["data"][company.id][field_name] = (
                         field.convert_to_read(
                             company_record[field_name], company_record
@@ -76,7 +76,7 @@ class MulticompanyAbstract(models.AbstractModel):
             .get(field.name)
             or field.name,
         }
-        if isinstance(field, fields._Relational):
+        if field.type in ("many2one", "one2many", "many2many"):
             result["relation"] = field.comodel_name
             result["domain"] = field.domain
         if isinstance(field, fields.Float):
@@ -86,8 +86,8 @@ class MulticompanyAbstract(models.AbstractModel):
         return result
 
     def _get_field_attrs(self, field):
-        if isinstance(field, fields._Relational):
-            return {"domain": field.get_domain_list(self)}
+        if field.type in ("many2one", "one2many", "many2many"):
+            return {"domain": field.domain}
         return {}
 
     def _inverse_multicompany_data(self):
@@ -106,7 +106,7 @@ class MulticompanyAbstract(models.AbstractModel):
                         != val
                     ):
                         new_vals[field] = field_class.convert_to_write(
-                            val, company_record
+                            val.get("id"), company_record
                         )
                 if new_vals:
                     company_record.write(new_vals)

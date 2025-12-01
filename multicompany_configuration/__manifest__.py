@@ -5,7 +5,7 @@
     "name": "Multicompany Configuration",
     "summary": """
         Simplify the configuration on multicompany environments""",
-    "version": "16.0.1.0.0",
+    "version": "19.0.1.0.0",
     "license": "AGPL-3",
     "author": "CreuBlanca, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
