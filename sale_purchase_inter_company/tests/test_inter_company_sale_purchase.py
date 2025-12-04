@@ -10,7 +10,7 @@ from odoo.addons.account_invoice_inter_company.tests.test_inter_company_invoice 
 )
 
 
-class TestSalePurchaseInterCompany(TestAccountInvoiceInterCompanyBase):
+class TestSalePurchaseInterCompanyBase(TestAccountInvoiceInterCompanyBase):
     @classmethod
     def _configure_user(cls, user):
         for xml in [
@@ -23,8 +23,7 @@ class TestSalePurchaseInterCompany(TestAccountInvoiceInterCompanyBase):
 
     @classmethod
     def _create_sale_order(cls, partner):
-        so = Form(cls.env["sale.order"])
-        so.company_id = cls.company_a
+        so = Form(cls.env["sale.order"].with_company(cls.company_a))
         so.partner_id = partner
 
         cls.product.invoice_policy = "order"
@@ -81,6 +80,8 @@ class TestSalePurchaseInterCompany(TestAccountInvoiceInterCompanyBase):
             .search([("auto_sale_order_id", "=", self.sale_company_a.id)])
         )
 
+
+class TestSalePurchaseInterCompany(TestSalePurchaseInterCompanyBase):
     def test_sale_purchase_inter_company(self):
         self.sale_company_a.note = "Test note"
         purchase = self._confirm_so()
@@ -90,6 +91,7 @@ class TestSalePurchaseInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(len(purchase.order_line), len(self.sale_company_a.order_line))
         self.assertEqual(purchase.order_line.product_id, self.product)
         self.assertEqual(str(purchase.notes), "<p>Test note</p>")
+        self.assertEqual(purchase.partner_ref, self.sale_company_a.name)
 
     def test_not_auto_validate(self):
         self.company_b.purchase_auto_validation = False
@@ -164,15 +166,10 @@ class TestSalePurchaseInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(purchase.partner_id, self.partner_company_a)
 
     def test_sale_purchase_with_purchase_sale_inter_company_installed(self):
-        # Install purchase_sale_inter_company module
-        module = self.env["ir.module.module"].search(
-            [("name", "=", "purchase_sale_inter_company")]
-        )
-        if not module:
-            return False
-        module.button_install()
-        purchase = self._confirm_so()
-        so = self.env["sale.order"].search(
-            [("auto_purchase_order_id", "=", purchase.id)]
-        )
-        self.assertEqual(len(so), 0)
+        # Check no conflict or infinite loop with purchase_sale_inter_company
+        if hasattr(self.env["sale.order"], "auto_purchase_order_id"):
+            purchase = self._confirm_so()
+            so = self.env["sale.order"].search(
+                [("auto_purchase_order_id", "=", purchase.id)]
+            )
+            self.assertFalse(so)
