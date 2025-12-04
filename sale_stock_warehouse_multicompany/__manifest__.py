@@ -3,7 +3,7 @@
 {
     "name": "sale stock warehouse multicompany",
     "summary": "Allow multiple companies to sell the stock of a shared warehouse",
-    "version": "16.0.1.0.0",
+    "version": "17.0.1.0.0",
     "development_status": "Alpha",
     "category": "Warehouse Management",
     "website": "https://github.com/OCA/multi-company",
@@ -11,7 +11,10 @@
     "license": "AGPL-3",
     "application": False,
     "installable": True,
-    "depends": ["delivery"],
+    "depends": [
+        "delivery",
+        "stock",
+    ],
     "data": [
         "views/stock_warehouse_views.xml",
         "views/stock_route_views.xml",

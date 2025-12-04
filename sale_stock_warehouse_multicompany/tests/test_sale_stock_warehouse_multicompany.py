@@ -53,7 +53,7 @@ class TestPartnerMultiCompany(common.TransactionCase):
         stock_location = self.warehouse_1.lot_stock_id
         self.assertEqual(self.order.picking_ids.location_id, stock_location)
         # Process picking
-        self.order.picking_ids.move_ids_without_package.quantity_done = 1.0
+        self.order.picking_ids.move_ids_without_package.quantity = 1.0
         self.order.picking_ids.button_validate()
 
         self.assertEqual(self.order.order_line.qty_delivered, 1.0)
