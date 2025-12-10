@@ -1,0 +1,1 @@
+from . import test_multicompany_view_restriction

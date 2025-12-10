@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (C) 2025 Akretion (<http://www.akretion.com>).
+@author Kévin Roche <kevin.roche@akretion.com>
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_res_multicompany_restriction_tree" model="ir.ui.view">
+        <field name="name">multicompany.view.restriction.tree</field>
+        <field name="model">multicompany.view.restriction</field>
+        <field name="arch" type="xml">
+            <tree editable="bottom">
+                <field name="model_id" />
+                <field name="active" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_res_multicompany_restriction" model="ir.actions.act_window">
+        <field name="name">Multi-company View Restrictions</field>
+        <field name="res_model">multicompany.view.restriction</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem
+        id="menu_multicompany_restriction_root"
+        name="Multi-company View Restrictions"
+        parent="base.menu_security"
+        action="multi_company_view_restriction.action_res_multicompany_restriction"
+    />
+
+</odoo>
