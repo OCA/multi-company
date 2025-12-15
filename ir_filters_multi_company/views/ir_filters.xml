@@ -6,7 +6,7 @@
         <field name="model">ir.filters</field>
         <field name="inherit_id" ref="base.ir_filters_view_form" />
         <field name="arch" type="xml">
-            <field name="user_id" position="after">
+            <field name="user_ids" position="after">
                 <field
                     name="company_id"
                     options="{'no_open': True, 'no_create': True}"
