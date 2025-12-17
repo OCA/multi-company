@@ -23,7 +23,7 @@
                 />
             </xpath>
             <!-- Trick for allowing to set this field via Form -->
-            <xpath expr="//header" position="inside">
+            <xpath expr="//div[@name='button_box']" position="inside">
                 <field name="company_id" class="invisible" />
             </xpath>
         </field>
