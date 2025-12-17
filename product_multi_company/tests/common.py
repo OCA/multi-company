@@ -37,7 +37,7 @@ class ProductMultiCompanyCommon:
             {
                 "name": "User company 1",
                 "login": "user_company_1",
-                "groups_id": [(6, 0, cls.groups.ids)],
+                "group_ids": [(6, 0, cls.groups.ids)],
                 "company_id": cls.company_1.id,
                 "company_ids": [(6, 0, cls.company_1.ids)],
             }
@@ -46,7 +46,7 @@ class ProductMultiCompanyCommon:
             {
                 "name": "User company 2",
                 "login": "user_company_2",
-                "groups_id": [(6, 0, cls.groups.ids)],
+                "group_ids": [(6, 0, cls.groups.ids)],
                 "company_id": cls.company_2.id,
                 "company_ids": [(6, 0, cls.company_2.ids)],
             }
