@@ -129,6 +129,13 @@ class PurchaseOrder(models.Model):
         """
         self.ensure_one()
         delivery_address = direct_delivery_address or partner or False
+        # Clear company_id if delivery address belongs to a different company
+        if (
+            delivery_address
+            and delivery_address.company_id
+            and delivery_address.company_id != dest_company
+        ):
+            delivery_address.company_id = False
         new_order = self.env["sale.order"].new(
             {
                 "company_id": dest_company.id,

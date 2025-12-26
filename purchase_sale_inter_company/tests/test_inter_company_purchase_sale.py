@@ -359,3 +359,23 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
                 "name": "Test",
             }
         )
+
+    def test_delivery_address_different_company(self):
+        """
+        When a purchase order has a delivery address with a different company_id
+        than the destination company, the company_id should be cleared to avoid
+        validation errors when creating the inter-company sale order.
+        """
+        delivery_address = self.env["res.partner"].create(
+            {
+                "name": "Delivery Address Company A",
+                "company_id": self.company_a.id,
+            }
+        )
+        purchase = self._create_purchase_order(self.partner_company_b)
+        purchase.dest_address_id = delivery_address
+        sale = self._approve_po(purchase)
+        self.assertEqual(len(sale), 1)
+        self.assertEqual(sale.state, "sale")
+        self.assertEqual(sale.partner_shipping_id, delivery_address)
+        self.assertFalse(sale.partner_shipping_id.company_id)
