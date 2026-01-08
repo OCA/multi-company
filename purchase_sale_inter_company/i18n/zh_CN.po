@@ -64,6 +64,11 @@ msgid "Journal Entry"
 msgstr ""
 
 #. module: purchase_sale_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
+msgid "Purchase / Sale"
+msgstr ""
+
+#. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order
 msgid "Purchase Order"
 msgstr ""
@@ -72,11 +77,6 @@ msgstr ""
 #: model:ir.model,name:purchase_sale_inter_company.model_purchase_order_line
 msgid "Purchase Order Line"
 msgstr ""
-
-#. module: purchase_sale_inter_company
-#: model_terms:ir.ui.view,arch_db:purchase_sale_inter_company.res_config_settings_view_form
-msgid "Purchase/Sale"
-msgstr "公司间交易"
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__sale_auto_validation
@@ -112,7 +112,6 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
-#, python-format
 msgid ""
 "The generated sale orders with reference %(orders)s can't be modified. "
 "They're either unconfirmed or locked for modifications."
@@ -120,9 +119,14 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+msgid "The inter-company sales order has been created: %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
-#, python-format
-msgid "This vendor bill is related with: {}"
+msgid "This vendor bill is related with: %(origin)s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
@@ -143,14 +147,12 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
-#, python-format
 msgid "You can't cancel an order that is %s"
 msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
-#, python-format
 msgid ""
 "You can't change this purchase order as the corresponding sale is %(state)s"
 msgstr ""
@@ -158,15 +160,16 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
-#, python-format
 msgid "You cannot create SO from PO because product '%s' is not intercompany"
 msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
-#, python-format
 msgid ""
 "You cannot create SO from PO because sale price list currency is different "
 "than purchase price list currency."
 msgstr ""
+
+#~ msgid "Purchase/Sale"
+#~ msgstr "公司间交易"
