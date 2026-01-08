@@ -35,3 +35,9 @@ class ResCompany(models.Model):
         string="Block manual validation of picking in the destination company",
     )
     notify_user_id = fields.Many2one("res.users", "User to Notify")
+    purchase_auto_validation = fields.Boolean(
+        string="Inter-company POs Auto Validation",
+        help="When a purchase order is created from a sales order "
+        "using the MTO or Dropship rule for this company, "
+        "it will be automatically validated.",
+    )

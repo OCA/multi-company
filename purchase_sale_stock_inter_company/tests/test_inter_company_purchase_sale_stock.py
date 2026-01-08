@@ -822,3 +822,44 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             so_lots, po_lots, msg="The lots of the moves should be the same"
         )
         self.assertFalse(so_lots.company_id, msg="Lots should not have a company.")
+
+    def test_purchase_auto_validation_with_mto(self):
+        """Test that the purchase order is auto-validated when the sale order
+        is confirmed for a product with MTO route
+        """
+        mto_route = self.env["stock.warehouse"]._find_or_create_global_route(
+            "stock.route_warehouse0_mto", self.env._("Replenish on Order (MTO)")
+        )
+        self.company_a.purchase_auto_validation = True
+        self.env["product.supplierinfo"].create(
+            {
+                "company_id": self.company_a.id,
+                "partner_id": self.partner_company_b.id,
+                "product_id": self.stockable_product_serial.id,
+            }
+        )
+        customer = self.env["res.partner"].create({"name": "New Customer"})
+        sale_order = self.env["sale.order"].create(
+            {
+                "company_id": self.company_a.id,
+                "partner_id": customer.id,
+                "order_line": [
+                    Command.create(
+                        {
+                            "product_id": self.stockable_product_serial.id,
+                            "product_uom_qty": 2,
+                            "route_id": mto_route.id,
+                        },
+                    )
+                ],
+            }
+        )
+        sale_order.action_confirm()
+        purchase = sale_order._get_purchase_orders()
+        self.assertEqual(purchase.state, "purchase")
+        new_sale_order = (
+            self.env["sale.order"]
+            .with_user(self.user_company_b)
+            .search([("auto_purchase_order_id", "=", purchase.id)])
+        )
+        self.assertEqual(new_sale_order.partner_id, self.partner_company_a)

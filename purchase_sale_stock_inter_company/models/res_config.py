@@ -38,3 +38,10 @@ class InterCompanyRulesConfig(models.TransientModel):
         help="User to notify incase of sync picking failure.",
         readonly=False,
     )
+    purchase_auto_validation = fields.Boolean(
+        related="company_id.purchase_auto_validation",
+        help="When a purchase order is created from a sales order "
+        "using the MTO or Dropship rule for this company, "
+        "it will be automatically validated.",
+        readonly=False,
+    )

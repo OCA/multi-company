@@ -47,6 +47,14 @@
                     domain="[('company_id', '=', company_id)]"
                 />
             </xpath>
+            <xpath expr="//field[@name='sale_auto_validation']" position='after'>
+                <br />
+                <label
+                    for="purchase_auto_validation"
+                    class="oe_inline o_light_label mr8"
+                />
+                <field name="purchase_auto_validation" class="oe_inline" />
+            </xpath>
         </field>
     </record>
 </odoo>
