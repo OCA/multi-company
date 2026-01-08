@@ -112,7 +112,25 @@ class PurchaseOrder(models.Model):
         # Validation of sale order
         if dest_company.sale_auto_validation:
             sale_order.with_user(intercompany_user.id).action_confirm()
+        self._message_post_purchase_and_sale_link(sale_order)
         return sale_order
+
+    def _message_post_purchase_and_sale_link(self, sale_order):
+        """Post a message on both purchase order and sale order to link them."""
+        self.message_post(
+            body=self.env._(
+                "The inter-company sales order has been created: %s",
+                sale_order._get_html_link(),
+            )
+        )
+        sale_order.message_post_with_source(
+            source_ref="mail.message_origin_link",
+            render_values={
+                "self": sale_order,
+                "origin": self,
+            },
+            subtype_id=self.env.ref("mail.mt_note").id,
+        )
 
     def _prepare_sale_order_data(
         self, name, partner, dest_company, direct_delivery_address
