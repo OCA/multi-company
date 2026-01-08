@@ -114,6 +114,12 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
+#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
+msgid "The inter-company sales order has been created: %s"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/account_move.py:0
 msgid "This vendor bill is related with: %(origin)s"
 msgstr ""
