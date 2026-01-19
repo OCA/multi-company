@@ -175,7 +175,10 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         tester.write({"company_ids": [(6, False, companies.ids)]})
         # Force recompute
         tester.invalidate_model(["company_id"])
-        self.assertFalse(tester.company_ids <= user.company_ids)  # Is not subset
+        # Is not subset
+        # Fetch it with the admin user cause company_ids is uid context dependent
+        admin = self.env.user
+        self.assertFalse(tester.with_user(admin).company_ids <= user.company_ids)
         self.assertNotEqual(tester.company_id.id, user.company_id.id)
         self.assertIn(tester.company_id.id, user.company_ids.ids)
         # Switch to a company not in tester.company_ids
