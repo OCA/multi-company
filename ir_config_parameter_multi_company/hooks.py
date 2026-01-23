@@ -5,9 +5,9 @@ import logging
 _logger = logging.getLogger(__name__)
 
 
-def pre_init_hook(cr):
+def pre_init_hook(env):
     _logger.info("Pre-creating column company_id for table ir_config_parameter")
-    cr.execute(
+    env.cr.execute(
         """
         ALTER TABLE ir_config_parameter
         ADD COLUMN IF NOT EXISTS company_id INTEGER;
