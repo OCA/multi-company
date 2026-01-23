@@ -3,12 +3,11 @@ from odoo.tests import common
 
 class TestIrConfigParameterMultiCompany(common.TransactionCase):
     def setUp(self):
-        super(TestIrConfigParameterMultiCompany, self).setUp()
+        super().setUp()
         self.user = self.env.ref("base.user_demo")
         self.user.groups_id += self.env.ref("base.group_system")
 
     def test_get_params_base(self):
-
         record = (
             self.env["ir.config_parameter"]
             .with_user(self.user.id)
