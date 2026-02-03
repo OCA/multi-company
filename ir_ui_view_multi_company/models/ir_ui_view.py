@@ -16,15 +16,21 @@ class IrUiView(models.Model):
 
     @api.model
     def _get_inheriting_views_domain(self):
-        domain = super()._get_inheriting_views_domain()
-        domain = domain if domain else []
-        return AND(
-            [
-                domain,
-                [
-                    "|",
-                    ("company_ids", "=", False),
-                    ("company_ids", "in", self.env.company.ids),
-                ],
-            ]
-        )
+        domain = super()._get_inheriting_views_domain() or []
+
+        # Website later removes ('active', '=', True)
+        # leave orphan prefix operators and produce invalid domains.
+        # Prevent that by removing it here.
+        if self.env.context.get("website_id"):
+            domain = [leaf for leaf in domain if "active" not in leaf]
+
+        company_domain = [
+            "|",
+            ("company_ids", "=", False),
+            ("company_ids", "in", self.env.company.ids),
+        ]
+
+        if not domain:
+            return company_domain
+
+        return AND([domain, company_domain])
