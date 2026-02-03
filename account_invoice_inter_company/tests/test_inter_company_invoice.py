@@ -638,3 +638,25 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(self.invoice_company_a.amount_total, 450.0)
         self.assertEqual(invoices.amount_untaxed, 409.09)
         self.assertEqual(invoices.amount_total, 450.0)
+
+    def test_confirm_invoice_from_wizard(self):
+        # ensure the catalog is shared
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # Make sure there are no taxes in target company for the used product
+        self.product_a.with_user(
+            self.user_company_b.id
+        ).sudo().supplier_taxes_id = False
+        # Confirm the invoice of company A
+        wizard = (
+            self.env["validate.account.move"]
+            .with_context(
+                active_model="account.move", active_ids=[self.invoice_company_a.id]
+            )
+            .create({})
+        )
+        wizard.with_user(self.user_company_a.id).validate_move()
+        # Check destination invoice created in company B
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertTrue(invoices)
