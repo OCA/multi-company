@@ -313,6 +313,36 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.product_a.with_user(
             cls.user_company_b.id
         ).sudo().property_account_expense_id = cls.a_expense_company_b.id
+        tax_group_a = cls.env["account.tax.group"].create(
+            {"name": "Tax Group A", "company_id": cls.company_a.id}
+        )
+        tax_group_b = cls.env["account.tax.group"].create(
+            {"name": "Tax Group B", "company_id": cls.company_b.id}
+        )
+        cls.tax_company_a = cls.env["account.tax"].create(
+            {
+                "name": "Tax Company A",
+                "amount_type": "percent",
+                "amount": 10.0,
+                "price_include_override": "tax_excluded",
+                "company_id": cls.company_a.id,
+                "type_tax_use": "sale",
+                "tax_group_id": tax_group_a.id,
+                "country_id": cls.env.ref("base.es").id,
+            }
+        )
+        cls.tax_company_b = cls.env["account.tax"].create(
+            {
+                "name": "Tax Company B",
+                "amount_type": "percent",
+                "amount": 10.0,
+                "price_include_override": "tax_included",
+                "company_id": cls.company_b.id,
+                "type_tax_use": "purchase",
+                "tax_group_id": tax_group_b.id,
+                "country_id": cls.env.ref("base.es").id,
+            }
+        )
 
 
 class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
@@ -552,3 +582,59 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.assertEqual(invoices.invoice_date.strftime("%Y-%m-%d"), "2025-01-01")
         self.assertEqual(invoices.date.strftime("%Y-%m-%d"), "2025-01-01")
+
+    def test_tax_exclude(self):
+        """
+        When the tax configuration is different between the two companies,
+        the destination invoice must keep the same total as the origin invoice.
+        Company A has tax excluded prices
+        Company B has tax included prices
+        """
+        # ensure the catalog is shared
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # set the price_include_override to force the tax computation
+        self.tax_company_a.price_include_override = "tax_excluded"
+        self.tax_company_b.price_include_override = "tax_included"
+        self.product_a.with_user(self.user_company_a).taxes_id = [
+            Command.link(self.tax_company_a.id)
+        ]
+        self.product_a.with_user(self.user_company_b).supplier_taxes_id = [
+            Command.link(self.tax_company_b.id)
+        ]
+        self.invoice_line_a.tax_ids = [Command.set(self.tax_company_a.ids)]
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(self.invoice_company_a.amount_untaxed, 450.0)
+        self.assertEqual(self.invoice_company_a.amount_total, 495.0)
+        self.assertEqual(invoices.amount_untaxed, 450.0)
+        self.assertEqual(invoices.amount_total, 495.0)
+
+    def test_tax_include(self):
+        """
+        When the tax configuration is different between the two companies,
+        the destination invoice must keep the same total as the origin invoice.
+        Company A has tax included prices
+        Company B has tax excluded prices
+        """
+        # ensure the catalog is shared
+        self.env.ref("product.product_comp_rule").write({"active": False})
+        # set the price_include_override to force the tax computation
+        self.tax_company_a.price_include_override = "tax_included"
+        self.tax_company_b.price_include_override = "tax_excluded"
+        self.product_a.with_user(self.user_company_a).taxes_id = [
+            Command.link(self.tax_company_a.id)
+        ]
+        self.product_a.with_user(self.user_company_b).supplier_taxes_id = [
+            Command.link(self.tax_company_b.id)
+        ]
+        self.invoice_line_a.tax_ids = [Command.set(self.tax_company_a.ids)]
+        self.invoice_company_a.with_user(self.user_company_a.id).action_post()
+        invoices = self.account_move_obj.with_user(self.user_company_b.id).search(
+            [("auto_invoice_id", "=", self.invoice_company_a.id)]
+        )
+        self.assertEqual(self.invoice_company_a.amount_untaxed, 409.09)
+        self.assertEqual(self.invoice_company_a.amount_total, 450.0)
+        self.assertEqual(invoices.amount_untaxed, 409.09)
+        self.assertEqual(invoices.amount_total, 450.0)
