@@ -24,7 +24,10 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             }
         )
         cls.partner_company_a = cls.env["res.partner"].create(
-            {"name": cls.company_a.name, "is_company": True}
+            {
+                "name": cls.company_a.name,
+                "is_company": True,
+            }
         )
         cls.company_a.partner_id = cls.partner_company_a
         cls.company_b = cls.env["res.company"].create(
@@ -35,7 +38,10 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             }
         )
         cls.partner_company_b = cls.env["res.partner"].create(
-            {"name": cls.company_b.name, "is_company": True}
+            {
+                "name": cls.company_b.name,
+                "is_company": True,
+            }
         )
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
@@ -55,7 +61,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "password": "usera_p4S$word",
                 "company_id": cls.company_a.id,
                 "company_ids": [(6, 0, [cls.company_a.id])],
-                "groups_id": [
+                "group_ids": [
                     (
                         6,
                         0,
@@ -77,13 +83,14 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "password": "userb_p4S$word",
                 "company_id": cls.company_b.id,
                 "company_ids": [(6, 0, [cls.company_b.id])],
-                "groups_id": [
+                "group_ids": [
                     (
                         6,
                         0,
                         [
                             cls.env.ref("base.group_partner_manager").id,
                             cls.env.ref("account.group_account_manager").id,
+                            cls.env.ref("account.group_account_invoice").id,
                         ],
                     )
                 ],
@@ -228,8 +235,12 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
                 "company_id": cls.company_b.id,
             }
         )
-        cls.product_consultant_multi_company = cls.env.ref(
-            "account_invoice_inter_company.product_consultant_multi_company"
+        cls.product_consultant_multi_company = cls.env["product.template"].create(
+            {
+                "name": "Service Multi Company",
+                "type": "service",
+                "uom_id": cls.env.ref("uom.product_uom_hour").id,
+            }
         )
         # if product_multi_company is installed
         if "company_ids" in cls.env["product.template"]._fields:
@@ -255,8 +266,12 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             }
         )
 
-        cls.partner_company_a.property_account_receivable_id = cls.a_recv_company_a.id
-        cls.partner_company_a.property_account_payable_id = cls.a_pay_company_a.id
+        cls.partner_company_a.with_company(
+            cls.company_a
+        ).property_account_receivable_id = cls.a_recv_company_a.id
+        cls.partner_company_a.with_company(
+            cls.company_a
+        ).property_account_payable_id = cls.a_pay_company_a.id
 
         cls.partner_company_b.with_user(
             cls.user_company_a.id
@@ -274,14 +289,16 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
         cls.invoice_company_a = Form(
             cls.account_move_obj.with_user(cls.user_company_a.id).with_context(
                 default_move_type="out_invoice",
+                default_journal_id=cls.sales_journal_company_a.id,
             )
         )
         cls.invoice_company_a.partner_id = cls.partner_company_b
-        cls.invoice_company_a.journal_id = cls.sales_journal_company_a
         cls.invoice_company_a.payment_reference = "Test Payment Ref"
 
         with cls.invoice_company_a.invoice_line_ids.new() as line_form:
-            line_form.product_id = cls.product_consultant_multi_company
+            line_form.product_id = (
+                cls.product_consultant_multi_company.product_variant_id
+            )
             line_form.quantity = 1
             line_form.product_uom_id = cls.env.ref("uom.product_uom_hour")
             line_form.account_id = cls.a_sale_company_a
@@ -308,7 +325,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(self.user_company_b.company_id, dest_company)
         self.assertIn(
             self.user_company_b.id,
-            self.env.ref("account.group_account_invoice").users.ids,
+            self.env.ref("account.group_account_invoice").user_ids.ids,
         )
 
     def test02_product(self):
@@ -447,7 +464,9 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         bill_company_a.partner_id = self.partner_company_b
         bill_company_a.invoice_date = bill_company_a.date
         with bill_company_a.invoice_line_ids.new() as line_form:
-            line_form.product_id = self.product_consultant_multi_company
+            line_form.product_id = (
+                self.product_consultant_multi_company.product_variant_id
+            )
             line_form.quantity = 1
             line_form.product_uom_id = self.env.ref("uom.product_uom_hour")
             line_form.price_unit = 450.0

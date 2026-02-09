@@ -32,5 +32,5 @@ class ResCompany(models.Model):
         return [
             ("id", "!=", self.env.ref("base.user_root").id),
             ("company_ids", "=", self.id),
-            ("id", "in", group_account_invoice.users.ids),
+            ("id", "in", group_account_invoice.user_ids.ids),
         ]

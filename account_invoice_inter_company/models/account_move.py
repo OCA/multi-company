@@ -3,7 +3,7 @@
 import base64
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import float_compare
 from odoo.tools.misc import clean_context
@@ -113,14 +113,13 @@ class AccountMove(models.Model):
                 ).check_access("read")
             except AccessError as e:
                 raise UserError(
-                    _(
+                    self.env._(
                         "You cannot create invoice in company '%(dest_company_name)s' "
-                        "with product '%(product_name)s' because it is not multicompany"
+                        "with product '%(product_name)s' because it is not "
+                        "multicompany",
+                        dest_company_name=dest_company.name,
+                        product_name=line.product_id.name,
                     )
-                    % {
-                        "dest_company_name": dest_company.name,
-                        "product_name": line.product_id.name,
-                    }
                 ) from e
 
     def _check_dest_journal(self, dest_company):
@@ -133,15 +132,13 @@ class AccountMove(models.Model):
         )
         if not dest_journal:
             raise UserError(
-                _(
+                self.env._(
                     "Please define %(dest_journal_type)s journal for "
-                    'this company: "%(dest_company_name)s" (id:%(dest_company_id)d).'
+                    'this company: "%(dest_company_name)s" (id:%(dest_company_id)d).',
+                    dest_journal_type=dest_journal_type,
+                    dest_company_name=dest_company.name,
+                    dest_company_id=dest_company.id,
                 )
-                % {
-                    "dest_journal_type": dest_journal_type,
-                    "dest_company_name": dest_company.name,
-                    "dest_company_id": dest_company.id,
-                }
             )
 
     def _inter_company_create_invoice(self, dest_company):
@@ -183,18 +180,17 @@ class AccountMove(models.Model):
             if float_compare(
                 self.amount_total, dest_invoice.amount_total, precision_digits=precision
             ):
-                body = _(
+                body = self.env._(
                     "WARNING!!!!! Failure in the inter-company invoice "
                     "creation process: the total amount of this invoice "
                     "is %(dest_amount_total)s but the total amount "
                     "of the invoice %(invoice_name)s "
-                    "in the company %(company_name)s is %(amount_total)s"
-                ) % {
-                    "dest_amount_total": dest_invoice.amount_total,
-                    "invoice_name": self.name,
-                    "company_name": self.company_id.name,
-                    "amount_total": self.amount_total,
-                }
+                    "in the company %(company_name)s is %(amount_total)s",
+                    dest_amount_total=dest_invoice.amount_total,
+                    invoice_name=self.name,
+                    company_name=self.company_id.name,
+                    amount_total=self.amount_total,
+                )
                 dest_invoice.message_post(body=body)
         return {"dest_invoice": dest_invoice}
 
@@ -205,12 +201,12 @@ class AccountMove(models.Model):
         ):
             if not src_line.product_id:
                 raise UserError(
-                    _(
+                    self.env._(
                         "The invoice line '%(line_name)s' doesn't have a product. "
                         "All invoice lines should have a product for "
-                        "inter-company invoices."
+                        "inter-company invoices.",
+                        line_name=src_line.name,
                     )
-                    % {"line_name": src_line.name}
                 )
             dest_move_line_data.append(
                 src_line._prepare_account_move_line(dest_invoice, dest_company)
@@ -253,8 +249,11 @@ class AccountMove(models.Model):
             "payment_reference": self.payment_reference,
             "invoice_date": self.invoice_date,
             "date": self.date,
-            "invoice_origin": _("%(company_name)s - Invoice: %(invoice_name)s")
-            % {"company_name": self.company_id.name, "invoice_name": self.name},
+            "invoice_origin": self.env._(
+                "%(company_name)s - Invoice: %(invoice_name)s",
+                company_name=self.company_id.name,
+                invoice_name=self.name,
+            ),
             "auto_invoice_id": self.id,
             "auto_generated": True,
         }
@@ -276,15 +275,13 @@ class AccountMove(models.Model):
             )
             if inter_invoice_posted:
                 raise UserError(
-                    _(
+                    self.env._(
                         "You can't modify this invoice as it has an inter company "
                         "invoice that's in posted state.\n"
-                        "Invoice %(invoice_name)s to %(partner_name)s"
+                        "Invoice %(invoice_name)s to %(partner_name)s",
+                        invoice_name=inter_invoice_posted.name,
+                        partner_name=inter_invoice_posted.partner_id.display_name,
                     )
-                    % {
-                        "invoice_name": inter_invoice_posted.name,
-                        "partner_name": inter_invoice_posted.partner_id.display_name,
-                    }
                 )
         return super().button_draft()
 
@@ -298,13 +295,11 @@ class AccountMove(models.Model):
                     inter_invoice.button_draft()
                     inter_invoice.write(
                         {
-                            "invoice_origin": _(
-                                "%(company_name)s - Canceled Invoice: %(invoice_name)s"
+                            "invoice_origin": self.env._(
+                                "%(company_name)s - Canceled Invoice: %(invoice_name)s",
+                                company_name=invoice.company_id.name,
+                                invoice_name=invoice.name,
                             )
-                            % {
-                                "company_name": invoice.company_id.name,
-                                "invoice_name": invoice.name,
-                            }
                         }
                     )
                     inter_invoice.button_cancel()
@@ -324,12 +319,12 @@ class AccountMove(models.Model):
                 != 0
             ):
                 raise UserError(
-                    _(
+                    self.env._(
                         "This is an autogenerated multi company invoice and you're "
                         "trying to modify the amount, which will differ from the "
-                        "source one (%s)"
+                        "source one (%s)",
+                        move.sudo().auto_invoice_id.name,
                     )
-                    % (move.sudo().auto_invoice_id.name)
                 )
         return res
 
