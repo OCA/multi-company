@@ -117,7 +117,9 @@ class StockPicking(models.Model):
                     )
                     if not dest_lot_id:
                         # if it doesn't exist, create it by copying from original company
-                        dest_lot_id = lot_id.copy({"company_id": po_ml.company_id.id})
+                        dest_lot_id = lot_id.copy(
+                            {"company_id": po_ml.company_id.id, "name": lot_id.name}
+                        )
                     po_ml.lot_id = dest_lot_id
             for po_pick in po_picks.sudo():
                 po_pick.with_company(po_pick.company_id.id)._action_done()
