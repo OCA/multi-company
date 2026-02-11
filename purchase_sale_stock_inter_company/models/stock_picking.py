@@ -137,7 +137,73 @@ class StockPicking(models.Model):
                 continue
             purchase.picking_ids.write({"intercompany_picking_id": pick.id})
             po_picks |= pick._set_intercompany_picking_qty(purchase)
-        # Transfer dropship pickings
+
+        # Process Returns (incoming from customer)
+        for pick in self.filtered(
+            lambda x: x.location_id.usage == "customer" and x.origin
+        ).sudo():
+            source_picking = pick.move_ids.origin_returned_move_id.picking_id
+            if not source_picking:
+                continue
+            sale_order = source_picking.sale_id
+            if not sale_order or not sale_order.auto_purchase_order_id:
+                continue
+            purchase = sale_order.auto_purchase_order_id
+            po_delivery = purchase.picking_ids.filtered(
+                lambda p: p.intercompany_picking_id == source_picking
+                and p.state == "done"
+            )
+            if not po_delivery:
+                continue
+            po_return = po_delivery.move_ids.returned_move_ids.picking_id.filtered(
+                lambda p: p.state not in ["done", "cancel"]
+            )
+            if not po_return:
+                po_return = pick._create_intercompany_return(po_delivery[-1], purchase)
+            if po_return:
+                po_picks |= pick._sync_return_quantities(po_return, purchase)
+
+        # Transfer dropship/return pickings
         for po_pick in po_picks.sudo():
             po_pick.with_company(po_pick.company_id.id)._action_done()
         return super()._action_done()
+
+    def _create_intercompany_return(self, po_delivery, purchase):
+        return_wizard = (
+            self.env["stock.return.picking"]
+            .with_context(active_id=po_delivery.id, active_model="stock.picking")
+            .with_company(purchase.company_id.id)
+            .create({})
+        )
+        return_wizard._onchange_picking_id()
+        # TODO: filter lines by product/qty when the return is not complete
+        result = return_wizard.create_returns()
+        po_return = self.env["stock.picking"].browse(result["res_id"])
+        return po_return
+
+    def _sync_return_quantities(self, po_return, purchase):
+        po_return.action_assign()
+        for return_move_line in self.move_line_ids:
+            # TODO: filter lines by product/qty when the return is not complete
+            po_move_lines = po_return.move_line_ids
+            qty_to_set = return_move_line.qty_done
+            for po_ml in po_move_lines:
+                if qty_to_set <= 0:
+                    break
+                available_qty = po_ml.reserved_uom_qty or po_ml.product_uom_qty
+                qty_done = min(qty_to_set, available_qty)
+                po_ml.qty_done = qty_done
+                if return_move_line.lot_id:
+                    matching_lot = self.env["stock.lot"].search(
+                        [
+                            ("name", "=", return_move_line.lot_id.name),
+                            ("product_id", "=", po_ml.product_id.id),
+                            ("company_id", "=", purchase.company_id.id),
+                        ],
+                        limit=1,
+                    )
+                    if matching_lot:
+                        po_ml.lot_id = matching_lot
+                qty_to_set -= qty_done
+        po_return.write({"intercompany_picking_id": self.id})
+        return po_return
