@@ -2,7 +2,7 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, fields, models
+from odoo import SUPERUSER_ID, _, fields, models
 from odoo.exceptions import UserError
 
 
@@ -61,19 +61,39 @@ class StockPicking(models.Model):
                 lambda sm: sm.state not in ["draft", "done", "cancel"]
             )
             if not po_moves_open:
-                raise UserError(
-                    _(
-                        "There's no corresponding line in PO %(po)s for assigning "
-                        "qty from %(pick_name)s for product %(product)s"
-                    )
-                    % (
-                        {
-                            "po": purchase.name,
-                            "pick_name": self.name,
-                            "product": sale_line.product_id.name,
-                        }
-                    )
+                po_moves_done = sale_line.auto_purchase_line_id.move_ids.filtered(
+                    lambda sm: sm.state == "done"
                 )
+                if po_moves_done:
+                    for done_move in po_moves_done:
+                        new_move = done_move.copy(
+                            {
+                                "quantity_done": 0.0,
+                                "move_line_ids": False,
+                            }
+                        )
+                        po_moves_open |= new_move
+                else:
+                    note = _(
+                        "Mismatch between move lines with the "
+                        "corresponding PO %(po)s for assigning "
+                        "quantities and lots from %(pick_name)s for product %(product)s"
+                    ) % {
+                        "po": purchase.name,
+                        "pick_name": self.name,
+                        "product": sale_line.product_id.name,
+                    }
+                    purchase.activity_schedule(
+                        "mail.mail_activity_data_warning",
+                        date_deadline=fields.Date.today(),
+                        note=note,
+                        user_id=(
+                            self.sale_id.user_id.id
+                            or self.sale_id.team_id.user_id.id
+                            or SUPERUSER_ID
+                        ),
+                    )
+                    continue
             po_moves_open.picking_id.action_assign()
             product_qty_done = self._get_product_intercompany_qty_done_dict(
                 sale_move_lines, po_moves_open.move_line_ids
@@ -83,7 +103,7 @@ class StockPicking(models.Model):
             )
             for product, qty_done in product_qty_done.items():
                 product_po_moves = po_moves_open.filtered(
-                    lambda x: x.product_id == product
+                    lambda x: x.exists() and x.product_id == product
                 )
                 product_po_lots = po_move_lots.filtered(
                     lambda x: x.product_id == product
