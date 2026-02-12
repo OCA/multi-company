@@ -119,7 +119,7 @@ class PurchaseOrderLine(models.Model):
             raise UserError(
                 self.env._(
                     "You cannot create SO from PO because product '%s' "
-                    "is not intercompany"
+                    "is not intercompany",
+                    self.product_id.name,
                 )
-                % self.product_id.name
             )

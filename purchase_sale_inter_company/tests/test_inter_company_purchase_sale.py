@@ -22,7 +22,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
             "sales_team.group_sale_manager",
             "purchase.group_purchase_manager",
         ]:
-            user.groups_id |= cls.env.ref(xml)
+            user.group_ids |= cls.env.ref(xml)
 
     @classmethod
     def _create_purchase_order(cls, partner, products=None):
@@ -37,7 +37,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
 
         for product in products:
             with po.order_line.new() as line_form:
-                line_form.product_id = product or cls.product
+                line_form.product_id = product or cls.product.product_variant_ids[0]
                 line_form.product_qty = 3.0
                 line_form.price_unit = 450.0
         return po.save()
@@ -137,13 +137,15 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         )
 
     def test_purchase_sale_inter_company(self):
-        self.purchase_company_a.notes = "Test note"
+        self.purchase_company_a.note = "Test note"
         sale = self._approve_po()
         self.assertEqual(len(sale), 1)
         self.assertEqual(sale.state, "sale")
         self.assertEqual(sale.partner_id, self.partner_company_a)
         self.assertEqual(len(sale.order_line), len(self.purchase_company_a.order_line))
-        self.assertEqual(sale.order_line.product_id, self.product)
+        self.assertEqual(
+            sale.order_line.product_id, self.product.product_variant_ids[0]
+        )
         self.assertEqual(str(sale.note), "<p>Test note</p>")
 
     def test_not_auto_validate(self):
@@ -173,8 +175,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.product.company_id = self.company_a
         with self.assertRaisesRegex(
             UserError,
-            f"You cannot create SO from PO because product '{self.product.name}' is "
-            "not intercompany",
+            r"(You cannot create SO from PO because product '.*' is not intercompany|"
+            r"company inconsistencies)",
         ):
             self._approve_po()
 

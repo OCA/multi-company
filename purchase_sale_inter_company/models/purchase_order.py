@@ -48,7 +48,7 @@ class PurchaseOrder(models.Model):
         return [
             ("id", "!=", 1),
             ("company_id", "=", dest_company.id),
-            ("id", "in", group_purchase_user.users.ids),
+            ("id", "in", group_purchase_user.user_ids.ids),
         ]
 
     def _check_intercompany_product(self, dest_company):
@@ -168,8 +168,8 @@ class PurchaseOrder(models.Model):
         new_order.user_id = False
         if delivery_address:
             new_order.partner_shipping_id = delivery_address
-        if self.notes:
-            new_order.note = self.notes
+        if self.note:
+            new_order.note = self.note
         new_order.commitment_date = self.date_planned
         return new_order._convert_to_write(new_order._cache)
 
@@ -185,7 +185,7 @@ class PurchaseOrder(models.Model):
             {
                 "order_id": sale_order.id,
                 "product_id": purchase_line.product_id.id,
-                "product_uom": purchase_line.product_uom.id,
+                "product_uom_id": purchase_line.product_uom_id.id,
                 "product_uom_qty": purchase_line.product_qty,
                 "auto_purchase_line_id": purchase_line.id,
                 "display_type": purchase_line.display_type,
@@ -193,7 +193,7 @@ class PurchaseOrder(models.Model):
         )
         for onchange_method in new_line._onchange_methods["product_id"]:
             onchange_method(new_line)
-        new_line.update({"product_uom": purchase_line.product_uom.id})
+        new_line.update({"product_uom_id": purchase_line.product_uom_id.id})
         if new_line.display_type in ["line_section", "line_note"]:
             new_line.update({"name": purchase_line.name})
         return new_line._convert_to_write(new_line._cache)
