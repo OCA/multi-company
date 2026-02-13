@@ -2,7 +2,7 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -48,7 +48,7 @@ class StockPicking(models.Model):
             and picking.state in ["done", "waiting", "assigned"]
         ):
             raise UserError(
-                _(
+                self.env._(
                     "Manual validation of the picking is not allowed"
                     " in the destination company."
                 )
@@ -91,12 +91,27 @@ class StockPicking(models.Model):
             po_picking_pending = purchase.picking_ids.filtered(
                 lambda x: x.state not in ["done", "cancel"]
             )
+            if not purchase.picking_ids:
+                raise UserError(
+                    self.env._(
+                        "There's no corresponding line in PO %(po)s"
+                        " for picking %(pick)s.",
+                        po=purchase.name,
+                        pick=self.name,
+                    )
+                )
             po_picking_pending.intercompany_picking_id = self.id
+            # The picking is synced as superuser: only a picking of the
+            # purchase order linked to the sale order can be used
+            if self.intercompany_picking_id.sudo().purchase_id != purchase:
+                self.intercompany_picking_id = False
             if not self.intercompany_picking_id and po_picking_pending:
                 self.intercompany_picking_id = po_picking_pending[0]
+            # Only the purchase company: the inter-company user may not
+            # have access to the company validating the delivery
             dest_picking = self.intercompany_picking_id.with_user(
                 intercompany_user
-            ).with_company(dest_company)
+            ).with_context(allowed_company_ids=dest_company.ids)
             for move in self.move_ids.filtered(lambda m: m.state != "cancel"):
                 move_lines = move.move_line_ids.filtered(lambda x: x.quantity > 0)
                 # To identify the correct move to write to,
@@ -113,27 +128,61 @@ class StockPicking(models.Model):
                         lambda x, move=move: x.restrict_lot_id == move.restrict_lot_id
                     )
                 po_move_lines = po_move_pending.move_line_ids
-                # Don’t raise an error
-                # if there are no move_line_ids and the location is transit.
-                # In vendor locations, reservations are bypassed,
-                # but in transit locations,
-                # we need to create the move lines to assign lots/serials.
-                if not po_move_pending or (
-                    po_move_lines
-                    and (
-                        move.location_dest_id.usage != "transit"
-                        and not move.picking_id._is_intercompany_return_reception()
+                # Check if there are any done moves that can be used for returns
+                po_moves_done = (
+                    move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                        lambda sm: sm.state == "done" and not sm._is_purchase_return()
                     )
+                )
+                # If all the PO moves are done (e.g. delivery after a return),
+                # create new moves from them. A pending PO move (backorder or
+                # inter-company return) must be used as is.
+                if (
+                    not po_move_pending
+                    and po_moves_done
+                    and not self._is_intercompany_return_reception()
                 ):
-                    raise UserError(
-                        self.env._(
-                            "There's no corresponding line in PO %(po)s for assigning "
-                            "qty from %(pick_name)s for product %(product)s",
+                    # Calculate the quantity from the move_lines
+                    qty = sum(move_lines.mapped("quantity"))
+                    po_move_pending = po_moves_done[-1].copy(
+                        {
+                            "product_uom_qty": qty,
+                            "quantity": qty,
+                            "move_line_ids": False,
+                        }
+                    )
+                else:
+                    # Don't raise an error
+                    # if there are no move_line_ids and the location is transit.
+                    # In vendor locations, reservations are bypassed,
+                    # but in transit locations,
+                    # we need to create the move lines to assign lots/serials.
+                    if not po_move_pending or (
+                        not po_move_lines
+                        and move.location_dest_id.usage != "transit"
+                        and not move.picking_id._is_intercompany_return_reception()
+                    ):
+                        note = self.env._(
+                            "Mismatch between move lines with the "
+                            "corresponding PO %(po)s for assigning "
+                            "quantities and lots from %(pick_name)s for "
+                            "product %(product)s",
                             po=purchase.name,
                             pick_name=self.name,
                             product=move.product_id.display_name,
                         )
-                    )
+                        purchase.activity_schedule(
+                            "mail.mail_activity_data_warning",
+                            date_deadline=fields.Date.today(),
+                            note=note,
+                            user_id=(
+                                self.sale_id.user_id.id
+                                or self.sale_id.team_id.user_id.id
+                                or SUPERUSER_ID
+                            ),
+                        )
+                        continue
+                po_move_lines = po_move_pending.move_line_ids
                 move_line_diff = len(move_lines) - len(po_move_lines)
                 # generate new move lines if needed
                 # example: In purchase order of C1, we have 2 move lines
@@ -143,7 +192,7 @@ class StockPicking(models.Model):
                 if move_line_diff > 0:
                     new_move_line_vals = []
                     for _index in range(move_line_diff):
-                        vals = po_move_pending._prepare_move_line_vals()
+                        vals = po_move_pending[:1]._prepare_move_line_vals()
                         new_move_line_vals.append(vals)
                     po_move_lines |= po_move_lines.create(new_move_line_vals)
                 elif move_line_diff < 0:
@@ -157,7 +206,12 @@ class StockPicking(models.Model):
                     # otherwise it will cause an error
                     # saying that we need to assign a lot or serial
                     # for the remaining move line
-                    po_move_lines[len(move_lines) :].unlink()
+                    extra_lines = po_move_lines[len(move_lines) :]
+                    done_extra = extra_lines.filtered(
+                        lambda ml: ml.picking_id.state == "done"
+                    )
+                    done_extra.write({"quantity": 0})
+                    (extra_lines - done_extra).unlink()
                     po_move_lines = po_move_lines[: len(move_lines)]
                 # check and assign lots here
                 # if len(move_lines) != (po_move_lines)
@@ -180,7 +234,9 @@ class StockPicking(models.Model):
                     if not lot_id:
                         continue
                     po_ml.lot_id = ml._ensure_lot_multicompany()
-            if dest_company.sync_picking and self.state == "done":
+            # Refresh po_move_pending to filter out any unlinked/deleted moves
+            po_move_pending = po_move_pending.filtered(lambda x: x.exists())
+            if po_move_pending and dest_company.sync_picking and self.state == "done":
                 dest_picking.sudo().with_context(
                     cancel_backorder=bool(
                         self.env.context.get("picking_ids_not_to_backorder")
@@ -198,7 +254,7 @@ class StockPicking(models.Model):
         :param purchase: browse_record(purchase.order)
         """
         self.ensure_one()
-        note = _(
+        note = self.env._(
             "Failure to confirm picking for PO %(purchase_name)s. "
             "Original picking %(picking_name)s still confirmed, please check "
             "the other side manually.",
@@ -214,7 +270,7 @@ class StockPicking(models.Model):
                 self.company_id.notify_user_id.id
                 or self.sale_id.user_id.id
                 or self.sale_id.team_id.user_id.id
-                or SUPERUSER_ID,
+                or SUPERUSER_ID
             ),
         )
 
@@ -235,7 +291,8 @@ class StockPicking(models.Model):
         :return: bool
         """
         return (
-            not self.return_id
+            # The return of an inter-company return delivers the goods again
+            (not self.return_id or self.return_id._is_intercompany_return_reception())
             and self.location_dest_id.usage in ["customer", "transit"]
             and self.sale_id.sudo().auto_purchase_order_id
         )
@@ -247,7 +304,7 @@ class StockPicking(models.Model):
         """
         return (
             self.return_id
-            and self.location_id.usage in ["supplier", "transit"]
+            and self.location_id.usage in ["customer", "transit"]
             and self.return_id._is_intercompany_delivery()
         )
 
@@ -258,6 +315,6 @@ class StockPicking(models.Model):
         """
         return (
             self.return_id
-            and self.location_dest_id.usage in ["customer", "transit"]
+            and self.location_dest_id.usage in ["supplier", "transit"]
             and self.return_id._is_intercompany_reception()
         )

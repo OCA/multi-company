@@ -4,9 +4,12 @@
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.addons.purchase_sale_inter_company.tests.common import (
-    TestPurchaseSaleInterCompanyCommon,
+from odoo.addons.purchase_sale_inter_company.tests import (
+    test_inter_company_purchase_sale as test_icps,
 )
+
+# purchase_sale_inter_company has no reusable common class on 19.0 yet
+TestPurchaseSaleInterCompanyCommon = test_icps.TestPurchaseSaleInterCompany
 
 
 class TestPurchaseSaleStockInterCompanyCommon(TestPurchaseSaleInterCompanyCommon):
@@ -18,7 +21,7 @@ class TestPurchaseSaleStockInterCompanyCommon(TestPurchaseSaleInterCompanyCommon
         # When `stock_picking_batch` is installed,
         # the model stock.picking.batch
         # has access rights that restrict access to the group_stock_user
-        user.groups_id |= cls.env.ref("stock.group_stock_user")
+        user.group_ids |= cls.env.ref("stock.group_stock_user")
         return res
 
     @classmethod
@@ -65,22 +68,23 @@ class TestPurchaseSaleStockInterCompanyCommon(TestPurchaseSaleInterCompanyCommon
         )
         cls.warehouse_d = cls._create_warehouse("CB-WD", cls.company_b)
         cls.company_b.warehouse_id = cls.warehouse_c
+        cls.product_categ = cls.env["product.category"].create(
+            {"name": "Test Category"}
+        )
         cls.consumable_product = cls.env["product.product"].create(
             {
                 "name": "Consumable Product",
-                "type": "consu",
                 "is_storable": False,
-                "categ_id": cls.env.ref("product.product_category_all").id,
+                "categ_id": cls.product_categ.id,
                 "qty_available": 100,
             }
         )
         cls.stockable_product_serial = cls.env["product.product"].create(
             {
                 "name": "Stockable Product Tracked by Serial",
-                "type": "consu",
                 "is_storable": True,
                 "tracking": "serial",
-                "categ_id": cls.env.ref("product.product_category_all").id,
+                "categ_id": cls.product_categ.id,
             }
         )
         # Add quants for product tracked by serial to supplier
