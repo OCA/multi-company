@@ -111,23 +111,54 @@ class StockPicking(models.Model):
                     )
                 )
                 po_move_lines = po_move_pending.move_line_ids
-                # Don’t raise an error
-                # if there are no move_line_ids and the location is transit.
-                # In vendor locations, reservations are bypassed,
-                # but in transit locations,
-                # we need to create the move lines to assign lots/serials.
-                if not po_move_pending or (
-                    po_move_lines and move.location_dest_id.usage != "transit"
-                ):
-                    raise UserError(
-                        self.env._(
-                            "There's no corresponding line in PO %(po)s for assigning "
-                            "qty from %(pick_name)s for product %(product)s",
+                # Check if there are any done moves that can be used for returns
+                po_moves_done = (
+                    move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+                        lambda sm: sm.state == "done"
+                    )
+                )
+                # If there are done moves, create new moves from them for returns
+                if po_moves_done:
+                    # Calculate the quantity from the move_lines
+                    qty = sum(move_lines.mapped("quantity"))
+                    for done_move in po_moves_done:
+                        new_move = done_move.copy(
+                            {
+                                "quantity": qty,
+                                "move_line_ids": False,
+                            }
+                        )
+                        po_move_pending |= new_move
+                else:
+                    # Don't raise an error
+                    # if there are no move_line_ids and the location is transit.
+                    # In vendor locations, reservations are bypassed,
+                    # but in transit locations,
+                    # we need to create the move lines to assign lots/serials.
+                    if not po_move_pending or (
+                        po_move_lines and move.location_dest_id.usage != "transit"
+                    ):
+                        note = self.env._(
+                            "Mismatch between move lines with the "
+                            "corresponding PO %(po)s for assigning "
+                            "quantities and lots from %(pick_name)s for "
+                            "product %(product)s",
                             po=purchase.name,
                             pick_name=self.name,
                             product=move.product_id.display_name,
                         )
-                    )
+                        purchase.activity_schedule(
+                            "mail.mail_activity_data_warning",
+                            date_deadline=fields.Date.today(),
+                            note=note,
+                            user_id=(
+                                self.sale_id.user_id.id
+                                or self.sale_id.team_id.user_id.id
+                                or SUPERUSER_ID
+                            ),
+                        )
+                        continue
+                po_move_lines = po_move_pending.move_line_ids
                 move_line_diff = len(move_lines) - len(po_move_lines)
                 # generate new move lines if needed
                 # example: In purchase order of C1, we have 2 move lines
@@ -179,7 +210,9 @@ class StockPicking(models.Model):
                     if not lot_id:
                         continue
                     po_ml.lot_id = ml._ensure_lot_multicompany()
-            if dest_company.sync_picking and self.state == "done":
+            # Refresh po_move_pending to filter out any unlinked/deleted moves
+            po_move_pending = po_move_pending.filtered(lambda x: x.exists())
+            if po_move_pending and dest_company.sync_picking and self.state == "done":
                 dest_picking.sudo().with_context(
                     cancel_backorder=bool(
                         self.env.context.get("picking_ids_not_to_backorder")
