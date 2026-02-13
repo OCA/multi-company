@@ -23,7 +23,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         # When `stock_picking_batch` is installed,
         # the model stock.picking.batch
         # has access rights that restrict access to the group_stock_user
-        user.groups_id |= cls.env.ref("stock.group_stock_user")
+        user.group_ids |= cls.env.ref("stock.group_stock_user")
         return res
 
     @classmethod
@@ -70,22 +70,23 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         )
         cls.warehouse_d = cls._create_warehouse("CB-WD", cls.company_b)
         cls.company_b.warehouse_id = cls.warehouse_c
+        cls.product_categ = cls.env["product.category"].create(
+            {"name": "Test Category"}
+        )
         cls.consumable_product = cls.env["product.product"].create(
             {
                 "name": "Consumable Product",
-                "type": "consu",
                 "is_storable": False,
-                "categ_id": cls.env.ref("product.product_category_all").id,
+                "categ_id": cls.product_categ.id,
                 "qty_available": 100,
             }
         )
         cls.stockable_product_serial = cls.env["product.product"].create(
             {
                 "name": "Stockable Product Tracked by Serial",
-                "type": "consu",
                 "is_storable": True,
                 "tracking": "serial",
-                "categ_id": cls.env.ref("product.product_category_all").id,
+                "categ_id": cls.product_categ.id,
             }
         )
         # Add quants for product tracked by serial to supplier
@@ -126,7 +127,7 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
         self.assertEqual(sale.warehouse_id, self.warehouse_d)
 
     def test_purchase_sale_stock_inter_company(self):
-        self.purchase_company_a.notes = "Test note"
+        self.purchase_company_a.note = "Test note"
         sale = self._approve_po()
         self.assertEqual(
             sale.partner_shipping_id,
@@ -153,14 +154,22 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             )
             wizard.process()
         sale_picking2 = sale.picking_ids.filtered(lambda p: p.state != "done")
-        self.assertEqual(purchase.picking_ids[0].move_line_ids.quantity, 1)
-        self.assertEqual(purchase.picking_ids[1].move_line_ids.quantity, 2)
+        self.assertEqual(
+            sum(purchase.picking_ids[0].move_line_ids.mapped("quantity")), 1
+        )
+        self.assertEqual(
+            sum(purchase.picking_ids[1].move_line_ids.mapped("quantity")), 2
+        )
         self.assertEqual(purchase.order_line.qty_received, 1)
         sale_picking2.move_ids.quantity = 2.0
         sale_picking2.with_company(sale_picking2.company_id).action_confirm()
         sale_picking2.with_company(sale_picking2.company_id).button_validate()
-        self.assertEqual(purchase.picking_ids[0].move_line_ids.quantity, 1)
-        self.assertEqual(purchase.picking_ids[1].move_line_ids.quantity, 2)
+        self.assertEqual(
+            sum(purchase.picking_ids[0].move_line_ids.mapped("quantity")), 1
+        )
+        self.assertEqual(
+            sum(purchase.picking_ids[1].move_line_ids.mapped("quantity")), 2
+        )
         self.assertEqual(purchase.order_line.qty_received, 3)
 
     def test_purchase_sale_with_two_products_no_backorder(self):

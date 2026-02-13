@@ -2,7 +2,7 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo import SUPERUSER_ID, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -45,7 +45,7 @@ class StockPicking(models.Model):
             and picking.state in ["done", "waiting", "assigned"]
         ):
             raise UserError(
-                _(
+                self.env._(
                     "Manual validation of the picking is not allowed"
                     " in the destination company."
                 )
@@ -85,6 +85,15 @@ class StockPicking(models.Model):
             po_picking_pending = purchase.picking_ids.filtered(
                 lambda x: x.state not in ["done", "cancel"]
             )
+            if not purchase.picking_ids:
+                raise UserError(
+                    self.env._(
+                        "There's no corresponding line in PO %(po)s"
+                        " for picking %(pick)s.",
+                        po=purchase.name,
+                        pick=self.name,
+                    )
+                )
             po_picking_pending.intercompany_picking_id = self.id
             if not self.intercompany_picking_id and po_picking_pending:
                 self.intercompany_picking_id = po_picking_pending[0]
@@ -111,16 +120,12 @@ class StockPicking(models.Model):
                     po_move_lines and move.location_dest_id.usage != "transit"
                 ):
                     raise UserError(
-                        _(
+                        self.env._(
                             "There's no corresponding line in PO %(po)s for assigning "
-                            "qty from %(pick_name)s for product %(product)s"
-                        )
-                        % (
-                            {
-                                "po": purchase.name,
-                                "pick_name": self.name,
-                                "product": move.product_id.display_name,
-                            }
+                            "qty from %(pick_name)s for product %(product)s",
+                            po=purchase.name,
+                            pick_name=self.name,
+                            product=move.product_id.display_name,
                         )
                     )
                 move_line_diff = len(move_lines) - len(po_move_lines)
@@ -146,7 +151,12 @@ class StockPicking(models.Model):
                     # otherwise it will cause an error
                     # saying that we need to assign a lot or serial
                     # for the remaining move line
-                    po_move_lines[len(move_lines) :].unlink()
+                    extra_lines = po_move_lines[len(move_lines) :]
+                    done_extra = extra_lines.filtered(
+                        lambda ml: ml.picking_id.state == "done"
+                    )
+                    done_extra.write({"quantity": 0})
+                    (extra_lines - done_extra).unlink()
                     po_move_lines = po_move_lines[: len(move_lines)]
                 # check and assign lots here
                 # if len(move_lines) != (po_move_lines)
@@ -187,7 +197,7 @@ class StockPicking(models.Model):
         :param purchase: browse_record(purchase.order)
         """
         self.ensure_one()
-        note = _(
+        note = self.env._(
             "Failure to confirm picking for PO %(purchase_name)s. "
             "Original picking %(picking_name)s still confirmed, please check "
             "the other side manually.",
@@ -203,7 +213,7 @@ class StockPicking(models.Model):
                 self.company_id.notify_user_id.id
                 or self.sale_id.user_id.id
                 or self.sale_id.team_id.user_id.id
-                or SUPERUSER_ID,
+                or SUPERUSER_ID
             ),
         )
 
