@@ -69,6 +69,7 @@ Contributors
   <`https://www.forgeflow.com\\>\\\` <https://www.forgeflow.com\>\`>`__:
 
   - Jordi Masvidal
+  - Jasmin Solanki
 
 Maintainers
 -----------
