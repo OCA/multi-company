@@ -2,11 +2,13 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from odoo import Command
 from odoo.exceptions import UserError
-from odoo.tests.common import TransactionCase
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
-class TestProductCategoryMultiCompany(TransactionCase):
+class TestProductCategoryMultiCompany(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -21,7 +23,7 @@ class TestProductCategoryMultiCompany(TransactionCase):
         cls.user2 = cls.user1.copy(
             {
                 "company_id": cls.company2.id,
-                "company_ids": [(6, 0, [cls.company2.id])],
+                "company_ids": [Command.set([cls.company2.id])],
             }
         )
 
@@ -91,6 +93,9 @@ class TestProductCategoryMultiCompany(TransactionCase):
         (mono-company user) creates a product, then a different user belonging
         to a different company wants to read it.
         """
+        # In 19.0, product creation reads the category early; make it shared.
+        # Otherwise it would break product creation.
+        self.categ_3.company_id = False
         # Products have company_id=False by default
         product = (
             self.env["product.template"]

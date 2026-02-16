@@ -10,7 +10,7 @@
             <field name="categ_id" position="attributes">
                 <attribute
                     name="domain"
-                >['|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+                >[('company_id', 'in', [company_id, False])]</attribute>
             </field>
         </field>
     </record>
