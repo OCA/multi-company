@@ -2,91 +2,79 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import models
-from odoo.tools import float_is_zero, float_round
 
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
     def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
-        sale_bom = sale_move_lines[0].move_id.bom_line_id.bom_id
-        purchase_bom = po_move_lines[0].move_id.bom_line_id.bom_id
+        sale_move = sale_move_lines.move_id[:1]
+        po_move = po_move_lines.move_id[:1]
+        sale_bom = sale_move.bom_line_id.bom_id
+        purchase_bom = po_move.bom_line_id.bom_id
         if not sale_bom and not purchase_bom:
             return super()._get_product_intercompany_qty_done_dict(
                 sale_move_lines, po_move_lines
             )
-        res = {}
-        product = po_move_lines[0].product_id
-        sale_qty_done = sum(sale_move_lines.mapped("qty_done"))
-        # Sale Kit: get kit product qty done based on the move lines qty done
+        sale_line = sale_move.sale_line_id
+        # The sync loop passes one sale move line at a time: use every done
+        # move of the sale line in this picking to get the whole quantity
+        sale_moves = self.move_ids.filtered(
+            lambda m: m.sale_line_id == sale_line and m.state == "done"
+        )
+        product = po_move.product_id
+        # Sale Kit: kits delivered based on the components delivered
         if sale_bom:
-            sale_line = sale_move_lines[0].move_id.sale_line_id
-            order_qty = sale_line.product_uom._compute_quantity(
+            order_qty = sale_line.product_uom_id._compute_quantity(
                 sale_line.product_uom_qty, sale_bom.product_uom_id
             )
-            kit_qty = self._compute_kit_quantities_done(
-                sale_move_lines.mapped("move_id"),
-                sale_line.product_id,
-                order_qty,
-                sale_bom,
+            filters = {
+                "incoming_moves": lambda m: True,
+                "outgoing_moves": lambda m: False,
+            }
+            kit_qty = sale_moves.filtered(
+                lambda m: m.bom_line_id.bom_id == sale_bom
+            )._compute_kit_quantities(
+                sale_line.product_id, order_qty, sale_bom, filters
             )
-            sale_qty_done = sale_bom.product_uom_id._compute_quantity(
-                kit_qty, sale_line.product_id.uom_id
-            )
-        # Purchase Kit: get components qty done based on the sale qty done
-        if purchase_bom:
-            _, bom_sub_lines = purchase_bom.explode(product, sale_qty_done)
-            for bom_line, bom_line_data in bom_sub_lines:
-                res[bom_line.product_id] = bom_line_data["qty"]
-            return res
-        res[product] = sale_qty_done
-        return res
-
-    def _compute_kit_quantities_done(self, move_ids, product_id, kit_qty, kit_bom):
-        """Based on Odoo standard _compute_kit_quantities method.
-        We use the quantity_done of the moves instead of the product_qty.
-        """
-        qty_ratios = []
-        boms, bom_sub_lines = kit_bom.explode(product_id, kit_qty)
-        for bom_line, bom_line_data in bom_sub_lines:
-            # skip service since we never deliver them
-            if bom_line.product_id.type == "service":
-                continue
-            if float_is_zero(
-                bom_line_data["qty"],
-                precision_rounding=bom_line.product_uom_id.rounding,
-            ):
-                # As BoMs allow components with 0 qty, a.k.a. optionnal components,
-                # we simply skip those to avoid a division by zero.
-                continue
-            bom_line_moves = move_ids.filtered(lambda m: m.bom_line_id == bom_line)
-            if bom_line_moves:
-                # We compute the quantities needed of each components to make one kit.
-                # Then, we collect every relevant moves related to a specific component
-                # to know how many are considered delivered.
-                uom_qty_per_kit = bom_line_data["qty"] / bom_line_data["original_qty"]
-                qty_per_kit = bom_line.product_uom_id._compute_quantity(
-                    uom_qty_per_kit, bom_line.product_id.uom_id, round=False
-                )
-                if not qty_per_kit:
-                    continue
-                # Use quantity_done to get the qty_processed of each component
-                qty_processed = sum(bom_line_moves.mapped("quantity_done"))
-                # We compute a ratio to know how many kits we can produce with this
-                # quantity of that specific component
-                qty_ratios.append(
-                    float_round(
-                        qty_processed / qty_per_kit,
-                        precision_rounding=bom_line.product_id.uom_id.rounding,
-                    )
-                )
-            else:
-                return 0.0
-        if qty_ratios:
-            # Now that we have every ratio by components, we keep the lowest one to
-            # know how many kits we can produce with the quantities delivered of each
-            # component. We use the floor division here because a 'partial kit'
-            # doesn't make sense.
-            return min(qty_ratios) // 1
+            qty_done, qty_uom = kit_qty, sale_bom.product_uom_id
         else:
-            return 0.0
+            qty_done = sum(sale_moves.move_line_ids.mapped("quantity_product_uom"))
+            qty_uom = sale_line.product_id.uom_id
+        if not purchase_bom:
+            return {
+                product: qty_uom._compute_quantity(
+                    qty_done, po_move_lines.product_uom_id
+                )
+            }
+        # Purchase Kit: components received based on the kits delivered
+        factor = (
+            qty_uom._compute_quantity(qty_done, purchase_bom.product_uom_id)
+            / purchase_bom.product_qty
+        )
+        _boms, bom_sub_lines = purchase_bom.explode(
+            product, factor, picking_type=purchase_bom.picking_type_id
+        )
+        qty_by_bom_line = {
+            bom_line: bom_line_data["qty"] for bom_line, bom_line_data in bom_sub_lines
+        }
+        # The sync loop only writes the purchase move line zipped with the
+        # sale move line: set the quantity of the other component moves
+        po_moves = po_move.purchase_line_id.move_ids.filtered(
+            lambda m: (
+                m.picking_id == po_move.picking_id and m.state not in ["done", "cancel"]
+            )
+        )
+        res = {}
+        for move in po_moves:
+            qty = move.bom_line_id.product_uom_id._compute_quantity(
+                qty_by_bom_line.get(move.bom_line_id, 0.0), move.product_uom
+            )
+            if move == po_move:
+                res[move.product_id] = move.product_uom._compute_quantity(
+                    qty, po_move_lines.product_uom_id
+                )
+                continue
+            move._set_quantity_done(qty)
+            move.picked = not move.product_uom.is_zero(qty)
+        return res
