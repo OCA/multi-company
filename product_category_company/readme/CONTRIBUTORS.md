@@ -1,2 +1,3 @@
 - Kévin Roche \<kevin.roche@akretion.com\>
 - Carmen Bianca Bakker \<carmen@coopiteasy.be\>
+- Jasmin Solanki \<jasmin.solanki@forgeflow.com\>

@@ -91,6 +91,9 @@ class TestProductCategoryMultiCompany(TransactionCase):
         (mono-company user) creates a product, then a different user belonging
         to a different company wants to read it.
         """
+        # In 19.0, product creation reads the category early; make it shared.
+        # Otherwise it would break product creation.
+        self.categ_3.company_id = False
         # Products have company_id=False by default
         product = (
             self.env["product.template"]
