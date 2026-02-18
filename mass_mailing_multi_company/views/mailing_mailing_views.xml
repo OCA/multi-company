@@ -30,13 +30,13 @@
                 </div>
             </xpath>
             <xpath expr="//page[@name='settings']/group" position="inside">
-                 <group string="MISC">
-                     <field
+                <group string="MISC">
+                    <field
                         name="company_id"
                         options="{'no_create': True}"
                         groups="base.group_multi_company"
                     />
-                 </group>
+                </group>
             </xpath>
             <xpath expr="//sheet" position="inside">
                 <field name="company_id" invisible="1" />
