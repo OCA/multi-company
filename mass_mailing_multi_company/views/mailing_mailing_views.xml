@@ -24,7 +24,7 @@
                 <div
                     class="alert alert-warning oe_edit_only"
                     role="alert"
-                    attrs="{'invisible': ['|', ('company_id', '=', False), ('mailing_model_name', '=', 'mailing.list')]}"
+                    invisible="not company_id or mailing_model_name != 'mailing.list'"
                 >
                     Since the newsletter company field is specified, an additional filter will be applied to the domain, ensuring records are filtered by the company ID.
                 </div>

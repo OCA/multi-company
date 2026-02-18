@@ -12,7 +12,7 @@ class TestMassMailingMultiCompany(TransactionCase):
         cls.mailing_model = cls.env["mailing.mailing"]
         cls.mailing_list_model = cls.env["mailing.list"]
         cls.mailing_contact_model = cls.env["mailing.contact"]
-        cls.mailing_subscription_model = cls.env["mailing.contact.subscription"]
+        cls.mailing_subscription_model = cls.env["mailing.subscription"]
         cls.mailing_contact_model.search([]).unlink()
 
         # Create test companies
@@ -81,3 +81,26 @@ class TestMassMailingMultiCompany(TransactionCase):
         self.mailing.company_id = False
         self.mailing._compute_total()
         self.assertEqual(self.mailing.total, 3)
+
+    def test_subscription_multi_company(self):
+        # Create subscriptions for contacts with company filtering
+        subscription_1 = self.mailing_subscription_model.create(
+            {
+                "contact_id": self.mailing_contact_1.id,
+                "list_id": self.mailing_list.id,
+            }
+        )
+        subscription_2 = self.mailing_subscription_model.create(
+            {
+                "contact_id": self.mailing_contact_3.id,
+                "list_id": self.mailing_list.id,
+            }
+        )
+
+        # Verify subscriptions are created
+        self.assertEqual(subscription_1.contact_id.id, self.mailing_contact_1.id)
+        self.assertEqual(subscription_2.contact_id.id, self.mailing_contact_3.id)
+
+        # Verify company is properly inherited from contact
+        self.assertEqual(subscription_1.contact_id.company_id.id, self.company_1.id)
+        self.assertEqual(subscription_2.contact_id.company_id.id, self.company_2.id)

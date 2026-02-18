@@ -67,6 +67,7 @@ Contributors
 ------------
 
 - Marina Alapont <marina.alapont@forgeflow.com>
+- Jasmin Solanki <jasmin.solanki@forgeflow.com>
 
 Maintainers
 -----------

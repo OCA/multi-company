@@ -4,8 +4,8 @@
 from odoo import fields, models
 
 
-class MassMailingContactListRel(models.Model):
-    _inherit = "mailing.contact.subscription"
+class MailingSubscription(models.Model):
+    _inherit = "mailing.subscription"
 
     company_id = fields.Many2one(
         "res.company", "Company", related="contact_id.company_id"

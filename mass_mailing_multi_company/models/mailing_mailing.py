@@ -2,7 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import fields, models
-from odoo.osv import expression
+from odoo.fields import Domain
 
 
 class MassMailing(models.Model):
@@ -23,7 +23,7 @@ class MassMailing(models.Model):
         res = super()._compute_total()
         for mailing in self:
             if mailing.company_id:
-                domain = expression.AND(
+                domain = Domain.AND(
                     [
                         mailing._parse_mailing_domain(),
                         [

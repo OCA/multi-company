@@ -5,7 +5,7 @@
     "name": "Mass Mailing Multi Company",
     "summary": "Adds the company_id field to the models mailing.mailing,"
     " mailing.list and mailing.contact",
-    "version": "16.0.1.0.0",
+    "version": "19.0.1.0.0",
     "license": "AGPL-3",
     "author": "ForgeFlow S.L., Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
