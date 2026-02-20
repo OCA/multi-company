@@ -5,7 +5,6 @@ from odoo import fields, models
 
 
 class InterCompanyRulesConfig(models.TransientModel):
-
     _inherit = "res.config.settings"
 
     po_from_so = fields.Boolean(
