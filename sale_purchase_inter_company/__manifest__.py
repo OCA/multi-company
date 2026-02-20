@@ -4,7 +4,7 @@
 {
     "name": "Inter Company Module for Sale to Purchase Order",
     "summary": "Intercompany SO/PO rules",
-    "version": "16.0.1.0.0",
+    "version": "18.0.1.0.0",
     "category": "Sale Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Odoo Community Association (OCA)",

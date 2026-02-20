@@ -1,7 +1,7 @@
 # Copyright 2023 Chafique DELLI @ Akretion
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, models
+from odoo import models
 from odoo.exceptions import UserError
 
 
@@ -47,7 +47,7 @@ class SaleOrder(models.Model):
                     and sale_line.product_id.company_id not in dest_user.company_ids
                 ):
                     raise UserError(
-                        _(
+                        self.env._(
                             "You cannot create PO from SO because product '%s' "
                             "is not intercompany"
                         )
@@ -79,7 +79,7 @@ class SaleOrder(models.Model):
             or self.company_id.currency_id.id
         ):
             raise UserError(
-                _(
+                self.env._(
                     "You cannot create PO from SO because "
                     "purchase price list currency is different than "
                     "sale price list currency."
@@ -187,7 +187,7 @@ class SaleOrder(models.Model):
             for po in purchase_orders:
                 if po.state not in ["draft", "sent", "cancel"]:
                     raise UserError(
-                        _("You can't cancel an order that is %s") % po.state
+                        self.env._("You can't cancel an order that is %s") % po.state
                     )
             purchase_orders.button_cancel()
             self.write({"client_order_ref": False})

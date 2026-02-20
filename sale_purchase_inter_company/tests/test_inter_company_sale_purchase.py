@@ -39,7 +39,11 @@ class TestSalePurchaseInterCompanyBase(TestAccountInvoiceInterCompanyBase):
     def setUpClass(cls):
         super().setUpClass()
         # no job: avoid issue if account_invoice_inter_company_queued is installed
-        cls.env = cls.env(context={"test_queue_job_no_delay": 1})
+        cls.env = cls.env(
+            context=dict(
+                cls.env.context, tracking_disable=True, test_queue_job_no_delay=True
+            )
+        )
 
         cls.product = cls.env.ref(
             "account_invoice_inter_company.product_consultant_multi_company"
@@ -47,9 +51,9 @@ class TestSalePurchaseInterCompanyBase(TestAccountInvoiceInterCompanyBase):
         cls.product.purchase_method = "purchase"
 
         if "company_ids" in cls.env["res.partner"]._fields:
-            # We have to do that because the default method added a company
-            cls.partner_company_a.company_ids = [(6, 0, cls.company_a.ids)]
-            cls.partner_company_b.company_ids = [(6, 0, cls.company_b.ids)]
+            # Intercompany contacts should not have a company set
+            cls.partner_company_a.company_ids = False
+            cls.partner_company_b.company_ids = False
 
         # Configure Company B (the customer)
         cls.company_b.po_from_so = True
