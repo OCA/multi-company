@@ -9,28 +9,27 @@ from odoo.tests import common
 
 
 class TestMultiCompanyAbstract(common.TransactionCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.loader = FakeModelLoader(cls.env, cls.__module__)
-        cls.loader.backup_registry()
+    def setUp(self):
+        super().setUp()
+        self.loader = FakeModelLoader(self.env, self.__module__)
+        self.loader.backup_registry()
 
         # The fake class is imported here !! After the backup_registry
         from .multi_company_abstract_tester import MultiCompanyAbstractTester
 
-        cls.loader.update_registry((MultiCompanyAbstractTester,))
+        self.loader.update_registry((MultiCompanyAbstractTester,))
 
-        cls.test_model = cls.env["multi.company.abstract.tester"]
+        self.test_model = self.env["multi.company.abstract.tester"]
 
-        cls.tester_model = cls.env["ir.model"].search(
+        self.tester_model = self.env["ir.model"].search(
             [("model", "=", "multi.company.abstract.tester")]
         )
 
         # Access record:
-        cls.env["ir.model.access"].create(
+        self.env["ir.model.access"].create(
             {
                 "name": "access.tester",
-                "model_id": cls.tester_model.id,
+                "model_id": self.tester_model.id,
                 "perm_read": 1,
                 "perm_write": 1,
                 "perm_create": 1,
@@ -38,16 +37,15 @@ class TestMultiCompanyAbstract(common.TransactionCase):
             }
         )
 
-        cls.record_1 = cls.test_model.create({"name": "test"})
-        cls.company_1 = cls.env.company
-        cls.company_2 = cls.env["res.company"].create(
+        self.record_1 = self.test_model.create({"name": "test"})
+        self.company_1 = self.env.company
+        self.company_2 = self.env["res.company"].create(
             {"name": "Test Co 2", "email": "base_multi_company@test.com"}
         )
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.loader.restore_registry()
-        return super().tearDownClass()
+    def tearDown(self):
+        self.loader.restore_registry()
+        return super().tearDown()
 
     def add_company(self, company):
         """Add company to the test record."""
