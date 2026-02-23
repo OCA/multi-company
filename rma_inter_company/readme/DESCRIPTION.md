@@ -1,0 +1,1 @@
+Automatically create an Inter Company RMA so that it can be managed independently but still remain linked.

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="rma_view_form" model="ir.ui.view">
+        <field name="name">rma.view.form</field>
+        <field name="model">rma</field>
+        <field name="inherit_id" ref="rma.rma_view_form" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="before">
+                <field name="intercompany_rma_id" invisible="not intercompany_rma_id" />
+                <field
+                    name="intercompany_origin_rma_id"
+                    invisible="not intercompany_origin_rma_id"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

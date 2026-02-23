@@ -1,0 +1,111 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* rma_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-24 08:21+0000\n"
+"PO-Revision-Date: 2026-02-24 08:21+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: rma_inter_company
+#: model:ir.model,name:rma_inter_company.model_res_company
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: rma_inter_company
+#: model:ir.model,name:rma_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajustes de configuración"
+
+#. module: rma_inter_company
+#: model_terms:ir.ui.view,arch_db:rma_inter_company.res_config_settings_view_form
+msgid "Generate Intercompany RMA"
+msgstr "Generar RMA Intercompañía"
+
+#. module: rma_inter_company
+#: model_terms:ir.ui.view,arch_db:rma_inter_company.res_config_settings_view_form
+msgid "Inter Company"
+msgstr "Inter Compañía"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_company__intercompany_rma
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_config_settings__intercompany_rma
+msgid "Inter Company RMA"
+msgstr "RMA Inter Compañía"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_company__intercompany_rma_company_id
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_config_settings__intercompany_rma_company_id
+msgid "Inter Company RMA Company"
+msgstr "RMA Inter Compañía (Compañía)"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_company__intercompany_rma_domain
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_config_settings__intercompany_rma_domain
+msgid "Inter Company RMA Domain"
+msgstr "RMA Inter Compañía (Dominio)"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_company__intercompany_rma_team_id
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_config_settings__intercompany_rma_team_id
+msgid "Inter Company RMA Team"
+msgstr "RMA Inter Compañía (Equipo)"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_company__intercompany_rma_user_id
+#: model:ir.model.fields,field_description:rma_inter_company.field_res_config_settings__intercompany_rma_user_id
+msgid "Inter Company RMA User"
+msgstr "RMA Inter Compañía (Usuario)"
+
+#. module: rma_inter_company
+#: model_terms:ir.ui.view,arch_db:rma_inter_company.res_config_settings_view_form
+msgid "Intercompany Company"
+msgstr "Compañía Intercompañía"
+
+#. module: rma_inter_company
+#: model_terms:ir.ui.view,arch_db:rma_inter_company.res_config_settings_view_form
+msgid "Intercompany Domain"
+msgstr "Dominio Intercompañía"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_rma__intercompany_origin_rma_id
+msgid "Intercompany Origin RMA"
+msgstr "RMA Origen Intercompañía"
+
+#. module: rma_inter_company
+#: model:ir.model.fields,field_description:rma_inter_company.field_rma__intercompany_rma_id
+msgid "Intercompany RMA"
+msgstr "RMA Intercompañía"
+
+#. module: rma_inter_company
+#: model_terms:ir.ui.view,arch_db:rma_inter_company.res_config_settings_view_form
+msgid "Intercompany Team"
+msgstr "Equipo Intercompañía"
+
+#. module: rma_inter_company
+#: model_terms:ir.ui.view,arch_db:rma_inter_company.res_config_settings_view_form
+msgid "Intercompany User"
+msgstr "Usuario Intercompañía"
+
+#. module: rma_inter_company
+#: model:ir.model,name:rma_inter_company.model_rma
+msgid "RMA"
+msgstr "RMA"
+
+#. module: rma_inter_company
+#: model:ir.model,name:rma_inter_company.model_stock_move
+msgid "Stock Move"
+msgstr "Movimiento de stock"
+
+#. module: rma_inter_company
+#: model:ir.model,name:rma_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr "Traslado"

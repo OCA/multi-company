@@ -1,0 +1,1 @@
+If a company (Company A) sells products but uses dropshipping (Company B), when the customer makes an RMA with Company A, everything must be managed internally in another RMA with Company B.
