@@ -4,6 +4,7 @@
   - Pedro M. Baeza \<<pedro.baeza@tecnativa.com>\>
   - Vicent Cubells \<<vicent.cubells@tecnativa.com>\>
   - Pilar Vargas
+  - Christian Ramos
 - Kitti Upariphutthiphong \<<kittiu@ecosoft.co.th>\>
 - [PyTech](https://www.pytech.it):
   - Simone Rubino \<<simone.rubino@pytech.it>\>
