@@ -18,6 +18,15 @@ def post_init_hook(env):
             ),
         }
     )
+    rule_partner_bank = env.ref("base.res_partner_bank_rule")
+    rule_partner_bank.write(
+        {
+            "domain_force": (
+                "['|', ('company_ids', 'in', company_ids),"
+                "('company_ids', '=', False)]"
+            ),
+        }
+    )
     # Initialize m2m table for preserving old restrictions
     env.cr.execute(
         """
@@ -59,5 +68,11 @@ def uninstall_hook(env):
                 "('company_id', 'in', company_ids),"
                 "('company_id', '=', False)]"
             ),
+        }
+    )
+    rule_partner_bank = env.ref("base.res_partner_bank_rule")
+    rule_partner_bank.write(
+        {
+            "domain_force": ("[('company_id', 'in', company_ids + [False])]"),
         }
     )

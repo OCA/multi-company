@@ -11,7 +11,7 @@
     "author": "Tecnativa, " "Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "category": "Partner Management",
-    "data": ["views/res_partner_view.xml"],
+    "data": ["views/res_partner_view.xml", "views/res_partner_bank_view.xml"],
     "installable": True,
     "post_init_hook": "post_init_hook",
     "uninstall_hook": "uninstall_hook",
