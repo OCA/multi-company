@@ -4,6 +4,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command, api, fields, models
+from odoo.osv import expression
 from odoo.tools import ormcache
 from odoo.tools.safe_eval import safe_eval
 
@@ -357,32 +358,74 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
                 new_company.account_purchase_tax_id = purchase_tax
         self.set_product_taxes(sale_tax, purchase_tax)
 
-    def set_company_depend_values(self, model, match_field):
-        user_company = self.env.user.company_id
+    def set_company_depend_values(self, record_field, match_field):
+        """Sets the value of the record_field in the new company based on
+        the value of the same field in the current company. To search
+        records with the same value in the new company, we use match_field.
+        Only for m2o + company_dependant fields.
+        Args:
+            record_field (ir.model.fields): field on which to propagate values
+            match_field (char): field for match values in the new company
+        """
+        user_company = self.env.company
         new_company_id = self.new_company_id.id
-        env_model = self.env[model]
-        f_name = "company_ids" if "company_ids" in env_model._fields else "company_id"
-        records_user_company = (
-            self.env[model]
-            .with_company(user_company)
-            .search(
-                [
-                    (match_field, "!=", False),
-                    "|",
-                    (f_name, "=", user_company.id),
-                    (f_name, "=", False),
-                ]
+        env_model = self.env[record_field.model]
+        field_name = record_field.name
+        record_domain = [(field_name, "!=", False)]
+        if "company_ids" in env_model._fields:
+            record_domain = expression.AND(
+                [record_domain, [("company_ids", "in", [user_company.id, False])]]
             )
+        elif "company_id" in env_model._fields:
+            record_domain = expression.AND(
+                [record_domain, [("company_id", "in", [user_company.id, False])]]
+            )
+        records_user_company = env_model.with_company(user_company).search(
+            record_domain
         )
         for record in records_user_company:
+            f_name = (
+                "company_ids"
+                if "company_ids" in self.env[record_field.relation]._fields
+                else "company_id"
+            )
+            new_comp_value = (
+                self.env[record_field.relation]
+                .with_company(new_company_id)
+                .search(
+                    [
+                        (match_field, "=", record[field_name][match_field]),
+                        (f_name, "in", [new_company_id, False]),
+                    ]
+                )
+            )
+            if not new_comp_value:
+                continue
             record_new_company = record.with_company(new_company_id)
-            record_new_company[match_field] = record[match_field]
+            record_new_company[field_name] = new_comp_value
 
     def update_company_depend_misc(self):
+        IrModelFields = self.env["ir.model.fields"].sudo()
         if self.smart_search_specific_account:
-            self.set_company_depend_values("account.account", "code")
+            property_account_fields = IrModelFields.search(
+                [
+                    ("ttype", "=", "many2one"),
+                    ("relation", "=", "account.account"),
+                    ("company_dependent", "=", True),
+                ]
+            )
+            for account_field in property_account_fields:
+                self.set_company_depend_values(account_field, "code")
         if self.smart_search_fiscal_position:
-            self.set_company_depend_values("account.fiscal.position", "name")
+            property_fiscal_pos_fields = IrModelFields.search(
+                [
+                    ("ttype", "=", "many2one"),
+                    ("relation", "=", "account.fiscal.position"),
+                    ("company_dependent", "=", True),
+                ]
+            )
+            for fiscal_pos_field in property_fiscal_pos_fields:
+                self.set_company_depend_values(fiscal_pos_field, "name")
 
     def action_res_company_form(self):
         action = self.env["ir.actions.act_window"]._for_xml_id(
