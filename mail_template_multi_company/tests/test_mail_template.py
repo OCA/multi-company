@@ -16,7 +16,7 @@ class TestMailTemplateMultiCompany(BaseCommon):
                 "name": "Multi Company User",
                 "login": "multi_company_user",
                 "email": "multi_company_user@example.com",
-                "groups_id": [
+                "group_ids": [
                     (Command.set([cls.env.ref("base.group_multi_company").id]))
                 ],
             }
@@ -68,7 +68,7 @@ class TestMailTemplateMultiCompany(BaseCommon):
                 "name": "Restricted User",
                 "login": "restricted_user",
                 "email": "restricted_user@example.com",
-                "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+                "group_ids": [(6, 0, [self.env.ref("base.group_user").id])],
             }
         )
 
