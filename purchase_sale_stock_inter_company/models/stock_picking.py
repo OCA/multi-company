@@ -95,8 +95,10 @@ class StockPicking(models.Model):
                         qty_done = 0.0
                     else:
                         po_move.quantity_done = po_move.product_uom_qty
-                        po_move.lot_ids = product_po_lots[: po_move.product_uom_qty]
-                        product_po_lots = product_po_lots[po_move.product_uom_qty :]
+                        if product_po_lots:
+                            qty = int(po_move.product_uom_qty)
+                            po_move.lot_ids = product_po_lots[:qty]
+                            product_po_lots = product_po_lots[qty:]
                         qty_done -= po_move.product_uom_qty
                     self._check_manual_lots(po_move, product)
                     po_picks |= po_move.picking_id
