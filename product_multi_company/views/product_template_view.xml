@@ -16,7 +16,8 @@
                 position="after"
             >
                 <field
-                    name="company_ids"
+                    name="visible_company_ids"
+                    string="Companies"
                     groups="base.group_multi_company"
                     widget="many2many_tags"
                     options="{'no_create': True}"

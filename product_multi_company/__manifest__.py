@@ -10,6 +10,9 @@
     "version": "19.0.1.0.0",
     "license": "AGPL-3",
     "depends": ["base_multi_company", "product"],
-    "data": ["views/product_template_view.xml"],
+    "data": [
+        "views/product_template_view.xml",
+        "views/product_product_view.xml",
+    ],
     "post_init_hook": "post_init_hook",
 }

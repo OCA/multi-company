@@ -2,6 +2,8 @@
 # Copyright 2021 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
+from lxml import etree
+
 from odoo.exceptions import AccessError
 from odoo.tests import Form, common
 
@@ -136,3 +138,68 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
             ]
         )
         self.assertEqual(searched_products, expected_products)
+
+    def test_product_variant_tree_view_patched(self):
+        """
+        Ensures that the standalone product.product list view is properly patched
+        to prevent AccessErrors for restricted users.
+        """
+        tree_view = self.env.ref("product.product_product_tree_view")
+        tree_arch = etree.fromstring(tree_view.get_combined_arch())
+
+        company_id_nodes = tree_arch.xpath("//field[@name='company_id']")
+        self.assertTrue(
+            company_id_nodes,
+            "TEST FAILURE: company_id field is completely missing from the "
+            "base tree view.",
+        )
+
+        column_invisible = company_id_nodes[0].get("column_invisible")
+        self.assertIsNotNone(
+            column_invisible,
+            "TEST FAILURE: The XML fix is NOT applied! 'company_id' is visible "
+            "in the list view.",
+        )
+        self.assertIn(
+            str(column_invisible),
+            ["True", "1", "true"],
+            f"TEST FAILURE: company_id has column_invisible='{column_invisible}'.",
+        )
+
+        visible_company_ids_nodes = tree_arch.xpath(
+            "//field[@name='visible_company_ids']"
+        )
+        self.assertTrue(
+            visible_company_ids_nodes,
+            "TEST FAILURE: The XML fix is NOT applied! 'visible_company_ids' is "
+            "missing from the list view.",
+        )
+
+        groups = visible_company_ids_nodes[0].get("groups")
+        self.assertEqual(
+            str(groups),
+            "base.group_multi_company",
+            f"TEST FAILURE: visible_company_ids groups attribute is '{groups}', "
+            f"expected 'base.group_multi_company'.",
+        )
+
+    def test_product_variant_payload_simulation(self):
+        """
+        Simulates the web client payload generation to ensure restricted
+        fields are properly hidden and not requested by the frontend.
+        """
+        tree_view = self.env.ref("product.product_product_tree_view")
+        tree_arch = etree.fromstring(tree_view.sudo().get_combined_arch())
+
+        specification = {"name": {}}
+        for node in tree_arch.xpath("//field[@name='company_id']"):
+            invisible = node.get("column_invisible") in ["True", "1", "true"]
+            if not invisible:
+                specification["company_id"] = {"fields": {"display_name": {}}}
+
+        self.assertNotIn(
+            "company_id",
+            specification,
+            "TEST FAILURE: company_id is exposed in the view arch and would be "
+            "requested by the web client.",
+        )
