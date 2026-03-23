@@ -57,6 +57,7 @@ Contributors
 ------------
 
 - Souheil Bejaoui <souheil.bejaoui@acsone.eu>
+- Mauro Cebriá <mcebria@heligrafics.net>
 
 Maintainers
 -----------
