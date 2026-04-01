@@ -32,6 +32,11 @@ class ResPartner(models.Model):
         commercial_fields += ["company_ids"]
         return commercial_fields
 
+    def _commercial_sync_to_children(self, fields_to_sync=None):
+        if fields_to_sync and "company_ids" in fields_to_sync:
+            self.invalidate_recordset(fnames=["company_ids"], flush=False)
+        return super()._commercial_sync_to_children(fields_to_sync)
+
     @api.model
     def _amend_company_id(self, vals):
         if "company_ids" in vals:
