@@ -2,9 +2,11 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo.addons.purchase_sale_stock_inter_company.tests.test_inter_company_purchase_sale_stock import (  # noqa: B950
-    TestPurchaseSaleStockInterCompany,
+from odoo.addons.purchase_sale_stock_inter_company.tests import (
+    test_inter_company_purchase_sale_stock as test_icpss,
 )
+
+TestPurchaseSaleStockInterCompany = test_icpss.TestPurchaseSaleStockInterCompany
 
 
 class TestPurchaseSaleLotIntercompany(TestPurchaseSaleStockInterCompany):

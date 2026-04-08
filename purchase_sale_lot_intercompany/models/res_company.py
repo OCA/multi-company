@@ -10,5 +10,5 @@ class ResCompany(models.Model):
     _inherit = "res.company"
 
     propagated_serial_number = fields.Boolean(
-        string="Lots/Serial Numbers are propogated in this company"
+        string="Lots/Serial Numbers are propagated in this company"
     )
