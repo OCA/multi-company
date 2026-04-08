@@ -28,8 +28,8 @@ Purchase Sale Note Intercompany
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module propagate note from purchase line in company A to sale line
-in company B.
+This module propagates notes from purchase order lines in company A to
+sale order lines in company B.
 
 **Table of contents**
 

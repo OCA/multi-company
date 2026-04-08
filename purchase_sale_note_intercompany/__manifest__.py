@@ -5,8 +5,8 @@
 {
     "name": "Purchase Sale Note Intercompany",
     "summary": "Propagate note from purchase to sale line",
-    "version": "14.0.1.0.0",
-    "category": "multi-company",
+    "version": "18.0.1.0.0",
+    "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Odoo Community Association (OCA)",
     "maintainers": ["Kev-Roche"],
@@ -18,5 +18,4 @@
         "purchase_order_line_note",
         "purchase_sale_inter_company",
     ],
-    "data": [],
 }
