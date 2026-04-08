@@ -58,7 +58,7 @@ msgstr "Lot/N° série"
 
 #. module: purchase_sale_lot_intercompany
 #: model:ir.model.fields,field_description:purchase_sale_lot_intercompany.field_res_company__propagated_serial_number
-msgid "Lots/Serial Numbers are propogated in this company"
+msgid "Lots/Serial Numbers are propagated in this company"
 msgstr "Lot/N° série copiés dans cette société"
 
 #. module: purchase_sale_lot_intercompany

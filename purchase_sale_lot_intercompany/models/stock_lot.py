@@ -6,7 +6,7 @@
 from odoo import models
 
 
-class StockProductionLot(models.Model):
+class StockLot(models.Model):
     _inherit = "stock.lot"
 
     def prepare_intercompany_lot_values(self, company):
