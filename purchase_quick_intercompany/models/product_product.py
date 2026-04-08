@@ -50,7 +50,7 @@ class ProductProduct(models.Model):
         if purchase and seller_company:
             warehouses = self._get_warehouses(seller_company)
             qty_raw = getattr(
-                rec.sudo().with_context({"warehouse": warehouses.ids}),
+                rec.sudo().with_context(warehouse=warehouses.ids),
                 self._quick_intercompany_stock_level_field(),
             )
             return rec.uom_id._compute_quantity(qty_raw, rec.quick_uom_id)
@@ -63,7 +63,7 @@ class ProductProduct(models.Model):
             warehouses = self._get_warehouses(seller_company)
             product_ids = (
                 self.sudo()
-                .with_context({"warehouse": warehouses.ids})
+                .with_context(warehouse=warehouses.ids)
                 ._search_qty_available_new(operator, value)
             )
             return [("id", "in", product_ids)]

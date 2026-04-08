@@ -1,10 +1,10 @@
 #  Copyright (c) Akretion 2021
 #  License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html)
 
-from odoo.tests import SavepointCase
+from odoo.tests import TransactionCase
 
 
-class TestPurchaseQuickIntercompany(SavepointCase):
+class TestPurchaseQuickIntercompany(TransactionCase):
     def _set_x_stock_to(self, qty):
         self._set_stock_to(self.company_x.id, self.location_x.id, qty)
 
@@ -31,41 +31,43 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         inventory.action_start()
         inventory.action_validate()
 
-    def setUp(self):
-        super().setUp()
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
 
-        self.company_x = self.env["res.company"].create({"name": "x Company"})
-        self.partner_x = self.company_x.partner_id
-        self.user_x = self.env["res.users"].create(
+        cls.company_x = cls.env["res.company"].create({"name": "x Company"})
+        cls.partner_x = cls.company_x.partner_id
+        cls.user_x = cls.env["res.users"].create(
             {
                 "name": "x user",
-                "company_ids": [self.company_x.id],
-                "company_id": self.company_x.id,
+                "company_ids": [cls.company_x.id],
+                "company_id": cls.company_x.id,
                 "login": "x",
             }
         )
-        self.warehouse_x = self.env["stock.warehouse"].search(
-            [("company_id", "=", self.company_x.id)]
+        cls.warehouse_x = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_x.id)]
         )
-        self.location_x = self.warehouse_x.lot_stock_id
+        cls.location_x = cls.warehouse_x.lot_stock_id
 
-        self.company_y = self.env["res.company"].create({"name": "y Company"})
-        self.partner_y = self.company_y.partner_id
-        self.user_y = self.env["res.users"].create(
+        cls.company_y = cls.env["res.company"].create({"name": "y Company"})
+        cls.partner_y = cls.company_y.partner_id
+        cls.user_y = cls.env["res.users"].create(
             {
                 "name": "y user",
-                "company_ids": [self.company_y.id],
-                "company_id": self.company_y.id,
+                "company_ids": [cls.company_y.id],
+                "company_id": cls.company_y.id,
                 "login": "y",
             }
         )
-        self.warehouse_y = self.env["stock.warehouse"].search(
-            [("company_id", "=", self.company_y.id)]
+        cls.warehouse_y = cls.env["stock.warehouse"].search(
+            [("company_id", "=", cls.company_y.id)]
         )
-        self.location_y = self.warehouse_y.lot_stock_id
+        cls.location_y = cls.warehouse_y.lot_stock_id
 
-        self.partner_other = self.env.ref("base.res_partner_12")
-        self.product = self.env.ref("product.product_product_8")
+        cls.partner_other = cls.env.ref("base.res_partner_12")
+        cls.product = cls.env.ref("product.product_product_8")
 
     def test_quick_intercompany_stock_level(self):
         """
@@ -77,7 +79,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         self._set_y_stock_to(47.0)
         po = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
         product = self.product.with_user(self.user_x).with_context(
-            {
+            **{
                 "parent_model": "purchase.order",
                 "parent_id": po.id,
                 "show_intercompany_qty": True,
@@ -94,7 +96,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
 
         po_y = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
         product = self.product.with_user(self.user_x).with_context(
-            {
+            **{
                 "parent_model": "purchase.order",
                 "parent_id": po_y.id,
                 "show_intercompany_qty": True,
@@ -104,7 +106,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
 
         po_x = self.env["purchase.order"].create({"partner_id": self.partner_x.id})
         product = self.product.with_user(self.user_y).with_context(
-            {
+            **{
                 "parent_model": "purchase.order",
                 "parent_id": po_x.id,
                 "show_intercompany_qty": True,
@@ -120,7 +122,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         po = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
         self.product.quick_uom_id = self.env.ref("uom.product_uom_dozen")
         product = self.product.with_user(self.user_x).with_context(
-            {
+            **{
                 "parent_model": "purchase.order",
                 "parent_id": po.id,
                 "show_intercompany_qty": True,
@@ -138,7 +140,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         self._set_x_stock_to(61.0)
         po = self.env["purchase.order"].create({"partner_id": self.partner_other.id})
         product = self.product.with_user(self.user_y).with_context(
-            {
+            **{
                 "parent_model": "purchase.order",
                 "parent_id": po.id,
                 "show_intercompany_qty": True,
@@ -152,7 +154,7 @@ class TestPurchaseQuickIntercompany(SavepointCase):
         po = self.env["purchase.order"].create({"partner_id": self.partner_y.id})
 
         product = self.product.with_user(self.user_x).with_context(
-            {
+            **{
                 "parent_model": "purchase.order",
                 "parent_id": po.id,
                 "show_intercompany_qty": True,
