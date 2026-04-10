@@ -1,6 +1,13 @@
-- Anna Janiszewska \<anna.janiszewska@camptocamp.com\>
-- Alexandre Fayolle \<alexandre.fayolle@camptocamp.com\>
-- Yannick Vaucher \<yannick.vaucher@camptocamp.com\>
-- Italo Lopes \<italo.lopes@camptocamp.com\>
-- [Heliconia Solutions Pvt. Ltd.](https://www.heliconia.io)
+- \`Akretion \<<https://www.akretion.com>\>\`:
+  - Florian Mounier \<florian.mounier@akretion.com\>
+  - Guillaume Masson \<guillaume.masson@akretion.com\>
+- \`Camptocamp \<<https://www.camptocamp.com>\>\`:
+  - Anna Janiszewska \<anna.janiszewska@camptocamp.com\>
+  - Alexandre Fayolle \<alexandre.fayolle@camptocamp.com\>
+  - Italo Lopes \<italo.lopes@camptocamp.com\>
+  - Yannick Vaucher \<yannick.vaucher@camptocamp.com\>
+- \`Cetmix \<<https://cetmix.com>\>\`:
+  - Ivan Sokolov
+  - Angelina Anakievska
+- \`Heliconia Solutions Pvt. Ltd. \<<https://www.heliconia.io>\>\`:
   - Bhavesh Heliconia
