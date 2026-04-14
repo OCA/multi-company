@@ -6,7 +6,7 @@
 {
     "name": "Compatibility module for Purchase Sale Stock Inter Company "
     "and Stock Intercompany",
-    "version": "18.0.1.0.0",
+    "version": "18.0.2.0.0",
     "category": "Purchase Management",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Odoo Community Association (OCA)",

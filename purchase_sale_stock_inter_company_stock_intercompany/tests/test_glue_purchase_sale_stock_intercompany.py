@@ -14,16 +14,31 @@ TestPurchaseSaleStockInterCompany = test_icpss.TestPurchaseSaleStockInterCompany
 
 @tagged("post_install", "-at_install")
 class TestGluePurchaseSaleStockIntercompany(TestPurchaseSaleStockInterCompany):
-    """Test that stock_intercompany does not create duplicate receipts
-    when purchase_sale_stock_inter_company is also installed."""
+    """Test compatibility between purchase_sale_stock_inter_company and
+    stock_intercompany when both modules are installed together.
+
+    This class extends the purchase_sale_stock_inter_company test suite so that
+    all existing tests run with stock_intercompany active, verifying that the
+    glue module prevents any interference in both directions (LR and RL).
+    """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Configure stock_intercompany on both companies so that it would
-        # normally create counterpart pickings on its own.
+        # Configure stock_intercompany on both companies in "Create Both" mode
+        # so that it would normally create counterpart pickings in both directions
+        # on its own — the glue module must neutralise this when the PO/SO flow
+        # is already managing the picking.
         cls.company_a.intercompany_in_type_id = cls.warehouse_a.in_type_id
+        cls.company_a.intercompany_out_type_id = cls.warehouse_a.out_type_id
+        cls.company_a.intercompany_picking_creation_mode = "both"
         cls.company_b.intercompany_in_type_id = cls.warehouse_c.in_type_id
+        cls.company_b.intercompany_out_type_id = cls.warehouse_c.out_type_id
+        cls.company_b.intercompany_picking_creation_mode = "both"
+
+    # -------------------------------------------------------------------------
+    # LR direction: delivery in vendor company → receipt in buyer company
+    # -------------------------------------------------------------------------
 
     def test_no_duplicate_receipt_with_so_from_po(self):
         """When so_from_po is enabled, purchase_sale_stock_inter_company manages
@@ -51,7 +66,7 @@ class TestGluePurchaseSaleStockIntercompany(TestPurchaseSaleStockInterCompany):
         so_picking.with_user(self.user_company_b).button_validate()
         self.assertEqual(so_picking.state, "done")
 
-        # Company A (buyer): exactly one receipt — no duplicate from stock_intercompany
+        # Company A (buyer): exactly one receipt — no duplicate from stock_intercompany.
         self.assertEqual(
             len(purchase.picking_ids),
             1,
@@ -67,11 +82,74 @@ class TestGluePurchaseSaleStockIntercompany(TestPurchaseSaleStockInterCompany):
             "The receipt in company A must be linked to the SO delivery "
             "via intercompany_picking_id.",
         )
+        # stock_intercompany must not have added its own intercompany_parent_id.
+        self.assertFalse(
+            po_picking.intercompany_parent_id,
+            "The receipt must not have an intercompany_parent_id: "
+            "it was created by purchase_sale_stock_inter_company, "
+            "not stock_intercompany.",
+        )
+
+    # -------------------------------------------------------------------------
+    # RL direction: receipt in buyer company → delivery in vendor company
+    # -------------------------------------------------------------------------
+
+    def test_no_counterpart_delivery_for_po_intercompany_receipt(self):
+        """When a receipt in company_a is linked to an inter-company PO
+        (intercompany_sale_order_id is set), stock_intercompany must not create
+        a delivery counterpart in company_b — that relationship is already
+        expressed by the PO/SO document pair.
+
+        This test uses the manual 'Create Counterpart' action to simulate what
+        would happen if a user or the scheduled action tried to create an 'out'
+        counterpart on a managed picking.
+        """
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        self._approve_po(purchase)
+
+        # The receipt in company A is already linked to the PO.
+        po_picking = purchase.picking_ids
+        self.assertTrue(po_picking)
+        self.assertTrue(po_picking.purchase_id.sudo().intercompany_sale_order_id)
+
+        # Attempt to create an 'out' counterpart via the stock_intercompany action.
+        po_picking.action_create_counterpart()
+
+        # No delivery must have been created in company B by stock_intercompany.
+        self.assertFalse(
+            po_picking.has_counterpart,
+            "stock_intercompany must not create a delivery counterpart "
+            "for a receipt that is already managed by "
+            "purchase_sale_stock_inter_company.",
+        )
+
+    def test_cron_excludes_po_intercompany_receipts(self):
+        """The stock_intercompany scheduled action domain must exclude reception
+        pickings that are linked to an inter-company PO, so the cron never
+        creates spurious delivery counterparts for them."""
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        self._approve_po(purchase)
+
+        po_picking = purchase.picking_ids
+        self.assertTrue(po_picking)
+        self.assertTrue(po_picking.purchase_id.sudo().intercompany_sale_order_id)
+
+        remaining = self.env["stock.picking"]._remaining_out_counterpart_picking()
+        self.assertNotIn(
+            po_picking,
+            remaining,
+            "A receipt linked to an inter-company PO must be excluded "
+            "from the stock_intercompany scheduled action domain.",
+        )
 
     def test_no_duplicate_receipt_without_so_from_po(self):
         """When so_from_po is disabled, purchase_sale_stock_inter_company does
-        not create a SO and does not manage any receipt. stock_intercompany
-        must still create its counterpart receipt normally."""
+        not create a SO and does not manage any receipt.  stock_intercompany
+        must still create its counterpart receipt normally in mode 'in'."""
         self.company_b.so_from_po = False
 
         # Create a manual delivery in company B toward company A partner
@@ -113,7 +191,7 @@ class TestGluePurchaseSaleStockIntercompany(TestPurchaseSaleStockInterCompany):
             .sudo()
             .search(
                 [
-                    ("counterpart_of_picking_id", "=", picking.id),
+                    ("intercompany_parent_id", "=", picking.id),
                     ("company_id", "=", self.company_a.id),
                 ]
             )
