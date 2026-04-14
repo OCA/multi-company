@@ -371,23 +371,29 @@ ul.auto-toc {
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 <p><a class="reference external image-reference" href="https://odoo-community.org/page/development-status"><img alt="Beta" src="https://img.shields.io/badge/maturity-Beta-yellow.png" /></a> <a class="reference external image-reference" href="http://www.gnu.org/licenses/agpl-3.0-standalone.html"><img alt="License: AGPL-3" src="https://img.shields.io/badge/licence-AGPL--3-blue.png" /></a> <a class="reference external image-reference" href="https://github.com/OCA/multi-company/tree/18.0/purchase_sale_stock_inter_company_stock_intercompany"><img alt="OCA/multi-company" src="https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github" /></a> <a class="reference external image-reference" href="https://translation.odoo-community.org/projects/multi-company-18-0/multi-company-18-0-purchase_sale_stock_inter_company_stock_intercompany"><img alt="Translate me on Weblate" src="https://img.shields.io/badge/weblate-Translate%20me-F47D42.png" /></a> <a class="reference external image-reference" href="https://runboat.odoo-community.org/builds?repo=OCA/multi-company&amp;target_branch=18.0"><img alt="Try me on Runboat" src="https://img.shields.io/badge/runboat-Try%20me-875A7B.png" /></a></p>
 <p>When both <tt class="docutils literal">purchase_sale_stock_inter_company</tt> and
-<tt class="docutils literal">stock_intercompany</tt> are installed, validating a delivery to an
-inter-company partner would normally trigger two separate incoming
-pickings in the destination company:</p>
-<ul class="simple">
-<li>one created by <tt class="docutils literal">stock_intercompany</tt> based on the partner/company
-mapping,</li>
-<li>one managed by <tt class="docutils literal">purchase_sale_stock_inter_company</tt> through the
-linked Purchase Order / Sale Order document pair.</li>
-</ul>
-<p>This glue module prevents the duplication by instructing
-<tt class="docutils literal">stock_intercompany</tt> to skip counterpart picking creation whenever
-<tt class="docutils literal">purchase_sale_stock_inter_company</tt> is already responsible for that
-delivery (i.e. the delivery is linked to a Sale Order generated from an
-inter-company Purchase Order).</p>
-<p>When no inter-company PO/SO pair exists for a given delivery,
-<tt class="docutils literal">stock_intercompany</tt> behaves normally and creates the counterpart
-picking as usual.</p>
+<tt class="docutils literal">stock_intercompany</tt> are installed, validating transfers between
+inter-company partners would normally trigger duplicate pickings —
+<tt class="docutils literal">stock_intercompany</tt> and <tt class="docutils literal">purchase_sale_stock_inter_company</tt> each
+reacting independently to the same event.</p>
+<p>This glue module prevents all such duplications by delegating to the
+right module depending on whether a PO/SO document pair is managing the
+flow:</p>
+<p><strong>LR direction (delivery → receipt):</strong> When a delivery is linked to a
+Sale Order generated from an inter-company Purchase Order
+(<tt class="docutils literal">_is_intercompany_delivery()</tt> is True),
+<tt class="docutils literal">purchase_sale_stock_inter_company</tt> manages the receipt in the
+destination company through the PO/SO pair. <tt class="docutils literal">stock_intercompany</tt> is
+instructed to skip counterpart creation for that delivery.</p>
+<p><strong>RL direction (receipt → delivery):</strong> When a receipt picking is linked
+to a Purchase Order that has a mirror Sale Order
+(<tt class="docutils literal">intercompany_sale_order_id</tt> is set),
+<tt class="docutils literal">purchase_sale_stock_inter_company</tt> owns that relationship.
+<tt class="docutils literal">stock_intercompany</tt> is instructed to skip delivery counterpart
+creation for that receipt, both via the manual <em>Create Counterpart</em>
+button and via the scheduled action.</p>
+<p>When no inter-company PO/SO pair exists for a given transfer,
+<tt class="docutils literal">stock_intercompany</tt> behaves normally and creates counterpart pickings
+as configured.</p>
 <p><strong>Table of contents</strong></p>
 <div class="contents local topic" id="contents">
 <ul class="simple">
@@ -406,7 +412,7 @@ picking as usual.</p>
 <p>Configuration is automatic.</p>
 <p>Install both <tt class="docutils literal">purchase_sale_stock_inter_company</tt> and
 <tt class="docutils literal">stock_intercompany</tt>; this module will be auto-installed and the
-compatibility layer will be active immediately.</p>
+compatibility layer will be active immediately in both directions.</p>
 </div>
 <div class="section" id="bug-tracker">
 <h1><a class="toc-backref" href="#toc-entry-2">Bug Tracker</a></h1>
