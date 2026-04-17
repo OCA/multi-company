@@ -17,7 +17,7 @@ class StockPicking(models.Model):
             )
         res = {}
         product = po_move_lines[0].product_id
-        sale_qty_done = sum(sale_move_lines.mapped("qty_done"))
+        sale_qty_done = sum(sale_move_lines.mapped("quantity"))
         # Sale Kit: get kit product qty done based on the move lines qty done
         if sale_bom:
             sale_line = sale_move_lines[0].move_id.sale_line_id
@@ -38,13 +38,22 @@ class StockPicking(models.Model):
             _, bom_sub_lines = purchase_bom.explode(product, sale_qty_done)
             for bom_line, bom_line_data in bom_sub_lines:
                 res[bom_line.product_id] = bom_line_data["qty"]
+            picking_moves = po_move_lines[0].move_id.picking_id.move_ids.filtered(
+                lambda m: m.state not in ["done", "cancel"]
+            )
+            # Ensure all destination component moves receive done quantities,
+            # even when the base sync loop only zips a subset of move lines.
+            for move in picking_moves:
+                move._set_quantity_done(move.product_uom_qty)
+                move.move_line_ids.write({"picked": True})
+                res[move.product_id] = move.quantity
             return res
         res[product] = sale_qty_done
         return res
 
     def _compute_kit_quantities_done(self, move_ids, product_id, kit_qty, kit_bom):
         """Based on Odoo standard _compute_kit_quantities method.
-        We use the quantity_done of the moves instead of the product_qty.
+        We use the quantity of the moves instead of the product_qty.
         """
         qty_ratios = []
         boms, bom_sub_lines = kit_bom.explode(product_id, kit_qty)
@@ -59,7 +68,7 @@ class StockPicking(models.Model):
                 # As BoMs allow components with 0 qty, a.k.a. optionnal components,
                 # we simply skip those to avoid a division by zero.
                 continue
-            bom_line_moves = move_ids.filtered(lambda m: m.bom_line_id == bom_line)
+            bom_line_moves = move_ids.filtered(lambda m, b=bom_line: m.bom_line_id == b)
             if bom_line_moves:
                 # We compute the quantities needed of each components to make one kit.
                 # Then, we collect every relevant moves related to a specific component
@@ -70,8 +79,8 @@ class StockPicking(models.Model):
                 )
                 if not qty_per_kit:
                     continue
-                # Use quantity_done to get the qty_processed of each component
-                qty_processed = sum(bom_line_moves.mapped("quantity_done"))
+                # Use quantity to get the qty_processed of each component
+                qty_processed = sum(bom_line_moves.mapped("quantity"))
                 # We compute a ratio to know how many kits we can produce with this
                 # quantity of that specific component
                 qty_ratios.append(
