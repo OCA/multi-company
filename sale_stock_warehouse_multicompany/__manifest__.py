@@ -3,7 +3,7 @@
 {
     "name": "sale stock warehouse multicompany",
     "summary": "Allow multiple companies to sell the stock of a shared warehouse",
-    "version": "16.0.1.0.0",
+    "version": "18.0.1.0.0",
     "development_status": "Alpha",
     "category": "Warehouse Management",
     "website": "https://github.com/OCA/multi-company",

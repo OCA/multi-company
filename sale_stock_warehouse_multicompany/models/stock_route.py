@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import fields, models
+from odoo.fields import Command
 
 
 class StockRoute(models.Model):
@@ -17,4 +18,4 @@ class StockRoute(models.Model):
 
     def _compute_company_ids(self):
         for route in self:
-            route.company_ids = [(6, 0, route.company_id.ids)]
+            route.company_ids = [Command.set(route.company_id.ids)]

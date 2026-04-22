@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import fields, models
+from odoo.fields import Command
 
 
 class Warehouse(models.Model):
@@ -17,4 +18,4 @@ class Warehouse(models.Model):
 
     def _compute_company_ids(self):
         for warehouse in self:
-            warehouse.company_ids = [(6, 0, warehouse.company_id.ids)]
+            warehouse.company_ids = [Command.set(warehouse.company_id.ids)]
