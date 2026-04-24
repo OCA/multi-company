@@ -37,6 +37,11 @@ msgstr ""
 "magazzino associate: %s"
 
 #. module: product_multi_company_stock
+#: model:ir.model,name:product_multi_company_stock.model_stock_lot
+msgid "Lot/Serial"
+msgstr ""
+
+#. module: product_multi_company_stock
 #: model:ir.model,name:product_multi_company_stock.model_product_template
 msgid "Product"
 msgstr "Prodotto"
