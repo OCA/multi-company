@@ -15,8 +15,15 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #. module: partner_multi_company
+#: model:ir.model,name:partner_multi_company.model_res_partner_bank
+msgid "Bank Accounts"
+msgstr ""
+
+#. module: partner_multi_company
 #: model:ir.model,name:partner_multi_company.model_res_company
+#: model:ir.model.fields,field_description:partner_multi_company.field_account_setup_bank_manual_config__company_ids
 #: model:ir.model.fields,field_description:partner_multi_company.field_res_partner__company_ids
+#: model:ir.model.fields,field_description:partner_multi_company.field_res_partner_bank__company_ids
 msgid "Companies"
 msgstr ""
 
