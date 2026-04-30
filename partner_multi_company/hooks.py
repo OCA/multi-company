@@ -16,6 +16,21 @@ def post_init_hook(cr, registry):
         "base.res_partner_rule",
         "res.partner",
     )
+    # Additionally sync each user's partner.company_ids with the user's
+    # allowed company_ids. The base hook only copies the legacy single
+    # partner.company_id, which leaves users allowed in multiple companies
+    # unable to read their own partner record (and thus unable to log in)
+    # in any company beyond the one originally stored on the partner.
+    cr.execute(
+        """
+        INSERT INTO res_company_res_partner_rel (res_partner_id, res_company_id)
+        SELECT u.partner_id, rel.cid
+        FROM res_users u
+        JOIN res_company_users_rel rel ON rel.user_id = u.id
+        WHERE u.partner_id IS NOT NULL
+        ON CONFLICT DO NOTHING
+        """
+    )
 
 
 def uninstall_hook(cr, registry):
