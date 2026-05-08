@@ -1,4 +1,5 @@
 from odoo import Command, fields, models
+from odoo.tools import config
 
 
 class StockPicking(models.Model):
@@ -99,6 +100,11 @@ class StockPicking(models.Model):
         return move_ids, move_line_ids
 
     def _action_done(self):
+        test_condition = not config["test_enable"] or (
+            config["test_enable"] and self.env.context.get("test_stock_intercompany")
+        )
+        if not test_condition:
+            return super()._action_done()
         counterparts = []
         for picking in self:
             if picking.location_dest_id.usage == "customer":

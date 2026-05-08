@@ -11,6 +11,7 @@ class TestIntercompanyDelivery(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, test_stock_intercompany=True))
         company_obj = cls.env["res.company"]
         cls.company1 = company_obj.create({"name": "Company A"})
         cls.company2 = company_obj.create({"name": "Company B"})
