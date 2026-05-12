@@ -186,7 +186,7 @@ class TestsProductTaxMulticompany(BaseCommon):
         try:
             self.env.ref(
                 "purchase.group_purchase_manager", raise_if_not_found=True
-            ).sudo().users = [(4, self.user_12.id)]
+            ).sudo().user_ids = [(4, self.user_12.id)]
         except ValueError as e:
             logging.info(e)  # Skipping configuration of purchase module
         # Create product with empty taxes
