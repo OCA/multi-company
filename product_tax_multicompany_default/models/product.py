@@ -23,9 +23,9 @@ class ProductTemplate(models.Model):
     @api.depends("company_id", "taxes_id", "supplier_taxes_id")
     def _compute_divergent_company_taxes(self):
         """Know if this product has divergent taxes across companies."""
-        # Skip single-company products
         self.divergent_company_taxes = False
-        if len(self.env["res.company"].search([]).ids) == 1:
+        # Skip single-company products
+        if self.env["res.company"].search_count([]) == 1:
             return
         for one in self:
             # A unique constraint in account.tax makes it impossible to have
@@ -241,7 +241,7 @@ class ProductTemplate(models.Model):
                     "account_purchase_tax_id", company, match_suplier_tax_ids
                 )
             )
-        self.write(
+        self.sudo().write(
             {
                 "taxes_id": [(6, 0, customer_tax_ids)],
                 "supplier_taxes_id": [(6, 0, supplier_tax_ids)],
