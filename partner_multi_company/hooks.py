@@ -19,6 +19,7 @@ def post_init_hook(env):
         }
     )
     # Initialize m2m table for preserving old restrictions
+    # Added ON CONFLICT DO NOTHING to prevent duplicate key crashes
     env.cr.execute(
         """
         INSERT INTO res_company_res_partner_rel
@@ -26,6 +27,7 @@ def post_init_hook(env):
         SELECT id, company_id
         FROM res_partner
         WHERE company_id IS NOT NULL
+        ON CONFLICT DO NOTHING
         """
     )
     fix_user_partner_companies(env)

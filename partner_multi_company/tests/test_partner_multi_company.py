@@ -51,7 +51,7 @@ class TestPartnerMultiCompany(common.TransactionCase):
                     "name": "User company 1",
                     "login": "user_company_1",
                     "email": "somebody@somewhere.com",
-                    "groups_id": [
+                    "group_ids": [
                         Command.link(cls.env.ref("base.group_partner_manager").id),
                         Command.link(cls.env.ref("base.group_user").id),
                     ],
@@ -66,7 +66,7 @@ class TestPartnerMultiCompany(common.TransactionCase):
                     "name": "User company 2",
                     "login": "user_company_2",
                     "email": "somebody@somewhere.com",
-                    "groups_id": [
+                    "group_ids": [
                         Command.link(cls.env.ref("base.group_partner_manager").id),
                         Command.link(cls.env.ref("base.group_user").id),
                     ],
@@ -240,6 +240,39 @@ class TestPartnerMultiCompany(common.TransactionCase):
             self.partner_company_both.company_ids,
         )
 
+    def test_commercial_fields_to_children(self):
+        """Test that company_ids are correctly propagated to child partners
+        when the parent is modified in sudo mode, to avoid cache pollution."""
+        self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
+        child = self.env["res.partner"].create(
+            [{"name": "Child test", "parent_id": self.partner_company_both.id}]
+        )
+        # Remove the sudo mode by changing the user
+        self.assertTrue(self.partner_company_both.env.su)
+        partner_company_both = self.partner_company_both.with_user(self.user_company_1)
+        self.assertFalse(partner_company_both.env.su)
+        # Check that the original partner is in sudo mode
+        self.assertTrue(self.partner_company_both.env.su)
+        self.assertEqual(len(partner_company_both.company_ids), 2)
+        self.assertEqual(len(partner_company_both.sudo().company_ids), 2)
+        self.assertEqual(len(self.partner_company_both.company_ids), 2)
+        partner_company_both.company_ids = [Command.unlink(self.company_1.id)]
+        self.assertEqual(len(partner_company_both.company_ids), 1)
+        self.assertEqual(len(partner_company_both.sudo().company_ids), 1)
+        self.assertEqual(len(self.partner_company_both.company_ids), 1)
+        self.assertEqual(
+            child.company_ids,
+            partner_company_both.company_ids,
+        )
+        partner_company_both.company_ids = [Command.link(self.company_1.id)]
+        self.assertEqual(len(partner_company_both.company_ids), 2)
+        self.assertEqual(len(partner_company_both.sudo().company_ids), 2)
+        self.assertEqual(len(self.partner_company_both.company_ids), 2)
+        self.assertEqual(
+            child.company_ids,
+            partner_company_both.company_ids,
+        )
+
     def test_avoid_updating_company_ids_in_global_partners(self):
         self.user_company_1.write({"company_ids": [Command.link(self.company_2.id)]})
         user_partner = self.user_company_1.partner_id
@@ -292,3 +325,43 @@ class TestPartnerMultiCompany(common.TransactionCase):
             }
         )
         self.assertEqual(new_user.company_ids, new_user.partner_id.company_ids)
+
+    def test_post_init_hook(self):
+        """Test the post_init_hook."""
+        from ..hooks import post_init_hook
+
+        self.env.cr.execute(
+            "INSERT INTO res_company_users_rel (user_id, cid) VALUES (%s, %s)",
+            (self.user_company_1.id, self.company_2.id),
+        )
+        # Clear the ORM cache so it reads the new SQL-inserted relation
+        self.user_company_1.invalidate_model(["company_ids"])
+
+        # Ensure they are actually de-synced before the hook runs
+        self.assertIn(self.company_2, self.user_company_1.company_ids)
+        self.assertNotIn(self.company_2, self.user_company_1.partner_id.company_ids)
+
+        # Run the hook
+        post_init_hook(self.env)
+
+        # Verify the rule was patched
+        rule = self.env.ref("base.res_partner_rule")
+        self.assertIn("company_ids", rule.domain_force)
+
+        # Verify the partner companies were properly re-aligned with the user
+        self.assertIn(self.company_2, self.user_company_1.partner_id.company_ids)
+
+    def test_amend_company_id_unlink_delete(self):
+        """Ensure Command.unlink correctly nullifies the company_id."""
+        partner = self.env["res.partner"].create(
+            [
+                {
+                    "name": "Test Unlink",
+                    "company_ids": [
+                        Command.set(self.company_1.ids),
+                        Command.unlink(self.company_1.id),
+                    ],
+                }
+            ]
+        )
+        self.assertFalse(partner.company_id)
