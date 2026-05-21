@@ -146,7 +146,7 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(
             sale.order_line.product_id, self.product.product_variant_ids[0]
         )
-        self.assertEqual(str(sale.note), "<p>Test note</p>")
+        self.assertEqual(str(sale.note), "<span>Test note</span>")
 
     def test_not_auto_validate(self):
         self.company_b.sale_auto_validation = False
