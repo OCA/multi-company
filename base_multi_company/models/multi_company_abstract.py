@@ -35,10 +35,13 @@ class MultiCompanyAbstract(models.AbstractModel):
                 or self.env.context.get("force_company")
                 or self.env.company.id
             )
-            if company_id in record.company_ids.ids:
+
+            # Use sudo() to evaluate the relation
+            sudo_record = record.sudo()
+            if company_id in sudo_record.company_ids.ids:
                 record.company_id = company_id
             else:
-                record.company_id = record.company_ids[:1].id
+                record.company_id = sudo_record.company_ids[:1].id
 
     def _inverse_company_id(self):
         # To allow modifying allowed companies by non-aware base_multi_company
@@ -60,6 +63,15 @@ class MultiCompanyAbstract(models.AbstractModel):
         if "company_ids" in vals and "company_id" in vals:
             company_id = vals.pop("company_id")
             if company_id:
+                c_ids = vals["company_ids"]
+                # Safely handle False, tuples, and non-lists
+                if not c_ids:
+                    vals["company_ids"] = []
+                elif isinstance(c_ids, tuple):
+                    vals["company_ids"] = list(c_ids)
+                elif not isinstance(c_ids, list):
+                    vals["company_ids"] = [c_ids]
+
                 vals["company_ids"].append(fields.Command.link(company_id))
         return vals
 
