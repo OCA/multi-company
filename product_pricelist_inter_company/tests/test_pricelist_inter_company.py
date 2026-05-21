@@ -4,12 +4,10 @@
 from odoo import Command
 from odoo.exceptions import UserError, ValidationError
 from odoo.fields import Domain
-from odoo.tests import tagged
 
 from odoo.addons.base.tests.common import BaseCommon
 
 
-@tagged("post_install", "-at_install")
 class TestPricelistIntercompany(BaseCommon):
     @classmethod
     def setUpClass(cls):

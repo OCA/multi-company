@@ -8,6 +8,7 @@
     "version": "19.0.1.0.0",
     "license": "AGPL-3",
     "author": "ACSONE SA/NV, Odoo Community Association (OCA)",
+    "maintainers": ["tobiaszehntner"],
     "website": "https://github.com/OCA/multi-company",
     "depends": [
         "product",

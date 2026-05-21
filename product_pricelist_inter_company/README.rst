@@ -139,6 +139,14 @@ OCA, or the Odoo Community Association, is a nonprofit organization whose
 mission is to support the collaborative development of Odoo features and
 promote its widespread use.
 
+.. |maintainer-tobiaszehntner| image:: https://github.com/tobiaszehntner.png?size=40px
+    :target: https://github.com/tobiaszehntner
+    :alt: tobiaszehntner
+
+Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
+
+|maintainer-tobiaszehntner| 
+
 This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/19.0/product_pricelist_inter_company>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
