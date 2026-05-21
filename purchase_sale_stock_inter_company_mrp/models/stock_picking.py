@@ -8,48 +8,89 @@ from odoo.tools import float_is_zero, float_round
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    def _action_done_intercompany_actions(self, purchase):
+        self.ensure_one()
+        po_picking_pending = purchase.picking_ids.filtered(
+            lambda x: x.state not in ["done", "cancel"]
+        )
+        if not self.intercompany_picking_id and po_picking_pending:
+            dest_picking = po_picking_pending[0]
+        else:
+            dest_picking = self.intercompany_picking_id
+        if dest_picking:
+            processed_sale_lines = set()
+            for move in self.move_ids:
+                if not self._is_intercompany_purchase_kit_move(move, dest_picking):
+                    continue
+                sale_line = move.sale_line_id
+                if sale_line.id in processed_sale_lines:
+                    continue
+                processed_sale_lines.add(sale_line.id)
+                po_move_pending = sale_line.auto_purchase_line_id.move_ids.filtered(
+                    lambda x, dp=dest_picking: x.picking_id == dp
+                    and x.state not in ["done", "cancel"]
+                )
+                purchase_bom = po_move_pending[0].bom_line_id.bom_id
+                all_sale_moves = self.move_ids.filtered(
+                    lambda m, sl=sale_line: m.sale_line_id == sl
+                )
+                sale_bom = all_sale_moves[0].bom_line_id.bom_id
+                if sale_bom:
+                    order_qty = sale_line.product_uom._compute_quantity(
+                        sale_line.product_uom_qty, sale_bom.product_uom_id
+                    )
+                    kit_qty = self._compute_kit_quantities_done(
+                        all_sale_moves,
+                        sale_line.product_id,
+                        order_qty,
+                        sale_bom,
+                    )
+                    sale_qty_done = sale_bom.product_uom_id._compute_quantity(
+                        kit_qty, sale_line.product_id.uom_id
+                    )
+                else:
+                    sale_qty_done = sum(
+                        all_sale_moves.mapped("move_line_ids")
+                        .filtered(lambda ml: ml.quantity > 0)
+                        .mapped("quantity")
+                    )
+                _, bom_sub_lines = purchase_bom.explode(
+                    sale_line.product_id, sale_qty_done
+                )
+                qty_by_product = {
+                    bom_line.product_id: bom_line_data["qty"]
+                    for bom_line, bom_line_data in bom_sub_lines
+                }
+                for po_move in po_move_pending:
+                    qty = qty_by_product.get(po_move.product_id, 0.0)
+                    po_move.move_line_ids.write({"quantity": qty, "picked": True})
+        return super()._action_done_intercompany_actions(purchase)
+
     def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
-        sale_bom = sale_move_lines[0].move_id.bom_line_id.bom_id
-        purchase_bom = po_move_lines[0].move_id.bom_line_id.bom_id
-        if not sale_bom and not purchase_bom:
+        sale_bom = sale_move_lines.move_id.bom_line_id.bom_id
+        if not sale_bom:
             return super()._get_product_intercompany_qty_done_dict(
                 sale_move_lines, po_move_lines
             )
-        res = {}
-        product = po_move_lines[0].product_id
-        sale_qty_done = sum(sale_move_lines.mapped("quantity"))
-        # Sale Kit: get kit product qty done based on the move lines qty done
-        if sale_bom:
-            sale_line = sale_move_lines[0].move_id.sale_line_id
-            order_qty = sale_line.product_uom._compute_quantity(
-                sale_line.product_uom_qty, sale_bom.product_uom_id
-            )
-            kit_qty = self._compute_kit_quantities_done(
-                sale_move_lines.mapped("move_id"),
-                sale_line.product_id,
-                order_qty,
-                sale_bom,
-            )
-            sale_qty_done = sale_bom.product_uom_id._compute_quantity(
-                kit_qty, sale_line.product_id.uom_id
-            )
-        # Purchase Kit: get components qty done based on the sale qty done
-        if purchase_bom:
-            _, bom_sub_lines = purchase_bom.explode(product, sale_qty_done)
-            for bom_line, bom_line_data in bom_sub_lines:
-                res[bom_line.product_id] = bom_line_data["qty"]
-            picking_moves = po_move_lines[0].move_id.picking_id.move_ids.filtered(
-                lambda m: m.state not in ["done", "cancel"]
-            )
-            # Ensure all destination component moves receive done quantities,
-            # even when the base sync loop only zips a subset of move lines.
-            for move in picking_moves:
-                move._set_quantity_done(move.product_uom_qty)
-                move.move_line_ids.write({"picked": True})
-                res[move.product_id] = move.quantity
-            return res
-        res[product] = sale_qty_done
-        return res
+        # sale_kit : N sale moves (components) → 1 po move (final kit product)
+        sale_line = sale_move_lines.move_id.sale_line_id
+        order_qty = sale_line.product_uom._compute_quantity(
+            sale_line.product_uom_qty, sale_bom.product_uom_id
+        )
+        # All moves for kit, not only current pair
+        all_sale_moves = self.move_ids.filtered(
+            lambda m, sl=sale_line: m.sale_line_id == sl and m.bom_line_id
+        )
+        kit_qty = self._compute_kit_quantities_done(
+            all_sale_moves,
+            sale_line.product_id,
+            order_qty,
+            sale_bom,
+        )
+        sale_qty_done = sale_bom.product_uom_id._compute_quantity(
+            kit_qty, sale_line.product_id.uom_id
+        )
+        return {po_move_lines.product_id: sale_qty_done}
 
     def _compute_kit_quantities_done(self, move_ids, product_id, kit_qty, kit_bom):
         """Based on Odoo standard _compute_kit_quantities method.
@@ -99,3 +140,10 @@ class StockPicking(models.Model):
             return min(qty_ratios) // 1
         else:
             return 0.0
+
+    def _is_intercompany_purchase_kit_move(self, move, dest_picking):
+        po_move_pending = move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
+            lambda x, dp=dest_picking: x.picking_id == dp
+            and x.state not in ["done", "cancel"]
+        )
+        return bool(po_move_pending and po_move_pending[0].bom_line_id.bom_id)
