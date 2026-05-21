@@ -325,3 +325,31 @@ class TestMultiCompanyAbstract(common.TransactionCase):
             self.record_1.with_user(user).read(["name"]),
             [{"id": self.record_1.id, "name": "test"}],
         )
+
+    def test_company_id_create_with_tuple(self):
+        """
+        Test safety check in _multicompany_patch_vals.
+        """
+        tester = self.test_model.create(
+            {
+                "name": "Tuple Tester",
+                "company_id": self.company_1.id,
+                "company_ids": ((6, 0, self.company_2.ids),),
+            }
+        )
+        self.assertIn(self.company_1, tester.company_ids)
+        self.assertIn(self.company_2, tester.company_ids)
+
+    def test_search_not_in_false_company(self):
+        """
+        Test the 'not in' operator in _search_company_id when searching for False.
+        """
+        self.add_company(self.company_2)
+        result = self.test_model.search([("company_id", "not in", [False])])
+        self.assertIn(self.record_1, result)
+
+    def test_base_check_company_on_res_company(self):
+        """
+        Test the _check_company when called directly on a res.company record.
+        """
+        self.company_2._check_company()

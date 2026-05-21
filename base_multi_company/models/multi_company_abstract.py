@@ -69,6 +69,15 @@ class MultiCompanyAbstract(models.AbstractModel):
         if "company_ids" in vals and "company_id" in vals:
             company_id = vals.pop("company_id")
             if company_id:
+                c_ids = vals["company_ids"]
+                # Safely handle False, tuples, and non-lists
+                if not c_ids:
+                    vals["company_ids"] = []
+                elif isinstance(c_ids, tuple):
+                    vals["company_ids"] = list(c_ids)
+                elif not isinstance(c_ids, list):
+                    vals["company_ids"] = [c_ids]
+
                 vals["company_ids"].append(fields.Command.link(company_id))
         return vals
 
