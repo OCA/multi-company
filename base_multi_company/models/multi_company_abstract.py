@@ -70,11 +70,14 @@ class MultiCompanyAbstract(models.AbstractModel):
             company_id = vals.pop("company_id")
             if company_id:
                 c_ids = vals["company_ids"]
-                # Safely handle False, tuples, and non-lists
+                # Safely handle False, tuple commands, tuple-of-commands, and non-lists
                 if not c_ids:
                     vals["company_ids"] = []
                 elif isinstance(c_ids, tuple):
-                    vals["company_ids"] = list(c_ids)
+                    if c_ids and all(isinstance(item, tuple) for item in c_ids):
+                        vals["company_ids"] = list(c_ids)
+                    else:
+                        vals["company_ids"] = [c_ids]
                 elif not isinstance(c_ids, list):
                     vals["company_ids"] = [c_ids]
 

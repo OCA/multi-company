@@ -334,11 +334,31 @@ class TestMultiCompanyAbstract(common.TransactionCase):
             {
                 "name": "Tuple Tester",
                 "company_id": self.company_1.id,
-                "company_ids": ((6, 0, self.company_2.ids),),
+                "company_ids": (6, 0, self.company_2.ids),
             }
         )
         self.assertIn(self.company_1, tester.company_ids)
         self.assertIn(self.company_2, tester.company_ids)
+
+    def test_company_id_write_with_company_ids(self):
+        """
+        Test _multicompany_patch_vals on write() when both company_ids and company_id
+        are provided in the vals dict.
+        """
+        tester = self.test_model.create(
+            {
+                "name": "Write Tester",
+                "company_ids": [(6, 0, self.company_1.ids)],
+            }
+        )
+        tester.write(
+            {
+                "company_id": self.company_2.id,
+                "company_ids": (6, 0, self.company_1.ids),
+            }
+        )
+        self.assertIn(self.company_2, tester.sudo().company_ids)
+        self.assertIn(self.company_1, tester.sudo().company_ids)
 
     def test_search_not_in_false_company(self):
         """
