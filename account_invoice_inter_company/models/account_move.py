@@ -347,6 +347,10 @@ class AccountMoveLine(models.Model):
             **{"allowed_company_ids": [dest_company.id]}
         ).check_access("read")
 
+    def _get_intercompany_taxes(self, vals):
+        new_line = self.new(vals)
+        return new_line._get_computed_taxes()
+
     @api.model
     def _prepare_account_move_line(self, dest_move, dest_company):
         """Generate invoice line values
@@ -370,8 +374,7 @@ class AccountMoveLine(models.Model):
         if hasattr(self, "start_date") and hasattr(self, "end_date"):
             vals["start_date"] = self.start_date
             vals["end_date"] = self.end_date
-        new_line = self.new(vals)
-        new_taxes = new_line._get_computed_taxes()
+        new_taxes = self._get_intercompany_taxes(vals)
         vals["tax_ids"] = [Command.set(new_taxes.ids)]
         price_unit = self.price_unit
         base_line = self.move_id._prepare_product_base_line_for_taxes_computation(self)
