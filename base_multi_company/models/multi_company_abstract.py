@@ -19,35 +19,29 @@ class MultiCompanyAbstract(models.AbstractModel):
     company_ids = fields.Many2many(
         string="Companies",
         comodel_name="res.company",
-        # avoid cache pollution in sudo / non-sudo uses of the field
-        depends_context=("uid",),
     )
 
     @api.depends("company_ids")
-    @api.depends_context("companies", "company", "_check_company_source_id")
+    @api.depends_context("company", "_check_company_source_id")
     def _compute_company_id(self):
         for record in self:
             # Set this priority computing the company (if included in the allowed ones)
             # for avoiding multi company incompatibility errors:
             # - If this call is done from method _check_company, the company of the
             #   record to be compared.
-            # - Otherwise, use current companies of the user, prioritizing main company.
-            # - As last resource, use the first allowed company.
-            company_id = self.env.context.get(
-                "_check_company_source_id"
-            ) or self.env.context.get("force_company")
-            if company_id in record.company_ids.ids:
+            # - Otherwise, current company of the user.
+            company_id = (
+                self.env.context.get("_check_company_source_id")
+                or self.env.context.get("force_company")
+                or self.env.company.id
+            )
+
+            # Use sudo() to evaluate the relation
+            sudo_record = record.sudo()
+            if company_id in sudo_record.company_ids.ids:
                 record.company_id = company_id
             else:
-                common_companies = self.env.companies & record.company_ids
-                # Prioritize main company
-                if common_companies and (self.env.company in common_companies):
-                    record.company_id = self.env.company.id
-                # Or use the first common company
-                elif common_companies:
-                    record.company_id = common_companies[0].id
-                else:  # Use the fallback as last resource
-                    record.company_id = record.company_ids[:1].id
+                record.company_id = sudo_record.company_ids[:1].id
 
     def _inverse_company_id(self):
         # To allow modifying allowed companies by non-aware base_multi_company
@@ -69,6 +63,18 @@ class MultiCompanyAbstract(models.AbstractModel):
         if "company_ids" in vals and "company_id" in vals:
             company_id = vals.pop("company_id")
             if company_id:
+                c_ids = vals["company_ids"]
+                # Safely handle False, tuple commands, tuple-of-commands, and non-lists
+                if not c_ids:
+                    vals["company_ids"] = []
+                elif isinstance(c_ids, tuple):
+                    if c_ids and all(isinstance(item, tuple) for item in c_ids):
+                        vals["company_ids"] = list(c_ids)
+                    else:
+                        vals["company_ids"] = [c_ids]
+                elif not isinstance(c_ids, list):
+                    vals["company_ids"] = [c_ids]
+
                 vals["company_ids"].append(fields.Command.link(company_id))
         return vals
 
@@ -82,10 +88,4 @@ class MultiCompanyAbstract(models.AbstractModel):
     def write(self, vals):
         """Discard changes in company_id field if company_ids has been given."""
         self._multicompany_patch_vals(vals)
-        res = super().write(vals)
-        if "company_ids" in vals:
-            # Writing on the field without sudo won't update the sudo cache
-            # (and vice versa) so we invalidate to ensure the sudo cache is
-            # up-to-date
-            self.invalidate_recordset(fnames=["company_ids"])
-        return res
+        return super().write(vals)

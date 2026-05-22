@@ -2,34 +2,35 @@
 # Copyright 2021 ACSONE SA/NV
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
 
-from odoo_test_helper import FakeModelLoader
-
 from odoo.fields import Command
+from odoo.orm.model_classes import add_to_registry
 from odoo.tests import common
 
 
 class TestMultiCompanyAbstract(common.TransactionCase):
-    def setUp(self):
-        super().setUp()
-        self.loader = FakeModelLoader(self.env, self.__module__)
-        self.loader.backup_registry()
-
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
         # The fake class is imported here !! After the backup_registry
         from .multi_company_abstract_tester import MultiCompanyAbstractTester
 
-        self.loader.update_registry((MultiCompanyAbstractTester,))
+        add_to_registry(cls.registry, MultiCompanyAbstractTester)
+        cls.registry._setup_models__(cls.env.cr, ["multi.company.abstract.tester"])
+        cls.registry.init_models(
+            cls.env.cr, ["multi.company.abstract.tester"], {"models_to_check": True}
+        )
 
-        self.test_model = self.env["multi.company.abstract.tester"]
+        cls.test_model = cls.env["multi.company.abstract.tester"]
 
-        self.tester_model = self.env["ir.model"].search(
+        cls.tester_model = cls.env["ir.model"].search(
             [("model", "=", "multi.company.abstract.tester")]
         )
 
         # Access record:
-        self.env["ir.model.access"].create(
+        cls.env["ir.model.access"].create(
             {
                 "name": "access.tester",
-                "model_id": self.tester_model.id,
+                "model_id": cls.tester_model.id,
                 "perm_read": 1,
                 "perm_write": 1,
                 "perm_create": 1,
@@ -37,15 +38,16 @@ class TestMultiCompanyAbstract(common.TransactionCase):
             }
         )
 
-        self.record_1 = self.test_model.create({"name": "test"})
-        self.company_1 = self.env.company
-        self.company_2 = self.env["res.company"].create(
+        cls.record_1 = cls.test_model.create({"name": "test"})
+        cls.company_1 = cls.env.company
+        cls.company_2 = cls.env["res.company"].create(
             {"name": "Test Co 2", "email": "base_multi_company@test.com"}
         )
 
-    def tearDown(self):
-        self.loader.restore_registry()
-        return super().tearDown()
+    @classmethod
+    def tearDownClass(cls):
+        cls.addClassCleanup(cls.registry.__delitem__, "multi.company.abstract.tester")
+        return super().tearDownClass()
 
     def add_company(self, company):
         """Add company to the test record."""
@@ -154,35 +156,16 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         for company in user.company_ids:
             user.write({"company_id": company.id})
             # Force recompute
-            tester.invalidate_model(["company_id"])
+            tester.invalidate_model()
             # Ensure that the current user is on the right company
             self.assertEqual(user.company_id, company)
             self.assertEqual(tester.company_id, company)
             # So can read company fields without Access error
             self.assertTrue(bool(tester.company_id.name))
-        # If current main company of the user does not match with the record's
-        # company_ids then one of the common companies between the two should be set
-        user_companies = company1 + company3
-        user.write(
-            {
-                "company_id": company1.id,
-                "company_ids": [(6, False, user_companies.ids)],
-            }
-        )
-        companies = company2 + company3
-        tester.write({"company_ids": [(6, False, companies.ids)]})
-        # Force recompute
-        tester.invalidate_model(["company_id"])
-        # Is not subset
-        # Fetch it with the admin user cause company_ids is uid context dependent
-        admin = self.env.user
-        self.assertFalse(tester.with_user(admin).company_ids <= user.company_ids)
-        self.assertNotEqual(tester.company_id.id, user.company_id.id)
-        self.assertIn(tester.company_id.id, user.company_ids.ids)
         # Switch to a company not in tester.company_ids
         self.switch_user_company(user, company4)
         # Force recompute
-        tester.invalidate_model(["company_id"])
+        tester.invalidate_model()
         self.assertNotEqual(user.company_id.id, tester.company_ids.ids)
         self.assertTrue(bool(tester.company_id.id))
         self.assertTrue(bool(tester.company_id.name))
@@ -322,3 +305,51 @@ class TestMultiCompanyAbstract(common.TransactionCase):
             self.record_1.with_user(user).read(["name"]),
             [{"id": self.record_1.id, "name": "test"}],
         )
+
+    def test_company_id_create_with_tuple(self):
+        """
+        Test safety check in _multicompany_patch_vals.
+        """
+        tester = self.test_model.create(
+            {
+                "name": "Tuple Tester",
+                "company_id": self.company_1.id,
+                "company_ids": (6, 0, self.company_2.ids),
+            }
+        )
+        self.assertIn(self.company_1, tester.company_ids)
+        self.assertIn(self.company_2, tester.company_ids)
+
+    def test_company_id_write_with_company_ids(self):
+        """
+        Test _multicompany_patch_vals on write() when both company_ids and company_id
+        are provided in the vals dict.
+        """
+        tester = self.test_model.create(
+            {
+                "name": "Write Tester",
+                "company_ids": [(6, 0, self.company_1.ids)],
+            }
+        )
+        tester.write(
+            {
+                "company_id": self.company_2.id,
+                "company_ids": (6, 0, self.company_1.ids),
+            }
+        )
+        self.assertIn(self.company_2, tester.sudo().company_ids)
+        self.assertIn(self.company_1, tester.sudo().company_ids)
+
+    def test_search_not_in_false_company(self):
+        """
+        Test the 'not in' operator in _search_company_id when searching for False.
+        """
+        self.add_company(self.company_2)
+        result = self.test_model.search([("company_id", "not in", [False])])
+        self.assertIn(self.record_1, result)
+
+    def test_base_check_company_on_res_company(self):
+        """
+        Test the _check_company when called directly on a res.company record.
+        """
+        self.company_2._check_company()
