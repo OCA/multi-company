@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2017-2019 Tecnativa - Carlos Dauden
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record model="ir.ui.view" id="product_template_form_view">
+        <field name="name">Product template form (multi-company tax button)</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="account.product_template_form_view" />
+        <field name="priority" eval="99" />
+        <field name="arch" type="xml">
+            <field name="taxes_id" position="attributes">
+                <attribute name="class" separator=" " add="oe_inline" />
+            </field>
+            <field name="taxes_id" position="after">
+                <button
+                    name="set_multicompany_taxes"
+                    type="object"
+                    icon="fa-clone"
+                    string="Propagate Taxes"
+                    class="btn btn-link oe_inline"
+                    invisible="not divergent_company_taxes or not id"
+                    groups="account.group_account_user"
+                    title="This button propagates sales and purchase taxes if they have changed and if the companies have the same tax rate."
+                />
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.actions.server" id="action_set_multicompany_taxes">
+        <field name="name">Propagate Taxes</field>
+        <field name="model_id" ref="product.model_product_template" />
+        <field name="binding_model_id" ref="product.model_product_template" />
+        <field name="binding_view_types">list</field>
+        <field name="groups_id" eval="[(4, ref('account.group_account_user'))]" />
+        <field name="state">code</field>
+        <field name="code">
+for one in records:
+    one.set_multicompany_taxes()
+        </field>
+    </record>
+</odoo>

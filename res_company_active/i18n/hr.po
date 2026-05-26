@@ -1,0 +1,51 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* res_company_active
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2019-11-14 16:34+0000\n"
+"Last-Translator: Bole <bole@dajmi5.com>\n"
+"Language-Team: none\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.8\n"
+
+#. module: res_company_active
+#: model_terms:ir.ui.view,arch_db:res_company_active.view_res_company_form
+msgid "Archived"
+msgstr ""
+
+#. module: res_company_active
+#: model:ir.model,name:res_company_active.model_res_company
+msgid "Companies"
+msgstr "Tvrtke"
+
+#. module: res_company_active
+#. odoo-python
+#: code:addons/res_company_active/models/res_company.py:0
+#, python-format
+msgid ""
+"You can not disable the company %(company_name)s because it is the current "
+"company for the following active users:\n"
+"\n"
+" - %(user_names)s\n"
+"\n"
+" Please change the company of these users, or disable them"
+msgstr ""
+
+#. module: res_company_active
+#. odoo-python
+#: code:addons/res_company_active/models/res_company.py:0
+#, python-format
+msgid "You can not disable the current company."
+msgstr "Nije moguće ugasiti trenutnu tvrtku."
+
+#~ msgid "Active"
+#~ msgstr "Aktivan"

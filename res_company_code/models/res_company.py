@@ -7,6 +7,7 @@ from odoo import api, fields, models
 
 class ResCompany(models.Model):
     _inherit = "res.company"
+    _rec_names_search = ["code", "name"]
     _order = "code,name"
 
     code = fields.Char()
@@ -22,12 +23,3 @@ class ResCompany(models.Model):
                 company.display_name = company.name
             else:
                 company.display_name = f"{company.code} - {company.name}"
-
-    @api.model
-    def name_search(self, name, args=None, operator="ilike", limit=100):
-        args = args or []
-        domain = []
-        if name:
-            domain = ["|", ("code", operator, name), ("name", operator, name)]
-        company = self.search(domain + args, limit=limit)
-        return [(record.id, record.display_name) for record in company]

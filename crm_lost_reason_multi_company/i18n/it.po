@@ -1,0 +1,46 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_lost_reason_multi_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-02-24 15:06+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.6.2\n"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model.fields,field_description:crm_lost_reason_multi_company.field_crm_lost_reason__company_id
+msgid "Company"
+msgstr "Azienda"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model.fields,help:crm_lost_reason_multi_company.field_crm_lost_reason__company_id
+msgid ""
+"Company that uses this lost reason. Other companies will not be able to see "
+"or use it."
+msgstr ""
+"Azienda che utilizza questo motivo di perdita. Altre aziende non saranno in "
+"grado di vederlo o utilizzarlo."
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model,name:crm_lost_reason_multi_company.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Contatto/Opportunità"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model.fields,field_description:crm_lost_reason_multi_company.field_crm_lead__lost_reason_id
+msgid "Lost Reason"
+msgstr "Motivo dell'insuccesso"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model,name:crm_lost_reason_multi_company.model_crm_lost_reason
+msgid "Opp. Lost Reason"
+msgstr "Motivo insuccesso opportunità"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--
+        Create inter company product
+        -->
+    <record id="product_consultant_multi_company" model="product.product">
+        <field name="name">Service Multi Company</field>
+        <field name="uom_id" ref="uom.product_uom_hour" />
+        <field name="uom_po_id" ref="uom.product_uom_hour" />
+        <field name="categ_id" ref="product.product_category_3" />
+        <field name="type">service</field>
+    </record>
+</odoo>

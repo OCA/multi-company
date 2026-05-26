@@ -1,10 +1,37 @@
 [project]
 name = "odoo-addons-oca-multi-company"
-version = "18.0.20250221.1"
+version = "18.0.20260409.0"
 dependencies = [
+    "odoo-addon-account_invoice_inter_company==18.0.*",
+    "odoo-addon-account_multicompany_easy_creation==18.0.*",
+    "odoo-addon-base_multi_company==18.0.*",
+    "odoo-addon-calendar_event_multi_company==18.0.*",
+    "odoo-addon-calendar_event_type_multi_company==18.0.*",
+    "odoo-addon-crm_lost_reason_multi_company==18.0.*",
+    "odoo-addon-crm_stage_multi_company==18.0.*",
+    "odoo-addon-crm_tag_multi_company==18.0.*",
+    "odoo-addon-hr_employee_multi_company==18.0.*",
+    "odoo-addon-ir_filters_multi_company==18.0.*",
+    "odoo-addon-ir_ui_view_multi_company==18.0.*",
+    "odoo-addon-login_all_company==18.0.*",
+    "odoo-addon-mail_multicompany==18.0.*",
     "odoo-addon-mail_template_multi_company==18.0.*",
+    "odoo-addon-partner_category_multi_company==18.0.*",
+    "odoo-addon-partner_multi_company==18.0.*",
+    "odoo-addon-pos_category_multicompany==18.0.*",
+    "odoo-addon-product_multi_company==18.0.*",
+    "odoo-addon-product_multi_company_stock==18.0.*",
+    "odoo-addon-product_tax_multicompany_default==18.0.*",
+    "odoo-addon-purchase_sale_inter_company==18.0.*",
+    "odoo-addon-purchase_sale_stock_inter_company==18.0.*",
+    "odoo-addon-res_company_active==18.0.*",
+    "odoo-addon-res_company_category==18.0.*",
     "odoo-addon-res_company_code==18.0.*",
     "odoo-addon-res_company_search_view==18.0.*",
+    "odoo-addon-res_partner_industry_multi_company==18.0.*",
+    "odoo-addon-stock_intercompany==18.0.*",
+    "odoo-addon-utm_medium_multi_company==18.0.*",
+    "odoo-addon-utm_source_multi_company==18.0.*",
 ]
 classifiers=[
     "Programming Language :: Python",

@@ -1,0 +1,210 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_invoice_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid "%(company_name)s - Canceled Invoice: %(invoice_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid "%(company_name)s - Invoice: %(invoice_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_generated
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_generated
+msgid "Auto Generated Document"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid ""
+"Automatically generate counterpart documents for orders/invoices between "
+"companies"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
+msgid ""
+"Enable intercompany invoicing: \n"
+" * Generate a Customer Invoice when a bill with this company is created.\n"
+" * Generate a Vendor Bill when an invoice with this company as a customer is created."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoicing
+msgid ""
+"Enable intercompany invoicing: \n"
+"* Generate a Customer Invoice when a bill with this company is created.\n"
+"* Generate a Vendor Bill when an invoice with this company as a customer is created."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoicing
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoicing
+msgid "Generate Inter company Invoices"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Generate Intercompany Invoices"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+msgid "Inter Company Invoice User"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Inter Company OCA features"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoice"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__invoice_auto_validation
+msgid "Invoice Auto Validation"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
+msgid "Invoices Auto Validation"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoices User"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid ""
+"Please define %(dest_journal_type)s journal for this company: "
+"\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules. "
+"If not set the user initiating thetransaction will be used"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
+msgid "Service Multi Company"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_invoice_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_invoice_id
+msgid "Source Invoice"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__auto_invoice_line_id
+msgid "Source Invoice Line"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid ""
+"The invoice line '%(line_name)s' doesn't have a product. All invoice lines "
+"should have a product for inter-company invoices."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid ""
+"This is an autogenerated multi company invoice and you're trying to modify "
+"the amount, which will differ from the source one (%s)"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %(dest_amount_total)s but the total amount "
+"of the invoice %(invoice_name)s in the company %(company_name)s is "
+"%(amount_total)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will"
+" automatically validate it"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will"
+" automatically validate it."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid ""
+"You can't modify this invoice as it has an inter company invoice that's in posted state.\n"
+"Invoice %(invoice_name)s to %(partner_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+msgid ""
+"You cannot create invoice in company '%(dest_company_name)s' with product "
+"'%(product_name)s' because it is not multicompany"
+msgstr ""

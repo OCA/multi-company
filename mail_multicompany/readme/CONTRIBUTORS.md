@@ -1,0 +1,4 @@
+- Jesús Ventosinos Mayor \<<jesus@comunitea.com>\>
+- Cédric Pigeon \<<cedric.pigeon@acsone.eu>\>
+- Valentin Vinagre \<<valentin.vinagre@sygel.es>\>
+- `Heliconia Solutions Pvt. Ltd. <https://www.heliconia.io>`_
