@@ -1,0 +1,250 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_purchase_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-09 10:50+0000\n"
+"PO-Revision-Date: 2025-12-09 12:09+0100\n"
+"Last-Translator: Ivan Vilata i Balaguer <ivan@batista10.cat>\n"
+"Language-Team: \n"
+"Language: ca_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: sale_purchase_inter_company
+#: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company.res_config_settings_view_form_sale_purchase_ic
+msgid "Allow intercompany sales to this company to create purchases in it"
+msgstr "Permetre a les vendes interempresa cap aquesta empresa de crear-hi compres"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_res_company
+msgid "Companies"
+msgstr "Empreses"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "Paràmetres de configuració"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_company__po_from_so
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_config_settings__po_from_so
+msgid "Create Purchase Orders when selling to this company"
+msgstr "Crea comandes de compra quan venguis a aquesta empresa"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_company__po_from_so
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_config_settings__po_from_so
+msgid ""
+"Generate a Purchase Order when a Sales Order with this company as customer is confirmed.\n"
+" The intercompany user must at least be Purchase User."
+msgstr ""
+"Genera una comanda de compra quan es confirmi una comanda de venda amb aquesta empresa com a client.\n"
+"L'usuari interempresarial ha de ser com a mínim un usuari de compra."
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_sale_order_line__intercompany_purchase_line_id
+msgid "Intercompany Purchase Line"
+msgstr "Línia de compra interempresa"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_sale_order__intercompany_purchase_order_id
+msgid "Intercompany Purchase Order"
+msgstr "Comanda de compra interempresa"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_company__intercompany_purchase_user_id
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_config_settings__intercompany_purchase_user_id
+msgid "Intercompany Purchase User"
+msgstr "Usuari de compres entre empreses"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_account_move
+msgid "Journal Entry"
+msgstr "Assentament comptable"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr "Comanda de compra"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_purchase_order_line
+msgid "Purchase Order Line"
+msgstr "Línia de la comanda de compra"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_company__purchase_auto_validation
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_config_settings__purchase_auto_validation
+msgid "Purchase Orders Auto Validation"
+msgstr "Validació automàtica de comandes de compra"
+
+#. module: sale_purchase_inter_company
+#: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company.res_config_settings_view_form_sale_purchase_ic
+msgid "Sale / Purchase"
+msgstr "Venda / Compra"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_sale_order
+msgid "Sales Order"
+msgstr "Comanda"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línia comanda de venda"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_sale_order__auto_purchase_order_id
+msgid "Source Purchase Order"
+msgstr "Comanda de compra objectiu"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_sale_order_line__auto_purchase_line_id
+msgid "Source Purchase Order Line"
+msgstr "Línia de comanda de compra objectiu"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_purchase_order__auto_sale_order_id
+msgid "Source Sales Order"
+msgstr "Comanda de venda d'origen"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_purchase_order_line__auto_sale_line_id
+msgid "Source Sales Order Line"
+msgstr "Línia de comanda de vendes d'origen"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_config_settings__intercompany_purchase_user_id
+msgid ""
+"User used to create the purchase order arising from a sales order in another"
+" company."
+msgstr ""
+"Usuari utilitzat per crear la comanda de compra derivada d'una comanda de "
+"venda en una altraempresa."
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_company__purchase_auto_validation
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_config_settings__purchase_auto_validation
+msgid ""
+"When a Purchase Order is created by a multi company rule for this company, "
+"it will automatically validate it."
+msgstr ""
+"Quan es crea una comanda de compra per una regla multiempresa per a aquesta "
+"empresa, es validarà automàticament."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order.py:78
+msgid ""
+"You cannot create PO from SO because purchase currency is different than "
+"sale order currency."
+msgstr ""
+"No pots crear una comanda de compra (PO) des d'una comanda de venda (SO) "
+"perquè la moneda de compra és diferent de la moneda de la comanda de venda."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order.py:97
+#, python-format
+msgid ""
+"This purchase order has been automatically created from an intercompany sale "
+"order (%s)."
+msgstr ""
+"Aquesta comanda de compra s'ha creat automàticament des d'una comanda de "
+"venda intercompany (%s)."
+
+#. module: sale_purchase_inter_company
+#: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company.res_config_settings_view_form_sale_purchase_ic
+msgid "User to be set as creator of the purchases"
+msgstr "Usuari a establir com a creador de les compres"
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order.py:191
+#, python-format
+msgid "You can't cancel an order that is %s"
+msgstr "No pots cancel·lar una comanda que està %s"
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:29
+#, python-format
+msgid "You cannot create PO from SO because product '%s' is not intercompany"
+msgstr ""
+"No pots crear una comanda de compra (PO) des d'una comanda de venda (SO) "
+"perquè el producte '%s' no és intercompany."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:43
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:60
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:77
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:99
+msgid "Warning"
+msgstr "Avís"
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:45
+msgid ""
+"Warning: changing the quantity here only updates the Sale Order (SO) and not "
+"the Purchase Order (PO). If you want the quantity to be updated in both "
+"synchronized orders, make the change in the PO."
+msgstr ""
+"Avís: canviar la quantitat aquí només actualitza la comanda de venda (SO) i "
+"no la comanda de compra (PO). Si vols que la quantitat s'actualitzi a les "
+"dues comandes sincronitzades, fes el canvi a la PO."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:62
+msgid ""
+"Warning: changing the price here only updates the Sale Order (SO) and not "
+"the Purchase Order (PO). If you want the price to be updated in both "
+"synchronized orders, make the change in the PO."
+msgstr ""
+"Avís: canviar el preu aquí només actualitza la comanda de venda (SO) i no la "
+"comanda de compra (PO). Si vols que el preu s'actualitzi a les dues comandes "
+"sincronitzades, fes el canvi a la PO."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:79
+msgid ""
+"Warning: changing the taxes here only updates the Sale Order (SO) and not "
+"the Purchase Order (PO). If you want the taxes to be updated in both "
+"synchronized orders, make the change in the PO."
+msgstr ""
+"Avís: canviar els impostos aquí només actualitza la comanda de venda (SO) i "
+"no la comanda de compra (PO). Si vols que els impostos s'actualitzin a les "
+"dues comandes sincronitzades, fes el canvi a la PO."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order_line.py:101
+msgid ""
+"Warning: adding a product to an intercompany Sale Order (SO).\n"
+"\n"
+"Important: this line will NOT be created or updated in the Purchase Order "
+"(PO).\n"
+"If you want the line to exist and be synchronized in both orders, add it to "
+"the PO."
+msgstr ""
+"Avís: estàs afegint un producte a una comanda de venda (SO) intercompany.\n"
+"\n"
+"Important: aquesta línia NO es crearà ni actualitzarà a la comanda de compra "
+"(PO).\n"
+"Si vols que la línia existeixi i estigui sincronitzada a ambdues comandes, "
+"afegeix-la a la PO."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/account_move.py:21
+msgid "This customer invoice is related with: {}"
+msgstr "Aquesta factura de client està relacionada amb: {}"
