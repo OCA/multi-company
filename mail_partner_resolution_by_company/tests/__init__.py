@@ -1,0 +1,1 @@
+from . import test_mail_partner_resolution_by_company
