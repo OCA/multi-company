@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-05 13:15+0000\n"
-"PO-Revision-Date: 2026-06-09 07:04+0000\n"
+"PO-Revision-Date: 2026-06-09 07:07+0000\n"
 "Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
 "Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
 "Language: sl\n"
@@ -39,22 +39,36 @@ msgid ""
 " * Done: The transfer has been processed.\n"
 " * Cancelled: The transfer has been cancelled."
 msgstr ""
+" * Osnutek: Premestitev še ni potrjena. Rezervacija se ne uporablja.\n"
+" * Čakanje na drugo operacijo: Ta premestitev čaka na drugo operacijo, da bo "
+"pripravljena.\n"
+" * Čakanje: Premestitev čaka na razpoložljivost nekaterih proizvodov.\n"
+"(a) Politika odpreme je \"Čim prej\": ni bilo mogoče rezervirati nobenega "
+"proizvoda.\n"
+"(b) Politika odpreme je \"Ko so vsi proizvodi pripravljeni\": niso bili "
+"rezervirani vsi proizvodi.\n"
+" * Pripravljeno: Premestitev je pripravljena za obdelavo.\n"
+"(a) Politika odpreme je \"Čim prej\": rezerviran je bil vsaj en proizvod.\n"
+"(b) Politika odpreme je \"Ko so vsi proizvodi pripravljeni\": vsi proizvodi "
+"so bili rezervirani.\n"
+" * Končano: Premestitev je obdelana.\n"
+" * Preklicano: Premestitev je preklicana."
 
 #. module: purchase_sale_stock_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
 msgid "Block PO manual picking validation"
-msgstr ""
+msgstr "Blokiraj ročno potrjevanje prevzema pri nabavnem nalogu"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__raise
 msgid "Block and raise error"
-msgstr ""
+msgstr "Blokiraj in sproži napako"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__block_po_manual_picking_validation
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__block_po_manual_picking_validation
 msgid "Block manual validation of picking in the destination company"
-msgstr ""
+msgstr "Blokiraj ročno potrjevanje prevzema v ciljni družbi"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
@@ -69,7 +83,7 @@ msgstr "Nastavitve"
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__notify
 msgid "Continue, but create activity to notify someone"
-msgstr ""
+msgstr "Nadaljuj, vendar ustvari aktivnost za obvestilo"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
@@ -78,7 +92,7 @@ msgid ""
 "Orders made to this company"
 msgstr ""
 "Privzeta vrednost nastavljena na prodajnih nalogih, ki bo ustvarjena na "
-"podlagi nabavnih nalogov za to družbo."
+"podlagi nabavnih nalogov za to družbo"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
@@ -96,31 +110,33 @@ msgid ""
 "Failure to confirm picking for PO %(purchase_name)s. Original picking "
 "%(picking_name)s still confirmed, please check the other side manually."
 msgstr ""
+"Neuspešna potrditev prevzema za nabavni nalog %(purchase_name)s. Izvorni "
+"prevzem %(picking_name)s je še vedno potrjen, preverite drugo stran ročno."
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
 msgid "Intercompany Picking"
-msgstr ""
+msgstr "Meddružbeni prevzem"
 
 #. module: purchase_sale_stock_inter_company
 #. odoo-python
 #: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
 msgid ""
 "Manual validation of the picking is not allowed in the destination company."
-msgstr ""
+msgstr "Ročno potrjevanje prevzema v ciljni družbi ni dovoljeno."
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
 msgid "On sync picking failure"
-msgstr ""
+msgstr "Ob neuspešni sinhronizaciji prevzema"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
 msgid "Pick action to perform on sync picking failure"
-msgstr ""
+msgstr "Izberite dejanje ob neuspešni sinhronizaciji prevzema"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_move_line
@@ -145,12 +161,12 @@ msgstr "Status"
 #. module: purchase_sale_stock_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
 msgid "Sync picking"
-msgstr ""
+msgstr "Sinhroniziraj prevzem"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking
 msgid "Sync the receipt from the destination company with the delivery"
-msgstr ""
+msgstr "Sinhroniziraj prejem v ciljni družbi z dobavo"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking
@@ -158,12 +174,12 @@ msgstr ""
 msgid ""
 "Sync the receipt from the destination company with the delivery from the "
 "source company"
-msgstr ""
+msgstr "Sinhroniziraj prejem v ciljni družbi z dobavo iz izvorne družbe"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking
 msgid "Sync the receipt with the delivery"
-msgstr ""
+msgstr "Sinhroniziraj prejem z dobavo"
 
 #. module: purchase_sale_stock_inter_company
 #. odoo-python
@@ -172,6 +188,8 @@ msgid ""
 "There's no corresponding line in PO %(po)s for assigning qty from "
 "%(pick_name)s for product %(product)s"
 msgstr ""
+"V nabavnem nalogu %(po)s ni ustrezne postavke za dodelitev količine iz %"
+"(pick_name)s za proizvod %(product)s"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_picking
@@ -182,12 +200,12 @@ msgstr "Premestitev"
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__notify_user_id
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
 msgid "User to Notify"
-msgstr ""
+msgstr "Uporabnik za obvestilo"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
 msgid "User to notify incase of sync picking failure."
-msgstr ""
+msgstr "Uporabnik za obveščanje v primeru neuspešne sinhronizacije prevzema."
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
