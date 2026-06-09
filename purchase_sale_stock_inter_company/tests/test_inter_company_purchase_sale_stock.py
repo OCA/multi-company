@@ -841,10 +841,10 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
 
     def test_send_from_partner_matching_warehouse(self):
         """If a warehouse exists for dest company whose partner matches
-        the purchase partner, it must be used instead of the default one.
+        the purchase partner, the default company warehouse still takes priority.
         """
 
-        # default warehouse for company B (fallback)
+        # default warehouse for company B (1st priority)
         self.company_b.warehouse_id = self.warehouse_c
         # create a warehouse matching the purchase partner
         partner_wh = self.env["stock.warehouse"].create(
@@ -856,5 +856,6 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             }
         )
         sale = self._approve_po()
-        # NEW behavior: matching warehouse must be used
-        self.assertEqual(sale.warehouse_id, partner_wh)
+        # The default warehouse must be used
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
+        self.assertNotEqual(sale.warehouse_id, partner_wh)

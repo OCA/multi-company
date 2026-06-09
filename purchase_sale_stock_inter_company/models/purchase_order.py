@@ -31,9 +31,9 @@ class PurchaseOrder(models.Model):
             limit=1,
         )
         warehouse = (
-            potential_warehouse
-            or dest_company.warehouse_id.company_id == dest_company
+            dest_company.warehouse_id.company_id == dest_company
             and dest_company.warehouse_id
+            or potential_warehouse
             or False
         )
         if warehouse:
