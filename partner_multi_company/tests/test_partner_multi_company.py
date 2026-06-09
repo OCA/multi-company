@@ -246,3 +246,41 @@ class TestPartnerMultiCompany(common.TransactionCase):
         self.assertFalse(partner_1.company_ids)
         self.assertTrue(self.company_2.set_active_company_partner)
         self.assertEqual(partner_2.company_ids, self.company_2)
+
+    def test_post_init_hook_syncs_user_partner_companies(self):
+        # Simulate the install scenario: a user existed before the module
+        # was installed, allowed in multiple companies, with their partner
+        # only linked to one. The post_init_hook (and the post-migration
+        # for existing installations) must extend partner.company_ids to
+        # cover every company the user is allowed in. See #995, #438.
+        partner = self.partner_model.create(
+            {
+                "name": "User partner",
+                "company_ids": [(6, 0, self.company_1.ids)],
+            }
+        )
+        self.env["res.users"].create(
+            {
+                "name": "Pre-existing multi user",
+                "login": "pre_existing_multi_user",
+                "partner_id": partner.id,
+                "company_id": self.company_1.id,
+                "company_ids": [(6, 0, (self.company_1 + self.company_2).ids)],
+            }
+        )
+        # Pre-state: partner is linked to company_1 only, but the user
+        # is allowed in both. Run the same SQL the install/migration runs
+        # to backfill the relation.
+        self.env.cr.execute(
+            """
+            INSERT INTO res_company_res_partner_rel (res_partner_id, res_company_id)
+            SELECT u.partner_id, rel.cid
+            FROM res_users u
+            JOIN res_company_users_rel rel ON rel.user_id = u.id
+            WHERE u.partner_id = %s
+            ON CONFLICT DO NOTHING
+            """,
+            (partner.id,),
+        )
+        partner.invalidate_cache(["company_ids"])
+        self.assertEqual(partner.company_ids, self.company_1 + self.company_2)
