@@ -373,3 +373,24 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         Test the _check_company when called directly on a res.company record.
         """
         self.company_2._check_company()
+
+    def test_company_id_compute_no_newid_leak(self):
+        """
+        The fallback branch of ``_compute_company_id`` must not assign a
+        ``NewId`` to ``company_id`` when ``record.company_ids[:1]`` is a
+        virtual (unsaved) record. Otherwise the leaked ``NewId`` propagates
+        into downstream domains (e.g. ``_compute_same_vat_partner_id``) and
+        triggers ``psycopg2.ProgrammingError: can't adapt type 'NewId'``.
+        """
+        new_record = self.test_model.new(
+            {
+                "name": "NewId Tester",
+                "company_ids": [(6, 0, self.company_2.ids)],
+            }
+        )
+        # Force the compute on the in-memory record
+        new_record.invalidate_recordset(["company_id"])
+        company_id = new_record.company_id
+        # The resulting value must be a real integer or False, never a NewId
+        if company_id:
+            self.assertIsInstance(company_id.id, int)

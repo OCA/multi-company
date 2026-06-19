@@ -3,6 +3,7 @@
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 from odoo import api, fields, models
+from odoo.orm.identifiers import NewId
 
 
 class MultiCompanyAbstract(models.AbstractModel):
@@ -47,7 +48,11 @@ class MultiCompanyAbstract(models.AbstractModel):
                 elif common_companies:
                     record.company_id = common_companies[0].id
                 else:  # Use the fallback as last resource
-                    record.company_id = record.company_ids[:1].id
+                    company = record.company_ids[:1]
+                    if company and isinstance(company.id, NewId):
+                        record.company_id = company._origin.id or False
+                    else:
+                        record.company_id = company.id
 
     def _inverse_company_id(self):
         # To allow modifying allowed companies by non-aware base_multi_company
