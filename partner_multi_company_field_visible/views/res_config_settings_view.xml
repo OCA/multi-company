@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Canarias Conectada
+     License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.own.company.partner</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//block[@name='companies_setting_container']"
+                position="inside"
+            >
+                <setting
+                    id="multi_company_field_visible_partner_setting"
+                    string="Own company on contacts"
+                    help="Let users without multi-company access see and set their own company on contacts."
+                >
+                    <field name="multi_company_field_visible_partner" />
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
