@@ -31,9 +31,15 @@ class ReturnPicking(models.TransientModel):
             .with_company(dest_company)
             .create(vals)
         )
-        exclude_moves = return_wizard.product_return_moves.filtered(
-            lambda line: line.product_id not in self.product_return_moves.product_id
-        )
+        # stock_picking_return_lot compatibility
+        if "lot_id" in return_wizard.product_return_moves._fields:
+            exclude_moves = return_wizard.product_return_moves.filtered(
+                lambda line: line.lot_id not in self.product_return_moves.lot_id
+            )
+        else:
+            exclude_moves = return_wizard.product_return_moves.filtered(
+                lambda line: line.product_id not in self.product_return_moves.product_id
+            )
         return_wizard.product_return_moves = [
             Command.unlink(prm.id) for prm in exclude_moves
         ]
@@ -42,5 +48,10 @@ class ReturnPicking(models.TransientModel):
                 lambda line, wizard_line=wizard_line: line.product_id
                 == wizard_line.product_id
             )
+            # stock_picking_return_lot compatibility
+            if "lot_id" in wizard_line._fields:
+                dest_line = dest_line.filtered(
+                    lambda x, wizard_line=wizard_line: x.lot_id == wizard_line.lot_id
+                )
             dest_line.write({"quantity": wizard_line.quantity})
         return return_wizard
