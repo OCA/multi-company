@@ -1,1 +1,1 @@
-from . import partner
+from . import fake_partner

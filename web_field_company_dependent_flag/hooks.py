@@ -1,4 +1,4 @@
-def pre_init_partner_phone(env):
+def pre_init_hook(env):
     """
     Controleer or the column 'phone' exists in the tabel 'res_partner'
     1. Rename column phone in res_partner to phone_old

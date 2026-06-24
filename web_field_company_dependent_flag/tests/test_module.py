@@ -9,6 +9,7 @@ class Test(common.TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.env = cls.env(context=dict(cls.env.context, tracking_disable=True))
+
         cls.partner_view = cls.env.ref("base.view_partner_form")
 
     def test_class_company(self):
