@@ -4,19 +4,19 @@
      License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
      @author Pierre Verkest <pierre@verkest.fr> -->
 
-<t t-inherit="web.SwitchCompanyMenu" t-inherit-mode="extension" owl="1">
+<t t-inherit="web.SwitchCompanyMenu" t-inherit-mode="extension">
         <xpath expr="//t[@t-call='web.SwitchCompanyMenu.Items']" position="replace">
             <t t-call="web_switch_company_favorite.SwitchCompanyTabMenu" />
         </xpath>
     </t>
 
-<t t-inherit="web.MobileSwitchCompanyMenu" t-inherit-mode="extension" owl="1">
+<t t-inherit="web.MobileSwitchCompanyMenu" t-inherit-mode="extension">
         <xpath expr="//t[@t-call='web.SwitchCompanyMenu.Items']" position="replace">
             <t t-call="web_switch_company_favorite.SwitchCompanyTabMenu" />
         </xpath>
     </t>
 
-<t t-name="web_switch_company_favorite.SwitchCompanyTabMenu" owl="1">
+<t t-name="web_switch_company_favorite.SwitchCompanyTabMenu">
         <div class="o_company_menu_wrapper">
             <!-- Tab selector -->
             <div class="d-flex border-bottom o_company_menu_tabs">
@@ -109,7 +109,7 @@
         </div>
     </t>
 
-<t t-name="web_switch_company_favorite.FavoriteItem" owl="1">
+<t t-name="web_switch_company_favorite.FavoriteItem">
         <div
             class="o_favorite_filter_item d-flex align-items-center border-bottom border-light rounded-1 justify-content-between"
         >
