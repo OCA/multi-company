@@ -7,7 +7,7 @@
         This module add multi-company management to utm source""",
     "version": "18.0.1.0.0",
     "license": "AGPL-3",
-    "author": "ACSONE SA/NV," "Odoo Community Association (OCA)",
+    "author": "ACSONE SA/NV,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "depends": ["utm"],
     "data": [
