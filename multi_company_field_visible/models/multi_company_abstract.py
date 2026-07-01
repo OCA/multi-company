@@ -97,10 +97,17 @@ class MultiCompanyAbstract(models.AbstractModel):
         """``ir.config_parameter`` key gating this model. Bridges override it."""
         return None
 
-    @api.constrains("company_ids")
     def _check_own_company_not_blank(self):
         # Safety net behind the inverse: a non multi-company user must not end
         # up with a blank (global) company set on an exposed model.
+        #
+        # This is deliberately NOT an ``@api.constrains``: while ``write()``
+        # holds ``company_ids`` protected (it feeds the computed
+        # ``company_id``), ``record.sudo().company_ids`` still reads the
+        # *pre-write* value, so a constrain would silently pass on the very
+        # write that empties it. Called instead from ``create``/``write``
+        # below, once the ORM call has fully returned and the field is
+        # readable again.
         if config["test_enable"] and not self.env.context.get(
             "test_multi_company_field_visible"
         ):
@@ -111,6 +118,7 @@ class MultiCompanyAbstract(models.AbstractModel):
         for record in self:
             if not record._own_company_field_param_enabled():
                 continue
+            record.invalidate_recordset(["company_ids"])
             if not record.sudo().company_ids:
                 raise ValidationError(
                     self.env._(
@@ -118,3 +126,15 @@ class MultiCompanyAbstract(models.AbstractModel):
                         name=record.display_name,
                     )
                 )
+
+    def write(self, vals):
+        result = super().write(vals)
+        if "company_ids" in vals:
+            self._check_own_company_not_blank()
+        return result
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        records._check_own_company_not_blank()
+        return records
