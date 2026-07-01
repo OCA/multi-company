@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-07-01 09:44+0000\n"
+"PO-Revision-Date: 2026-07-01 12:46+0000\n"
 "Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
 "Language-Team: none\n"
 "Language: sl\n"
@@ -40,7 +40,7 @@ msgstr "Konti"
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__allow_out_payment
 msgid "Allow Out Payments"
-msgstr ""
+msgstr "Dovoli izhodna plačila"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_id
@@ -87,7 +87,7 @@ msgstr "Naziv družbe"
 #: model:ir.actions.act_window,name:account_multicompany_easy_creation.wizard_multicompany_easy_creation_action
 #: model:ir.ui.menu,name:account_multicompany_easy_creation.multicompany_easy_creation_menu
 msgid "Company easy creation"
-msgstr ""
+msgstr "Enostavno ustvarjanje družbe"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__country_id
@@ -141,17 +141,17 @@ msgstr "Prikazani naziv"
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "Fill company data"
-msgstr ""
+msgstr "Izpolnite podatke družbe"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
 msgid "Force Purchase Tax In All Products"
-msgstr ""
+msgstr "Vsili nabavni davek pri vseh proizvodih"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
 msgid "Force Sale Tax In All Products"
-msgstr ""
+msgstr "Vsili prodajni davek pri vseh proizvodih"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
@@ -159,6 +159,8 @@ msgid ""
 "Go over partner fiscal positions in actual company to match and set "
 "equivalent fiscal positions in the new company."
 msgstr ""
+"Preglejte davčna območja partnerjev v trenutni družbi, da se ujemajo in "
+"nastavijo enakovredna davčna območja v novi družbi."
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
@@ -166,6 +168,8 @@ msgid ""
 "Go over product taxes in actual company to match and set equivalent taxes in"
 " then new company."
 msgstr ""
+"Preglejte davke proizvodov v trenutni družbi, da se ujemajo in nastavijo "
+"enakovredni davki v novi družbi."
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
@@ -173,6 +177,9 @@ msgid ""
 "Go over specific accounts in actual company to match and set equivalent taxes in the new company.\n"
 "Applies to products, categories, partners, ..."
 msgstr ""
+"Preglejte določene konte v trenutni družbi, da se ujemajo in nastavijo "
+"enakovredni davki v novi družbi.\n"
+"Velja za proizvode, kategorije, partnerje ..."
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__id
@@ -208,6 +215,9 @@ msgid ""
 "Set default purchase tax to all products.\n"
 "If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
 msgstr ""
+"Nastavite privzeti nabavni davek za vse proizvode.\n"
+"Če je omogočeno tudi pametno iskanje davkov proizvodov, bodo najdena "
+"ujemanja prepisala privzete davke, nenajdeni pa bodo ostali"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
@@ -215,37 +225,43 @@ msgid ""
 "Set default sales tax to all products.\n"
 "If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
 msgstr ""
+"Nastavite privzeti prodajni davek za vse proizvode.\n"
+"Če je omogočeno tudi pametno iskanje davkov proizvodov, bodo najdena "
+"ujemanja prepisala privzete davke, nenajdeni pa bodo ostali"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
 msgid "Smart Search Fiscal Position"
-msgstr ""
+msgstr "Pametno iskanje davčnega območja"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
 msgid "Smart Search Product Tax"
-msgstr ""
+msgstr "Pametno iskanje davka proizvoda"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
 msgid "Smart Search Specific Account"
-msgstr ""
+msgstr "Pametno iskanje določenega konta"
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "Smart search to set product taxes"
-msgstr ""
+msgstr "Pametno iskanje za nastavitev davkov proizvodov"
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid ""
 "Smart search to set specific accounts in products, categories, partners, ..."
 msgstr ""
+"Pametno iskanje za nastavitev določenih kontov pri proizvodih, kategorijah, "
+"partnerjih ..."
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
 msgid "Smart search to set specific fiscal position in partners"
 msgstr ""
+"Pametno iskanje za nastavitev določenega davčnega območja pri partnerjih"
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
@@ -265,7 +281,7 @@ msgstr "Posodobi privzete davke"
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_taxes
 msgid "Update default taxes applied to local transactions"
-msgstr ""
+msgstr "Posodobi privzete davke, uporabljene pri lokalnih transakcijah"
 
 #. module: account_multicompany_easy_creation
 #: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
@@ -275,7 +291,7 @@ msgstr "Uporabniki"
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__user_ids
 msgid "Users allowed"
-msgstr ""
+msgstr "Dovoljeni uporabniki"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__wizard_id
@@ -285,9 +301,9 @@ msgstr "Čarovnik"
 #. module: account_multicompany_easy_creation
 #: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
 msgid "Wizard Account Multi-company Bank"
-msgstr ""
+msgstr "Čarovnik za bančni račun več družb"
 
 #. module: account_multicompany_easy_creation
 #: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
 msgid "Wizard Account Multi-company Easy Creation"
-msgstr ""
+msgstr "Čarovnik za enostavno ustvarjanje več družb"
