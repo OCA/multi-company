@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Canarias Conectada
+     License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <!-- ``base.res_partner_rule`` (patched by ``partner_multi_company``'s
+         post_init_hook to use ``company_ids``) always exempts any contact
+         linked to an internal user (``partner_share = False``) from the
+         company scoping, so a colleague's contact card, from another
+         company or even the same one, stays visible to everyone. Global
+         (no ``groups``) rules are ANDed together (see
+         ``ir.rule._compute_domain``), so this rule tightens that exemption
+         away without touching the existing one: it must still hold for the
+         record to be visible, on top of the base rule.
+
+         A non-exempt user only gets to see an internal-user contact if: it
+         is not actually internal (``partner_share = True``, e.g. a portal
+         customer, untouched by this rule), it is their own contact (safety
+         net), it has been deliberately shared (blank ``company_ids``, same
+         "shared" convention as the rest of the stack), it belongs to their
+         own company/companies, or they hold ``base.group_multi_company``
+         (same exemption as the sibling ``multi_company_field_visible``
+         module, for consistency). Hiding administrators specifically is a
+         separate, non-multi-company concern: see
+         ``partner_hide_admin_contact``. -->
+    <record id="res_partner_rule_restrict_cross_company" model="ir.rule">
+        <field
+            name="name"
+        >res.partner: restrict internal-user contacts to own company</field>
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="domain_force">
+            ['|', '|', '|', '|', ('partner_share', '=', True), ('id', '=', user.partner_id.id), ('company_ids', '=', False), ('company_ids', 'in', company_ids), (1, '=', 1) if user.has_group('base.group_multi_company') else (0, '=', 1)]
+        </field>
+    </record>
+</odoo>
