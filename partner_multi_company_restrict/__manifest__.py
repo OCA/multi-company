@@ -9,7 +9,11 @@
     "website": "https://github.com/OCA/multi-company",
     "category": "Partner Management",
     "license": "AGPL-3",
-    "depends": ["base_setup", "partner_multi_company"],
+    "depends": [
+        "base_setup",
+        "partner_multi_company",
+        "mail_thread_followers_access_fix",
+    ],
     "data": [
         "security/res_partner_security.xml",
         "views/res_config_settings_view.xml",
