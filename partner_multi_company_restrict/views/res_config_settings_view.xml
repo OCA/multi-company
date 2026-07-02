@@ -14,7 +14,7 @@
                 <setting
                     id="partner_multi_company_restrict_cross_company_setting"
                     string="Restrict internal-user contacts to own company"
-                    help="Regular internal users keep seeing their own company's colleagues, but no longer see colleagues from another company."
+                    help="Every internal user only sees a colleague's contact if it belongs to one of their own companies, however many companies they are allowed into."
                 >
                     <field name="partner_multi_company_restrict_cross_company" />
                 </setting>

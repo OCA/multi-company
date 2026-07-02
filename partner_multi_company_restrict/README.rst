@@ -33,22 +33,23 @@ Partner Multi Company Restrict
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
 This module restricts visibility of contacts linked to internal users
-(colleagues) from another company, on top of ``partner_multi_company``'s
-company scoping.
+(colleagues) to the companies a user actually belongs to, on top of
+``partner_multi_company``'s company scoping.
 
 Odoo's standard ``res.partner`` record rule always shows contacts linked
 to an internal user (``partner_share = False``), regardless of company,
 so that "assigned to" pickers and similar widgets keep working. This
-means a merchant can see (and interact with) the contact record of any
-colleague, even one from a completely different company they have no
-relationship with.
+means any user can see (and interact with) the contact record of any
+colleague, even one from a company they have no relationship with at
+all.
 
-This module adds a second, global record rule: a user without the *Multi
-Companies* group only sees a colleague's contact if at least one of
-these holds:
+This module adds a second, global record rule: a user only sees a
+colleague's contact if at least one of these holds:
 
-- it belongs to their own company (the normal, unrestricted case: seeing
-  colleagues of your own company keeps working exactly as before);
+- it belongs to one of their own companies (this is the whole point: a
+  user allowed into 2 out of 50 companies stays scoped to those 2,
+  *regardless* of whether they have multi-company access -- there is no
+  group-based bypass);
 - it is their own contact (safety net);
 - it has been deliberately shared (blank *Companies*, the same
   convention used across the ``multi_company_field_visible`` stack);
@@ -56,8 +57,10 @@ these holds:
   a portal customer), which is unaffected by this rule and keeps
   following the normal company scoping.
 
-Users with the *Multi Companies* group are unaffected and keep seeing
-every contact, as before.
+A real system administrator does not need a bypass here: pair this with
+``res_company_admin_sync``, which keeps administrators assigned to every
+company automatically, so the plain company-scoping condition above
+already lets them see everything.
 
 The restriction can be turned off from *Settings > General Settings >
 Companies* if it breaks a legitimate use case, such as adding a

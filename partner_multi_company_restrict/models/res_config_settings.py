@@ -9,10 +9,10 @@ class ResConfigSettings(models.TransientModel):
 
     partner_multi_company_restrict_cross_company = fields.Boolean(
         string="Restrict internal-user contacts to own company",
-        help="Regular internal users (without multi-company access) keep "
-        "seeing their own company's colleagues, but no longer see "
-        "colleagues from another company. Disable if this breaks a "
-        "legitimate use case, such as adding a colleague as a follower.",
+        help="Every internal user, however many companies they are allowed "
+        "into, only sees a colleague's contact if it belongs to one of "
+        "their own companies. Disable if this breaks a legitimate use "
+        "case, such as adding a colleague as a follower.",
     )
 
     @api.model

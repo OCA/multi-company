@@ -70,12 +70,34 @@ class TestPartnerRestrictCrossCompany(TransactionCase):
             self.partner_b.sudo().name,
         )
 
-    def test_multi_company_user_sees_everything(self):
-        admin = self.env.ref("base.user_admin")
-        admin.write({"company_ids": [(4, self.company_b.id)]})
-        self.assertTrue(admin.has_group("base.group_multi_company"))
+    def test_multi_company_user_not_assigned_stays_scoped(self):
+        # Deliberately no group-based bypass: a user with multi-company
+        # access but only assigned to company A must NOT see company B's
+        # colleague either.
+        multi_company_user = new_test_user(
+            self.env,
+            login="restrict_multi_company_user",
+            groups="base.group_user,base.group_multi_company",
+            company_id=self.company_a.id,
+            company_ids=[(6, 0, self.company_a.ids)],
+        )
+        with self.assertRaises(AccessError):
+            self.partner_b.with_user(multi_company_user).name  # noqa: B018
+
+    def test_user_assigned_to_both_companies_sees_both(self):
+        # Once actually assigned to both companies (e.g. by
+        # res_company_admin_sync, for a real administrator), a user sees
+        # colleagues of either one -- no special-casing needed.
+        both_companies_user = new_test_user(
+            self.env,
+            login="restrict_both_companies_user",
+            groups="base.group_user,base.group_multi_company",
+            company_id=self.company_a.id,
+            company_ids=[(6, 0, (self.company_a + self.company_b).ids)],
+        )
         self.assertEqual(
-            self.partner_b.with_user(admin).name, self.partner_b.sudo().name
+            self.partner_b.with_user(both_companies_user).name,
+            self.partner_b.sudo().name,
         )
 
     def test_setting_toggle_disables_restriction(self):
