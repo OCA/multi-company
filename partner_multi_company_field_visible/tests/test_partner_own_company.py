@@ -36,3 +36,28 @@ class TestPartnerOwnCompany(TransactionCase):
         # Editing the own company keeps the hidden company B.
         as_merchant.own_company_ids = self.company_a
         self.assertIn(self.company_b, partner.company_ids)
+
+    def test_multi_company_user_partial_active_selection_does_not_crash(self):
+        # A multi-company user (own_company_ids hidden for them) belonging
+        # to two companies but with only ONE of them active in the company
+        # switcher (allowed_company_ids) must not crash reading a partner
+        # shared between both -- own_company_ids' compute must not attempt
+        # to touch the company that is not part of the active selection.
+        multi_company_user = new_test_user(
+            self.env,
+            login="fv_partner_multi_company_user",
+            groups="base.group_user,base.group_multi_company",
+            company_id=self.company_a.id,
+            company_ids=[(6, 0, (self.company_a + self.company_b).ids)],
+        )
+        partner = self.Partner.create({"name": "FV Partner Shared"})
+        partner.company_ids = self.company_a + self.company_b
+        narrowed = partner.with_user(multi_company_user).with_context(
+            allowed_company_ids=self.company_a.ids
+        )
+        narrowed.invalidate_recordset()
+        self.assertFalse(narrowed.show_own_company_field)
+        self.assertEqual(
+            narrowed.read(["own_company_ids"]),
+            [{"id": partner.id, "own_company_ids": []}],
+        )

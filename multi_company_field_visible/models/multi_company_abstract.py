@@ -37,11 +37,26 @@ class MultiCompanyAbstract(models.AbstractModel):
 
     @api.depends("company_ids")
     def _compute_own_company_ids(self):
-        own = self.env.user.company_ids
         for record in self:
+            if not record._show_own_company_field_enabled():
+                # Nobody reads this proxy when the real field is shown
+                # instead (multi-company users) or the model's toggle is
+                # off, so skip it entirely. Setting a Many2many field --
+                # even to fill a compute's cache -- goes through the same
+                # write path as a real edit, which checks 'read' access on
+                # any newly-referenced res.company; since this field's
+                # value is scoped to `self.env.user.company_ids` (every
+                # company the user belongs to) rather than
+                # `self.env.companies` (only the ones active in the
+                # company switcher right now), a multi-company user who
+                # narrowed their active selection would otherwise trip
+                # that check on a company they own but didn't select.
+                record.own_company_ids = False
+                continue
             # ``sudo`` reads the raw m2m without tripping over res.company rules;
             # the result is already narrowed to the user's own companies, so
             # nothing foreign is ever revealed.
+            own = self.env.user.company_ids
             record.own_company_ids = record.sudo().company_ids & own
 
     def _inverse_own_company_ids(self):
