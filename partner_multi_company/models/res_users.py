@@ -9,7 +9,22 @@ class ResUsers(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        users = super().create(vals_list)
+        # Base ``res.users.create()`` syncs the partner's ``company_id``
+        # mid-create ("if partner is global we keep it that way",
+        # ``odoo/addons/base/models/res_users.py``) whenever the partner
+        # already has a company -- an existing partner being promoted to
+        # user, or any module putting a default on
+        # ``res.partner.company_id`` (e.g. ``partner_company_default``).
+        # That write fires the ``company_id`` inverse, which rewrites the
+        # partner's ``company_ids`` down to a single company while the
+        # user is only half-built, and ``_check_company_id`` would reject
+        # that transient state before the alignment below ever runs. Skip
+        # the constraint during the create; the alignment write below
+        # re-triggers it on the final, consistent state.
+        users = super(
+            ResUsers, self.with_context(res_users_creation_in_progress=True)
+        ).create(vals_list)
+        users = users.with_context(res_users_creation_in_progress=False)
         for user in users:
             # The new user might have a company even if it was not in `vals`
             # because of defaults for example.

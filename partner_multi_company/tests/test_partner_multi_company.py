@@ -146,6 +146,36 @@ class TestPartnerMultiCompany(common.TransactionCase):
         with self.assertRaises(AccessError):
             self.partner_company_1.with_user(self.user_company_2).name = "Test"
 
+    def test_create_user_multi_companies_single_create(self):
+        # Creating a user from an existing partner that already has a
+        # company, passing several companies in the same create() call,
+        # must not trip _check_company_id on the transient mid-create
+        # state (base syncs the partner's company_id, whose inverse
+        # temporarily narrows company_ids, before this module's create
+        # override aligns them).
+        partner = self.partner_model.create(
+            [
+                {
+                    "name": "partner promoted to user",
+                    "company_ids": [Command.set(self.company_1.ids)],
+                }
+            ]
+        )
+        user = self.env["res.users"].create(
+            [
+                {
+                    "login": "promoted_multi_company_user",
+                    "partner_id": partner.id,
+                    "group_ids": [Command.link(self.env.ref("base.group_user").id)],
+                    "company_id": self.company_1.id,
+                    "company_ids": [Command.set((self.company_1 + self.company_2).ids)],
+                }
+            ]
+        )
+        self.assertTrue(
+            set(user.company_ids.ids) <= set(user.partner_id.company_ids.ids)
+        )
+
     def test_uninstall(self):
         from ..hooks import uninstall_hook
 

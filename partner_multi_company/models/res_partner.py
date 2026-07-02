@@ -65,6 +65,14 @@ class ResPartner(models.Model):
 
     @api.constrains("company_ids")
     def _check_company_id(self):
+        if self.env.context.get("res_users_creation_in_progress"):
+            # Mid-``res.users.create()`` the partner's companies are in a
+            # transient state (base syncs ``company_id``, whose inverse
+            # rewrites ``company_ids``, before our own create override
+            # aligns them with all the user's companies). The alignment
+            # write at the end of ``res.users.create()`` re-triggers this
+            # constraint on the final state. See ``res_users.py``.
+            return
         for rec in self:
             if rec.user_ids:
                 user_company_ids = set(rec.user_ids.mapped("company_ids").ids)
