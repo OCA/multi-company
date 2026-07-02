@@ -1,12 +1,12 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* res_partner_industry_multi_company
+# 	* utm_medium_multi_company
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-06-09 09:47+0000\n"
+"PO-Revision-Date: 2026-07-01 09:04+0000\n"
 "Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
 "Language-Team: none\n"
 "Language: sl\n"
@@ -17,12 +17,12 @@ msgstr ""
 "n%100==4 ? 2 : 3;\n"
 "X-Generator: Weblate 5.15.2\n"
 
-#. module: res_partner_industry_multi_company
-#: model:ir.model.fields,field_description:res_partner_industry_multi_company.field_res_partner_industry__company_id
+#. module: utm_medium_multi_company
+#: model:ir.model.fields,field_description:utm_medium_multi_company.field_utm_medium__company_id
 msgid "Company"
 msgstr "Družba"
 
-#. module: res_partner_industry_multi_company
-#: model:ir.model,name:res_partner_industry_multi_company.model_res_partner_industry
-msgid "Industry"
-msgstr "Sektor"
+#. module: utm_medium_multi_company
+#: model:ir.model,name:utm_medium_multi_company.model_utm_medium
+msgid "UTM Medium"
+msgstr "UTM medij"

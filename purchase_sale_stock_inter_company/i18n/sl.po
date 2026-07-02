@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-05 13:15+0000\n"
-"PO-Revision-Date: 2026-06-09 07:07+0000\n"
+"PO-Revision-Date: 2026-07-01 08:59+0000\n"
 "Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
 "Language-Team: Slovenian (https://www.transifex.com/oca/teams/23907/sl/)\n"
 "Language: sl\n"
@@ -107,8 +107,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
 msgid ""
-"Failure to confirm picking for PO %(purchase_name)s. Original picking "
-"%(picking_name)s still confirmed, please check the other side manually."
+"Failure to confirm picking for PO %(purchase_name)s. Original picking %"
+"(picking_name)s still confirmed, please check the other side manually."
 msgstr ""
 "Neuspešna potrditev prevzema za nabavni nalog %(purchase_name)s. Izvorni "
 "prevzem %(picking_name)s je še vedno potrjen, preverite drugo stran ročno."
@@ -149,6 +149,11 @@ msgid "Purchase Order"
 msgstr "Nabavni nalog"
 
 #. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_return_picking
+msgid "Return Picking"
+msgstr "Vračilnica"
+
+#. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "Postavka prodajnega naloga"
@@ -157,6 +162,11 @@ msgstr "Postavka prodajnega naloga"
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__state
 msgid "Status"
 msgstr "Status"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_move
+msgid "Stock Move"
+msgstr "Premik zaloge"
 
 #. module: purchase_sale_stock_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
@@ -185,8 +195,8 @@ msgstr "Sinhroniziraj prejem z dobavo"
 #. odoo-python
 #: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
 msgid ""
-"There's no corresponding line in PO %(po)s for assigning qty from "
-"%(pick_name)s for product %(product)s"
+"There's no corresponding line in PO %(po)s for assigning qty from %"
+"(pick_name)s for product %(product)s"
 msgstr ""
 "V nabavnem nalogu %(po)s ni ustrezne postavke za dodelitev količine iz %"
 "(pick_name)s za proizvod %(product)s"

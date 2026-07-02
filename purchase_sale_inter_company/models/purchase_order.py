@@ -205,11 +205,8 @@ class PurchaseOrder(models.Model):
             .search([("auto_purchase_order_id", "in", self.ids)])
         )
         for so in sale_orders:
-            if so.state not in ["draft", "sent", "cancel"]:
-                raise UserError(
-                    self.env._("You can't cancel an order that is %s", so.state)
-                )
-        for so in sale_orders:
-            so.action_cancel()
+            # inject the disable_cancel_warning context key
+            # to cancel directly instead of displaying the wizard.
+            so.with_context(disable_cancel_warning=True).action_cancel()
         self.write({"partner_ref": False})
         return super().button_cancel()

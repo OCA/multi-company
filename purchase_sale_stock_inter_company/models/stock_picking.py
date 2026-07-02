@@ -41,7 +41,10 @@ class StockPicking(models.Model):
         # block the validation of the picking in the destination company
         if self.filtered(
             lambda picking: picking.company_id.block_po_manual_picking_validation
-            and picking._is_intercompany_reception()
+            and (
+                picking._is_intercompany_reception()
+                or picking._is_intercompany_return_delivery()
+            )
             and picking.state in ["done", "waiting", "assigned"]
         ):
             raise UserError(
@@ -55,7 +58,10 @@ class StockPicking(models.Model):
     def _action_done(self):
         res = super()._action_done()
         # Only DropShip pickings
-        for picking in self.filtered(lambda pick: pick._is_intercompany_delivery()):
+        for picking in self.filtered(
+            lambda pick: pick._is_intercompany_delivery()
+            or pick._is_intercompany_return_reception()
+        ):
             purchase = picking.sale_id.sudo().auto_purchase_order_id
             picking.sudo()._action_done_intercompany_actions(purchase)
         return res
@@ -101,6 +107,11 @@ class StockPicking(models.Model):
                         and x.state not in ["done", "cancel"]
                     )
                 )
+                # stock_restrict_lot compatibility
+                if "restrict_lot_id" in move._fields:
+                    po_move_pending = po_move_pending.filtered(
+                        lambda x, move=move: x.restrict_lot_id == move.restrict_lot_id
+                    )
                 po_move_lines = po_move_pending.move_line_ids
                 # Don’t raise an error
                 # if there are no move_line_ids and the location is transit.
@@ -108,19 +119,19 @@ class StockPicking(models.Model):
                 # but in transit locations,
                 # we need to create the move lines to assign lots/serials.
                 if not po_move_pending or (
-                    po_move_lines and move.location_dest_id.usage != "transit"
+                    po_move_lines
+                    and (
+                        move.location_dest_id.usage != "transit"
+                        and not move.picking_id._is_intercompany_return_reception()
+                    )
                 ):
                     raise UserError(
-                        _(
+                        self.env._(
                             "There's no corresponding line in PO %(po)s for assigning "
-                            "qty from %(pick_name)s for product %(product)s"
-                        )
-                        % (
-                            {
-                                "po": purchase.name,
-                                "pick_name": self.name,
-                                "product": move.product_id.display_name,
-                            }
+                            "qty from %(pick_name)s for product %(product)s",
+                            po=purchase.name,
+                            pick_name=self.name,
+                            product=move.product_id.display_name,
                         )
                     )
                 move_line_diff = len(move_lines) - len(po_move_lines)
@@ -213,7 +224,8 @@ class StockPicking(models.Model):
         :return: bool
         """
         return (
-            self.location_id.usage in ["supplier", "transit"]
+            not self.return_id
+            and self.location_id.usage in ["supplier", "transit"]
             and self.purchase_id.sudo().intercompany_sale_order_id
         )
 
@@ -223,6 +235,29 @@ class StockPicking(models.Model):
         :return: bool
         """
         return (
-            self.location_dest_id.usage in ["customer", "transit"]
+            not self.return_id
+            and self.location_dest_id.usage in ["customer", "transit"]
             and self.sale_id.sudo().auto_purchase_order_id
+        )
+
+    def _is_intercompany_return_reception(self):
+        """
+        Check if the picking is an inter-company return reception.
+        :return: bool
+        """
+        return (
+            self.return_id
+            and self.location_id.usage in ["supplier", "transit"]
+            and self.return_id._is_intercompany_delivery()
+        )
+
+    def _is_intercompany_return_delivery(self):
+        """
+        Check if the picking is an inter-company return delivery.
+        :return: bool
+        """
+        return (
+            self.return_id
+            and self.location_dest_id.usage in ["customer", "transit"]
+            and self.return_id._is_intercompany_reception()
         )

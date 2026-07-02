@@ -158,12 +158,6 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
-msgid "You can't cancel an order that is %s"
-msgstr "Naročila, ki je %s, ni mogoče preklicati"
-
-#. module: purchase_sale_inter_company
-#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
 msgid ""
 "You can't change this purchase order as the corresponding sale is %(state)s"
@@ -188,6 +182,9 @@ msgid ""
 msgstr ""
 "Prodajnega naloga ni mogoče ustvariti iz nabavnega, ker je valuta prodajnega "
 "cenika drugačna od valute nabavnega cenika."
+
+#~ msgid "You can't cancel an order that is %s"
+#~ msgstr "Naročila, ki je %s, ni mogoče preklicati"
 
 #, fuzzy
 #~ msgid "Purchase/Sale"

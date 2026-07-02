@@ -213,10 +213,8 @@ class TestPurchaseSaleInterCompany(TestAccountInvoiceInterCompanyBase):
     def test_cancel_confirmed_po_so(self):
         self.company_b.sale_auto_validation = True
         sale = self._approve_po()
-        with self.assertRaisesRegex(
-            UserError, f"You can't cancel an order that is {sale.state}"
-        ):
-            self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+        self.purchase_company_a.with_user(self.user_company_a).button_cancel()
+        self.assertEqual(sale.state, "cancel")
 
     def test_so_change_price(self):
         self.company_b.sale_auto_validation = False
