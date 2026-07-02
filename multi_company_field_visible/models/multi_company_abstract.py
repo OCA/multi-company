@@ -127,6 +127,21 @@ class MultiCompanyAbstract(models.AbstractModel):
             "test_multi_company_field_visible"
         ):
             return
+        if self.env.context.get("default_parent_id") is False:
+            # Core's own ``res.company.create()`` creates a brand new
+            # company's own contact through exactly this context marker
+            # (``odoo/addons/base/models/res_company.py``, the "create
+            # missing partners" block). At that point in the ORM's create
+            # flow, ``base_multi_company``'s ``_inverse_company_id`` fires
+            # as a side effect and briefly clears ``company_ids`` (its
+            # source, ``company_id``, has nothing to compute from yet:
+            # the company doesn't have ``partner_id`` set back to this
+            # very partner until a moment later). This transient, internal
+            # empty state is not a real user-facing edit, so it must not
+            # be rejected here; whatever consuming module scopes a
+            # company's own contact to itself (e.g.
+            # ``partner_multi_company_restrict``) fixes it up right after.
+            return
         if self.env.user.has_group("base.group_multi_company"):
             # Admins may leave it empty on purpose ("All companies" / global).
             return
