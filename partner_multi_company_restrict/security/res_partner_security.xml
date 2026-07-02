@@ -29,14 +29,30 @@
          "shared" convention as the rest of the stack), or it belongs to a
          company they are actually assigned to. Hiding administrators
          specifically is a separate, non-multi-company concern: see
-         ``partner_hide_admin_contact``. -->
+         ``partner_hide_admin_contact``.
+
+         Deliberately ``user.company_ids`` (every company the user
+         belongs to) and NOT the bare ``company_ids`` eval-context
+         variable (``self.env.companies``, only the ones *currently
+         active* in the company switcher): visibility must not depend on
+         which companies happen to be checked in that dropdown right now.
+         Odoo core has several built-in mechanisms that read another
+         internal user's contact regardless of the acting user's active
+         company selection, e.g. Discuss auto-subscribing every
+         internal user to a channel when a new user is created
+         (`mail/models/discuss/discuss_channel.py`,
+         `_subscribe_users_automatically_get_members`) enumerates every
+         user in the relevant group, not just the ones sharing the active
+         company. Scoping by the active selection made those crash with
+         an AccessError the moment an administrator had narrowed their
+         switcher to fewer companies than they actually belong to. -->
     <record id="res_partner_rule_restrict_cross_company" model="ir.rule">
         <field
             name="name"
         >res.partner: restrict internal-user contacts to own company</field>
         <field name="model_id" ref="base.model_res_partner" />
         <field name="domain_force">
-            ['|', '|', '|', ('partner_share', '=', True), ('id', '=', user.partner_id.id), ('company_ids', '=', False), ('company_ids', 'in', company_ids)]
+            ['|', '|', '|', ('partner_share', '=', True), ('id', '=', user.partner_id.id), ('company_ids', '=', False), ('company_ids', 'in', user.company_ids.ids)]
         </field>
     </record>
 </odoo>

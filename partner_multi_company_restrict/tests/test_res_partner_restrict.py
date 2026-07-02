@@ -100,6 +100,25 @@ class TestPartnerRestrictCrossCompany(TransactionCase):
             self.partner_b.sudo().name,
         )
 
+    def test_narrowed_active_selection_does_not_hide_own_companies(self):
+        # Visibility must depend on which companies the user actually
+        # belongs to, not on which ones happen to be checked in the
+        # company switcher right now. Reproduces the AccessError Odoo
+        # core's Discuss auto-subscribe hit when an administrator, member
+        # of every company, had only one of them active.
+        both_companies_user = new_test_user(
+            self.env,
+            login="restrict_narrowed_selection_user",
+            groups="base.group_user,base.group_multi_company",
+            company_id=self.company_a.id,
+            company_ids=[(6, 0, (self.company_a + self.company_b).ids)],
+        )
+        narrowed = self.partner_b.with_user(both_companies_user).with_context(
+            allowed_company_ids=self.company_a.ids
+        )
+        narrowed.invalidate_recordset()
+        self.assertEqual(narrowed.name, self.partner_b.sudo().name)
+
     def test_new_company_partner_is_scoped_to_itself(self):
         # A company's own contact is created with a blank company_ids by
         # default (the "shared" convention), which made it visible to
