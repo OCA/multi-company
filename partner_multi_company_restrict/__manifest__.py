@@ -3,7 +3,7 @@
 
 {
     "name": "Partner Multi Company Restrict",
-    "summary": "Restrict cross-company visibility of contacts linked to internal users",
+    "summary": "Restrict cross-company visibility of internal users, company contacts",
     "version": "19.0.1.0.0",
     "author": "Canarias Conectada, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
@@ -15,4 +15,5 @@
         "views/res_config_settings_view.xml",
     ],
     "installable": True,
+    "post_init_hook": "post_init_hook",
 }

@@ -100,6 +100,22 @@ class TestPartnerRestrictCrossCompany(TransactionCase):
             self.partner_b.sudo().name,
         )
 
+    def test_new_company_partner_is_scoped_to_itself(self):
+        # A company's own contact is created with a blank company_ids by
+        # default (the "shared" convention), which made it visible to
+        # everyone. It must instead be scoped to itself.
+        self.assertEqual(self.company_b.partner_id.sudo().company_ids, self.company_b)
+
+    def test_other_company_own_contact_is_hidden(self):
+        with self.assertRaises(AccessError):
+            self.company_b.partner_id.with_user(self.merchant_a).name  # noqa: B018
+
+    def test_own_company_contact_is_visible(self):
+        self.assertEqual(
+            self.company_a.partner_id.with_user(self.merchant_a).name,
+            self.company_a.partner_id.sudo().name,
+        )
+
     def test_setting_toggle_disables_restriction(self):
         rule = self.env.ref(
             "partner_multi_company_restrict.res_partner_rule_restrict_cross_company"

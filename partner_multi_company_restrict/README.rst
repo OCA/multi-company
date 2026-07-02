@@ -70,6 +70,20 @@ To also hide contacts linked to system administrators from regular users
 (a separate, non-multi-company concern), install
 ``partner_hide_admin_contact`` alongside this module.
 
+Company records
+---------------
+
+A company's own contact (e.g. the partner behind "My Company") is
+created with a blank ``company_ids``, the "shared with everyone"
+convention used across this stack -- which meant it stayed visible to
+every user regardless of company. This module's ``post_init_hook``
+scopes every pre-existing company's contact to itself, and a
+``res.company`` override does the same for any company created
+afterwards, so the company-scoping rules above apply to it too: a user
+only sees another company's own contact card if they are actually
+assigned to that company (or it was deliberately re-shared by clearing
+its ``Companies`` field again).
+
 **Table of contents**
 
 .. contents::
