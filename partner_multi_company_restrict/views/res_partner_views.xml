@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Canarias Conectada
+     License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <!-- Pure display default, not a security boundary: the underlying
+         ir.rule already limits what a user can ever see to their real
+         company membership (see res_partner_security.xml), on purpose
+         independent of the active company switcher. This filter narrows
+         the *list* to the active selection by default, so a user who
+         belongs to several companies isn't shown all of them at once when
+         only one is checked in the switcher, removable with a click for
+         the (rarer) case they want to see their other companies too. -->
+    <record id="view_res_partner_filter_active_company" model="ir.ui.view">
+        <field name="name">res.partner.select.active.company</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter" />
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <filter
+                    name="active_company_only"
+                    string="My Active Company"
+                    domain="['|', ('company_ids', '=', False), ('company_ids', 'in', allowed_company_ids)]"
+                />
+            </filter>
+        </field>
+    </record>
+
+    <record id="base.action_partner_form" model="ir.actions.act_window">
+        <field name="context">{'search_default_active_company': 1}</field>
+    </record>
+
+    <record id="contacts.action_contacts" model="ir.actions.act_window">
+        <field
+            name="context"
+        >{'default_is_company': True, 'search_default_active_company': 1}</field>
+    </record>
+</odoo>

@@ -1,9 +1,12 @@
 # Copyright 2026 Canarias Conectada
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
+import lxml.etree as ET
+
 from odoo.exceptions import AccessError
 from odoo.tests import new_test_user, tagged
 from odoo.tests.common import TransactionCase
+from odoo.tools.safe_eval import safe_eval
 
 
 @tagged("post_install", "-at_install")
@@ -134,6 +137,44 @@ class TestPartnerRestrictCrossCompany(TransactionCase):
             self.company_a.partner_id.with_user(self.merchant_a).name,
             self.company_a.partner_id.sudo().name,
         )
+
+    def test_active_company_filter_narrows_to_the_switcher_selection(self):
+        # The "My Active Company" search filter is a display default, not a
+        # security boundary: a user genuinely assigned to both companies
+        # can still access either one (see
+        # test_user_assigned_to_both_companies_sees_both), but the filter
+        # narrows what's shown by default to whatever is checked in the
+        # company switcher right now.
+        both_companies_user = new_test_user(
+            self.env,
+            login="restrict_filter_both_companies_user",
+            groups="base.group_user,base.group_multi_company",
+            company_id=self.company_a.id,
+            company_ids=[(6, 0, self.company_a.ids)],
+        )
+        both_companies_user.write({"company_ids": [(4, self.company_b.id)]})
+
+        search_view = self.env.ref("base.view_res_partner_filter")
+        arch = ET.fromstring(search_view.get_combined_arch())
+        filter_domain = next(
+            f.get("domain")
+            for f in arch.iter("filter")
+            if f.get("name") == "active_company_only"
+        )
+        domain = safe_eval(filter_domain, {"allowed_company_ids": self.company_a.ids})
+
+        Partner = (
+            self.env["res.partner"]
+            .with_user(both_companies_user)
+            .with_context(allowed_company_ids=self.company_a.ids)
+        )
+        relevant = self.partner_colleague_a + self.partner_b
+
+        narrowed = Partner.search(["&", ("id", "in", relevant.ids)] + domain)
+        self.assertEqual(narrowed, self.partner_colleague_a)
+
+        unfiltered = Partner.search([("id", "in", relevant.ids)])
+        self.assertEqual(unfiltered, relevant)
 
     def test_setting_toggle_disables_restriction(self):
         rule = self.env.ref(
