@@ -97,7 +97,7 @@ class StockPicking(models.Model):
             dest_picking = self.intercompany_picking_id.with_user(
                 intercompany_user
             ).with_company(dest_company)
-            for move in self.move_ids:
+            for move in self.move_ids.filtered(lambda m: m.state != "cancel"):
                 move_lines = move.move_line_ids.filtered(lambda x: x.quantity > 0)
                 # To identify the correct move to write to,
                 # use both the SO-PO link and the intercompany_picking_id link
