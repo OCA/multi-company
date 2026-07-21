@@ -123,7 +123,10 @@ class AccountMove(models.Model):
         dest_journal_type = self._get_destination_journal_type()
         # find the correct journal
         dest_journal = self.env["account.journal"].search(
-            [("type", "=", dest_journal_type), ("company_id", "=", dest_company.id)],
+            [
+                *self.env["account.journal"]._check_company_domain(dest_company),
+                ("type", "=", dest_journal_type),
+            ],
             limit=1,
         )
         if not dest_journal:

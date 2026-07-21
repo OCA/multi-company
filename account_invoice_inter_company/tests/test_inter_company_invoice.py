@@ -398,6 +398,37 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
                 line_form.price_unit = 33.3
             move_form.save()
 
+    def test_check_dest_journal_company_branch(self):
+        """The destination journal may be defined on the parent company while
+        the destination company is one of its branches. It must still be found
+        through the company hierarchy (parent_of), otherwise the intercompany
+        invoice creation would wrongly fail with a missing journal error.
+        """
+        # company_b is the parent; its purchase journal is
+        # self.purchases_journal_company_b
+        branch_company_b = self.env["res.company"].create(
+            {
+                "name": "Company B Branch",
+                "parent_id": self.company_b.id,
+                "intercompany_invoicing": True,
+            }
+        )
+        # No purchase journal is defined directly on the branch
+        self.assertFalse(
+            self.env["account.journal"].search(
+                [
+                    ("company_id", "=", branch_company_b.id),
+                    ("type", "=", "purchase"),
+                ]
+            )
+        )
+        # The origin is an out_invoice, so the destination journal type is
+        # "purchase". As in the real flow (sudo + destination company context),
+        # the check must not raise: it finds the parent company's journal.
+        self.invoice_company_a.sudo().with_company(
+            branch_company_b.id
+        )._check_dest_journal(branch_company_b)
+
     def test_confirm_invoice_with_child_partner(self):
         # ensure the catalog is shared
         self.env.ref("product.product_comp_rule").write({"active": False})
