@@ -225,6 +225,16 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         # Check if all companies have been added
         self.assertEqual(tester.sudo().company_ids, companies)
 
+    def test_company_id_only_create(self):
+        """Test object creation with only company_id."""
+        tester = self.test_model.create(
+            {
+                "name": "Company ID Tester",
+                "company_id": self.company_1.id,
+            }
+        )
+        self.assertEqual(tester.sudo().company_ids, self.company_1)
+
     def test_company_id_create_false(self):
         """
         Test a creation with only company_id == False

@@ -93,6 +93,14 @@ class MultiCompanyAbstract(models.AbstractModel):
     def create(self, vals_list):
         """Discard changes in company_id field if company_ids has been given."""
         for vals in vals_list:
+            # Avoid triggering the inverse write of company_id after creating a record.
+            # The intermediate record has no company_ids yet, which can make
+            # company-dependent record rules reject the write for users creating
+            # products.
+            if "company_id" in vals and "company_ids" not in vals:
+                company_id = vals.pop("company_id")
+                if company_id:
+                    vals["company_ids"] = [fields.Command.link(company_id)]
             self._multicompany_patch_vals(vals)
         return super().create(vals_list)
 
