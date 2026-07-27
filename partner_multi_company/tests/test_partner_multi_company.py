@@ -240,6 +240,39 @@ class TestPartnerMultiCompany(common.TransactionCase):
             self.partner_company_both.company_ids,
         )
 
+    def test_commercial_fields_to_children(self):
+        """Test that company_ids are correctly propagated to child partners
+        when the parent is modified in sudo mode, to avoid cache pollution."""
+        self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
+        child = self.env["res.partner"].create(
+            [{"name": "Child test", "parent_id": self.partner_company_both.id}]
+        )
+        # Remove the sudo mode by changing the user
+        self.assertTrue(self.partner_company_both.env.su)
+        partner_company_both = self.partner_company_both.with_user(self.user_company_1)
+        self.assertFalse(partner_company_both.env.su)
+        # Check that the original partner is in sudo mode
+        self.assertTrue(self.partner_company_both.env.su)
+        self.assertEqual(len(partner_company_both.company_ids), 2)
+        self.assertEqual(len(partner_company_both.sudo().company_ids), 2)
+        self.assertEqual(len(self.partner_company_both.company_ids), 2)
+        partner_company_both.company_ids = [Command.unlink(self.company_1.id)]
+        self.assertEqual(len(partner_company_both.company_ids), 1)
+        self.assertEqual(len(partner_company_both.sudo().company_ids), 1)
+        self.assertEqual(len(self.partner_company_both.company_ids), 1)
+        self.assertEqual(
+            child.company_ids,
+            partner_company_both.company_ids,
+        )
+        partner_company_both.company_ids = [Command.link(self.company_1.id)]
+        self.assertEqual(len(partner_company_both.company_ids), 2)
+        self.assertEqual(len(partner_company_both.sudo().company_ids), 2)
+        self.assertEqual(len(self.partner_company_both.company_ids), 2)
+        self.assertEqual(
+            child.company_ids,
+            partner_company_both.company_ids,
+        )
+
     def test_avoid_updating_company_ids_in_global_partners(self):
         self.user_company_1.write({"company_ids": [Command.link(self.company_2.id)]})
         user_partner = self.user_company_1.partner_id
