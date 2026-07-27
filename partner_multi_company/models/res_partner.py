@@ -32,6 +32,17 @@ class ResPartner(models.Model):
         commercial_fields += ["company_ids"]
         return commercial_fields
 
+    def _children_sync(self, values):
+        if "company_ids" in values:
+            # When the transaction is performed in sudo mode,
+            # see https://github.com/odoo/odoo/blob/629a563148452091bd1af9267596859b140350bb/odoo/addons/base/models/res_partner.py#L689
+            # the cache becomes inconsistent for the many2many field,
+            # and the child partners are not updated with the new company_ids value.
+            # Instead, they retain the previous value.
+            # Therefore, we need to invalidate the cache to force the update.
+            self.invalidate_recordset(["company_ids"], True)
+        return super()._children_sync(values)
+
     @api.model
     def _amend_company_id(self, vals):
         if "company_ids" in vals:
