@@ -418,6 +418,125 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             po_picking_id.mapped("move_ids.move_line_ids.lot_id.name"),
         )
 
+    def test_sync_picking_lot_valuated_with_done_move(self):
+        """
+        A lot must be assigned on the destination move lines even when the
+        counterpart PO already has a done move.
+
+        When a receipt of the PO is already done, a new move is copied from it
+        with `move_line_ids: False`, so it starts without any move line. The
+        missing lines are then created by `_prepare_move_line_vals`, which never
+        sets a lot. On a `lot_valuated` product, such a lot-less line makes the
+        valuation raise "A lot/serial number is required for product ...".
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        self.company_a.sync_picking_failure_action = "raise"
+        self.company_b.sync_picking_failure_action = "raise"
+        # Valuate the product per lot: this is what enables the check in
+        # `stock_account` that this test is about.
+        product = self.env["product.product"].create(
+            {
+                "name": "Lot Tracked Valuated Product",
+                "is_storable": True,
+                "tracking": "lot",
+                "categ_id": self.product_categ.id,
+            }
+        )
+        product.categ_id.property_cost_method = "fifo"
+        product.categ_id.property_valuation = "real_time"
+        product.lot_valuated = True
+
+        purchase = self._create_purchase_order(self.partner_company_b, product)
+        purchase.order_line.product_qty = 10
+        sale = self._approve_po(purchase)
+
+        def _ship(picking, lot_name, qty):
+            """Ship `qty` of `lot_name` through `picking` and validate it."""
+            lot = self.lot_obj.create(
+                {
+                    "product_id": product.id,
+                    "name": lot_name,
+                    "company_id": self.company_b.id,
+                }
+            )
+            move = picking.move_ids
+            move.move_line_ids = [
+                Command.clear(),
+                Command.create(
+                    {
+                        "location_id": move.location_id.id,
+                        "location_dest_id": move.location_dest_id.id,
+                        "product_id": product.id,
+                        "product_uom_id": product.uom_id.id,
+                        "quantity": qty,
+                        "lot_id": lot.id,
+                        "picking_id": picking.id,
+                    },
+                ),
+            ]
+            res = picking.with_user(self.user_company_b).button_validate()
+            if isinstance(res, dict) and "context" in res:
+                wizard = (
+                    self.env["stock.backorder.confirmation"]
+                    .with_context(**res.get("context"))
+                    .create({})
+                )
+                wizard.process()
+            return lot
+
+        # First delivery: 4 units, leaving a backorder. This makes the receipt
+        # of the PO done, which is the pre-condition for the copy of the done
+        # move on the next delivery.
+        lot_a = _ship(sale.picking_ids, "LOT-A", 4)
+        self.assertTrue(
+            purchase.picking_ids.filtered(lambda p: p.state == "done"),
+            msg="The first receipt should be done.",
+        )
+
+        # Second delivery, from the backorder: the sync now goes through the
+        # `done_move.copy()` branch, where the copied move has no move line.
+        backorder = sale.picking_ids.filtered(lambda p: p.state != "done")
+        self.assertTrue(backorder, msg="A backorder should have been created.")
+        lot_b = _ship(backorder, "LOT-B", 6)
+
+        # No received move line may be left without a lot.
+        received_lines = purchase.picking_ids.filtered(
+            lambda p: p.state == "done"
+        ).move_ids.move_line_ids.filtered(lambda ml: ml.quantity > 0)
+        self.assertTrue(received_lines, msg="The receipts should have move lines.")
+        self.assertFalse(
+            received_lines.filtered(lambda ml: not ml.lot_id),
+            msg="Every received move line should have a lot assigned.",
+        )
+        # Both shipped lots must be the ones received.
+        self.assertEqual(
+            lot_a | lot_b,
+            received_lines.lot_id,
+            msg="The lots of the moves should be the same",
+        )
+        # The quantity of each lot must be received exactly once: the move
+        # copied from the done one must not duplicate a quantity that already
+        # has its own line on the pending receipt.
+        self.assertEqual(
+            {lot_a: 4, lot_b: 6},
+            {
+                lot: sum(lines.mapped("quantity"))
+                for lot, lines in received_lines.grouped("lot_id").items()
+            },
+            msg="Each lot should be received exactly once, with its quantity.",
+        )
+        self.assertEqual(
+            10,
+            purchase.order_line.qty_received,
+            msg="The whole ordered quantity should be received.",
+        )
+        # The lines mirrored on the move copied from the done one only exist to
+        # carry a lot at creation time; the ones whose quantity another line
+        # already covers end up zeroed. They are harmless -- they contribute
+        # neither quantity nor value -- but they must not be counted twice,
+        # which the per-lot and `qty_received` assertions above verify.
+
     def test_sync_picking_lot_with_transit_location(self):
         """
         Test that the lot is synchronized on the moves
