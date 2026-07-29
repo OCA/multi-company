@@ -4,10 +4,10 @@
 
 {
     "name": "Partner Account Multi-Company Default",
-    "summary": "Set a default account for all companies of a partners",
+    "summary": "Set a default product pricelist for all companies of a partners",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
-    "category": "Accounting/Accounting",
+    "category": "Sales/Sales",
     "website": "https://github.com/OCA/multi-company",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "maintainers": ["camptocamp"],

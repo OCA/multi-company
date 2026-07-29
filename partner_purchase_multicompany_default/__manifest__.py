@@ -7,14 +7,14 @@
     "summary": "Set a default account for all companies of a partners",
     "version": "16.0.0.1.0",
     "development_status": "Alpha",
-    "category": "Accounting/Accounting",
+    "category": "Inventory/Purchase",
     "website": "https://github.com/OCA/multi-company",
     "author": "Camptocamp, Odoo Community Association (OCA)",
     "maintainers": ["camptocamp"],
     "license": "LGPL-3",
     "depends": [
         "partner_base_multicompany_default",
-        "account",
+        "purchase",
     ],
     "data": [
         "views/partner_view.xml",
