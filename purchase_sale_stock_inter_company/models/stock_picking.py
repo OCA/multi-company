@@ -2,7 +2,7 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import SUPERUSER_ID, api, fields, models
+from odoo import SUPERUSER_ID, Command, api, fields, models
 from odoo.exceptions import UserError
 
 
@@ -144,11 +144,42 @@ class StockPicking(models.Model):
                 ):
                     # Calculate the quantity from the move_lines
                     qty = sum(move_lines.mapped("quantity"))
-                    po_move_pending = po_moves_done[-1].copy(
+                    # Mirror the lots of the delivery on the copied move. The
+                    # copy is created in a `done` picking, so `stock.move.create`
+                    # forces it to `done` and its move lines are valued right
+                    # away. On a `lot_valuated` product a lot-less line makes
+                    # `stock.move._set_value` raise "A lot/serial number is
+                    # required for product ..." (control added by odoo/odoo
+                    # d06959e3732286127795e4ee7fc3b2d4012312e5), so the lines
+                    # cannot be created empty and completed later: they must
+                    # carry their lot from the start.
+                    new_move_line_vals = [
+                        {
+                            "product_id": ml.product_id.id,
+                            "product_uom_id": ml.product_uom_id.id,
+                            "quantity": ml.quantity,
+                            "lot_id": ml._ensure_lot_multicompany().id,
+                        }
+                        for ml in move_lines
+                        if ml.lot_id
+                    ]
+                    done_move = po_moves_done[-1]
+                    po_move_pending = done_move.copy(
                         {
                             "product_uom_qty": qty,
                             "quantity": qty,
-                            "move_line_ids": False,
+                            "move_line_ids": [
+                                Command.create(
+                                    dict(
+                                        vals,
+                                        location_id=done_move.location_id.id,
+                                        location_dest_id=done_move.location_dest_id.id,
+                                        picking_id=done_move.picking_id.id,
+                                    )
+                                )
+                                for vals in new_move_line_vals
+                            ]
+                            or False,
                         }
                     )
                 else:
