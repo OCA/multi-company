@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-08-05 13:15+0000\n"
-"PO-Revision-Date: 2025-12-01 11:42+0000\n"
+"PO-Revision-Date: 2026-07-01 09:37+0000\n"
 "Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
 "Language-Team: none\n"
 "Language: it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10.4\n"
+"X-Generator: Weblate 5.15.2\n"
 
 #. module: purchase_sale_stock_inter_company
 #: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_stock_picking__state
@@ -107,8 +107,8 @@ msgstr ""
 #. odoo-python
 #: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
 msgid ""
-"Failure to confirm picking for PO %(purchase_name)s. Original picking "
-"%(picking_name)s still confirmed, please check the other side manually."
+"Failure to confirm picking for PO %(purchase_name)s. Original picking %"
+"(picking_name)s still confirmed, please check the other side manually."
 msgstr ""
 "Fallimento della conferma del prelievo per OA %(purchase_name)s. Il prelievo "
 "origine %(picking_name)s ancora confermato, controllare lato ordine "
@@ -152,6 +152,11 @@ msgid "Purchase Order"
 msgstr "Ordine di acquisto"
 
 #. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_return_picking
+msgid "Return Picking"
+msgstr "Prelievo di reso"
+
+#. module: purchase_sale_stock_inter_company
 #: model:ir.model,name:purchase_sale_stock_inter_company.model_sale_order_line
 msgid "Sales Order Line"
 msgstr "Riga ordine di vendita"
@@ -160,6 +165,11 @@ msgstr "Riga ordine di vendita"
 #: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__state
 msgid "Status"
 msgstr "Stato"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_move
+msgid "Stock Move"
+msgstr "Movimento di magazzino"
 
 #. module: purchase_sale_stock_inter_company
 #: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
@@ -190,8 +200,8 @@ msgstr "Sincronizza la ricezione con la spedizione"
 #. odoo-python
 #: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
 msgid ""
-"There's no corresponding line in PO %(po)s for assigning qty from "
-"%(pick_name)s for product %(product)s"
+"There's no corresponding line in PO %(po)s for assigning qty from %"
+"(pick_name)s for product %(product)s"
 msgstr ""
 "Non c'è una riga corrisponde nell'ordine d'acquisto %(po)s per assegnare la "
 "quantità da %(pick_name)s per il prodotto %(product)s"

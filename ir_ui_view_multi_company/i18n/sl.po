@@ -1,0 +1,38 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* ir_ui_view_multi_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-06-09 07:09+0000\n"
+"Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
+"Language-Team: none\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 5.15.2\n"
+
+#. module: ir_ui_view_multi_company
+#: model:ir.model,name:ir_ui_view_multi_company.model_base
+msgid "Base"
+msgstr "Osnova"
+
+#. module: ir_ui_view_multi_company
+#: model:ir.model.fields,field_description:ir_ui_view_multi_company.field_ir_ui_view__company_ids
+msgid "Companies"
+msgstr "Družbe"
+
+#. module: ir_ui_view_multi_company
+#: model:ir.model.fields,help:ir_ui_view_multi_company.field_ir_ui_view__company_ids
+msgid "This view is specific to these companies."
+msgstr "Ta prikaz je specifičen za te družbe."
+
+#. module: ir_ui_view_multi_company
+#: model:ir.model,name:ir_ui_view_multi_company.model_ir_ui_view
+msgid "View"
+msgstr "Prikaz"

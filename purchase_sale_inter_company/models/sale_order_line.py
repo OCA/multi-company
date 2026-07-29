@@ -22,10 +22,11 @@ class SaleOrderLine(models.Model):
         of the sale order line to the price unit
         of the purchase order line in case of intercompany sale.
         It takes into account the tax inclusion/exclusion
-        of both the sale order line and the purchase order line.
+        of both the sale order line and the purchase order line,
+        as well as the sale order line discount.
         """
         dest_taxes = self.auto_purchase_line_id.taxes_id
-        price_unit = self.price_unit
+        price_unit = self.price_unit * (1 - self.discount / 100)
         base_line = self._prepare_base_line_for_taxes_computation(quantity=1)
         self.env["account.tax"]._add_tax_details_in_base_line(
             base_line, self.company_id

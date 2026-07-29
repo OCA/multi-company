@@ -155,12 +155,6 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
-msgid "You can't cancel an order that is %s"
-msgstr "Impossibile annullare un ordine che è %s"
-
-#. module: purchase_sale_inter_company
-#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
 msgid ""
 "You can't change this purchase order as the corresponding sale is %(state)s"
@@ -185,6 +179,9 @@ msgid ""
 msgstr ""
 "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
 "valuta del listino di vendita è diversa dalla valuta del listino d'acquisto."
+
+#~ msgid "You can't cancel an order that is %s"
+#~ msgstr "Impossibile annullare un ordine che è %s"
 
 #~ msgid "Purchase/Sale"
 #~ msgstr "Acquisto/Vendita"

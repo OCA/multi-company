@@ -157,18 +157,12 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #. odoo-python
-#: code:addons/purchase_sale_inter_company/models/purchase_order.py:0
-msgid "You can't cancel an order that is %s"
-msgstr "No puede cancelar un pedido que es %s"
-
-#. module: purchase_sale_inter_company
-#. odoo-python
 #: code:addons/purchase_sale_inter_company/models/purchase_order_line.py:0
 msgid ""
 "You can't change this purchase order as the corresponding sale is %(state)s"
 msgstr ""
-"No puede cambiar esta orden de compra ya que la venta correspondiente es "
-"%(state)s"
+"No puede cambiar esta orden de compra ya que la venta correspondiente es %"
+"(state)s"
 
 #. module: purchase_sale_inter_company
 #. odoo-python
@@ -187,6 +181,9 @@ msgid ""
 msgstr ""
 "No puede crear pedido de venta desde pedido de compra porque la moneda de la "
 "tarifa de venta es distinta de la moneda de la tarifa de compra."
+
+#~ msgid "You can't cancel an order that is %s"
+#~ msgstr "No puede cancelar un pedido que es %s"
 
 #~ msgid "Purchase/Sale"
 #~ msgstr "Compra/Venta"

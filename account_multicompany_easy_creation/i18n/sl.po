@@ -1,0 +1,309 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_multicompany_easy_creation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-07-01 12:46+0000\n"
+"Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
+"Language-Team: none\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 5.15.2\n"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Accept"
+msgstr "Sprejmi"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Account"
+msgstr "Konto"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__acc_number
+msgid "Account Number"
+msgstr "Številka konta"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Accounts"
+msgstr "Konti"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__allow_out_payment
+msgid "Allow Out Payments"
+msgstr "Dovoli izhodna plačila"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__bank_id
+msgid "Bank"
+msgstr "Banka"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__bank_ids
+msgid "Bank accounts to create"
+msgstr "Bančni računi za ustvarjanje"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Banks"
+msgstr "Banke"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Cancel"
+msgstr "Prekliči"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__chart_template
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Chart Template"
+msgstr "Predloga plana"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model,name:account_multicompany_easy_creation.model_res_company
+msgid "Companies"
+msgstr "Družbe"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__new_company_id
+msgid "Company"
+msgstr "Družba"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__name
+msgid "Company Name"
+msgstr "Naziv družbe"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.actions.act_window,name:account_multicompany_easy_creation.wizard_multicompany_easy_creation_action
+#: model:ir.ui.menu,name:account_multicompany_easy_creation.multicompany_easy_creation_menu
+msgid "Company easy creation"
+msgstr "Enostavno ustvarjanje družbe"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__country_id
+msgid "Country"
+msgstr "Država"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__create_uid
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__create_uid
+msgid "Created by"
+msgstr "Ustvaril"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__create_date
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__create_date
+msgid "Created on"
+msgstr "Ustvarjeno"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__currency_id
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Currency"
+msgstr "Valuta"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__default_purchase_tax
+msgid "Default Purchase Tax"
+msgstr "Privzeti davek na nabavo"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__default_purchase_tax_options
+msgid "Default Purchase Tax Options"
+msgstr "Opcije privzetega davka na nabavo"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__default_sale_tax_options
+msgid "Default Sale Tax Options"
+msgstr "Opcije privzetega davka na prodajo"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__default_sale_tax
+msgid "Default Sales Tax"
+msgstr "Privzeti davek na prodajo"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__display_name
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__display_name
+msgid "Display Name"
+msgstr "Prikazani naziv"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Fill company data"
+msgstr "Izpolnite podatke družbe"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
+msgid "Force Purchase Tax In All Products"
+msgstr "Vsili nabavni davek pri vseh proizvodih"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
+msgid "Force Sale Tax In All Products"
+msgstr "Vsili prodajni davek pri vseh proizvodih"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
+msgid ""
+"Go over partner fiscal positions in actual company to match and set "
+"equivalent fiscal positions in the new company."
+msgstr ""
+"Preglejte davčna območja partnerjev v trenutni družbi, da se ujemajo in "
+"nastavijo enakovredna davčna območja v novi družbi."
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
+msgid ""
+"Go over product taxes in actual company to match and set equivalent taxes in"
+" then new company."
+msgstr ""
+"Preglejte davke proizvodov v trenutni družbi, da se ujemajo in nastavijo "
+"enakovredni davki v novi družbi."
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
+msgid ""
+"Go over specific accounts in actual company to match and set equivalent taxes in the new company.\n"
+"Applies to products, categories, partners, ..."
+msgstr ""
+"Preglejte določene konte v trenutni družbi, da se ujemajo in nastavijo "
+"enakovredni davki v novi družbi.\n"
+"Velja za proizvode, kategorije, partnerje ..."
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__id
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__id
+msgid "ID"
+msgstr "ID"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__write_uid
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__write_uid
+msgid "Last Updated by"
+msgstr "Zadnji posodobil"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__write_date
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__write_date
+msgid "Last Updated on"
+msgstr "Zadnjič posodobljeno"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Sequences"
+msgstr "Zaporedja"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__sequence_ids
+msgid "Sequences to create"
+msgstr "Zaporedja za ustvarjanje"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_purchase_tax
+msgid ""
+"Set default purchase tax to all products.\n"
+"If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
+msgstr ""
+"Nastavite privzeti nabavni davek za vse proizvode.\n"
+"Če je omogočeno tudi pametno iskanje davkov proizvodov, bodo najdena "
+"ujemanja prepisala privzete davke, nenajdeni pa bodo ostali"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__force_sale_tax
+msgid ""
+"Set default sales tax to all products.\n"
+"If smart search product tax is also enabled matches founded will overwrite default taxes, but not founded will remain"
+msgstr ""
+"Nastavite privzeti prodajni davek za vse proizvode.\n"
+"Če je omogočeno tudi pametno iskanje davkov proizvodov, bodo najdena "
+"ujemanja prepisala privzete davke, nenajdeni pa bodo ostali"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_fiscal_position
+msgid "Smart Search Fiscal Position"
+msgstr "Pametno iskanje davčnega območja"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_product_tax
+msgid "Smart Search Product Tax"
+msgstr "Pametno iskanje davka proizvoda"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__smart_search_specific_account
+msgid "Smart Search Specific Account"
+msgstr "Pametno iskanje določenega konta"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Smart search to set product taxes"
+msgstr "Pametno iskanje za nastavitev davkov proizvodov"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid ""
+"Smart search to set specific accounts in products, categories, partners, ..."
+msgstr ""
+"Pametno iskanje za nastavitev določenih kontov pri proizvodih, kategorijah, "
+"partnerjih ..."
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Smart search to set specific fiscal position in partners"
+msgstr ""
+"Pametno iskanje za nastavitev določenega davčnega območja pri partnerjih"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Taxes"
+msgstr "Davki"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_taxes
+msgid "Update Default Taxes"
+msgstr "Posodobi privzete davke"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Update default taxes"
+msgstr "Posodobi privzete davke"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,help:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__update_default_taxes
+msgid "Update default taxes applied to local transactions"
+msgstr "Posodobi privzete davke, uporabljene pri lokalnih transakcijah"
+
+#. module: account_multicompany_easy_creation
+#: model_terms:ir.ui.view,arch_db:account_multicompany_easy_creation.wizard_multicompany_easy_creation_view_form
+msgid "Users"
+msgstr "Uporabniki"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_easy_creation_wiz__user_ids
+msgid "Users allowed"
+msgstr "Dovoljeni uporabniki"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model.fields,field_description:account_multicompany_easy_creation.field_account_multicompany_bank_wiz__wizard_id
+msgid "Wizard"
+msgstr "Čarovnik"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_bank_wiz
+msgid "Wizard Account Multi-company Bank"
+msgstr "Čarovnik za bančni račun več družb"
+
+#. module: account_multicompany_easy_creation
+#: model:ir.model,name:account_multicompany_easy_creation.model_account_multicompany_easy_creation_wiz
+msgid "Wizard Account Multi-company Easy Creation"
+msgstr "Čarovnik za enostavno ustvarjanje več družb"
