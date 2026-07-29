@@ -295,6 +295,95 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
             po_picking_id.mapped("move_ids.move_line_ids.lot_id.name"),
         )
 
+    def test_sync_picking_lot_valuated_with_done_move(self):
+        """
+        A lot must be assigned on the destination move lines even when the
+        counterpart PO only has done moves.
+
+        Returning a sale return delivers the goods again. As every move of the
+        PO is done by then, a new move is copied from a done one, in its done
+        picking. Odoo forces such a move to `done` and values its move lines
+        right away: on a `lot_valuated` product, a line without a lot makes the
+        valuation raise "A lot/serial number is required for product ...".
+        """
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        self.company_a.sync_picking_failure_action = "raise"
+        self.company_b.sync_picking_failure_action = "raise"
+        # Valuate the product per lot: this is what enables the check in
+        # `stock_account` that this test is about.
+        product = self.env["product.product"].create(
+            {
+                "name": "Lot Tracked Valuated Product",
+                "is_storable": True,
+                "tracking": "lot",
+                "categ_id": self.product_categ.id,
+            }
+        )
+        product.categ_id.property_cost_method = "fifo"
+        product.categ_id.property_valuation = "real_time"
+        product.lot_valuated = True
+        lot = self.lot_obj.create(
+            {"product_id": product.id, "name": "LOT-A", "company_id": self.company_b.id}
+        )
+
+        def _validate(picking, qty):
+            """Validate `qty` of `lot` through `picking`."""
+            move = picking.move_ids
+            move.move_line_ids = [
+                Command.clear(),
+                Command.create(
+                    {
+                        "location_id": move.location_id.id,
+                        "location_dest_id": move.location_dest_id.id,
+                        "product_id": product.id,
+                        "product_uom_id": product.uom_id.id,
+                        "quantity": qty,
+                        "lot_id": lot.id,
+                        "picking_id": picking.id,
+                    },
+                ),
+            ]
+            move.picked = True
+            picking.with_user(self.user_company_b).button_validate()
+
+        def _return(picking, qty):
+            """Return `qty` of `picking` and validate the return."""
+            wizard = (
+                self.env["stock.return.picking"]
+                .with_user(self.user_company_b)
+                .with_context(allowed_company_ids=self.company_b.ids)
+                .create({"picking_id": picking.id})
+            )
+            wizard.product_return_moves.quantity = qty
+            action = wizard.action_create_returns()
+            return_picking = self.env["stock.picking"].browse(action["res_id"])
+            _validate(return_picking, qty)
+            return return_picking
+
+        purchase = self._create_purchase_order(self.partner_company_b, product)
+        sale = self._approve_po(purchase)
+        _validate(sale.picking_ids, 3)
+        so_return = _return(sale.picking_ids, 1)
+        self.assertEqual(purchase.order_line.qty_received, 2)
+        self.assertFalse(
+            purchase.picking_ids.filtered(lambda p: p.state != "done"),
+            msg="Every receipt of the PO should be done before the redelivery.",
+        )
+
+        # Returning the return goes through the copy of a done PO move.
+        _return(so_return, 1)
+
+        self.assertEqual(purchase.order_line.qty_received, 3)
+        # Read the lines from the receipts themselves: a line linked to its
+        # move but not to its receipt would be missing from the detailed
+        # operations.
+        receipts = purchase.picking_ids.filtered(lambda p: not p.return_id)
+        received_lines = receipts.move_line_ids.filtered(lambda ml: ml.quantity > 0)
+        self.assertEqual(received_lines.lot_id, lot.with_company(self.company_a))
+        self.assertEqual(sum(received_lines.mapped("quantity")), 4)
+        self.assertEqual(received_lines.move_id, receipts.move_ids)
+
     def test_sync_picking_lot_with_transit_location(self):
         """
         Test that the lot is synchronized on the moves
