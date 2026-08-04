@@ -1,17 +1,20 @@
 # Copyright 2021 Camptocamp
+# Copyright 2022 Akretion (Florian Mounier <florian.mounier@akretion.com>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 {
     "name": "Stock Intercompany Delivery-Reception",
     "Summary": "Module that adds possibility for intercompany Delivery-Reception",
-    "version": "18.0.1.0.0",
-    "author": "Camptocamp, Odoo Community Association (OCA)",
+    "version": "18.0.2.0.0",
+    "author": "Camptocamp, Akretion, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "category": "Warehouse Management",
     "depends": ["stock"],
     "installable": True,
     "license": "AGPL-3",
     "data": [
+        "data/ir_cron_data.xml",
         "views/res_config_settings.xml",
+        "views/stock_picking_views.xml",
     ],
 }
