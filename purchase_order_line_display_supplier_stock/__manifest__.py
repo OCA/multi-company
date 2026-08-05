@@ -7,11 +7,11 @@
     "summary":  "Display the supplier stock on purchase order lines "
     "for intercompany purchases",
     "version": "14.0.1.0.0",
-    "category":  "Purchases",
-    "website":  "https://github.com/OCA/multi-company",
-    "author":  "Akretion, Odoo Community Association (OCA)",
+    "category": "multi-company",
+    "website": "https://github.com/OCA/multi-company",
+    "author": "Akretion, Odoo Community Association (OCA)",
     "license": "AGPL-3",
-    "maintainers":["Kev-Roche"],
+    "maintainers": ["Kev-Roche"],
     "application": False,
     "installable": True,
     "depends": [

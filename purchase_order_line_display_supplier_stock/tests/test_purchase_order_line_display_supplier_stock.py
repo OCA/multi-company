@@ -22,7 +22,7 @@ class TestPurchaseOrderLineDisplaySupplierStock(SavepointCase):
                 "type": "product",
             }
         )
-        cls.env["stock.quant"].create(
+        cls.quant = cls.env["stock.quant"].create(
             {
                 "product_id": cls.product.id,
                 "location_id": cls.vendor_warehouse.lot_stock_id.id,
@@ -51,6 +51,21 @@ class TestPurchaseOrderLineDisplaySupplierStock(SavepointCase):
         )
         cls.line = cls.purchase_order.order_line
 
+    def _create_incoming_move(self, name, date, qty=5):
+        return self.env["stock.move"].create(
+            {
+                "name": name,
+                "product_id": self.product.id,
+                "product_uom": self.product.uom_id.id,
+                "product_uom_qty": qty,
+                "location_id": self.env.ref("stock.stock_location_suppliers").id,
+                "location_dest_id": self.vendor_warehouse.lot_stock_id.id,
+                "company_id": self.vendor_company.id,
+                "date": date,
+            }
+        )
+
+
     def test_supplier_stock_from_intercompany_supplier(self):
         self.assertIn("30.0", self.line.supplier_stock_info)
 
@@ -75,3 +90,20 @@ class TestPurchaseOrderLineDisplaySupplierStock(SavepointCase):
     def test_no_info_when_supplier_not_a_company(self):
         self.purchase_order.partner_id = self.env.ref("base.res_partner_2")
         self.assertFalse(self.line.supplier_stock_info)
+
+    def test_replenishment_date_shown_when_no_stock(self):
+        self.quant.quantity = 0
+        move_late = self._create_incoming_move("R1", "2026-10-10 08:00:00")
+        move_early = self._create_incoming_move("R2", "2026-09-01 08:00:00")
+        (move_late | move_early).sudo()._action_confirm()
+        self.line.invalidate_cache(fnames=["supplier_stock_info"])
+        self.assertIn("Replenishment: 2026-09-01", self.line.supplier_stock_info)
+
+    def test_stock_takes_precedence_over_replenishment_date(self):
+        move = self._create_incoming_move("Incoming", "2026-09-01 08:00:00")
+        move.sudo()._action_confirm()
+        self.line.invalidate_cache(fnames=["supplier_stock_info"])
+        self.assertIn("30.0", self.line.supplier_stock_info)
+        self.assertNotIn("Replenishment", self.line.supplier_stock_info)
+
+
