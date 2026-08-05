@@ -13,45 +13,83 @@ class PurchaseOrderLine(models.Model):
         compute="_compute_supplier_stock_info",
     )
 
+    def _get_supplier_company(self):
+        self.ensure_one()
+        partner = self.order_id.partner_id
+        if not self.product_id or not partner:
+            return self.env["res.company"].browse()
+        return (
+            self.env["res.company"]
+            .sudo()
+            .search(
+                [("partner_id", "=", partner.commercial_partner_id.id)],
+                limit=1,
+            )
+        )
+
+    def _get_supplier_replenishment_date(self, company):
+        self.ensure_one()
+        move = (
+            self.env["stock.move"]
+            .sudo()
+            .search(
+                [
+                    ("product_id", "=", self.product_id.id),
+                    ("company_id", "=", company.id),
+                    ("location_id.usage", "!=", "internal"),
+                    ("location_dest_id.usage", "=", "internal"),
+                    (
+                        "state",
+                        "in",
+                        [
+                            "confirmed",
+                            "waiting",
+                            "assigned",
+                            "partially_available",
+                        ],
+                    ),
+                ],
+                order="date",
+                limit=1,
+            )
+        )
+        return fields.Date.to_date(move.date) if move else False
+
     @api.depends("product_id", "order_id.partner_id")
     def _compute_supplier_stock_info(self):
         stock_field = (
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param(
-                "sale_order_line_stock_info.stock_field_on_sol", "qty_available"
-            )
+            .get_param("sale_order_line_stock_info.stock_field_on_sol", "qty_available")
         )
         for line in self:
             info = ""
-            product = line.product_id
-            partner = line.order_id.partner_id
-            if product and partner:
-                vendor_company = (
-                    self.env["res.company"]
+            vendor_company = line._get_supplier_company()
+            if vendor_company:
+                warehouses = (
+                    self.env["stock.warehouse"]
                     .sudo()
                     .search(
-                        [("partner_id", "=", partner.commercial_partner_id.id)],
-                        limit=1,
+                        [
+                            ("company_id", "=", vendor_company.id),
+                            ("display_stock_on_sol", "=", True),
+                        ]
                     )
                 )
-                if vendor_company:
-                    warehouses = (
-                        self.env["stock.warehouse"]
-                        .sudo()
-                        .search(
-                            [
-                                ("company_id", "=", vendor_company.id),
-                                ("display_stock_on_sol", "=", True),
-                            ]
-                        )
-                    )
-                    if warehouses:
-                        total = 0.0
-                        for warehouse in warehouses:
-                            total += product.sudo().with_context(
-                                warehouse=warehouse.id,
-                                force_company=vendor_company.id,
-                            )[stock_field]
+                if warehouses:
+                    total = 0.0
+                    for warehouse in warehouses:
+                        total += line.product_id.sudo().with_context(
+                            warehouse=warehouse.id,
+                            force_company=vendor_company.id,
+                        )[stock_field]
+                    if total > 0:
                         info = f"<span>{total}</span>"
+                    else:
+                        replenishment_date = line._get_supplier_replenishment_date(
+                            vendor_company
+                        )
+                        if replenishment_date:
+                            label = _("Replenishment: %s") % replenishment_date
+                            info = "<span>%s</span>" % label
             line.supplier_stock_info = info

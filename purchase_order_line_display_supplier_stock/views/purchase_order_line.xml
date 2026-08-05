@@ -9,9 +9,13 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
         <field name="arch" type="xml">
             <xpath
                 expr="//field[@name='order_line']/tree//field[@name='product_qty']"
-                position="after"
+                position="before"
             >
-                <field name="supplier_stock_info" />
+                <field
+                    name="supplier_stock_info"
+                    style="text-align: right;"
+                    optional="hide"
+                />
             </xpath>
         </field>
     </record>
