@@ -1,0 +1,1 @@
+from . import test_ir_config_parameter_multi_company
