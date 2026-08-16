@@ -129,7 +129,7 @@ Authors
 Contributors
 ------------
 
-- ``XXP <https://xxp-odoo.com>``\ \_\_:
+- `XXP <https://xxp-odoo.com>`__:
 
   - Project Manager: Mikhail Lapin
   - Developer: Anatol Mikheev

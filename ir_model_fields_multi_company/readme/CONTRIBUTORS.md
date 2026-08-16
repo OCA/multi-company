@@ -1,4 +1,4 @@
-* `XXP <https://xxp-odoo.com>`__:
+* [XXP](https://xxp-odoo.com):
 
   * Project Manager: Mikhail Lapin
   * Developer: Anatol Mikheev
