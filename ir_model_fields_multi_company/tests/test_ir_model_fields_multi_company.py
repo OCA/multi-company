@@ -9,10 +9,10 @@ class TestIrModelFieldsMultiCompany(TransactionCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.company_sf = cls.env["res.company"].create(
-            {"name": "My Company (San Francisco)"}
+            {"name": "Multi-Company Write Test SF"}
         )
         cls.company_chicago = cls.env["res.company"].create(
-            {"name": "My Company (Chicago)"}
+            {"name": "Multi-Company Write Test Chicago"}
         )
         cls.user = cls.env["res.users"].create(
             {
