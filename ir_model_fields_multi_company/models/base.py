@@ -1,4 +1,3 @@
-# License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl-3.0).
 from odoo import _, models
 from odoo.exceptions import UserError
 
@@ -13,6 +12,9 @@ class Base(models.AbstractModel):
     _inherit = "base"
 
     def write(self, vals):
+        # Enforce the field-level multi-company restriction only for regular
+        # users on models that carry a company_id field; superuser writes
+        # (env.su) are never restricted.
         if not self.env.su and "company_id" in self._fields:
             self._check_allow_multi_company_write(vals)
         return super().write(vals)
@@ -56,7 +58,7 @@ class Base(models.AbstractModel):
         raise UserError(
             _(
                 "The following fields are not allowed for editing "
-                "on another company's record: %s"
+                "on another company's record: %s",
+                ", ".join(sorted(labels)),
             )
-            % ", ".join(sorted(labels))
         )
