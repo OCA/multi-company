@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2017 Acsone Sa/Nv
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="mail_template_form_view" model="ir.ui.view">
+        <field name="name">mail.template.form (in mail_template_multi_company)</field>
+        <field name="model">mail.template</field>
+        <field name="inherit_id" ref="mail.email_template_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='model_id']" position="after">
+                <field
+                    name="company_id"
+                    options="{'no_open': True, 'no_create': True}"
+                    groups="base.group_multi_company"
+                />
+            </xpath>
+        </field>
+    </record>
+    <record id="mail_template_search_view" model="ir.ui.view">
+        <field name="name">mail.template.search (in mail_template_multi_company)</field>
+        <field name="model">mail.template</field>
+        <field name="inherit_id" ref="mail.view_email_template_search" />
+        <field name="arch" type="xml">
+            <xpath expr="//group" position="inside">
+                <field name="company_id" groups="base.group_multi_company" />
+            </xpath>
+        </field>
+    </record>
+    <record id="mail_template_tree_view" model="ir.ui.view">
+        <field name="name">mail.template.tree (in mail_template_multi_company)</field>
+        <field name="model">mail.template</field>
+        <field name="inherit_id" ref="mail.email_template_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='model_id']" position="after">
+                <field name="company_id" groups="base.group_multi_company" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
