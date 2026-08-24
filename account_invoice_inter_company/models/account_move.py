@@ -142,6 +142,7 @@ class AccountMove(models.Model):
                     "dest_company_id": dest_company.id,
                 }
             )
+        return dest_journal
 
     def _inter_company_create_invoice(self, dest_company):
         """create an invoice for the given company : it will copy
@@ -242,10 +243,12 @@ class AccountMove(models.Model):
         self.ensure_one()
         self = self.with_context(**clean_context(self.env.context))
         # check if the journal is define in dest company
-        self._check_dest_journal(dest_company)
+        dest_journal = self._check_dest_journal(dest_company)
         vals = {
             "move_type": self._get_destination_invoice_type(),
             "partner_id": self.company_id.partner_id.id,
+            "company_id": dest_company.id,
+            "journal_id": dest_journal.id,
             "ref": self.name,
             "payment_reference": self.payment_reference,
             "invoice_date": self.invoice_date,
