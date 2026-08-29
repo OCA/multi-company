@@ -1,1 +1,2 @@
 odoo_test_helper
+odoo-addon-stock_intercompany @ git+https://github.com/OCA/multi-company.git@refs/pull/985/head#subdirectory=stock_intercompany
