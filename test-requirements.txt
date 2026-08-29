@@ -1,0 +1,1 @@
+odoo-addon-crm_tag_multi_company@git+https://github.com/OCA/multi-company.git@refs/pull/921/head#subdirectory=crm_tag_multi_company
