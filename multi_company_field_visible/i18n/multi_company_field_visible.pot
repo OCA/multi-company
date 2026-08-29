@@ -1,0 +1,45 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* multi_company_field_visible
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__id
+msgid "ID"
+msgstr ""
+
+#. module: multi_company_field_visible
+#: model:ir.model,name:multi_company_field_visible.model_multi_company_abstract
+msgid "Multi-Company Abstract"
+msgstr ""
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__own_company_ids
+msgid "Own Company"
+msgstr ""
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__show_own_company_field
+msgid "Show Own Company Field"
+msgstr ""
+
+#. module: multi_company_field_visible
+#. odoo-python
+#: code:addons/multi_company_field_visible/models/multi_company_abstract.py:0
+msgid "You must assign at least your own company to “%(name)s”."
+msgstr ""
