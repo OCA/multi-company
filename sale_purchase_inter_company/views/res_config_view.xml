@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="model">res.config.settings</field>
+        <field
+            name="inherit_id"
+            ref="account_invoice_inter_company.res_config_settings_view_form"
+        />
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='inter_company_oca']" position='inside'>
+                <div class="text-decoration-underline mt8 mb8">Sale / Purchase</div>
+                <div class="content-group">
+                    <div>
+                        <label
+                            string="Purchase from sale"
+                            class="o_light_label mr8"
+                            for="po_from_so"
+                        />
+                        <field name="po_from_so" class="oe_inline" />
+                    </div>
+                    <div invisible="not company_id or not po_from_so">
+                        <label
+                            for="intercompany_purchase_user_id"
+                            class="o_light_label mr8"
+                        />
+                        <field
+                            name="intercompany_purchase_user_id"
+                            required="po_from_so"
+                            class="oe_inline mr8"
+                        />
+                        <br />
+                        <label
+                            for="purchase_auto_validation"
+                            class="oe_inline o_light_label mr8"
+                        />
+                        <field name="purchase_auto_validation" class="oe_inline" />
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

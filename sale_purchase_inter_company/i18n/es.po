@@ -1,0 +1,198 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * purchase_sale_inter_company
+#
+# Translators:
+# OCA Transbot <transbot@odoo-community.org>, 2017
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-04 15:47+0000\n"
+"PO-Revision-Date: 2021-03-09 10:45+0000\n"
+"Last-Translator: Ana Suárez <ana.suarez@qubiq.es>\n"
+"Language-Team: Spanish (https://www.transifex.com/oca/teams/23907/es/)\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.3.2\n"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_res_company
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajustes Configuración"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_company__po_from_so
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_config_settings__po_from_so
+#, fuzzy
+msgid "Create Purchase Orders when selling to this company"
+msgstr "Crear pedido de venta al comprar a esta compañía"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_company__po_from_so
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_config_settings__po_from_so
+#, fuzzy
+msgid ""
+"Generate a Purchase Order when a Sale Order with this company as customer is "
+"created.\n"
+" The intercompany user must at least be Purchase User."
+msgstr ""
+"Generar un pedido de venta cuando se cree un pedido de compra con esta "
+"compañía como proveedor.\n"
+"El usuario intercompañía debe ser al menos Usuario de Ventas."
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_company__intercompany_purchase_user_id
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_config_settings__intercompany_purchase_user_id
+#, fuzzy
+msgid "Intercompany Purchase User"
+msgstr "Usuario de venta intercompañía"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_account_move
+#, fuzzy
+msgid "Journal Entry"
+msgstr "Asientos contables"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr "Pedido de compra"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_purchase_order_line
+#, fuzzy
+msgid "Purchase Order Line"
+msgstr "Pedido de compra"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_company__purchase_auto_validation
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_res_config_settings__purchase_auto_validation
+#, fuzzy
+msgid "Purchase Orders Auto Validation"
+msgstr "Auto confirmar pedidos de venta"
+
+#. module: sale_purchase_inter_company
+#: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company.res_config_settings_view_form
+#, fuzzy
+msgid "Purchase from sale"
+msgstr "Compra/Venta"
+
+#. module: sale_purchase_inter_company
+#: model_terms:ir.ui.view,arch_db:sale_purchase_inter_company.res_config_settings_view_form
+#, fuzzy
+msgid "Sale/Purchase"
+msgstr "Venta desde compra"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model,name:sale_purchase_inter_company.model_sale_order
+msgid "Sales Order"
+msgstr "Pedido de venta"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_purchase_order__auto_sale_order_id
+#, fuzzy
+msgid "Source Sale Order"
+msgstr "Pedido de compra de origen"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,field_description:sale_purchase_inter_company.field_purchase_order_line__auto_sale_line_id
+#, fuzzy
+msgid "Source Sale Order Line"
+msgstr "Línea pedido de compra origen"
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/account_move.py:0
+#, fuzzy, python-format
+msgid "This customer bill is related with: {}"
+msgstr "Esta factura de proveedor está relacionada con: %s"
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_config_settings__intercompany_purchase_user_id
+#, fuzzy
+msgid ""
+"User used to create the Purchase order arising from a sale order in another "
+"company."
+msgstr ""
+"El usuario solía crear los pedidos de venta que surgen de un pedido de "
+"compra en otra compañía."
+
+#. module: sale_purchase_inter_company
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_company__purchase_auto_validation
+#: model:ir.model.fields,help:sale_purchase_inter_company.field_res_config_settings__purchase_auto_validation
+#, fuzzy
+msgid ""
+"When a Purchase Order is created by a multi company rule for this company, "
+"it will automatically validate it."
+msgstr ""
+"Cuando un pedido de venta es creado por una regla intercompañía para esta "
+"compañía, este sera confirmado automáticamente."
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order.py:0
+#, python-format
+msgid "You can't cancel an order that is %s"
+msgstr "No puede cancelar un pedido que es %s"
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order.py:0
+#, fuzzy, python-format
+msgid "You cannot create PO from SO because product '%s' is not intercompany"
+msgstr ""
+"No puede crear pedido de venta desde pedido de compra porque el producto "
+"'%s' no es intercompañía"
+
+#. module: sale_purchase_inter_company
+#. odoo-python
+#: code:addons/sale_purchase_inter_company/models/sale_order.py:0
+#, fuzzy, python-format
+msgid ""
+"You cannot create PO from SO because purchase price list currency is "
+"different than sale price list currency."
+msgstr ""
+"No puede crear pedido de venta desde pedido de compra porque la moneda de la "
+"tarifa de venta es distinta de la moneda de la tarifa de compra."
+
+#~ msgid "Sales Order Line"
+#~ msgstr "Línea de pedido de venta"
+
+#~ msgid ""
+#~ "Default value to set on Sale Orders that will be created based on "
+#~ "Purchase Orders made to this company"
+#~ msgstr ""
+#~ "Valor por defecto a establecer en pedidos de venta que serán creados en "
+#~ "base a pedidos de compra realizados a esta compañía"
+
+#~ msgid ""
+#~ "Default value to set on Sale Orders that will be created based on "
+#~ "Purchase Orders made to this company."
+#~ msgstr ""
+#~ "Valor por defecto a establecer en pedidos de venta que serán creados en "
+#~ "base a pedidos de compra realizados a esta compañía."
+
+#~ msgid ""
+#~ "There's no corresponding line in PO %s for assigning qty from %s for "
+#~ "product %s"
+#~ msgstr ""
+#~ "No hay una línea correspondiente en el pedido de compra %s para asignar "
+#~ "cantidad desde %s para el producto %s"
+
+#~ msgid "Transfer"
+#~ msgstr "Transferir"
+
+#~ msgid "Invoice"
+#~ msgstr "Factura"
+
+#~ msgid "Quotation"
+#~ msgstr "Presupuesto"
