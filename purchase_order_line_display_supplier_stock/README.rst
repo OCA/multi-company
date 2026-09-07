@@ -1,7 +1,3 @@
-.. image:: https://odoo-community.org/readme-banner-image
-   :target: https://odoo-community.org/get-involved?utm_source=readme
-   :alt: Odoo Community Association
-
 ==========================================
 Purchase Order Line Display Supplier Stock
 ==========================================
@@ -17,29 +13,33 @@ Purchase Order Line Display Supplier Stock
 .. |badge1| image:: https://img.shields.io/badge/maturity-Beta-yellow.png
     :target: https://odoo-community.org/page/development-status
     :alt: Beta
-.. |badge2| image:: https://img.shields.io/badge/license-AGPL--3-blue.png
+.. |badge2| image:: https://img.shields.io/badge/licence-AGPL--3-blue.png
     :target: http://www.gnu.org/licenses/agpl-3.0-standalone.html
     :alt: License: AGPL-3
 .. |badge3| image:: https://img.shields.io/badge/github-OCA%2Fmulti--company-lightgray.png?logo=github
-    :target: https://github.com/OCA/multi-company/tree/14.0/purchase_order_line_display_supplier_stock
+    :target: https://github.com/OCA/multi-company/tree/18.0/purchase_order_line_display_supplier_stock
     :alt: OCA/multi-company
 .. |badge4| image:: https://img.shields.io/badge/weblate-Translate%20me-F47D42.png
-    :target: https://translation.odoo-community.org/projects/multi-company-14-0/multi-company-14-0-purchase_order_line_display_supplier_stock
+    :target: https://translation.odoo-community.org/projects/multi-company-18-0/multi-company-18-0-purchase_order_line_display_supplier_stock
     :alt: Translate me on Weblate
 .. |badge5| image:: https://img.shields.io/badge/runboat-Try%20me-875A7B.png
-    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=14.0
+    :target: https://runboat.odoo-community.org/builds?repo=OCA/multi-company&target_branch=18.0
     :alt: Try me on Runboat
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module displays, on each purchase order line, the stock available at the
-supplier when that supplier is another company of the group (intercompany
-purchases).
+This module displays, on each purchase order line, the stock available
+at the supplier when that supplier is another company of the group
+(intercompany purchases).
 
 The displayed quantity is the **sum** of the stock across the supplier
-company's warehouses that are flagged as visible, using the same warehouse flag
-and the same global stock-field setting as
+company's warehouses that are flagged as visible, using the same
+warehouse flag and the same global stock-field setting as
 ``sale_order_line_display_stock_per_warehouse``.
+
+It also shows the supplier's first expected replenishment date for the
+product when there is no stock, so the buying company can see it as
+early as the RFQ stage.
 
 **Table of contents**
 
@@ -49,12 +49,12 @@ and the same global stock-field setting as
 Usage
 =====
 
-When the supplier of a purchase order is a company of the group, each order
-line shows the summed supplier stock in the *Supplier Stock* column. When the
-supplier is an external partner, nothing is displayed.
+When the supplier of a purchase order is a company of the group, each
+order line shows the summed supplier stock in the *Supplier Stock*
+column. When the supplier is an external partner, nothing is displayed.
 
-The supplier stock is read across companies with elevated privileges; the
-exposure is opt-in through the warehouse flag.
+The supplier stock is read across companies with elevated privileges;
+the exposure is opt-in through the warehouse flag.
 
 Bug Tracker
 ===========
@@ -62,7 +62,7 @@ Bug Tracker
 Bugs are tracked on `GitHub Issues <https://github.com/OCA/multi-company/issues>`_.
 In case of trouble, please check there if your issue has already been reported.
 If you spotted it first, help us to smash it by providing a detailed and welcomed
-`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20purchase_order_line_display_supplier_stock%0Aversion:%2014.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
+`feedback <https://github.com/OCA/multi-company/issues/new?body=module:%20purchase_order_line_display_supplier_stock%0Aversion:%2018.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**>`_.
 
 Do not contact contributors directly about support or help with technical issues.
 
@@ -70,17 +70,17 @@ Credits
 =======
 
 Authors
-~~~~~~~
+-------
 
 * Akretion
 
 Contributors
-~~~~~~~~~~~~
+------------
 
-* Kévin Roche <kevin.roche@akretion.com>
+- Kévin Roche <kevin.roche@akretion.com>
 
 Maintainers
-~~~~~~~~~~~
+-----------
 
 This module is maintained by the OCA.
 
@@ -100,6 +100,6 @@ Current `maintainer <https://odoo-community.org/page/maintainer-role>`__:
 
 |maintainer-Kev-Roche| 
 
-This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/14.0/purchase_order_line_display_supplier_stock>`_ project on GitHub.
+This module is part of the `OCA/multi-company <https://github.com/OCA/multi-company/tree/18.0/purchase_order_line_display_supplier_stock>`_ project on GitHub.
 
 You are welcome to contribute. To learn how please visit https://odoo-community.org/page/Contribute.
