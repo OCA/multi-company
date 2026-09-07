@@ -7,9 +7,13 @@
     "maintainer": ["bealdav"],
     "website": "https://github.com/OCA/multi-company",
     "category": "web",
-    "depends": [
-        "base",
-    ],
+    "depends": ["web"],
     "data": [],
     "installable": True,
+    "assets": {
+        "web.assets_backend": [
+            "company_dependent_flag/static/src/form_label.esm.js",
+            "company_dependent_flag/static/src/form_label.xml",
+        ],
+    },
 }
