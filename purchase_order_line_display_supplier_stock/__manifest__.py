@@ -6,7 +6,7 @@
     "name": "Purchase Order Line Display Supplier Stock",
     "summary": "Display the supplier stock on purchase order lines "
     "for intercompany purchases",
-    "version": "14.0.1.0.0",
+    "version": "18.0.1.0.0",
     "category": "multi-company",
     "website": "https://github.com/OCA/multi-company",
     "author": "Akretion, Odoo Community Association (OCA)",

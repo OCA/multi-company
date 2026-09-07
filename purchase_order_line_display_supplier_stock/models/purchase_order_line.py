@@ -2,7 +2,7 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 
 class PurchaseOrderLine(models.Model):
@@ -28,10 +28,11 @@ class PurchaseOrderLine(models.Model):
         )
 
     def _get_supplier_display_stock_qty(self, product, warehouse, company, stock_field):
-        return product.sudo().with_context(
-            warehouse=warehouse.id,
-            force_company=company.id,
-        )[stock_field]
+        return (
+            product.sudo()
+            .with_company(company)
+            .with_context(warehouse_id=warehouse.id)[stock_field]
+        )
 
     def _get_supplier_replenishment_date(self, company):
         self.ensure_one()
@@ -95,6 +96,5 @@ class PurchaseOrderLine(models.Model):
                             vendor_company
                         )
                         if replenishment_date:
-                            label = _("Replenishment: %s") % replenishment_date
-                            info = "<span>%s</span>" % label
+                            info = f"<span>Replenishment: {replenishment_date}</span>"
             line.supplier_stock_info = info
