@@ -6,10 +6,12 @@
 <templates xml:space="preserve">
     <t id="FormLabel" t-inherit="web.FormLabel" t-inherit-mode="extension">
         <xpath expr="//sup[@t-if='hasTooltip']" position="after">
-            <i
+            <span
                 t-if="CompanyDependentClasses"
                 t-att-class="CompanyDependentClasses"
                 title="Values set here are company-specific."
+                aria-label="Values set here are company-specific."
+                role="img"
             />
         </xpath>
     </t>

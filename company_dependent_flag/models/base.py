@@ -10,6 +10,9 @@ class Base(models.AbstractModel):
     @api.model
     def fields_get(self, allfields=None, attributes=None):
         result = super().fields_get(allfields=allfields, attributes=attributes)
+        if not self.env.user.has_group("base.group_multi_company"):
+            return result
+
         classes = self._get_company_dependent_css_class()
         company_dependent_fields = [
             field_name
@@ -23,4 +26,4 @@ class Base(models.AbstractModel):
     def _get_company_dependent_css_class(self):
         """Inherit to apply your own class"""
 
-        return ["fa", "fa-building-o"]
+        return ["fa", "fa-building-o", "company_dependent_field_icon"]

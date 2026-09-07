@@ -14,6 +14,7 @@
         "web.assets_backend": [
             "company_dependent_flag/static/src/form_label.esm.js",
             "company_dependent_flag/static/src/form_label.xml",
+            "company_dependent_flag/static/src/scss/company_dependent_flag.scss",
         ],
     },
 }
