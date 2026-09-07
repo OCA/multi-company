@@ -8,6 +8,12 @@
     "website": "https://github.com/OCA/multi-company",
     "category": "web",
     "depends": [
-        "base",
+        "web",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "web_field_company_dependent_flag/static/src/form_label.esm.js",
+            "web_field_company_dependent_flag/static/src/form_label.xml",
+        ],
+    },
 }

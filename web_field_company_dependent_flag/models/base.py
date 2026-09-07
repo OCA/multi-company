@@ -20,13 +20,12 @@ class Base(models.AbstractModel):
             for field_name, field_rec in self.env[self._name]._fields.items()
             if field_rec.company_dependent
         ]
+        classes = self._get_company_dependent_css_class()
         for field_name in cpny_dep_fields:
             for field in arch.xpath(f"//field[@name='{field_name}']"):
-                classes = field.attrib.get("class", "").split(" ")
-                classes += self._get_company_dependent_css_class()
-                field.attrib["class"] = " ".join(set(classes))
+                field.attrib["data-company-dep-class"] = " ".join(set(classes))
 
     def _get_company_dependent_css_class(self):
         """Inherit to apply your own class"""
 
-        return ["fa", "fa-building-o", "d-flex", "flex-row"]
+        return ["fa", "fa-building-o"]

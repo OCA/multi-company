@@ -30,7 +30,7 @@ class Test(BaseCommon):
     def test_class_company(self):
         arch, view = self.env["res.partner"]._get_view(view_id=self.partner_view.id)
         for field in arch.xpath("//field[@name='barcode']"):
-            self.assertIn("building", field.attrib.get("class"))
+            self.assertIn("building", field.attrib.get("data-company-dep-class"))
             break
         else:
             self.fail("Barcode field not found in the view")
