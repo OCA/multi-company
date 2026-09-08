@@ -28,18 +28,17 @@ Purchase Order Line Display Supplier Stock
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module displays, on each purchase order line, the stock available
-at the supplier when that supplier is another company of the group
-(intercompany purchases).
+This module allows to display stock levels in purchase order line when
+supplier is another company of the group (inter-company purchase
+orders).
 
-The displayed quantity is the **sum** of the stock across the supplier
-company's warehouses that are flagged as visible, using the same
-warehouse flag and the same global stock-field setting as
+The displayed quantity is the **sum** of chosen warehouses and locations
+and on the same global stock field setting from
 ``sale_order_line_display_stock_per_warehouse``.
 
-It also shows the supplier's first expected replenishment date for the
-product when there is no stock, so the buying company can see it as
-early as the RFQ stage.
+The widget also shows the supplier's first expected replenishment date
+for the product when there is no stock, so the buying company can see it
+as early as the RFQ stage.
 
 **Table of contents**
 
@@ -77,6 +76,9 @@ Authors
 Contributors
 ------------
 
+- Bejaoui Souheil (ACSONE SA/NV) <bejaoui.souheil@acsone.eu>
+- Benjamin Willig (ACSONE SA/NV) <benjamin.willig@acsone.eu>
+- Guillaume Masson <guillaume.masson@akretion.com>
 - Kévin Roche <kevin.roche@akretion.com>
 
 Maintainers

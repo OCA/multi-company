@@ -8,9 +8,14 @@ from odoo import api, fields, models
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
-    supplier_stock_info = fields.Html(
-        string="Supplier Stock",
-        compute="_compute_supplier_stock_info",
+    display_qty_supplier_widget = fields.Boolean(
+        compute="_compute_qty_supplier_widget",
+    )
+    qty_supplier_issue = fields.Boolean(
+        compute="_compute_qty_supplier_widget",
+    )
+    qty_supplier_widget_data = fields.Binary(
+        compute="_compute_qty_supplier_widget",
     )
 
     def _get_supplier_company(self):
@@ -60,41 +65,41 @@ class PurchaseOrderLine(models.Model):
                 limit=1,
             )
         )
-        return fields.Date.to_date(move.date) if move else False
+        return fields.Date.to_date(move.date) if move else "Not scheduled yet"
 
     @api.depends("product_id", "order_id.partner_id")
-    def _compute_supplier_stock_info(self):
+    def _compute_qty_supplier_widget(self):
         stock_field = (
             self.env["ir.config_parameter"]
             .sudo()
             .get_param("sale_order_line_stock_info.stock_field_on_sol", "qty_available")
         )
         for line in self:
-            info = ""
+            res = {}
+            total = 0
             vendor_company = line._get_supplier_company()
-            if vendor_company:
-                warehouses = (
-                    self.env["stock.warehouse"]
-                    .sudo()
-                    .search(
-                        [
-                            ("company_id", "=", vendor_company.id),
-                            ("display_stock_on_sol", "=", True),
-                        ]
+            product = line.product_id
+            line.display_qty_supplier_widget = (
+                product.type == "consu" and product.is_storable
+            )
+            warehouses = self.env["stock.warehouse"].search(
+                [
+                    ("company_id", "=", vendor_company.id),
+                    ("display_stock_on_sol", "=", True),
+                ]
+            )
+            if warehouses:
+                for warehouse in warehouses:
+                    total += line._get_supplier_display_stock_qty(
+                        product, warehouse, vendor_company, stock_field
                     )
-                )
-                if warehouses:
-                    total = 0.0
-                    for warehouse in warehouses:
-                        total += line._get_supplier_display_stock_qty(
-                            line.product_id, warehouse, vendor_company, stock_field
-                        )
-                    if total > 0:
-                        info = f"<span>{total}</span>"
-                    else:
-                        replenishment_date = line._get_supplier_replenishment_date(
-                            vendor_company
-                        )
-                        if replenishment_date:
-                            info = f"<span>Replenishment: {replenishment_date}</span>"
-            line.supplier_stock_info = info
+                res = {
+                    "vendor_name": vendor_company.display_name,
+                    "qty": total,
+                    # TODO compute date if free = 0 and virtual > 0
+                    "date": line._get_supplier_replenishment_date(vendor_company)
+                    if not total
+                    else fields.Date.today(),
+                }
+            line.qty_supplier_issue = False if total else True
+            line.qty_supplier_widget_data = res

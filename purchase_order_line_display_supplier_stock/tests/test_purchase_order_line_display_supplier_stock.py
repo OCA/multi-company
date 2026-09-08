@@ -68,7 +68,7 @@ class TestPurchaseOrderLineDisplaySupplierStock(TransactionCase):
         )
 
     def test_supplier_stock_from_intercompany_supplier(self):
-        self.assertIn("30.0", self.line.supplier_stock_info)
+        self.assertEqual(30.0, self.line.qty_supplier_widget_data["qty"])
 
     def test_supplier_stock_summed_over_warehouses(self):
         warehouse_2 = self.env["stock.warehouse"].create(
@@ -84,11 +84,11 @@ class TestPurchaseOrderLineDisplaySupplierStock(TransactionCase):
             warehouse_2.lot_stock_id,
             12,
         )
-        self.assertIn("42.0", self.line.supplier_stock_info)
+        self.assertEqual(42.0, self.line.qty_supplier_widget_data["qty"])
 
     def test_no_info_when_supplier_not_a_company(self):
         self.purchase_order.partner_id = self.env.ref("base.res_partner_2")
-        self.assertFalse(self.line.supplier_stock_info)
+        self.assertFalse(self.line.qty_supplier_widget_data)
 
     def test_replenishment_date_shown_when_no_stock(self):
         self.env["stock.quant"]._update_available_quantity(
@@ -99,12 +99,17 @@ class TestPurchaseOrderLineDisplaySupplierStock(TransactionCase):
         move_late = self._create_incoming_move("R1", "2026-10-10 08:00:00")
         move_early = self._create_incoming_move("R2", "2026-09-01 08:00:00")
         (move_late | move_early).sudo()._action_confirm()
-        self.line.invalidate_recordset(fnames=["supplier_stock_info"])
-        self.assertIn("Replenishment: 2026-09-01", self.line.supplier_stock_info)
+        self.line.invalidate_recordset(fnames=["qty_supplier_widget_data"])
+        self.assertEqual(
+            fields.Date.from_string("2026-09-01"),
+            self.line.qty_supplier_widget_data["date"],
+        )
 
     def test_stock_takes_precedence_over_replenishment_date(self):
         move = self._create_incoming_move("Incoming", "2026-09-01 08:00:00")
         move.sudo()._action_confirm()
-        self.line.invalidate_recordset(fnames=["supplier_stock_info"])
-        self.assertIn("30.0", self.line.supplier_stock_info)
-        self.assertNotIn("Replenishment", self.line.supplier_stock_info)
+        self.line.invalidate_recordset(fnames=["qty_supplier_widget_data"])
+        self.assertEqual(30.0, self.line.qty_supplier_widget_data["qty"])
+        self.assertEqual(
+            fields.Date.today(), self.line.qty_supplier_widget_data["date"]
+        )

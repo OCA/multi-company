@@ -21,4 +21,10 @@
     "data": [
         "views/purchase_order_line.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "purchase_order_line_display_supplier_stock/static/src/widgets/qty_supplier_widget.esm.js",
+            "purchase_order_line_display_supplier_stock/static/src/widgets/qty_supplier_widget.xml",
+        ],
+    },
 }
