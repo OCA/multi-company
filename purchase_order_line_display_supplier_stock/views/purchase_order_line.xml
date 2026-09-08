@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright (C) 2026 Akretion (<http://www.akretion.com>).
+@author Kévin Roche <kevin.roche@akretion.com>
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//field[@name='order_line']/list//field[@name='product_qty']"
+                position="after"
+            >
+                <field name="display_qty_supplier_widget" column_invisible="True" />
+                <field name="qty_supplier_widget_data" column_invisible="True" />
+                <widget name="qty_supplier_widget" width="20px" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
