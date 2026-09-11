@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    ~ Copyright 2026 Simone Rubino - PyTech
+    ~ License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
+-->
+<templates xml:space="preserve">
+    <t id="FormLabel" t-inherit="web.FormLabel" t-inherit-mode="extension">
+        <xpath expr="//sup[@t-if='hasTooltip']" position="after">
+            <i
+                t-if="CompanyDependentClasses"
+                t-att-class="CompanyDependentClasses"
+                title="Values set here are company-specific."
+                aria-label="Values set here are company-specific."
+            />
+        </xpath>
+    </t>
+</templates>
