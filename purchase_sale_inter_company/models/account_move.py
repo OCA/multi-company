@@ -31,3 +31,14 @@ class AccountMove(models.Model):
                 origin=",".join([o._get_html_link(o.name) for o in orders]),
             )
             dest_invoice.message_post(body=Markup(message))
+
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+    def _get_intercompany_taxes(self, vals):
+        """Get taxes from purchase line linked if exists"""
+        purchase_line = self.sale_line_ids.auto_purchase_line_id
+        if purchase_line:
+            return purchase_line.taxes_id
+        return super()._get_intercompany_taxes(vals)
