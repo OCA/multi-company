@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<template id="template" xml:space="preserve">
+
+    <t t-name="purchase_order_line_display_supplier_stock.QtySupplier">
+        <a
+            t-att-tabindex="props.record.data.display_qty_supplier_widget ? '0' : '-1'"
+            t-on-click="showPopup"
+            t-att-class="!props.record.data.display_qty_supplier_widget ? 'invisible' : ''"
+            t-attf-class="fa fa-industry cursor-pointer {{ props.record.data.qty_supplier_issue ? 'text-danger' : '' }}"
+        />
+    </t>
+
+    <t t-name="purchase_order_line_display_supplier_stock.QtySupplierPopover">
+        <div class="p-2">
+            <table class="table table-borderless table-sm">
+                <t t-set="row" t-value="props.record.data.qty_supplier_widget_data" />
+                <thead>
+                    <tr>
+                        <th>Supplier</th>
+                        <!-- TODO we should display the field name (available, free, virtual) -->
+                        <th t-if="row.qty">Quantity</th>
+                        <th t-else="">Replenishment Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <span t-esc="row.vendor_name" />
+                        </td>
+                        <td t-if="row.qty" class="text-end">
+                            <span t-esc="row.qty" />
+                        </td>
+                        <td t-else="" class="text-end">
+                            <span t-esc="row.date" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </t>
+</template>
