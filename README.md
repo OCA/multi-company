@@ -37,7 +37,7 @@ addon | version | maintainers | summary
 [partner_category_multi_company](partner_category_multi_company/) | 18.0.1.0.0 |  | This module add multi-company management to partner categories
 [partner_multi_company](partner_multi_company/) | 18.0.1.0.3 |  | Select individually the partner visibility on each company
 [pos_category_multicompany](pos_category_multicompany/) | 18.0.1.0.0 | <a href='https://github.com/legalsylvain'><img src='https://github.com/legalsylvain.png' width='32' height='32' style='border-radius:50%;' alt='legalsylvain'/></a> <a href='https://github.com/quentinDupont'><img src='https://github.com/quentinDupont.png' width='32' height='32' style='border-radius:50%;' alt='quentinDupont'/></a> | Point of Sale Category in Multi company context
-[product_multi_company](product_multi_company/) | 18.0.1.0.0 |  | Select individually the product template visibility on each company
+[product_multi_company](product_multi_company/) | 18.0.1.0.1 |  | Select individually the product template visibility on each company
 [product_multi_company_stock](product_multi_company_stock/) | 18.0.1.0.1 |  | Does not allow to remove company if there is stock or moves in that company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 18.0.1.0.0 | <a href='https://github.com/Shide'><img src='https://github.com/Shide.png' width='32' height='32' style='border-radius:50%;' alt='Shide'/></a> | Product Tax Multi Company Default
 [purchase_sale_inter_company](purchase_sale_inter_company/) | 18.0.1.0.6 |  | Intercompany PO/SO rules
