@@ -114,6 +114,29 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
             self.product_company_both.product_tmpl_id.company_ids,
         )
 
+    def test_product_variant_write_company_id_and_company_ids(self):
+        # The product form (and the variant form, which reuses the same
+        # arch through view inheritance) includes an invisible `company_id`
+        # field in the header, used as a trick to be able to set that field
+        # from the view. When the web client saves, it sends both
+        # `company_id` and `company_ids` in the same `write` call.
+        # `product.template.write` protects against this collision through
+        # `_multicompany_patch_vals`, discarding the redundant `company_id`
+        # so its inverse doesn't overwrite `company_ids`. `product.product`
+        # doesn't have this protection, so a write coming from the variant
+        # form silently reverts `company_ids` to a single company.
+        product = self.product_company_1.product_variant_id
+        product.write(
+            {
+                "company_ids": [(4, self.company_2.id)],
+                "company_id": self.company_1.id,
+            }
+        )
+        self.assertEqual(
+            product.company_ids,
+            self.company_1 + self.company_2,
+        )
+
     def test_search_product(self):
         """Products with no company are shared across companies but we need to convert
         those queries with an or operator"""
