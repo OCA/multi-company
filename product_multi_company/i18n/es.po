@@ -34,6 +34,11 @@ msgstr "Compañía"
 msgid "Product"
 msgstr ""
 
+#. module: product_multi_company
+#: model:ir.model,name:product_multi_company.model_product_product
+msgid "Product Variant"
+msgstr ""
+
 #~ msgid "Product Template (Multi-Company)"
 #~ msgstr "Plantilla de producto (multi-compañía)"
 

@@ -31,5 +31,7 @@ msgstr "Azienda"
 msgid "Product"
 msgstr "Prodotto"
 
-#~ msgid "Product Variant"
-#~ msgstr "Variante prodotto"
+#. module: product_multi_company
+#: model:ir.model,name:product_multi_company.model_product_product
+msgid "Product Variant"
+msgstr "Variante prodotto"
