@@ -9,3 +9,5 @@
   - Karthik \<<karthik@sodexis.com>\>
 - [Moduon](https://www.moduon.team/):
   - Jairo Llopis
+- [ForgeFlow](https://www.forgeflow.com):
+  - Lois Rilo \<<lois.rilo@forgeflow.com>\>

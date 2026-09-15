@@ -77,22 +77,26 @@ Authors
 Contributors
 ------------
 
-- Pedro M. Baeza <pedro.baeza@tecnativa.com>
-- Dave Lasley <dave@laslabs.com>
-- `Tecnativa <https://www.tecnativa.com>`__:
+-  Pedro M. Baeza <pedro.baeza@tecnativa.com>
+-  Dave Lasley <dave@laslabs.com>
+-  `Tecnativa <https://www.tecnativa.com>`__:
 
-  - Vicent Cubells <vicent.cubells@tecnativa.com>
-  - Pilar Vargas
+   -  Vicent Cubells <vicent.cubells@tecnativa.com>
+   -  Pilar Vargas
 
-- Denis Roussel <denis.roussel@acsone.eu>
-- `Sodexis <https://sodexis.com>`__:
+-  Denis Roussel <denis.roussel@acsone.eu>
+-  `Sodexis <https://sodexis.com>`__:
 
-  - Prabakaran <prabakaran@sodexis.com>
-  - Karthik <karthik@sodexis.com>
+   -  Prabakaran <prabakaran@sodexis.com>
+   -  Karthik <karthik@sodexis.com>
 
-- `Moduon <https://www.moduon.team/>`__:
+-  `Moduon <https://www.moduon.team/>`__:
 
-  - Jairo Llopis
+   -  Jairo Llopis
+
+-  `ForgeFlow <https://www.forgeflow.com>`__:
+
+   -  Lois Rilo <lois.rilo@forgeflow.com>
 
 Maintainers
 -----------
