@@ -76,7 +76,7 @@ class PurchaseOrder(models.Model):
         self._check_intercompany_product(dest_company)
         # Accessing to selling partner with selling user, so data like
         # property_account_position can be retrieved
-        company_partner = self.company_id.partner_id
+        company_partner = self.company_id.partner_id.with_company(dest_company)
         # check pricelist currency should be same with PO/SO document
         if self.currency_id.id != (
             company_partner.property_product_pricelist.currency_id.id
@@ -165,6 +165,13 @@ class PurchaseOrder(models.Model):
         )
         for onchange_method in new_order._onchange_methods["partner_id"]:
             onchange_method(new_order)
+        # Set pricelist when this method _get_partner_pricelist_multi_filter_hook
+        # returns False
+        if not new_order.pricelist_id:
+            new_order.pricelist_id = (
+                partner.specific_property_product_pricelist
+                or partner.property_product_pricelist
+            )
         new_order.user_id = False
         if delivery_address:
             new_order.partner_shipping_id = delivery_address
