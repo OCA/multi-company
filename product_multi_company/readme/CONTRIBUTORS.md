@@ -1,0 +1,11 @@
+- Pedro M. Baeza \<<pedro.baeza@tecnativa.com>\>
+- Dave Lasley \<<dave@laslabs.com>\>
+- [Tecnativa](https://www.tecnativa.com):
+  - Vicent Cubells \<<vicent.cubells@tecnativa.com>\>
+  - Pilar Vargas
+- Denis Roussel \<<denis.roussel@acsone.eu>\>
+- [Sodexis](https://sodexis.com):
+  - Prabakaran \<<prabakaran@sodexis.com>\>
+  - Karthik \<<karthik@sodexis.com>\>
+- [Moduon](https://www.moduon.team/):
+  - Jairo Llopis
