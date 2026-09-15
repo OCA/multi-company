@@ -1,0 +1,93 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* multicompany_configuration
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-04-05 11:06+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.2\n"
+
+#. module: multicompany_configuration
+#: model:ir.model,name:multicompany_configuration.model_multicompany_abstract
+msgid "Abstract model that allows multicompany easy configuration"
+msgstr ""
+"Modello astratto che consente una semplice configurazione del multi azienda"
+
+#. module: multicompany_configuration
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_category_multicompany_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_product_multicompany_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_template_multicompany_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.res_partner_form_view
+msgid "Apply"
+msgstr "Applica"
+
+#. module: multicompany_configuration
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_category_multicompany_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_product_multicompany_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_template_multicompany_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.res_partner_form_view
+msgid "Cancel"
+msgstr "Annulla"
+
+#. module: multicompany_configuration
+#: model:ir.model,name:multicompany_configuration.model_res_partner
+msgid "Contact"
+msgstr "Contatto"
+
+#. module: multicompany_configuration
+#: model:ir.model.fields,field_description:multicompany_configuration.field_multicompany_abstract__multicompany_data
+#: model:ir.model.fields,field_description:multicompany_configuration.field_product_category__multicompany_data
+#: model:ir.model.fields,field_description:multicompany_configuration.field_product_product__multicompany_data
+#: model:ir.model.fields,field_description:multicompany_configuration.field_product_template__multicompany_data
+#: model:ir.model.fields,field_description:multicompany_configuration.field_res_partner__multicompany_data
+#: model:ir.model.fields,field_description:multicompany_configuration.field_res_users__multicompany_data
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_category_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_normal_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.product_template_only_form_view
+#: model_terms:ir.ui.view,arch_db:multicompany_configuration.view_partner_form
+msgid "Multicompany Data"
+msgstr "Dati multi azienda"
+
+#. module: multicompany_configuration
+#: model:ir.actions.act_window,name:multicompany_configuration.res_partner_form_multicompany_action
+msgid "Multicompany data"
+msgstr "Dati multi azienda"
+
+#. module: multicompany_configuration
+#: model:ir.model,name:multicompany_configuration.model_product_template
+msgid "Product"
+msgstr "Prodotto"
+
+#. module: multicompany_configuration
+#: model:ir.model,name:multicompany_configuration.model_product_category
+msgid "Product Category"
+msgstr "Categoria prodotto"
+
+#. module: multicompany_configuration
+#: model:ir.actions.act_window,name:multicompany_configuration.product_template_form_multicompany_action
+msgid "Product Template"
+msgstr "Modello prodotto"
+
+#. module: multicompany_configuration
+#: model:ir.model,name:multicompany_configuration.model_product_product
+msgid "Product Variant"
+msgstr "Variante prodotto"
+
+#. module: multicompany_configuration
+#: model:ir.actions.act_window,name:multicompany_configuration.product_category_form_multicompany_action
+msgid "Product category"
+msgstr "Categoria prodotto"
+
+#. module: multicompany_configuration
+#: model:ir.actions.act_window,name:multicompany_configuration.product_product_form_multicompany_action
+msgid "Product product"
+msgstr "Prodotto prodotto"
