@@ -20,9 +20,9 @@
         <field name="model">ir.filters</field>
         <field name="inherit_id" ref="base.ir_filters_view_tree" />
         <field name="arch" type="xml">
-            <list position="inside">
+            <tree position="inside">
                 <field name="company_id" groups="base.group_multi_company" />
-            </list>
+            </tree>
         </field>
     </record>
 </odoo>
