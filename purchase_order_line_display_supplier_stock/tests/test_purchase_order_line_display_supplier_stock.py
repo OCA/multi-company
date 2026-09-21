@@ -65,7 +65,6 @@ class TestPurchaseOrderLineDisplaySupplierStock(SavepointCase):
             }
         )
 
-
     def test_supplier_stock_from_intercompany_supplier(self):
         self.assertIn("30.0", self.line.supplier_stock_info)
 
@@ -105,5 +104,3 @@ class TestPurchaseOrderLineDisplaySupplierStock(SavepointCase):
         self.line.invalidate_cache(fnames=["supplier_stock_info"])
         self.assertIn("30.0", self.line.supplier_stock_info)
         self.assertNotIn("Replenishment", self.line.supplier_stock_info)
-
-

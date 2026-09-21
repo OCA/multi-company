@@ -2,7 +2,7 @@
 # @author Kévin Roche <kevin.roche@akretion.com>
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 
 class PurchaseOrderLine(models.Model):
@@ -26,6 +26,12 @@ class PurchaseOrderLine(models.Model):
                 limit=1,
             )
         )
+
+    def _get_supplier_display_stock_qty(self, product, warehouse, company, stock_field):
+        return product.sudo().with_context(
+            warehouse=warehouse.id,
+            force_company=company.id,
+        )[stock_field]
 
     def _get_supplier_replenishment_date(self, company):
         self.ensure_one()
@@ -55,13 +61,16 @@ class PurchaseOrderLine(models.Model):
         )
         return fields.Date.to_date(move.date) if move else False
 
-    @api.depends("product_id", "order_id.partner_id")
-    def _compute_supplier_stock_info(self):
-        stock_field = (
+    def _get_supplier_stock_field(self):
+        return (
             self.env["ir.config_parameter"]
             .sudo()
             .get_param("sale_order_line_stock_info.stock_field_on_sol", "qty_available")
         )
+
+    @api.depends("product_id", "order_id.partner_id")
+    def _compute_supplier_stock_info(self):
+        stock_field = self._get_supplier_stock_field()
         for line in self:
             info = ""
             vendor_company = line._get_supplier_company()
@@ -79,10 +88,9 @@ class PurchaseOrderLine(models.Model):
                 if warehouses:
                     total = 0.0
                     for warehouse in warehouses:
-                        total += line.product_id.sudo().with_context(
-                            warehouse=warehouse.id,
-                            force_company=vendor_company.id,
-                        )[stock_field]
+                        total += line._get_supplier_display_stock_qty(
+                            line.product_id, warehouse, vendor_company, stock_field
+                        )
                     if total > 0:
                         info = f"<span>{total}</span>"
                     else:
