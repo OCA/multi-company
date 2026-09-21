@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Canarias Conectada
+     License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.partner.restrict.cross.company</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath
+                expr="//block[@name='companies_setting_container']"
+                position="inside"
+            >
+                <setting
+                    id="partner_multi_company_restrict_cross_company_setting"
+                    string="Restrict internal-user contacts to own company"
+                    help="Every internal user only sees a colleague's contact if it belongs to one of their own companies, however many companies they are allowed into."
+                >
+                    <field name="partner_multi_company_restrict_cross_company" />
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
