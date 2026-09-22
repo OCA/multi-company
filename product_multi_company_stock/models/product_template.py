@@ -2,7 +2,7 @@
 #   (http://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl.html).
 
-from odoo import _, api, models
+from odoo import api, models
 from odoo.exceptions import UserError
 
 
@@ -26,11 +26,11 @@ class ProductTemplate(models.Model):
                     companies = quants.mapped("company_id")
                     company_names = ", ".join(companies.mapped("name"))
                     raise UserError(
-                        _(
+                        self.env._(
                             "Cannot remove the following companies because "
-                            "there are stock quantities associated with them: %s"
+                            "there are stock quantities associated with them: %s",
+                            company_names,
                         )
-                        % company_names
                     )
                 moves = self.env["stock.move"].search(
                     [
@@ -42,9 +42,9 @@ class ProductTemplate(models.Model):
                     companies = moves.mapped("company_id")
                     company_names = ", ".join(companies.mapped("name"))
                     raise UserError(
-                        _(
+                        self.env._(
                             "Cannot remove the following companies because "
-                            "there are stock moves associated with them: %s"
+                            "there are stock moves associated with them: %s",
+                            company_names,
                         )
-                        % company_names
                     )

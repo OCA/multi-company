@@ -45,7 +45,6 @@ class TestProductMultiCompanyStock(TestProductMultiCompany):
         quant.unlink()
         move = self.env["stock.move"].create(
             {
-                "name": "Test Stock Move",
                 "product_id": product.id,
                 "product_uom_qty": 10,
                 "product_uom": product.uom_id.id,
@@ -99,7 +98,6 @@ class TestProductMultiCompanyStock(TestProductMultiCompany):
         quant.unlink()
         move = self.env["stock.move"].create(
             {
-                "name": "Test Stock Move",
                 "product_id": product.id,
                 "product_uom_qty": 10,
                 "product_uom": product.uom_id.id,
