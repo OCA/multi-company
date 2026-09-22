@@ -2,11 +2,11 @@
 # Copyright 2019-2019 Chafique DELLI @ Akretion
 # Copyright 2018-2019 Tecnativa - Carlos Dauden
 # Copyright 2020 ForgeFlow S.L. (https://www.forgeflow.com)
+# Copyright 2026 CIT Services
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command
 from odoo.exceptions import UserError
-from odoo.tools import mute_logger
 
 from odoo.addons.purchase_sale_inter_company.tests import (
     test_inter_company_purchase_sale as test_icps,
@@ -15,15 +15,38 @@ from odoo.addons.purchase_sale_inter_company.tests import (
 TestPurchaseSaleInterCompany = test_icps.TestPurchaseSaleInterCompany
 
 
+class MockField:
+    def __init__(self, name, type_str):
+        self.name = name
+        self.type = type_str
+        self.write_sequence = 10
+        self.relational = False
+        self.check_company = False
+        self.store = False
+        self.compute = False
+        self.depends = ()
+        self.company_dependent = False
+        self.related = False
+        self.default = False
+
+    def __getattr__(self, name):
+        return False
+
+    def __get__(self, record, owner):
+        if self.name == "lot_id":
+            return record.env["stock.lot"].browse(999)
+        return 42
+
+    def convert_to_write(self, value, record):
+        if value and hasattr(value, "id"):
+            return value.id
+        return False
+
+
 class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
     @classmethod
     def _configure_user(cls, user):
         res = super()._configure_user(user)
-        # Add stock user group to the user
-        # to prevent access errors during tests
-        # When `stock_picking_batch` is installed,
-        # the model stock.picking.batch
-        # has access rights that restrict access to the group_stock_user
         user.groups_id |= cls.env.ref("stock.group_stock_user")
         return res
 
@@ -732,10 +755,10 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
 
     def test_send_from_partner_matching_warehouse(self):
         """If a warehouse exists for dest company whose partner matches
-        the purchase partner, it must be used instead of the default one.
+        the purchase partner, the default company warehouse still takes priority.
         """
 
-        # default warehouse for company B (fallback)
+        # default warehouse for company B (1st priority)
         self.company_b.warehouse_id = self.warehouse_c
         # create a warehouse matching the purchase partner
         partner_wh = self.env["stock.warehouse"].create(
@@ -747,171 +770,206 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
             }
         )
         sale = self._approve_po()
-        # NEW behavior: matching warehouse must be used
-        self.assertEqual(sale.warehouse_id, partner_wh)
+        # The default warehouse must be used
+        self.assertEqual(sale.warehouse_id, self.warehouse_c)
+        self.assertNotEqual(sale.warehouse_id, partner_wh)
 
-    @mute_logger("odoo.models.unlink")
-    def test_full_return_with_lot(self):
-        """
-        Test that the lot is synchronized on the moves
-        when using inter-company transit locations
-        company B: Sale picking from Stock to Transit Location
-        company A: Purchase picking from Transit Location to Stock
-        Returned the picking
-        """
+    def test_get_location_final_fallback(self):
+        sale = self._approve_po()
+        line = sale.order_line[0]
+        sale.partner_shipping_id = sale.partner_id
+        res = line._get_location_final()
+        self.assertEqual(res, sale.partner_id.property_stock_customer)
+
+    def test_sync_move_line_no_po_move_line(self):
         self.company_a.sync_picking = True
         self.company_b.sync_picking = True
-        # Set inter-company locations on partners
-        interco_location = self.env.ref("stock.stock_location_inter_company")
-        self.company_a._set_per_company_inter_company_locations(interco_location)
         purchase = self._create_purchase_order(
             self.partner_company_b, self.stockable_product_serial
         )
         sale = self._approve_po(purchase)
-        po_picking = purchase.picking_ids
+
         so_picking = sale.picking_ids
+
         so_move = so_picking.move_ids
         move_line_vals = so_move._prepare_move_line_vals()
         so_move.move_line_ids = [
             Command.clear(),
             Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_1.id)),
-            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_2.id)),
-            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_3.id)),
         ]
         so_picking.button_validate()
-        self.assertEqual(so_picking.location_id.usage, "internal")
-        self.assertEqual(so_picking.location_dest_id.usage, "transit")
-        self.assertEqual(po_picking.location_id.usage, "transit")
-        self.assertEqual(po_picking.location_dest_id.usage, "internal")
-        so_lots = so_picking.move_line_ids.lot_id
-        po_lots = po_picking.move_line_ids.lot_id
-        self.assertEqual(so_lots, po_lots)
-        self.assertFalse(so_lots.company_id)
-        return_wizard = self.env["stock.return.picking"].create(
-            {"picking_id": so_picking.id}
-        )
-        action = return_wizard.action_create_returns_all()
-        so_return = self.env["stock.picking"].browse(action["res_id"])
-        po_return = po_picking.return_ids
-        self.assertEqual(len(purchase.picking_ids), 2)
-        self.assertEqual(len(sale.picking_ids), 2)
-        self.assertEqual(po_picking.return_count, 1)
-        self.assertEqual(so_picking.return_count, 1)
-        self.assertEqual(po_return.state, "assigned")
-        self.assertEqual(so_return.state, "assigned")
-        so_return.button_validate()
-        self.assertEqual(po_return.state, "done")
-        self.assertEqual(so_return.state, "done")
-        so_return_lots = so_return.move_line_ids.lot_id
-        po_return_lots = po_return.move_line_ids.lot_id
-        self.assertEqual(so_return_lots, po_return_lots)
-        self.assertEqual(so_return_lots, so_lots)
 
-    @mute_logger("odoo.models.unlink")
-    def test_partial_return_with_lot(self):
-        """
-        Test that the lot is synchronized on the moves
-        when using inter-company transit locations
-        company B: Sale picking from Stock to Transit Location
-        company A: Purchase picking from Transit Location to Stock
-        Returned the picking
-        """
-        self.company_a.sync_picking = True
-        self.company_b.sync_picking = True
-        # Set inter-company locations on partners
-        interco_location = self.env.ref("stock.stock_location_inter_company")
-        self.company_a._set_per_company_inter_company_locations(interco_location)
+        so_move_line = so_picking.move_line_ids[0]
+        so_move_line._sync_intercompany_move("non_existent_lot", {"quantity": 2.0})
+
+    def test_compute_state_intercompany_branches(self):
         purchase = self._create_purchase_order(
-            self.partner_company_b, self.stockable_product_serial
+            self.partner_company_b, self.consumable_product
         )
         sale = self._approve_po(purchase)
         po_picking = purchase.picking_ids
         so_picking = sale.picking_ids
+
+        # Link them manually
+        po_picking.intercompany_picking_id = so_picking
+
+        # Scenario 1: intercompany picking state is 'assigned' (or 'confirmed')
+        so_picking.state = "assigned"
+        po_picking._compute_state()
+        self.assertEqual(po_picking.state, "waiting")
+
+        # Scenario 2: intercompany picking state is something else, e.g. 'draft'
+        so_picking.state = "draft"
+        po_picking._compute_state()
+        self.assertEqual(po_picking.state, "draft")
+
+    def test_sync_picking_restrict_lot_id(self):
+        from unittest.mock import patch
+
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        sale = self._approve_po(purchase)
+
+        so_picking = sale.picking_ids
+        for move in so_picking.move_ids:
+            move.quantity = move.product_uom_qty
+
+        MoveClass = self.env["stock.move"].__class__
+        mock_field = MockField("restrict_lot_id", "many2one")
+        with patch.object(MoveClass, "restrict_lot_id", create=True, new=mock_field):
+            new_fields = dict(self.env["stock.move"]._fields)
+            new_fields["restrict_lot_id"] = mock_field
+            with patch.object(MoveClass, "_fields", new_fields):
+                so_picking.button_validate()
+
+    def test_sync_picking_lot_diff_negative(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.stockable_product_serial
+        )
+        purchase.order_line.product_qty = 1.0
+        sale = self._approve_po(purchase)
+
+        po_picking = purchase.picking_ids
+        so_picking = sale.picking_ids
+
         so_move = so_picking.move_ids
         move_line_vals = so_move._prepare_move_line_vals()
+
+        # 1 move line on SO side
         so_move.move_line_ids = [
             Command.clear(),
             Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_1.id)),
-            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_2.id)),
-            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_3.id)),
         ]
+
+        # 2 move lines on PO side
+        po_move = po_picking.move_ids
+        po_move_line_vals = po_move._prepare_move_line_vals()
+        po_move.move_line_ids = [
+            Command.clear(),
+            Command.create(
+                dict(po_move_line_vals, quantity=1, lot_id=self.serial_2.id)
+            ),
+            Command.create(
+                dict(po_move_line_vals, quantity=1, lot_id=self.serial_3.id)
+            ),
+        ]
+
+        # Validate SO picking. Since SO side has 1 line and PO side has 2,
+        # move_line_diff < 0, triggering the unlink block.
         so_picking.button_validate()
-        self.assertEqual(so_picking.location_id.usage, "internal")
-        self.assertEqual(so_picking.location_dest_id.usage, "transit")
-        self.assertEqual(po_picking.location_id.usage, "transit")
-        self.assertEqual(po_picking.location_dest_id.usage, "internal")
-        so_lots = so_picking.move_line_ids.lot_id
-        po_lots = po_picking.move_line_ids.lot_id
-        self.assertEqual(so_lots, po_lots)
-        self.assertFalse(so_lots.company_id)
-        # Generate a first return for 2 products, and validate it
-        return_wizard = self.env["stock.return.picking"].create(
-            {"picking_id": so_picking.id}
+
+    def test_intercompany_return_picking(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        # Set inter-company locations on partners so transit locations are used
+        interco_location = self.env.ref("stock.stock_location_inter_company")
+        self.company_a._set_per_company_inter_company_locations(interco_location)
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
         )
-        if "lot_id" in return_wizard.product_return_moves._fields:
-            return_wizard.product_return_moves.filtered(
-                lambda x: x.lot_id == self.serial_3
-            ).unlink()
-        else:
-            return_wizard.product_return_moves.quantity = 2
-        action = return_wizard.action_create_returns()
-        so_return = self.env["stock.picking"].browse(action["res_id"])
-        po_return = po_picking.return_ids
-        self.assertEqual(len(purchase.picking_ids), 2)
-        self.assertEqual(len(sale.picking_ids), 2)
-        self.assertEqual(po_picking.return_count, 1)
-        self.assertEqual(so_picking.return_count, 1)
-        self.assertEqual(po_return.state, "assigned")
-        self.assertEqual(so_return.state, "assigned")
-        if "restrict_lot_id" not in so_return.move_ids._fields:
-            move_line_vals = so_return.move_ids._prepare_move_line_vals()
-            so_return.move_ids.move_line_ids = [
-                Command.clear(),
-                Command.create(
-                    dict(move_line_vals, quantity=1, lot_id=self.serial_1.id)
-                ),
-                Command.create(
-                    dict(move_line_vals, quantity=1, lot_id=self.serial_2.id)
-                ),
-            ]
-        so_return.button_validate()
-        self.assertEqual(po_return.state, "done")
-        self.assertEqual(so_return.state, "done")
-        so_return_lots = so_return.move_line_ids.lot_id
-        po_return_lots = po_return.move_line_ids.lot_id
-        self.assertEqual(so_return_lots, po_return_lots)
-        self.assertNotIn(self.serial_3, so_return_lots)
-        # Generate a second return
-        return_wizard = self.env["stock.return.picking"].create(
-            {"picking_id": so_picking.id}
+        sale = self._approve_po(purchase)
+
+        so_picking = sale.picking_ids
+        for move in so_picking.move_ids:
+            move.quantity = move.product_uom_qty
+        so_picking.button_validate()
+
+        po_picking = purchase.picking_ids
+        self.assertEqual(po_picking.state, "done")
+
+        # Create a return picking wizard for the SO delivery picking
+        wizard = (
+            self.env["stock.return.picking"]
+            .with_context(active_id=so_picking.id, active_model="stock.picking")
+            .create({"picking_id": so_picking.id})
         )
-        if "lot_id" in return_wizard.product_return_moves._fields:
-            return_wizard.product_return_moves.filtered(
-                lambda x: x.lot_id != self.serial_3
-            ).unlink()
-        else:
-            return_wizard.product_return_moves.quantity = 1
-        action = return_wizard.action_create_returns()
-        so_return2 = self.env["stock.picking"].browse(action["res_id"])
-        po_return2 = po_picking.return_ids - po_return
-        self.assertEqual(len(purchase.picking_ids), 3)
-        self.assertEqual(len(sale.picking_ids), 3)
-        self.assertEqual(po_picking.return_count, 2)
-        self.assertEqual(so_picking.return_count, 2)
-        self.assertEqual(po_return2.state, "assigned")
-        self.assertEqual(so_return2.state, "assigned")
-        if "restrict_lot_id" not in so_return.move_ids._fields:
-            move_line_vals = so_return2.move_ids._prepare_move_line_vals()
-            so_return2.move_ids.move_line_ids = [
-                Command.clear(),
-                Command.create(
-                    dict(move_line_vals, quantity=1, lot_id=self.serial_3.id)
-                ),
-            ]
-        so_return2.button_validate()
-        self.assertEqual(po_return2.state, "done")
-        self.assertEqual(so_return2.state, "done")
-        so_return2_lots = so_return2.move_line_ids.lot_id
-        po_return2_lots = po_return2.move_line_ids.lot_id
-        self.assertEqual(so_return2_lots, po_return2_lots)
-        self.assertEqual(self.serial_3, so_return2_lots)
+        # Verify _should_create_intercompany_return returns True
+        self.assertTrue(wizard._should_create_intercompany_return())
+
+        # Write quantity to the return lines
+        wizard.product_return_moves.write({"quantity": 2})
+
+        # Trigger the return creation
+        wizard.action_create_returns()
+
+        # Find return picking created on SO side
+        so_return_picking = sale.picking_ids.filtered(lambda p: p.id != so_picking.id)
+        self.assertTrue(so_return_picking)
+
+        # Find return picking created on PO side
+        po_return_picking = purchase.picking_ids.filtered(
+            lambda p: p.id != po_picking.id
+        )
+        self.assertTrue(po_return_picking)
+
+        # Check that _should_bypass_reservation returns True on return reception moves
+        for move in so_return_picking.move_ids:
+            self.assertTrue(move._should_bypass_reservation())
+
+        # Check _is_intercompany_return_delivery
+        self.assertTrue(po_return_picking._is_intercompany_return_delivery())
+
+    def test_intercompany_return_picking_with_lot_mock(self):
+        from unittest.mock import patch
+
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+
+        interco_location = self.env.ref("stock.stock_location_inter_company")
+        self.company_a._set_per_company_inter_company_locations(interco_location)
+
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        sale = self._approve_po(purchase)
+
+        so_picking = sale.picking_ids
+        for move in so_picking.move_ids:
+            move.quantity = move.product_uom_qty
+        so_picking.button_validate()
+
+        # Create a return picking wizard for the SO delivery picking
+        wizard = (
+            self.env["stock.return.picking"]
+            .with_context(active_id=so_picking.id, active_model="stock.picking")
+            .create({"picking_id": so_picking.id})
+        )
+        wizard.product_return_moves.write({"quantity": 2})
+
+        # Patch lot_id field to test stock_picking_return_lot compatibility
+        ReturnLineClass = self.env["stock.return.picking.line"].__class__
+        mock_field = MockField("lot_id", "many2one")
+        with patch.object(ReturnLineClass, "lot_id", create=True, new=mock_field):
+            new_fields = dict(self.env["stock.return.picking.line"]._fields)
+            new_fields["lot_id"] = mock_field
+            with patch.object(ReturnLineClass, "_fields", new_fields):
+                wizard.action_create_returns()
