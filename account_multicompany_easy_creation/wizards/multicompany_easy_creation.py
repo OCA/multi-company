@@ -230,7 +230,9 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         new_company = self.new_company_id.with_context(
             allowed_company_ids=allowed_company_ids
         )
-        self.env["account.chart.template"].try_loading(self.chart_template, new_company)
+        self.env["account.chart.template"].sudo().try_loading(
+            self.chart_template, new_company
+        )
         self.create_bank_journals()
         self.create_sequences()
 
