@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 ACSONE SA/NV -->
+<!-- License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="product_pricelist_view_multi_company" model="ir.ui.view">
+        <field
+            name="name"
+        >product.pricelist.form.product_pricelist_multi_company</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="company_ids"
+                    widget="many2many_tags"
+                    groups="base.group_multi_company"
+                    invisible="not company_id"
+                />
+            </field>
+        </field>
+    </record>
+    <record id="product_pricelist_view_list_multi_company" model="ir.ui.view">
+        <field
+            name="name"
+        >product.pricelist.list.product_pricelist_multi_company</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view_tree" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field
+                    name="company_ids"
+                    widget="many2many_tags"
+                    groups="base.group_multi_company"
+                    invisible="not company_id"
+                />
+            </field>
+        </field>
+    </record>
+</odoo>

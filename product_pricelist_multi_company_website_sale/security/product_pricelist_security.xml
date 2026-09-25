@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 ACSONE SA/NV -->
+<!-- License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <!-- Deactivate website_sale and product_pricelist_multi_company rules;
+         our rules below provide the combined domain. -->
+    <record id="website_sale.product_pricelist_comp_rule" model="ir.rule">
+        <field name="active" eval="False" />
+    </record>
+    <record id="website_sale.product_pricelist_item_comp_rule" model="ir.rule">
+        <field name="active" eval="False" />
+    </record>
+    <record
+        id="product_pricelist_multi_company.product_pricelist_comp_rule"
+        model="ir.rule"
+    >
+        <field name="active" eval="False" />
+    </record>
+    <record
+        id="product_pricelist_multi_company.product_pricelist_item_comp_rule"
+        model="ir.rule"
+    >
+        <field name="active" eval="False" />
+    </record>
+    <record id="product_pricelist_comp_rule" model="ir.rule">
+        <field name="name">Product Pricelist: website multi-company</field>
+        <field name="model_id" ref="product.model_product_pricelist" />
+        <field name="domain_force">
+            ['|', '|', '|', ('company_id', 'in', [False, website.company_id.id]), ('company_id', 'in', company_ids), ('company_ids', 'in', company_ids), ('company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+    <record id="product_pricelist_item_comp_rule" model="ir.rule">
+        <field name="name">Product Pricelist Item: website multi-company</field>
+        <field name="model_id" ref="product.model_product_pricelist_item" />
+        <field name="domain_force">
+            ['|', '|', '|', ('company_id', 'in', [False, website.company_id.id]), ('company_id', 'in', company_ids), ('company_ids', 'in', company_ids), ('company_id', 'parent_of', company_ids)]
+        </field>
+    </record>
+</odoo>
