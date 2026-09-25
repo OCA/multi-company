@@ -18,12 +18,13 @@ msgstr ""
 
 #. module: stock_intercompany
 #: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
-msgid ""
-"<span class=\"fa fa-lg fa-building-o\" title=\"Values set here are company-"
-"specific.\" groups=\"base.group_multi_company\"/>"
+msgid "<span class=\"o_form_label\">Intercompany Operations</span>"
 msgstr ""
-"<span class=\"fa fa-lg fa-building-o\" title=\"I valori impostati qui sono "
-"specifici per azienda.\" groups=\"base.group_multi_company\"/>"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_picking__can_create_out_counterpart
+msgid "Can Create Out Counterpart"
+msgstr ""
 
 #. module: stock_intercompany
 #: model:ir.model,name:stock_intercompany.model_res_company
@@ -36,25 +37,144 @@ msgid "Config Settings"
 msgstr "Impostazioni configurazione"
 
 #. module: stock_intercompany
-#: model:ir.model.fields,field_description:stock_intercompany.field_stock_move_line__counterpart_of_line_id
-msgid "Counterpart Of Line"
+#: model:ir.model.fields,help:stock_intercompany.field_res_company__intercompany_picking_creation_mode
+#: model:ir.model.fields,help:stock_intercompany.field_res_config_settings__intercompany_picking_creation_mode
+msgid ""
+"Controls which counterpart pickings are automatically created for this "
+"company when a transfer is validated in another company:\n"
+"  - Reception Only: create a reception when a delivery is done in another "
+"company (default).\n"
+"  - Delivery Only: create a delivery when a reception is done in another "
+"company (manual action or scheduled action).\n"
+"  - Create Both: create both a reception and a delivery depending on the "
+"direction of the validated transfer.\n"
+"  - (empty): do not create any counterpart picking."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_stock_picking__intercompany_child_ids
+msgid "Counterpart pickings created in other companies from this picking."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields.selection,name:stock_intercompany.selection__res_company__intercompany_picking_creation_mode__both
+msgid "Create Both"
+msgstr ""
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.view_picking_form_intercompany
+msgid "Create Counterpart"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.actions.server,name:stock_intercompany.stock_intercompany_create_out_counterpart_ir_actions_server
+#, fuzzy
+msgid "Create Delivery Counterpart Pickings"
+msgstr "Controparte del prelievo"
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
+msgid "Create intercompany counterpart stock operations."
+msgstr ""
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
+msgid "Creation Mode"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields.selection,name:stock_intercompany.selection__res_company__intercompany_picking_creation_mode__out
+msgid "Delivery Only"
+msgstr ""
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
+msgid "Delivery Type"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_picking__has_counterpart
+#, fuzzy
+msgid "Has Counterpart"
 msgstr "Controparte della riga"
 
 #. module: stock_intercompany
-#: model:ir.model.fields,field_description:stock_intercompany.field_stock_move__counterpart_of_move_id
-msgid "Counterpart Of Move"
-msgstr "Controparte del movimento"
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_picking__intercompany_child_ids
+#, fuzzy
+msgid "Intercompany Counterpart Pickings"
+msgstr "Controparte del prelievo"
 
 #. module: stock_intercompany
-#: model:ir.model.fields,field_description:stock_intercompany.field_stock_picking__counterpart_of_picking_id
-msgid "Counterpart Of Picking"
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_out_type_id
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_out_type_id
+#, fuzzy
+msgid "Intercompany Delivery Type"
+msgstr "Tipo di operazione intercompany"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_move_line__intercompany_origin_line_id
+#, fuzzy
+msgid "Intercompany Origin Line"
+msgstr "Tipo di operazione intercompany"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_move__intercompany_origin_move_id
+#, fuzzy
+msgid "Intercompany Origin Move"
+msgstr "Tipo di operazione intercompany"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_stock_picking__intercompany_parent_id
+#, fuzzy
+msgid "Intercompany Origin Picking"
 msgstr "Controparte del prelievo"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_picking_creation_mode
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_picking_creation_mode
+#, fuzzy
+msgid "Intercompany Picking Creation Mode"
+msgstr "Tipo di operazione intercompany"
 
 #. module: stock_intercompany
 #: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_in_type_id
 #: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_in_type_id
-msgid "Intercompany Operation Type IN"
-msgstr "Tipo di operazione ingresso intercompany"
+#, fuzzy
+msgid "Intercompany Reception Type"
+msgstr "Tipo di operazione intercompany"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_stock_move__intercompany_origin_move_id
+msgid "Move in another company that originated this counterpart move."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_stock_move_line__intercompany_origin_line_id
+msgid "Move line in another company that originated this counterpart line."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_res_company__intercompany_out_type_id
+#: model:ir.model.fields,help:stock_intercompany.field_res_config_settings__intercompany_out_type_id
+msgid ""
+"Operation type used to create the counterpart delivery in this company when "
+"a reception is validated in another company."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_res_company__intercompany_in_type_id
+#: model:ir.model.fields,help:stock_intercompany.field_res_config_settings__intercompany_in_type_id
+msgid ""
+"Operation type used to create the counterpart reception in this company when "
+"a delivery is validated in another company."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_stock_picking__intercompany_parent_id
+msgid ""
+"Picking in another company that triggered the creation of this counterpart "
+"picking."
+msgstr ""
 
 #. module: stock_intercompany
 #: model:ir.model,name:stock_intercompany.model_stock_move_line
@@ -62,14 +182,76 @@ msgid "Product Moves (Stock Move Line)"
 msgstr "Movimenti prodotto (riga movimento di magazzino)"
 
 #. module: stock_intercompany
+#: model:ir.model.fields.selection,name:stock_intercompany.selection__res_company__intercompany_picking_creation_mode__in
+msgid "Reception Only"
+msgstr ""
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
+msgid "Reception Type"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_share_lot
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_share_lot
+msgid "Share Lots / Serial Numbers"
+msgstr ""
+
+#. module: stock_intercompany
 #: model:ir.model,name:stock_intercompany.model_stock_move
 msgid "Stock Move"
 msgstr "Movimento di magazzino"
+
+#. module: stock_intercompany
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_company__intercompany_sync_qty_done
+#: model:ir.model.fields,field_description:stock_intercompany.field_res_config_settings__intercompany_sync_qty_done
+msgid "Sync Done Quantities"
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_stock_picking__can_create_out_counterpart
+msgid ""
+"Technical field: True when a delivery counterpart can be created from this "
+"reception (used to show the action button)."
+msgstr ""
 
 #. module: stock_intercompany
 #: model:ir.model,name:stock_intercompany.model_stock_picking
 msgid "Transfer"
 msgstr "Trasferimento"
 
-#~ msgid "Intercompany operation type"
-#~ msgstr "Tipo di operazione intercompany"
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_stock_picking__has_counterpart
+msgid ""
+"True if this picking has at least one intercompany counterpart (parent or "
+"child)."
+msgstr ""
+
+#. module: stock_intercompany
+#: model_terms:ir.ui.view,arch_db:stock_intercompany.intercompany_res_config_settings_view_form
+msgid "Values set here are company-specific."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_res_company__intercompany_share_lot
+#: model:ir.model.fields,help:stock_intercompany.field_res_config_settings__intercompany_share_lot
+msgid ""
+"When enabled, lots and serial numbers used on the origin picking are made "
+"company-independent (company_id removed) so they are automatically visible "
+"and reusable in the destination company.\n"
+"This avoids duplicating traceability records across companies."
+msgstr ""
+
+#. module: stock_intercompany
+#: model:ir.model.fields,help:stock_intercompany.field_res_company__intercompany_sync_qty_done
+#: model:ir.model.fields,help:stock_intercompany.field_res_config_settings__intercompany_sync_qty_done
+msgid ""
+"When enabled, the quantities done on the origin picking are automatically "
+"copied to the counterpart picking move lines upon counterpart creation."
+msgstr ""
+
+#. module: stock_intercompany
+#. odoo-python
+#: code:addons/stock_intercompany/models/stock_picking.py:0
+msgid "You cannot unlock a picking that has an intercompany counterpart."
+msgstr ""
