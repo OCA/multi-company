@@ -230,7 +230,11 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         new_company = self.new_company_id.with_context(
             allowed_company_ids=allowed_company_ids
         )
-        self.env["account.chart.template"].try_loading(self.chart_template, new_company)
+        # TODO: Required only for v17:
+        # https://github.com/odoo/odoo/blob/355ff1d2eda010760b87d4bf403794382ceaec7a/addons/point_of_sale/models/chart_template.py#L17
+        self.env["account.chart.template"].sudo().try_loading(
+            self.chart_template, new_company
+        )
         self.create_bank_journals()
         self.create_sequences()
 
