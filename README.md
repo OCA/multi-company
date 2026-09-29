@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[account_invoice_inter_company](account_invoice_inter_company/) | 19.0.1.0.2 |  | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 19.0.1.0.3 |  | Intercompany invoice rules
 [base_multi_company](base_multi_company/) | 19.0.1.0.1 | <a href='https://github.com/pedrobaeza'><img src='https://github.com/pedrobaeza.png' width='32' height='32' style='border-radius:50%;' alt='pedrobaeza'/></a> | Provides a base for adding multi-company support to models.
 [calendar_event_type_multi_company](calendar_event_type_multi_company/) | 19.0.1.0.0 |  | This module add multi-company management to calendar event type
 [mail_multicompany](mail_multicompany/) | 19.0.1.0.0 | <a href='https://github.com/luisg123v'><img src='https://github.com/luisg123v.png' width='32' height='32' style='border-radius:50%;' alt='luisg123v'/></a> | Email Gateway Multi company
