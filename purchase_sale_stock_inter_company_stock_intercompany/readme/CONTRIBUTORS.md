@@ -1,0 +1,2 @@
+- Florian Mounier \<florian.mounier@akretion.com\>
+- Guillaume Masson \<guillaume.masson@akretion.com\>
