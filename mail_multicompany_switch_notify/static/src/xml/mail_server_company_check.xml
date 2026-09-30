@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="mail_multicompany_switch_notify.MailServerCompanyCheck">
+        <!-- No markup: this component only runs a check on mount and
+             renders nothing. -->
+    </t>
+</templates>
