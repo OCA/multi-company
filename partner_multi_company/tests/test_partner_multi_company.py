@@ -255,6 +255,11 @@ class TestPartnerMultiCompany(common.TransactionCase):
             "('company_id', '=', False)]"
         )
         self.assertEqual(rule.domain_force, domain)
+        self.assertEqual(
+            self.env.ref("base.res_partner_bank_rule").domain_force,
+            "['|', ('company_id', 'parent_of', company_ids),"
+            "('company_id', '=', False)]",
+        )
 
     def test_switch_user_company(self):
         self.user_company_1.company_ids = (self.company_1 + self.company_2).ids

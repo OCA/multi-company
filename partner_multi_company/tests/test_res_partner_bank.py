@@ -148,3 +148,28 @@ class TestResPartnerBankMultiCompany(common.TransactionCase):
         self.assertIn(self.bank, self.bank_model.search(domain))
         domain = self.bank_model._check_company_domain(self.company_other)
         self.assertNotIn(self.bank, self.bank_model.search(domain))
+
+    def _seen_from(self, company):
+        """Whether an internal user working in ``company`` reads the bank."""
+        user = self.env["res.users"].create(
+            [
+                {
+                    "name": f"Bank reader {company.name}",
+                    "login": f"bank_reader_{company.id}",
+                    "group_ids": [Command.link(self.env.ref("base.group_user").id)],
+                    "company_id": company.id,
+                    "company_ids": [Command.set(company.ids)],
+                }
+            ]
+        )
+        return bool(self.bank_model.with_user(user).search([("id", "=", self.bank.id)]))
+
+    def test_rule_follows_every_company_of_the_partner(self):
+        """The record rule reads company_ids, not the single stored company."""
+        self._set_partner_companies(self.company_parent + self.company_other)
+        self.assertTrue(self._seen_from(self.company_parent))
+        self.assertTrue(self._seen_from(self.company_child))
+        self.assertTrue(self._seen_from(self.company_other))
+
+    def test_rule_hides_banks_of_other_companies(self):
+        self.assertFalse(self._seen_from(self.company_other))

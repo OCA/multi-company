@@ -21,6 +21,16 @@ def post_init_hook(env):
             ),
         }
     )
+    # Bank accounts follow every company of their partner, not the single
+    # stored company_id, with the same hierarchy as the base rule.
+    env.ref("base.res_partner_bank_rule").write(
+        {
+            "domain_force": (
+                "['|', ('company_ids', 'parent_of', company_ids),"
+                "('company_ids', '=', False)]"
+            ),
+        }
+    )
     # Initialize m2m table for preserving old restrictions
     # Added ON CONFLICT DO NOTHING to prevent duplicate key crashes
     env.cr.execute(
@@ -62,6 +72,14 @@ def uninstall_hook(env):
             "domain_force": (
                 "['|', '|', ('partner_share', '=', False),"
                 "('company_id', 'in', company_ids),"
+                "('company_id', '=', False)]"
+            ),
+        }
+    )
+    env.ref("base.res_partner_bank_rule").write(
+        {
+            "domain_force": (
+                "['|', ('company_id', 'parent_of', company_ids),"
                 "('company_id', '=', False)]"
             ),
         }
