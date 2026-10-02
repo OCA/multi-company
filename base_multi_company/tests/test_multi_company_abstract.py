@@ -3,6 +3,7 @@
 # License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
 
 
+from odoo.exceptions import UserError
 from odoo.fields import Command
 from odoo.orm.model_classes import add_to_registry
 from odoo.tests import common
@@ -404,3 +405,92 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         # The resulting value must be a real integer or False, never a NewId
         if company_id:
             self.assertIsInstance(company_id.id, int)
+
+    def test_order_by_company_id(self):
+        """Sorting on the non-stored ``company_id`` must not raise."""
+        self.add_company(self.company_2)
+        records = self.test_model.search([], order="name DESC, company_id, id DESC")
+        self.assertIn(self.record_1, records)
+
+    def test_order_by_company_id_alone(self):
+        """A term that is only ``company_id`` degrades to no ordering."""
+        self.test_model.search([], order="company_id")
+
+    def test_order_by_company_id_path(self):
+        """``company_id.name`` needs the column too and must be skipped."""
+        self.test_model.search([], order="company_id.name")
+
+    def test_order_by_stored_field_still_reaches_the_database(self):
+        """Only ``company_id`` may be dropped, never a real column."""
+        record_2 = self.test_model.create({"name": "zzz order tester"})
+        record_3 = self.test_model.create({"name": "aaa order tester"})
+        records = self.test_model.search(
+            [("id", "in", (record_2 + record_3).ids)],
+            order="name ASC, company_id, id DESC",
+        )
+        self.assertEqual(records.ids, [record_3.id, record_2.id])
+
+    def test_read_group_by_company_id(self):
+        """Grouping on ``company_id`` falls back to ``company_ids``."""
+        self.add_company(self.company_1)
+        self.add_company(self.company_2)
+        record_2 = self.test_model.create(
+            {
+                "name": "group tester",
+                "company_ids": [Command.set(self.company_2.ids)],
+            }
+        )
+        groups = self.test_model._read_group(
+            [("id", "in", (self.record_1 + record_2).ids)],
+            groupby=["company_id"],
+            aggregates=["__count"],
+        )
+        counts = {company.id: count for company, count in groups}
+        self.assertEqual(counts.get(self.company_1.id), 1)
+        self.assertEqual(counts.get(self.company_2.id), 2)
+
+    def test_read_group_by_company_id_returns_companies(self):
+        """The group key must still be a ``res.company`` recordset."""
+        self.add_company(self.company_2)
+        groups = self.test_model._read_group(
+            [("id", "=", self.record_1.id)],
+            groupby=["company_id"],
+            aggregates=["__count"],
+        )
+        self.assertEqual(len(groups), 1)
+        company, count = groups[0]
+        self.assertEqual(company, self.company_2)
+        self.assertEqual(count, 1)
+
+    def test_read_group_by_company_id_without_company(self):
+        """Records shared across all companies group under an empty company."""
+        self.assertFalse(self.record_1.sudo().company_ids)
+        groups = self.test_model._read_group(
+            [("id", "=", self.record_1.id)],
+            groupby=["company_id"],
+            aggregates=["__count"],
+        )
+        self.assertEqual(len(groups), 1)
+        company, count = groups[0]
+        self.assertFalse(company)
+        self.assertEqual(count, 1)
+
+    def test_read_group_by_company_id_path_is_refused_cleanly(self):
+        """A many2one path cannot be redirected to a many2many."""
+        with self.assertRaises(UserError):
+            self.test_model._read_group(
+                [],
+                groupby=["company_id.name"],
+                aggregates=["__count"],
+            )
+
+    def test_read_group_by_stored_field_is_untouched(self):
+        """Grouping on anything else must behave normally."""
+        self.test_model.create({"name": "test"})
+        groups = self.test_model._read_group(
+            [("name", "=", "test")],
+            groupby=["name"],
+            aggregates=["__count"],
+        )
+        self.assertEqual(len(groups), 1)
+        self.assertEqual(groups[0][0], "test")

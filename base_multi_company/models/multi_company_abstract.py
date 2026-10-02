@@ -2,8 +2,14 @@
 # Copyright 2023 Tecnativa - Pedro M. Baeza
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
+import logging
+
 from odoo import api, fields, models
+from odoo.exceptions import UserError
 from odoo.orm.identifiers import NewId
+from odoo.tools import SQL
+
+_logger = logging.getLogger(__name__)
 
 
 class MultiCompanyAbstract(models.AbstractModel):
@@ -68,6 +74,41 @@ class MultiCompanyAbstract(models.AbstractModel):
             # We need to workaround an ORM issue to find records with no company
             domain = ["|", ("company_ids", new_op, False)] + domain
         return domain
+
+    def _order_field_to_sql(self, alias, field_name, direction, nulls, query):
+        """Skip ``company_id`` in ORDER BY instead of raising."""
+        fname = field_name.split(":", 1)[0].split(".", 1)[0]
+        field = self._fields.get(fname)
+        if fname == "company_id" and field is not None and not field.store:
+            _logger.debug(
+                "%s: ignoring non-stored company_id in ORDER BY term %r.",
+                self._name,
+                field_name,
+            )
+            return SQL()
+        return super()._order_field_to_sql(alias, field_name, direction, nulls, query)
+
+    def _read_group_groupby(self, alias, groupby_spec, query):
+        """Group on ``company_ids`` when asked to group on ``company_id``."""
+        fname = groupby_spec.split(":", 1)[0].split(".", 1)[0]
+        field = self._fields.get(fname)
+        if fname == "company_id" and field is not None and not field.store:
+            if groupby_spec != "company_id":
+                raise UserError(
+                    self.env._(
+                        "Grouping by %(spec)s is not supported on %(model)s "
+                        "because its Company field is computed from Companies. "
+                        "Group by Companies instead.",
+                        spec=groupby_spec,
+                        model=self._name,
+                    )
+                )
+            _logger.debug(
+                "%s: grouping on company_ids instead of the non-stored company_id.",
+                self._name,
+            )
+            return super()._read_group_groupby(alias, "company_ids", query)
+        return super()._read_group_groupby(alias, groupby_spec, query)
 
     def _multicompany_patch_vals(self, vals):
         """Patch vals to remove company_id and company_ids duplicity."""
