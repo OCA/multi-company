@@ -146,6 +146,30 @@ class TestPartnerMultiCompany(common.TransactionCase):
         with self.assertRaises(AccessError):
             self.partner_company_1.with_user(self.user_company_2).name = "Test"
 
+    def test_own_company_contact_readable_with_another_active_company(self):
+        # Partners follow the active companies, but the contact of a company
+        # the user belongs to stays readable with that company inactive.
+        self.company_1.partner_id.company_ids = self.company_1
+        self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
+        partners = (
+            self.env["res.partner"]
+            .with_user(self.user_company_1)
+            .with_context(allowed_company_ids=self.company_2.ids)
+        )
+        self.assertEqual(
+            partners.browse(self.company_1.partner_id.id).name,
+            self.company_1.partner_id.sudo().name,
+        )
+        with self.assertRaises(AccessError):
+            partners.browse(self.partner_company_1.id).name  # noqa: B018
+        both = partners.with_context(
+            allowed_company_ids=(self.company_2 + self.company_1).ids
+        )
+        self.assertEqual(
+            both.browse(self.partner_company_1.id).name,
+            self.partner_company_1.sudo().name,
+        )
+
     def test_create_user_multi_companies_single_create(self):
         # Creating a user from an existing partner that already has a
         # company, passing several companies in the same create() call,
@@ -175,6 +199,50 @@ class TestPartnerMultiCompany(common.TransactionCase):
         self.assertTrue(
             set(user.company_ids.ids) <= set(user.partner_id.company_ids.ids)
         )
+
+    def test_create_user_multi_companies_default_partner_company(self):
+        # Same transient state when the new partner gets a company from a
+        # default: its id is unknown before the create, and the create must
+        # still go through.
+        self.env["ir.default"].set("res.partner", "company_id", self.company_1.id)
+        user = self.env["res.users"].create(
+            [
+                {
+                    "name": "user with a default partner company",
+                    "login": "default_partner_company_user",
+                    "group_ids": [Command.link(self.env.ref("base.group_user").id)],
+                    "company_id": self.company_1.id,
+                    "company_ids": [Command.set((self.company_1 + self.company_2).ids)],
+                }
+            ]
+        )
+        self.assertTrue(
+            set(user.company_ids.ids) <= set(user.partner_id.company_ids.ids)
+        )
+
+    def test_create_user_checks_partners_on_the_final_state(self):
+        # The constraint is postponed during the create, not skipped: the
+        # partners it meets are collected and checked once the users exist.
+        partners_to_check = set()
+        self.partner_company_1.with_context(
+            partner_multi_company_check_later=partners_to_check
+        )._check_company_id()
+        self.assertEqual(partners_to_check, set(self.partner_company_1.ids))
+        # A partner shared with a user of more companies stays inconsistent
+        # after the create, and the create is rejected.
+        self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
+        with self.assertRaises(ValidationError):
+            self.env["res.users"].create(
+                [
+                    {
+                        "login": "user_sharing_a_partner",
+                        "partner_id": self.user_company_1.partner_id.id,
+                        "group_ids": [Command.link(self.env.ref("base.group_user").id)],
+                        "company_id": self.company_1.id,
+                        "company_ids": [Command.set(self.company_1.ids)],
+                    }
+                ]
+            )
 
     def test_uninstall(self):
         from ..hooks import uninstall_hook

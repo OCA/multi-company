@@ -18,18 +18,24 @@ class ResUsers(models.Model):
         # That write fires the ``company_id`` inverse, which rewrites the
         # partner's ``company_ids`` down to a single company while the
         # user is only half-built, and ``_check_company_id`` would reject
-        # that transient state before the alignment below ever runs. Skip
-        # the constraint during the create; the alignment write below
-        # re-triggers it on the final, consistent state.
-        users = super(
-            ResUsers, self.with_context(res_users_creation_in_progress=True)
-        ).create(vals_list)
-        users = users.with_context(res_users_creation_in_progress=False)
+        # that transient state before the alignment below ever runs. The
+        # constraint collects the partners it meets during the create, and
+        # they are all checked on the final state below.
+        partners_to_check = set()
+        users = (
+            super(
+                ResUsers,
+                self.with_context(partner_multi_company_check_later=partners_to_check),
+            )
+            .create(vals_list)
+            .with_env(self.env)
+        )
         for user in users:
             # The new user might have a company even if it was not in `vals`
             # because of defaults for example.
             if user.company_ids:
                 user.partner_id.company_ids += user.company_ids
+        self.env["res.partner"].browse(partners_to_check).exists()._check_company_id()
         return users
 
     def write(self, vals):

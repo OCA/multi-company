@@ -7,14 +7,17 @@ def post_init_hook(env):
     """
     Set access rule to support multi-company fields
     """
-    # Change access rule
+    # Change access rule. Partners follow the companies active in the switcher,
+    # except the contacts of the companies the user belongs to: reading the
+    # contact of an own company must not depend on the active selection.
     rule = env.ref("base.res_partner_rule")
     rule.write(
         {
             "domain_force": (
-                "['|', '|', ('partner_share', '=', False),"
+                "['|', '|', '|', ('partner_share', '=', False),"
                 "('company_ids', 'in', company_ids),"
-                "('company_ids', '=', False)]"
+                "('company_ids', '=', False),"
+                "('id', 'in', user.company_ids.partner_id.ids)]"
             ),
         }
     )
