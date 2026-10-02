@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="stock_location_route_form_view_inherit" model="ir.ui.view">
+        <field name="name">stock.location.route.form.inherit</field>
+        <field name="model">stock.route</field>
+        <field name="inherit_id" ref="stock.stock_location_route_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='active']" position="after">
+                <field
+                    name="company_ids"
+                    widget="many2many_tags"
+                    groups="base.group_multi_company"
+                />
+            </xpath>
+        </field>
+    </record>
+</odoo>
