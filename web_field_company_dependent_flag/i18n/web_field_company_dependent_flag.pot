@@ -1,0 +1,30 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* web_field_company_dependent_flag
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: web_field_company_dependent_flag
+#: model:ir.model,name:web_field_company_dependent_flag.model_base
+msgid "Base"
+msgstr ""
+
+#. module: web_field_company_dependent_flag
+#: model:ir.model,name:web_field_company_dependent_flag.model_res_partner
+msgid "Contact"
+msgstr ""
+
+#. module: web_field_company_dependent_flag
+#: model:ir.model.fields,field_description:web_field_company_dependent_flag.field_res_partner__phone
+#: model:ir.model.fields,field_description:web_field_company_dependent_flag.field_res_users__phone
+msgid "Phone"
+msgstr ""
