@@ -14,7 +14,7 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
                     filter_domain="['|', '|',
                     ('name', 'ilike', self),
                     ('vat', 'ilike', self),
-                    ('company_registry', 'ilike', self)]"
+                    ('additional_identifiers', 'ilike', self)]"
                 />
                 <field name="email" filter_domain="[('email', 'ilike', self)]" />
                 <field name="phone" filter_domain="[('phone', 'ilike', self)]" />

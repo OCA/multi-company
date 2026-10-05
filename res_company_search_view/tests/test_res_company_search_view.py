@@ -51,11 +51,19 @@ class TestResCompanySearchView(TransactionCase):
     # ---------- Tests ----------
 
     def test_name_filter_domain(self):
-        """Search by name/vat/company_registry."""
+        """Search by name/vat/additional identifiers."""
         domain = self._get_field_domain("name", "Beta")
         result = self.Company.search(domain)
         self.assertIn(self.company_beta, result)
         self.assertNotIn(self.company_alpha, result)
+
+    def test_identifier_filter_domain(self):
+        """Search by additional identifier (company ID), via the name field."""
+        self.company_alpha.additional_identifiers = {"BE_EN": "0477472701"}
+        domain = self._get_field_domain("name", "0477472701")
+        result = self.Company.search(domain)
+        self.assertIn(self.company_alpha, result)
+        self.assertNotIn(self.company_beta, result)
 
     def test_email_filter_domain(self):
         """Search by email."""

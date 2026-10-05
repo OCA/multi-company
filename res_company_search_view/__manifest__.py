@@ -5,7 +5,7 @@
 {
     "name": "Company - Search View",
     "summary": "Add a search view for company model",
-    "version": "19.0.1.0.1",
+    "version": "20.0.1.0.0",
     "category": "Tools",
     "author": "GRAP, Odoo Community Association (OCA)",
     "maintainers": ["legalsylvain"],
