@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026-TODAY NICO SOLUTIONS - ENGINEERING & IT (<https://www.nico-solutions.de>)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_company_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page
+                    string="Representatives and Roles"
+                    name="representatives_roles_page"
+                >
+                    <div>
+                        <field name="representatives" nolabel="1">
+                            <list
+                                string="Representatives"
+                                editable="bottom"
+                                default_order="sequence"
+                            >
+                                <field name="sequence" widget="handle" />
+                                <field
+                                    name="partner_id"
+                                    options="{'no_create': True}"
+                                    domain="[('is_company', '=', False)]"
+                                />
+                                <field
+                                    name="representative_role_id"
+                                    domain="[]"
+                                    context="{'default_sequence': 1}"
+                                    options="{'no_create': True}"
+                                />
+                            </list>
+                        </field>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
