@@ -27,7 +27,7 @@ class TestLoginSession(HttpCase):
     def _get_session_info(self):
         response = self.url_open(
             "/web/session/get_session_info",
-            data=json.dumps(dict(jsonrpc="2.0", method="call", id=str(uuid4()))),
+            data=json.dumps({"jsonrpc": "2.0", "method": "call", "id": str(uuid4())}),
             headers={"Content-Type": "application/json"},
         )
         self.assertEqual(response.status_code, 200)

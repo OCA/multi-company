@@ -42,12 +42,12 @@ License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
         <field name="model">res.company</field>
         <field name="inherit_id" ref="base.view_res_company_kanban" />
         <field name="arch" type="xml">
-            <field name="name" position="before">
-                <field name="code" />
+            <field name="name" position="attributes">
+                <attribute name="invisible">1</attribute>
             </field>
-            <xpath expr="//i[hasclass('fa', 'fa-building')]" position="after">
-                <strong><field name="code" /> - </strong>
-            </xpath>
+            <field name="name" position="before">
+                <field class="h5" name="display_name" />
+            </field>
         </field>
     </record>
 

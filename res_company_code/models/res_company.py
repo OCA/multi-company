@@ -7,7 +7,7 @@ from odoo import api, fields, models
 
 class ResCompany(models.Model):
     _inherit = "res.company"
-    _rec_names_search = ["code", "name"]
+    _rec_names_search = ("code", "name")
     _order = "code,name"
 
     code = fields.Char()
