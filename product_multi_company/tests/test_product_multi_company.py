@@ -2,6 +2,8 @@
 # Copyright 2021 ACSONE SA/NV (<http://acsone.eu>)
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
+from unittest.mock import patch
+
 from odoo.exceptions import AccessError
 from odoo.tests import Form, common
 
@@ -136,6 +138,50 @@ class TestProductMultiCompany(ProductMultiCompanyCommon, common.TransactionCase)
             product.company_ids,
             self.company_1 + self.company_2,
         )
+
+    def test_form_add_company_does_not_write_company_id(self):
+        """Adding a company from the form must not write company_id.
+
+        The onchange recomputes company_id when company_ids changes. Write
+        overrides loaded after this module (stock, sale_timesheet) would read
+        it as a company change and block the save.
+        """
+        company_3 = self.company_obj.create({"name": "Test company 3"})
+        user = self.env["res.users"].create(
+            {
+                "name": "User all companies",
+                "login": "user_all_companies",
+                "group_ids": [
+                    (6, 0, (self.groups + self.env.ref("base.group_multi_company")).ids)
+                ],
+                "company_id": self.company_2.id,
+                "company_ids": [
+                    (6, 0, (self.company_1 + self.company_2 + company_3).ids)
+                ],
+            }
+        )
+        template = self.product_company_both.product_tmpl_id
+        template_class = type(template)
+        written = []
+        write = template_class.write
+
+        def spy_write(records, vals):
+            written.append(dict(vals))
+            return write(records, vals)
+
+        allowed_companies = (self.company_2 + self.company_1 + company_3).ids
+        with patch.object(template_class, "write", spy_write):
+            with Form(
+                template.with_user(user).with_context(
+                    allowed_company_ids=allowed_companies
+                )
+            ) as form:
+                form.company_ids.add(company_3)
+        self.assertEqual(
+            template.company_ids, self.company_1 + self.company_2 + company_3
+        )
+        self.assertTrue(written)
+        self.assertFalse(any("company_id" in vals for vals in written))
 
     def test_search_product(self):
         """Products with no company are shared across companies but we need to convert
