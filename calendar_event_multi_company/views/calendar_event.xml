@@ -8,7 +8,11 @@
         <field name="inherit_id" ref="calendar.view_calendar_event_form" />
         <field name="arch" type="xml">
             <field name="user_id" position="after">
-                <field name="company_id" groups="base.group_multi_company" />
+                <field
+                    name="company_id"
+                    readonly="not user_can_edit"
+                    groups="base.group_multi_company"
+                />
             </field>
         </field>
     </record>
