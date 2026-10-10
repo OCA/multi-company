@@ -23,6 +23,14 @@ class ProductCategory(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+        # if is_favorite is not in the vals keys for none of the items
+        # to create, we consider that the settings is not done
+        # so we put all categories as favorite
+        # this case can occures for exemple, if categories
+        # are created via import.
+        if all(["is_favorite" not in vals.keys() for vals in vals_list]):
+            for vals in vals_list:
+                vals["is_favorite"] = True
         categories = super().create(vals_list)
         # Configure is_favorite for all the other companies
         company_ids = (
@@ -33,7 +41,9 @@ class ProductCategory(models.Model):
         )
         for company_id in company_ids:
             for category in categories:
-                ctx_category = category.with_company(company_id)
+                # We use sudo here, in case current user doesn't have
+                # access to all companies.
+                ctx_category = category.sudo().with_company(company_id)
                 if ctx_category.parent_id:
                     # We inherit the contextual configuration of the parent category, if any
                     ctx_category.is_favorite = ctx_category.parent_id.is_favorite
