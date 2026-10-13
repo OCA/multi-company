@@ -230,7 +230,9 @@ class ProductTemplate(models.Model):
             if default_supplier_tax_ids != supplier_tax_ids
             else None
         )
-        for company in self.env["res.company"].search([("id", "!=", user_company.id)]):
+        for company in (
+            self.env["res.company"].sudo().search([("id", "!=", user_company.id)])
+        ):
             customer_tax_ids.extend(
                 self._taxes_by_company(
                     "account_sale_tax_id", company, match_customer_tax_ids
