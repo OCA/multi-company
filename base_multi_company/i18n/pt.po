@@ -35,15 +35,27 @@ msgid "Company"
 msgstr "Empresa"
 
 #. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
+msgid "Display Name"
+msgstr "Nome a Exibir"
+
+#. module: base_multi_company
+#. odoo-python
+#: code:addons/base_multi_company/models/multi_company_abstract.py:0
+msgid ""
+"Grouping by %(spec)s is not supported on %(model)s because its Company field "
+"is computed from Companies. Group by Companies instead."
+msgstr ""
+
+#. module: base_multi_company
+#: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
+msgid "ID"
+msgstr "ID"
+
+#. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
 msgid "Multi-Company Abstract"
 msgstr "Abstração Multi-Empresa"
-
-#~ msgid "Display Name"
-#~ msgstr "Nome a Exibir"
-
-#~ msgid "ID"
-#~ msgstr "ID"
 
 #~ msgid "Last Modified on"
 #~ msgstr "Última Modificação Em"
