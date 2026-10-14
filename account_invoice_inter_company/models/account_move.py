@@ -359,6 +359,7 @@ class AccountMoveLine(models.Model):
         vals = {
             "product_id": self.product_id.id or False,
             "price_unit": self.price_unit,
+            "product_uom_id": self.product_uom_id.id,
             "quantity": self.quantity,
             "discount": self.discount,
             "move_id": dest_move.id,
