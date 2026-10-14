@@ -107,8 +107,8 @@ class StockPicking(models.Model):
                         and x.state not in ["done", "cancel"]
                     )
                 )
-                # stock_restrict_lot compatibility
-                if "restrict_lot_id" in move._fields:
+                # stock_restrict_lot and purchase_sale_lot_intercompany compatibility
+                if "restrict_lot_id" in move._fields and move.restrict_lot_id:
                     po_move_pending = po_move_pending.filtered(
                         lambda x, move=move: x.restrict_lot_id == move.restrict_lot_id
                     )
