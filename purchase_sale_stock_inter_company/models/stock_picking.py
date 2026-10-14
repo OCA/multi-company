@@ -98,6 +98,8 @@ class StockPicking(models.Model):
                 intercompany_user
             ).with_company(dest_company)
             for move in self.move_ids.filtered(lambda m: m.state != "cancel"):
+                if self._is_intercompany_purchase_kit_move(move, dest_picking):
+                    continue
                 move_lines = move.move_line_ids.filtered(lambda x: x.quantity > 0)
                 # To identify the correct move to write to,
                 # use both the SO-PO link and the intercompany_picking_id link
@@ -239,6 +241,9 @@ class StockPicking(models.Model):
             and self.location_dest_id.usage in ["customer", "transit"]
             and self.sale_id.sudo().auto_purchase_order_id
         )
+
+    def _is_intercompany_purchase_kit_move(self, move, dest_picking):
+        return False
 
     def _is_intercompany_return_reception(self):
         """
