@@ -7,36 +7,14 @@ def post_init_hook(env):
     """
     Set access rule to support multi-company fields
     """
-    # Change access rule
-    rule = env.ref("base.res_partner_rule")
-    rule.write(
-        {
-            "domain_force": (
-                "['|', '|', ('partner_share', '=', False),"
-                "('company_ids', 'in', company_ids),"
-                "('company_ids', '=', False)]"
-            ),
-        }
-    )
-    rule_partner_bank = env.ref("base.res_partner_bank_rule")
-    rule_partner_bank.write(
-        {
-            "domain_force": (
-                "['|', ('company_ids', 'in', company_ids),"
-                "('company_ids', '=', False)]"
-            ),
-        }
-    )
     # Initialize m2m table for preserving old restrictions
-    env.cr.execute(
-        """
+    env.cr.execute("""
         INSERT INTO res_company_res_partner_rel
         (res_partner_id, res_company_id)
         SELECT id, company_id
         FROM res_partner
         WHERE company_id IS NOT NULL
-        """
-    )
+        """)
     fix_user_partner_companies(env)
 
 
@@ -52,27 +30,4 @@ def fix_user_partner_companies(env):
 
 
 def uninstall_hook(env):
-    """Restore product rule to base value.
-
-    Args:
-        cr (Cursor): Database cursor to use for operation.
-        rule_ref (string): XML ID of security rule to remove the
-            `domain_force` from.
-    """
-    # Change access rule
-    rule = env.ref("base.res_partner_rule")
-    rule.write(
-        {
-            "domain_force": (
-                "['|', '|', ('partner_share', '=', False),"
-                "('company_id', 'in', company_ids),"
-                "('company_id', '=', False)]"
-            ),
-        }
-    )
-    rule_partner_bank = env.ref("base.res_partner_bank_rule")
-    rule_partner_bank.write(
-        {
-            "domain_force": ("[('company_id', 'in', company_ids + [False])]"),
-        }
-    )
+    pass

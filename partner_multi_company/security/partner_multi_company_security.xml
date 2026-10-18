@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+        <record id="base.res_partner_rule" model="ir.rule">
+            <field name="domain_force">['|', '|', ('partner_share', '=', False), ('company_ids',
+                'in', company_ids), ('company_ids', '=', False)]</field>
+        </record>
+
+        <record id="base.res_partner_bank_rule" model="ir.rule">
+            <field name="domain_force">['|', ('company_ids', 'in', company_ids), ('company_ids',
+                '=', False)]</field>
+        </record>
+    </data>
+</odoo>
