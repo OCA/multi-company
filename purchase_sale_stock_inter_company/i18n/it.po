@@ -1,0 +1,289 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_sale_stock_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-08-05 13:15+0000\n"
+"PO-Revision-Date: 2025-12-01 11:42+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.4\n"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_stock_picking__state
+msgid ""
+" * Draft: The transfer is not confirmed yet. Reservation doesn't apply.\n"
+" * Waiting another operation: This transfer is waiting for another operation "
+"before being ready.\n"
+" * Waiting: The transfer is waiting for the availability of some products.\n"
+"(a) The shipping policy is \"As soon as possible\": no product could be "
+"reserved.\n"
+"(b) The shipping policy is \"When all products are ready\": not all the "
+"products could be reserved.\n"
+" * Ready: The transfer is ready to be processed.\n"
+"(a) The shipping policy is \"As soon as possible\": at least one product has "
+"been reserved.\n"
+"(b) The shipping policy is \"When all products are ready\": all product have "
+"been reserved.\n"
+" * Done: The transfer has been processed.\n"
+" * Cancelled: The transfer has been cancelled."
+msgstr ""
+" * Bozza: Il trasferimento non è ancora confermato. Non è possibile "
+"riservare.\n"
+" * Attesa altra operazione: questo trasferimento è in attesa di un'altra "
+"operazione prima di essere pronto.\n"
+" * In attesa: il trasferimento è in attesa della disponibilità di alcuni "
+"prodotti.\n"
+"(a) La politica di spedizione è \"Il prima possibile\": non è stato "
+"possibile riservare alcun prodotto.\n"
+"(b) La politica di spedizione è \"Quando tutti i prodotti sono pronti\": non "
+"è stato possibile riservare tutti i prodotti.\n"
+" * Pronto: il trasferimento è pronto per essere completato.\n"
+"(a) La politica di spedizione è \"Il prima possibile\": almeno un prodotto è "
+"stato riservato.\n"
+"(b) La politica di spedizione è \"Quando tutti i prodotti sono pronti\": "
+"tutti i prodotti sono stati riservati.\n"
+" * Fatto: il trasferimento è stato completato.\n"
+" * Annullato: il trasferimento è stato annullato."
+
+#. module: purchase_sale_stock_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
+msgid "Block PO manual picking validation"
+msgstr "Blocca validazione manuale dei prelievi in acquisto"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__raise
+msgid "Block and raise error"
+msgstr "Blocca e solleva errore"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__block_po_manual_picking_validation
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__block_po_manual_picking_validation
+msgid "Block manual validation of picking in the destination company"
+msgstr "Blocca validazione manuale dei prelievi nell'azienda di destinazione"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
+msgid "Companies"
+msgstr "Aziende"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "Impostazioni di configurazione"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__notify
+msgid "Continue, but create activity to notify someone"
+msgstr "Continua, ma crea un'attività per notificare qualcuno"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+"Valore predefinito da impostare sugli ordini di vendita che verranno creati "
+"sulla base degli ordini di acquisto fatti a questa azienda"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+"Valore predefinito da impostare sugli ordini di vendita che verranno creati "
+"sulla base degli ordini di acquisto fatti a questa azienda."
+
+#. module: purchase_sale_stock_inter_company
+#. odoo-python
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+msgid ""
+"Failure to confirm picking for PO %(purchase_name)s. Original picking "
+"%(picking_name)s still confirmed, please check the other side manually."
+msgstr ""
+"Fallimento della conferma del prelievo per OA %(purchase_name)s. Il prelievo "
+"origine %(picking_name)s ancora confermato, controllare lato ordine "
+"manualmente."
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr "Prelievo interaziendale"
+
+#. module: purchase_sale_stock_inter_company
+#. odoo-python
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+msgid ""
+"Manual validation of the picking is not allowed in the destination company."
+msgstr ""
+"La validazione manuale del prelievo non è permessa nell'azienda di "
+"destinazione."
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
+#: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
+msgid "On sync picking failure"
+msgstr "Al fallimento della sincronizzazione trasferimenti"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
+msgid "Pick action to perform on sync picking failure"
+msgstr "Azione trasferimento da compiere alla mancata sincronizzazione"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr "Movimenti prodotto (riga movimento di magazzino)"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr "Ordine di acquisto"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Riga ordine di vendita"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__state
+msgid "Status"
+msgstr "Stato"
+
+#. module: purchase_sale_stock_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
+msgid "Sync picking"
+msgstr "Sincronizza prelievo"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking
+msgid "Sync the receipt from the destination company with the delivery"
+msgstr "Sincronizza la ricezione dell'azienda di destinazione con la consegna"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking
+msgid ""
+"Sync the receipt from the destination company with the delivery from the "
+"source company"
+msgstr ""
+"Sincronizza la ricezione dell'azienda di destinazione con la consegna "
+"dell'azienda di origine"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking
+msgid "Sync the receipt with the delivery"
+msgstr "Sincronizza la ricezione con la spedizione"
+
+#. module: purchase_sale_stock_inter_company
+#. odoo-python
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+msgid ""
+"There's no corresponding line in PO %(po)s for assigning qty from "
+"%(pick_name)s for product %(product)s"
+msgstr ""
+"Non c'è una riga corrisponde nell'ordine d'acquisto %(po)s per assegnare la "
+"quantità da %(pick_name)s per il prodotto %(product)s"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr "Trasferimento"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__notify_user_id
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
+msgid "User to Notify"
+msgstr "Utente da avvisare"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
+msgid "User to notify incase of sync picking failure."
+msgstr "Utente da avvisare in caso di mancata sincronizzazione trasferimenti."
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Sale Orders"
+msgstr "Magazzino per gli ordini di vendita"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid "Warehouse for Sale Orders"
+msgstr "Magazzino per gli ordini di vendita"
+
+#~ msgid "Create Sale Orders when buying to this company"
+#~ msgstr "Creare ordini di vendita quando si acquista da questa azienda"
+
+#~ msgid ""
+#~ "Generate a Sale Order when a Purchase Order with this company as supplier "
+#~ "is created.\n"
+#~ " The intercompany user must at least be Sale User."
+#~ msgstr ""
+#~ "Generare un ordine di vendita quando un ordine d'acquisto viene creato "
+#~ "con questa azienda come fornitore.\n"
+#~ " L'utente interaziendale deve essere almeno un utente vendite."
+
+#, fuzzy
+#~ msgid "Intercompany Sale User"
+#~ msgstr "Utente interaziendale"
+
+#, fuzzy
+#~ msgid "Purchase/Sale"
+#~ msgstr "Ordine d'acquisto"
+
+#~ msgid "Sale Orders Auto Validation"
+#~ msgstr "Validazione automatica ordini di vendita"
+
+#~ msgid "Sale from purchase"
+#~ msgstr "Vendita da acquisto"
+
+#, fuzzy
+#~ msgid "Sales Order"
+#~ msgstr "Ordine di vendita"
+
+#~ msgid "Source Purchase Order"
+#~ msgstr "Ordine d'acquisto di origine"
+
+#~ msgid "Source Purchase Order Line"
+#~ msgstr "Riga ordine d'acquisto di origine"
+
+#~ msgid "This vendor bill is related with: {}"
+#~ msgstr "Questa fattura fornitore è relativa a: {}"
+
+#~ msgid ""
+#~ "When a Sale Order is created by a multi company rule for this company, it "
+#~ "will automatically validate it."
+#~ msgstr ""
+#~ "Quando un ordine di vendita viene creato da una regola multi azienda per "
+#~ "questa azienda, verrà automaticamente validato."
+
+#~ msgid "You can't cancel an order that is %s"
+#~ msgstr "Impossibile annullare un ordine che è %s"
+
+#~ msgid ""
+#~ "You cannot create SO from PO because product '%s' is not intercompany"
+#~ msgstr ""
+#~ "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè il "
+#~ "prodotto '%s' non è interaziendale"
+
+#~ msgid ""
+#~ "You cannot create SO from PO because sale price list currency is "
+#~ "different than purchase price list currency."
+#~ msgstr ""
+#~ "Impossibile creare l'ordine di vendita dall'ordine d'acquisto perchè la "
+#~ "valuta del listino di vendita è diversa dalla valuta del listino "
+#~ "d'acquisto."
+
+#~ msgid "Invoice"
+#~ msgstr "Fattura"
