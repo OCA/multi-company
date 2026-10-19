@@ -1,6 +1,6 @@
 [project]
 name = "odoo-addons-oca-multi-company"
-version = "17.0.20250826.0"
+version = "17.0.20261019.0"
 dependencies = [
     "odoo-addon-account_invoice_inter_company>=17.0dev,<17.1dev",
     "odoo-addon-account_multicompany_easy_creation>=17.0dev,<17.1dev",
@@ -9,6 +9,7 @@ dependencies = [
     "odoo-addon-mail_multicompany>=17.0dev,<17.1dev",
     "odoo-addon-mail_template_multi_company>=17.0dev,<17.1dev",
     "odoo-addon-partner_multi_company>=17.0dev,<17.1dev",
+    "odoo-addon-pos_category_multicompany>=17.0dev,<17.1dev",
     "odoo-addon-product_multi_company>=17.0dev,<17.1dev",
     "odoo-addon-product_tax_multicompany_default>=17.0dev,<17.1dev",
     "odoo-addon-purchase_sale_inter_company>=17.0dev,<17.1dev",
