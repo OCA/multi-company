@@ -15,6 +15,7 @@ class Base(models.AbstractModel):
         We have to serialize the call to super, but it doesn't matter in terms of
         performance, as super also makes a for loop in the records.
         """
+        res = True
         for record in self:
             company_source_id = False
             if record._name == "res.company":
@@ -22,5 +23,5 @@ class Base(models.AbstractModel):
             elif "company_id" in record._fields:
                 company_source_id = record.company_id.id
             record = record.with_context(_check_company_source_id=company_source_id)
-            super(Base, record)._check_company(fnames=fnames)
-        return
+            res = super(Base, record)._check_company(fnames=fnames)
+        return res

@@ -30,14 +30,12 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         )
 
         # Access record:
-        cls.env["ir.model.access"].create(
+        cls.env["ir.access"].create(
             {
                 "name": "access.tester",
                 "model_id": cls.tester_model.id,
-                "perm_read": 1,
-                "perm_write": 1,
-                "perm_create": 1,
-                "perm_unlink": 1,
+                "group_id": cls.env.ref("base.group_user").id,
+                "operation": "crud",
             }
         )
 
@@ -174,17 +172,31 @@ class TestMultiCompanyAbstract(common.TransactionCase):
             }
         )
         companies = company2 + company3
-        tester.write({"company_ids": [(6, False, companies.ids)]})
+        tester = self.test_model.create(
+            {
+                "name": "My tester without the main company",
+                "company_ids": [Command.set(companies.ids)],
+            }
+        )
+        tester = tester.with_user(user).with_context(
+            allowed_company_ids=user.company_ids.ids
+        )
         # Force recompute
         tester.invalidate_model(["company_id"])
         # Is not subset
-        # Fetch it with the admin user cause company_ids is uid context dependent
+        # Fetch it with the admin user, who can read every company
         admin = self.env.user
         self.assertFalse(tester.with_user(admin).company_ids <= user.company_ids)
         self.assertNotEqual(tester.company_id.id, user.company_id.id)
         self.assertIn(tester.company_id.id, user.company_ids.ids)
         # Switch to a company not in tester.company_ids
         self.switch_user_company(user, company4)
+        tester = tester.with_context(
+            allowed_company_ids=[
+                user.company_id.id,
+                *(user.company_ids - user.company_id).ids,
+            ]
+        )
         # Force recompute
         tester.invalidate_model(["company_id"])
         self.assertNotEqual(user.company_id.id, tester.company_ids.ids)
@@ -214,7 +226,9 @@ class TestMultiCompanyAbstract(common.TransactionCase):
                 "company_ids": [(6, False, companies.ids)],
             }
         )
-        tester_obj = self.test_model.with_user(user)
+        tester_obj = self.test_model.with_user(user).with_context(
+            allowed_company_ids=companies.ids
+        )
         # We add both values
         tester = tester_obj.create(
             {
@@ -293,7 +307,9 @@ class TestMultiCompanyAbstract(common.TransactionCase):
                 "company_ids": [(6, False, companies.ids)],
             }
         )
-        tester_obj = self.test_model.with_user(user)
+        tester_obj = self.test_model.with_user(user).with_context(
+            allowed_company_ids=companies.ids
+        )
         # We add both values
         tester = tester_obj.create(
             {"name": "My tester", "company_ids": [(6, False, companies.ids)]}
@@ -312,15 +328,14 @@ class TestMultiCompanyAbstract(common.TransactionCase):
         self.assertFalse(tester.sudo().company_ids)
 
     def test_rule_in_false(self):
-        # Create an ir.rule imitating base.res_partner_rule
-        self.env["ir.rule"].create(
+        # Create an access record allowing shared records across companies.
+        self.env["ir.access"].create(
             {
-                "name": "Test rule",
+                "name": "Test multi-company access",
                 "model_id": self.tester_model.id,
-                "domain_force": repr(
-                    [("company_id", "in", [False, self.company_1.id])]
-                ),
-                "groups": [Command.link(self.ref("base.group_user"))],
+                "group_id": self.ref("base.group_user"),
+                "operation": "r",
+                "domain": repr([("company_ids", "in", [False, self.company_1.id])]),
             }
         )
         user = common.new_test_user(

@@ -6,6 +6,7 @@ import logging
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
+from odoo.models import TableSQL
 from odoo.orm.identifiers import NewId
 from odoo.tools import SQL
 
@@ -17,7 +18,6 @@ class MultiCompanyAbstract(models.AbstractModel):
     _description = "Multi-Company Abstract"
 
     company_id = fields.Many2one(
-        string="Company",
         comodel_name="res.company",
         compute="_compute_company_id",
         search="_search_company_id",
@@ -26,12 +26,10 @@ class MultiCompanyAbstract(models.AbstractModel):
     company_ids = fields.Many2many(
         string="Companies",
         comodel_name="res.company",
-        # avoid cache pollution in sudo / non-sudo uses of the field
-        depends_context=("uid",),
     )
 
     @api.depends("company_ids")
-    @api.depends_context("companies", "company", "_check_company_source_id")
+    @api.depends_context("allowed_company_ids", "company", "_check_company_source_id")
     def _compute_company_id(self):
         for record in self:
             # Set this priority computing the company (if included in the allowed ones)
@@ -40,9 +38,7 @@ class MultiCompanyAbstract(models.AbstractModel):
             #   record to be compared.
             # - Otherwise, use current companies of the user, prioritizing main company.
             # - As last resource, use the first allowed company.
-            company_id = self.env.context.get(
-                "_check_company_source_id"
-            ) or self.env.context.get("force_company")
+            company_id = self.env.context.get("_check_company_source_id")
             if company_id in record.company_ids.ids:
                 record.company_id = company_id
             else:
@@ -75,20 +71,26 @@ class MultiCompanyAbstract(models.AbstractModel):
             domain = ["|", ("company_ids", new_op, False)] + domain
         return domain
 
-    def _order_field_to_sql(self, alias, field_name, direction, nulls, query):
+    def _order_field_to_sql(
+        self,
+        table: TableSQL,
+        field_expr: str,
+        direction: SQL,
+        nulls: SQL,
+    ) -> SQL:
         """Skip ``company_id`` in ORDER BY instead of raising."""
-        fname = field_name.split(":", 1)[0].split(".", 1)[0]
+        fname = field_expr.split(":", 1)[0].split(".", 1)[0]
         field = self._fields.get(fname)
         if fname == "company_id" and field is not None and not field.store:
             _logger.debug(
                 "%s: ignoring non-stored company_id in ORDER BY term %r.",
                 self._name,
-                field_name,
+                field_expr,
             )
             return SQL()
-        return super()._order_field_to_sql(alias, field_name, direction, nulls, query)
+        return super()._order_field_to_sql(table, field_expr, direction, nulls)
 
-    def _read_group_groupby(self, alias, groupby_spec, query):
+    def _read_group_groupby(self, table: TableSQL, groupby_spec: str) -> SQL:
         """Group on ``company_ids`` when asked to group on ``company_id``."""
         fname = groupby_spec.split(":", 1)[0].split(".", 1)[0]
         field = self._fields.get(fname)
@@ -107,8 +109,8 @@ class MultiCompanyAbstract(models.AbstractModel):
                 "%s: grouping on company_ids instead of the non-stored company_id.",
                 self._name,
             )
-            return super()._read_group_groupby(alias, "company_ids", query)
-        return super()._read_group_groupby(alias, groupby_spec, query)
+            return super()._read_group_groupby(table, "company_ids")
+        return super()._read_group_groupby(table, groupby_spec)
 
     def _multicompany_patch_vals(self, vals):
         """Patch vals to remove company_id and company_ids duplicity."""
@@ -143,7 +145,10 @@ class MultiCompanyAbstract(models.AbstractModel):
                 if company_id:
                     vals["company_ids"] = [fields.Command.link(company_id)]
             self._multicompany_patch_vals(vals)
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        # Same sudo / non-sudo cache concern as in write()
+        records.invalidate_recordset(fnames=["company_ids"])
+        return records
 
     def write(self, vals):
         """Discard changes in company_id field if company_ids has been given."""
