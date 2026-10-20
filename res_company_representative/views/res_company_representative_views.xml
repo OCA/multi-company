@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026-TODAY NICO SOLUTIONS - ENGINEERING & IT (<https://www.nico-solutions.de>)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="view_res_company_representative_tree" model="ir.ui.view">
+        <field name="name">res.company.representative.tree</field>
+        <field name="model">res.company.representative</field>
+        <field name="arch" type="xml">
+            <list default_order="sequence">
+                <field name="company_id" />
+                <field name="partner_id" />
+                <field name="representative_role_id" />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_res_company_representative_form" model="ir.ui.view">
+        <field name="name">res.company.representative.form</field>
+        <field name="model">res.company.representative</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="company_id" />
+                        <field name="partner_id" />
+                        <field name="representative_role_id" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_res_company_representative" model="ir.actions.act_window">
+        <field name="name">Representatives</field>
+        <field name="res_model">res.company.representative</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem
+        id="menu_users_representative_settings"
+        name="Representative Settings"
+        parent="base.menu_users"
+        sequence="10"
+        groups="base.group_no_one"
+    />
+
+    <menuitem
+        id="menu_res_company_representative"
+        name="Representatives"
+        parent="menu_users_representative_settings"
+        action="action_res_company_representative"
+        sequence="100"
+        groups="base.group_no_one"
+    />
+</odoo>
