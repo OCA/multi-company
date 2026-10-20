@@ -4,18 +4,21 @@
 
 from odoo import Command
 from odoo.exceptions import AccessError, ValidationError
-from odoo.tests import Form, common, new_test_user, tagged
+from odoo.tests import Form, new_test_user, tagged
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
 @tagged("post_install", "-at_install")
-class TestPartnerMultiCompany(common.TransactionCase):
+class TestPartnerMultiCompany(BaseCommon):
+    # Run as the setup user: access checks are done explicitly with the
+    # users of each company created below
+    _test_user_groups = ()
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Avoid possible spam
-        cls.partner_model = cls.env["res.partner"].with_context(
-            mail_create_nosubscribe=True,
-        )
+        cls.partner_model = cls.env["res.partner"]
         cls.company_1 = cls.env["res.company"].create([{"name": "Test company 1"}])
         cls.company_2 = cls.env["res.company"].create([{"name": "Test company 2"}])
         cls.partner_company_none = cls.partner_model.create(
@@ -152,11 +155,17 @@ class TestPartnerMultiCompany(common.TransactionCase):
         uninstall_hook(self.env)
         rule = self.env.ref("base.res_partner_rule")
         domain = (
-            "['|', '|', ('partner_share', '=', False),"
-            "('company_id', 'in', company_ids),"
+            "['|', '|', ('partner_share', '=', False), "
+            "('company_id', 'parent_of', company_ids), "
             "('company_id', '=', False)]"
         )
-        self.assertEqual(rule.domain_force, domain)
+        self.assertEqual(rule.domain, domain)
+        rule_partner_bank = self.env.ref("base.res_partner_bank_rule")
+        domain = (
+            "['|', ('company_id', 'parent_of', company_ids), "
+            "('company_id', '=', False)]"
+        )
+        self.assertEqual(rule_partner_bank.domain, domain)
 
     def test_switch_user_company(self):
         self.user_company_1.company_ids = (self.company_1 + self.company_2).ids
@@ -346,7 +355,7 @@ class TestPartnerMultiCompany(common.TransactionCase):
 
         # Verify the rule was patched
         rule = self.env.ref("base.res_partner_rule")
-        self.assertIn("company_ids", rule.domain_force)
+        self.assertIn("company_ids", rule.domain)
 
         # Verify the partner companies were properly re-aligned with the user
         self.assertIn(self.company_2, self.user_company_1.partner_id.company_ids)

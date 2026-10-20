@@ -19,6 +19,10 @@ class TestResPartnerBankMultiCompany(BaseCommon):
     one based on ``company_ids``, and that is what is asserted here.
     """
 
+    # Run as the setup user: these tests check the company domain, not the
+    # access of a restricted user to the companies involved
+    _test_user_groups = ()
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -48,7 +52,7 @@ class TestResPartnerBankMultiCompany(BaseCommon):
             ]
         )
         cls.bank = cls.bank_model.create(
-            [{"acc_number": "BANKTEST0001", "partner_id": cls.partner.id}]
+            [{"account_number": "BANKTEST0001", "partner_id": cls.partner.id}]
         )
 
     def _set_partner_companies(self, companies):

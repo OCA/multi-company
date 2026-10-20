@@ -5,9 +5,12 @@
 {
     "name": "Partner multi-company",
     "summary": "Select individually the partner visibility on each company",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "license": "AGPL-3",
-    "depends": ["base_multi_company"],
+    "depends": [
+        "base_multi_company",
+        "web",  # Required for the test that uses Form
+    ],
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "category": "Partner Management",

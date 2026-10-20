@@ -5,13 +5,13 @@ _logger = logging.getLogger(__name__)
 
 def post_init_hook(env):
     """
-    Set access rule to support multi-company fields
+    Set access restriction to support multi-company fields
     """
-    # Change access rule
+    # Change access restriction
     rule = env.ref("base.res_partner_rule")
     rule.write(
         {
-            "domain_force": (
+            "domain": (
                 "['|', '|', ('partner_share', '=', False),"
                 "('company_ids', 'in', company_ids),"
                 "('company_ids', '=', False)]"
@@ -21,7 +21,7 @@ def post_init_hook(env):
     rule_partner_bank = env.ref("base.res_partner_bank_rule")
     rule_partner_bank.write(
         {
-            "domain_force": (
+            "domain": (
                 "['|', ('company_ids', 'in', company_ids),('company_ids', '=', False)]"
             ),
         }
@@ -53,20 +53,14 @@ def fix_user_partner_companies(env):
 
 
 def uninstall_hook(env):
-    """Restore product rule to base value.
-
-    Args:
-        cr (Cursor): Database cursor to use for operation.
-        rule_ref (string): XML ID of security rule to remove the
-            `domain_force` from.
-    """
-    # Change access rule
+    """Restore partner and partner bank access restrictions to base value."""
+    # Change access restriction
     rule = env.ref("base.res_partner_rule")
     rule.write(
         {
-            "domain_force": (
-                "['|', '|', ('partner_share', '=', False),"
-                "('company_id', 'in', company_ids),"
+            "domain": (
+                "['|', '|', ('partner_share', '=', False), "
+                "('company_id', 'parent_of', company_ids), "
                 "('company_id', '=', False)]"
             ),
         }
@@ -74,6 +68,9 @@ def uninstall_hook(env):
     rule_partner_bank = env.ref("base.res_partner_bank_rule")
     rule_partner_bank.write(
         {
-            "domain_force": ("[('company_id', 'in', company_ids + [False])]"),
+            "domain": (
+                "['|', ('company_id', 'parent_of', company_ids), "
+                "('company_id', '=', False)]"
+            ),
         }
     )
