@@ -382,6 +382,10 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             invoice_line.product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
+        self.assertEqual(
+            invoice_line.product_uom_id,
+            self.invoice_company_a.invoice_line_ids[0].product_uom_id,
+        )
         self.assertEqual(invoice_line.name, "Service Multi Company test")
         # Cancel the invoice for company A
         invoice_origin = (
