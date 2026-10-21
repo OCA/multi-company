@@ -369,6 +369,10 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
             invoice_line.product_id,
             self.invoice_company_a.invoice_line_ids[0].product_id,
         )
+        self.assertEqual(
+            invoice_line.product_uom_id,
+            self.invoice_company_a.invoice_line_ids[0].product_uom_id,
+        )
         # Cancel the invoice for company A
         invoice_origin = (
             f"{self.invoice_company_a.company_id.name} - "
