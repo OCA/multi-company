@@ -11,6 +11,7 @@
   - Jairo Llopis
   - David Vidal
   - Pedro M. Baeza
+  - Carlos Lopez
 - Isaac Gallart \<<igallart@puntsistemes.es>\>
 - \`Komit \<<https://komit-consulting.com>\>\`:
   - Cuong Nguyen Mtm \<<cuong.nmtm@komit-consulting.com>\>
