@@ -1,6 +1,5 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-import base64
 import logging
 
 from odoo import api, fields, models
@@ -93,7 +92,7 @@ class AccountMove(models.Model):
             {
                 "name": self._get_report_base_filename() + ".pdf",
                 "type": "binary",
-                "datas": base64.b64encode(pdf),
+                "raw": pdf,
                 "res_model": "account.move",
                 "res_id": supplier_invoice.id,
                 "mimetype": "application/pdf",
@@ -148,48 +147,48 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        self = self.with_context(check_move_validity=False)
+        move = self.with_context(check_move_validity=False)
         # check intercompany product
-        self._check_intercompany_product(dest_company)
+        move._check_intercompany_product(dest_company)
         # if an invoice has already been generated
         # delete it and force the same number
-        inter_invoice = self.search(
-            [("auto_invoice_id", "=", self.id), ("company_id", "=", dest_company.id)]
+        inter_invoice = move.search(
+            [("auto_invoice_id", "=", move.id), ("company_id", "=", dest_company.id)]
         )
         force_number = False
         if inter_invoice and inter_invoice.state in ["draft", "cancel"]:
             force_number = inter_invoice.name
             inter_invoice.with_context(force_delete=True).unlink()
         # create destination invoice
-        dest_invoice_data = self._prepare_invoice_data(dest_company)
+        dest_invoice_data = move._prepare_invoice_data(dest_company)
         if force_number:
             dest_invoice_data["name"] = force_number
-        dest_invoice = self.create(dest_invoice_data)
-        if dest_invoice.currency_id != self.currency_id:
-            dest_invoice.currency_id = self.currency_id
+        dest_invoice = move.create(dest_invoice_data)
+        if dest_invoice.currency_id != move.currency_id:
+            dest_invoice.currency_id = move.currency_id
         # create destination invoice lines
-        self._create_destination_account_move_line(dest_invoice, dest_company)
+        move._create_destination_account_move_line(dest_invoice, dest_company)
         # Validation of destination invoice
-        precision = self.env["decimal.precision"].precision_get("Account")
+        precision = move.env["decimal.precision"].precision_get("Account")
         if dest_company.invoice_auto_validation and not float_compare(
-            self.amount_total, dest_invoice.amount_total, precision_digits=precision
+            move.amount_total, dest_invoice.amount_total, precision_digits=precision
         ):
             dest_invoice.action_post()
         else:
             # Add warning in chatter if the total amounts are different
             if float_compare(
-                self.amount_total, dest_invoice.amount_total, precision_digits=precision
+                move.amount_total, dest_invoice.amount_total, precision_digits=precision
             ):
-                body = self.env._(
+                body = move.env._(
                     "WARNING!!!!! Failure in the inter-company invoice "
                     "creation process: the total amount of this invoice "
                     "is %(dest_amount_total)s but the total amount "
                     "of the invoice %(invoice_name)s "
                     "in the company %(company_name)s is %(amount_total)s",
                     dest_amount_total=dest_invoice.amount_total,
-                    invoice_name=self.name,
-                    company_name=self.company_id.name,
-                    amount_total=self.amount_total,
+                    invoice_name=move.name,
+                    company_name=move.company_id.name,
+                    amount_total=move.amount_total,
                 )
                 dest_invoice.message_post(body=body)
         return {"dest_invoice": dest_invoice}
@@ -239,35 +238,35 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        self = self.with_context(**clean_context(self.env.context))
+        move = self.with_context(**clean_context(self.env.context))
         # check if the journal is define in dest company
-        dest_journal = self._check_dest_journal(dest_company)
+        dest_journal = move._check_dest_journal(dest_company)
         vals = {
-            "move_type": self._get_destination_invoice_type(),
-            "partner_id": self.company_id.partner_id.id,
+            "move_type": move._get_destination_invoice_type(),
+            "partner_id": move.company_id.partner_id.id,
             "company_id": dest_company.id,
             "journal_id": dest_journal.id,
-            "ref": self.name,
-            "payment_reference": self.payment_reference,
-            "invoice_date": self.invoice_date,
-            "date": self.date,
-            "invoice_origin": self.env._(
+            "ref": move.name,
+            "payment_reference": move.payment_reference,
+            "invoice_date": move.invoice_date,
+            "date": move.date,
+            "invoice_origin": move.env._(
                 "%(company_name)s - Invoice: %(invoice_name)s",
-                company_name=self.company_id.name,
-                invoice_name=self.name,
+                company_name=move.company_id.name,
+                invoice_name=move.name,
             ),
-            "auto_invoice_id": self.id,
+            "auto_invoice_id": move.id,
             "auto_generated": True,
         }
         # CHECK ME: This field is created by module sale, maybe we need add dependency?
         if (
-            hasattr(self, "partner_shipping_id")
-            and self.partner_shipping_id
-            and not self.partner_shipping_id.company_id
+            hasattr(move, "partner_shipping_id")
+            and move.partner_shipping_id
+            and not move.partner_shipping_id.company_id
         ):
             # if shipping partner is shared you may want to propagate its value
             # to supplier invoice allowing to analyse invoices
-            vals["partner_shipping_id"] = self.partner_shipping_id.id
+            vals["partner_shipping_id"] = move.partner_shipping_id.id
         return vals
 
     def button_draft(self):

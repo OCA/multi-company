@@ -5,11 +5,16 @@
 
 from odoo import Command
 from odoo.exceptions import UserError
-from odoo.tests import Form, TransactionCase, tagged
+from odoo.tests import Form, tagged
+from odoo.tests.common import new_test_user
+
+from odoo.addons.base.tests.common import BaseCommon
 
 
 @tagged("post_install", "-at_install")
-class TestAccountInvoiceInterCompanyBase(TransactionCase):
+class TestAccountInvoiceInterCompanyBase(BaseCommon):
+    _test_user_groups = None
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -24,10 +29,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             }
         )
         cls.partner_company_a = cls.env["res.partner"].create(
-            {
-                "name": cls.company_a.name,
-                "is_company": True,
-            }
+            {"name": cls.company_a.name, "is_company": True}
         )
         cls.company_a.partner_id = cls.partner_company_a
         cls.company_b = cls.env["res.company"].create(
@@ -38,10 +40,7 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             }
         )
         cls.partner_company_b = cls.env["res.partner"].create(
-            {
-                "name": cls.company_b.name,
-                "is_company": True,
-            }
+            {"name": cls.company_b.name, "is_company": True}
         )
         cls.child_partner_company_b = cls.env["res.partner"].create(
             {
@@ -52,51 +51,26 @@ class TestAccountInvoiceInterCompanyBase(TransactionCase):
             }
         )
         cls.company_b.partner_id = cls.partner_company_b
-        cls.user_company_a = cls.env["res.users"].create(
-            {
-                "name": "User A",
-                "login": "usera",
-                "company_type": "person",
-                "email": "usera@yourcompany.com",
-                "password": "usera_p4S$word",
-                "company_id": cls.company_a.id,
-                "company_ids": [(6, 0, [cls.company_a.id])],
-                "group_ids": [
-                    (
-                        6,
-                        0,
-                        [
-                            cls.env.ref("base.group_partner_manager").id,
-                            cls.env.ref("account.group_account_manager").id,
-                            cls.env.ref("account.group_account_readonly").id,
-                        ],
-                    )
-                ],
-            }
+        cls.user_company_a = new_test_user(
+            cls.env,
+            name="User A",
+            login="usera",
+            password="usera_p4S$word",
+            email="usera@yourcompany.com",
+            groups="base.group_partner_manager,account.group_account_manager,account.group_account_readonly",
+            company_id=cls.company_a.id,
+            company_ids=[Command.set(cls.company_a.ids)],
         )
-        cls.user_company_b = cls.env["res.users"].create(
-            {
-                "name": "User B",
-                "login": "userb",
-                "company_type": "person",
-                "email": "userb@yourcompany.com",
-                "password": "userb_p4S$word",
-                "company_id": cls.company_b.id,
-                "company_ids": [(6, 0, [cls.company_b.id])],
-                "group_ids": [
-                    (
-                        6,
-                        0,
-                        [
-                            cls.env.ref("base.group_partner_manager").id,
-                            cls.env.ref("account.group_account_manager").id,
-                            cls.env.ref("account.group_account_invoice").id,
-                        ],
-                    )
-                ],
-            }
+        cls.user_company_b = new_test_user(
+            cls.env,
+            name="User B",
+            login="userb",
+            password="userb_p4S$word",
+            email="userb@yourcompany.com",
+            groups="base.group_partner_manager,account.group_account_manager,account.group_account_invoice",
+            company_id=cls.company_b.id,
+            company_ids=[Command.set(cls.company_b.ids)],
         )
-
         cls.a_sale_company_a = cls.account_obj.create(
             {
                 "code": "X2001.A",
@@ -325,7 +299,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         self.assertEqual(self.user_company_b.company_id, dest_company)
         self.assertIn(
             self.user_company_b.id,
-            self.env.ref("account.group_account_invoice").user_ids.ids,
+            self.env.ref("account.group_account_invoice").all_user_ids.ids,
         )
 
     def test02_product(self):
@@ -487,6 +461,7 @@ class TestAccountInvoiceInterCompany(TestAccountInvoiceInterCompanyBase):
         )
         self.assertEqual(len(invoice_b_pdf), 1)
         self.assertEqual(invoice_b_pdf.name, self.invoice_company_a.name + ".pdf")
+        self.assertTrue(invoice_b_pdf.raw)
 
     def test_purchase_attachement_in_invoice(self):
         # Sale Invoice PDF appears as attachment in the purchase invoice form.
