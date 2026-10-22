@@ -344,7 +344,7 @@ class AccountMoveLine(models.Model):
 
     def _check_intercompany_product(self, dest_user, dest_company):
         self.product_id.product_tmpl_id.sudo(False).with_user(dest_user).with_context(
-            **{"allowed_company_ids": [dest_company.id]}
+            allowed_company_ids=[dest_company.id]
         ).check_access("read")
 
     @api.model
