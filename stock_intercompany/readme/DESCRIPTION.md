@@ -39,4 +39,4 @@ Additional options (per destination company):
 Package (colisage) synchronisation across companies is not handled by
 this module. Moving packages between companies was using destructive
 operations on the source side in the original
-stock_intercompany_bidirectional and is has not been ported
+stock_intercompany_bidirectional and it has not been ported.
