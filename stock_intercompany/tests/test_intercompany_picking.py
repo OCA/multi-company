@@ -12,6 +12,7 @@ from odoo.tests.common import RecordCapturer
 from odoo.addons.base.tests.common import BaseCommon
 
 
+@tagged("post_install", "-at_install")
 class TestIntercompanyCommon(BaseCommon):
     @classmethod
     def setUpClass(cls):
@@ -162,7 +163,6 @@ class TestIntercompanyCommon(BaseCommon):
         return picking
 
 
-@tagged("post_install", "-at_install")
 class TestIntercompanyDelivery(TestIntercompanyCommon):
     def _assert_counterpart_locations(self, counterpart):
         """The counterpart moves and move lines must use the counterpart
@@ -814,7 +814,6 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
         self.assertFalse(picking._get_counterpart_company("in"))
 
 
-@tagged("post_install", "-at_install")
 class TestIntercompanySyncOptions(TestIntercompanyCommon):
     """Tests for the optional sync features: intercompany_sync_qty_done
     and intercompany_share_lot."""
