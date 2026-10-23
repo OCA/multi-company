@@ -28,8 +28,20 @@ Purchase Sale Lot Intercompany
 
 |badge1| |badge2| |badge3| |badge4| |badge5|
 
-This module allows to propagate lot numbers from a purchase to a sale
-line, in a multi-company context.
+In some groups, the lot/serial number is a better product identifier
+than the product variant (e.g. configurable products with many
+attributes, or attributes that don't create variants). This identifier
+must be propagated and enforced on every document: sales, purchases,
+stock and accounting.
+
+This module propagates the lot/serial number set on an intercompany
+purchase order line to the matching sale order line in the supplier
+company. Thanks to ``sale_order_lot_selection`` and
+``stock_restrict_lot``, the supplier company has to deliver the lot
+ordered by the buyer.
+
+Lots are shared between companies: the lot of the purchase line is
+reused (its company is cleared if needed) instead of being duplicated.
 
 **Table of contents**
 
@@ -39,7 +51,12 @@ line, in a multi-company context.
 Usage
 =====
 
-Check the "Lots/Serial Numbers propagated in sale"
+In the settings of the supplier company, check "Propagated Lots from
+purchase to sale".
+
+In the buyer company, set a lot/serial number on a purchase order line
+and confirm the purchase order: the generated sale order line gets the
+same lot.
 
 Bug Tracker
 ===========

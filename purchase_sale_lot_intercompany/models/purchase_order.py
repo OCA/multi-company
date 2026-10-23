@@ -14,5 +14,8 @@ class PurchaseOrder(models.Model):
             purchase_line, dest_company, sale_order
         )
         if dest_company.propagated_serial_number and purchase_line.lot_id:
-            vals["lot_id"] = purchase_line.lot_id.get_inter_company_lot(dest_company).id
+            lot = purchase_line.lot_id.sudo()
+            if lot.company_id:
+                lot.company_id = False
+            vals["lot_id"] = lot.id
         return vals

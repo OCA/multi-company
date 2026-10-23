@@ -16,7 +16,6 @@ class TestPurchaseSaleLotIntercompany(TestPurchaseSaleStockInterCompanyCommon):
             {
                 "name": "lot_test",
                 "product_id": cls.product.id,
-                "company_id": cls.warehouse_a.company_id.id,
             }
         )
         cls.purchase_company_a.order_line[0].lot_id = cls.lot_test
@@ -24,7 +23,14 @@ class TestPurchaseSaleLotIntercompany(TestPurchaseSaleStockInterCompanyCommon):
     def test_with_propagated_serial_number(self):
         self.company_b.propagated_serial_number = True
         sale = self._approve_po()
-        self.assertEqual(sale.order_line[0].lot_id.name, "lot_test")
+        self.assertEqual(sale.order_line[0].lot_id, self.lot_test)
+
+    def test_with_propagated_serial_number_company_lot(self):
+        self.lot_test.company_id = self.company_a
+        self.company_b.propagated_serial_number = True
+        sale = self._approve_po()
+        self.assertEqual(sale.order_line[0].lot_id, self.lot_test)
+        self.assertFalse(self.lot_test.company_id)
 
     def test_without_propagated_serial_number(self):
         sale = self._approve_po()
