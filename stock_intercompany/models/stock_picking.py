@@ -55,16 +55,16 @@ class StockPicking(models.Model):
     def _compute_can_create_out_counterpart(self):
         for picking in self:
             picking.can_create_out_counterpart = bool(
-                picking._can_create_counterpart("out")
+                picking._get_counterpart_company("out")
             )
 
     # -------------------------------------------------------------------------
     # Counterpart creation logic
     # -------------------------------------------------------------------------
 
-    def _can_create_counterpart(self, mode):
-        """Return the target company if a counterpart picking can be created
-        for *self* in the given *mode* ('in' or 'out'), False otherwise.
+    def _get_counterpart_company(self, mode):
+        """Return the company that should receive the counterpart picking for
+        *self* in the given *mode* ('in' or 'out'), False otherwise.
 
         Mode 'in'  — triggered by a delivery (→ customer): create a reception.
         Mode 'out' — triggered by a reception (← supplier): create a delivery.
@@ -127,7 +127,7 @@ class StockPicking(models.Model):
         """
         self.ensure_one()
 
-        company = self._can_create_counterpart(mode)
+        company = self._get_counterpart_company(mode)
         if not company:
             return self.env["stock.picking"]
 
