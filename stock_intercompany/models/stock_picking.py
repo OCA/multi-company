@@ -198,16 +198,20 @@ class StockPicking(models.Model):
         self, company, intercompany_type, location_src, location_dest
     ):
         """Build the Command lists for moves and move lines of the counterpart."""
-        supplier_location = self.env.ref("stock.stock_location_suppliers")
-
         common_move_vals = {
             "company_id": company.id,
             "location_id": location_src.id,
+            "location_dest_id": location_dest.id,
+            "location_final_id": False,
             "picking_type_id": intercompany_type.id,
+            "warehouse_id": False,
+            "route_ids": [Command.clear()],
+            "rule_id": False,
         }
         common_line_vals = {
             "company_id": company.id,
-            "location_id": supplier_location.id,
+            "location_id": location_src.id,
+            "location_dest_id": location_dest.id,
             "picking_type_id": intercompany_type.id,
         }
 
@@ -217,7 +221,6 @@ class StockPicking(models.Model):
                 dict(
                     common_move_vals,
                     intercompany_origin_move_id=sm.id,
-                    picking_type_id=intercompany_type.id,
                 )
             )[0]
             move_ids.append(Command.create(move_vals))
@@ -231,7 +234,6 @@ class StockPicking(models.Model):
                     lot_id=False,
                     lot_name=False,
                     move_id=False,
-                    picking_type_id=intercompany_type.id,
                 )
             )[0]
             move_line_ids.append(Command.create(line_vals))
