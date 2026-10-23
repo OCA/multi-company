@@ -172,11 +172,6 @@ class StockPicking(models.Model):
             location_src = warehouse.lot_stock_id
             location_dest = customer_location
 
-        # Ensure the shared virtual locations are not restricted to a company.
-        for loc in (supplier_location, customer_location):
-            if loc.company_id:
-                loc.sudo().company_id = False
-
         move_ids, move_line_ids = self._prepare_counterpart_move_vals(
             company, intercompany_type, location_src, location_dest
         )
