@@ -91,7 +91,9 @@ class StockPicking(models.Model):
         company = (
             self.env["res.company"]
             .sudo()
-            .search([("partner_id", "=", self.partner_id.id)], limit=1)
+            .search(
+                [("partner_id", "=", self.partner_id.commercial_partner_id.id)], limit=1
+            )
         )
         # Only create a counterpart toward a *different* company.
         if not company or company == self.company_id:
@@ -358,7 +360,11 @@ class StockPicking(models.Model):
         """
         return [
             ("state", "not in", ("cancel", "done")),
-            ("partner_id", "in", companies.mapped("partner_id").ids),
+            (
+                "partner_id.commercial_partner_id",
+                "in",
+                companies.mapped("partner_id").ids,
+            ),
             ("has_counterpart", "=", False),
             ("location_id.usage", "=", "supplier"),
         ]

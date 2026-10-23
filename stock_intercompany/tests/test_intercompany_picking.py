@@ -549,6 +549,33 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
             0,
         )
 
+    def test_picking_creation_with_contact_partner(self):
+        """A counterpart is created when the transfer partner is a contact of
+        the inter-company company partner."""
+        self.company2.intercompany_picking_creation_mode = "in"
+        contact = self.env["res.partner"].create(
+            {
+                "name": "Company B contact",
+                "parent_id": self.company2.partner_id.id,
+            }
+        )
+        picking = self._make_picking(
+            self.company1,
+            contact,
+            self.picking_type_out_company1,
+            self.stock_location,
+            self.env.ref("stock.stock_location_customers"),
+        )
+        picking.action_confirm()
+        picking.button_validate()
+
+        counterpart = (
+            self.env["stock.picking"]
+            .sudo()
+            .search([("intercompany_parent_id", "=", picking.id)])
+        )
+        self.assertEqual(len(counterpart), 1)
+
     def test_cancel_propagates_to_child(self):
         """Cancelling a picking with an intercompany child must also cancel
         the child."""
