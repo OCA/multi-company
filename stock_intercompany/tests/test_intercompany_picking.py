@@ -4,7 +4,7 @@
 
 from odoo import Command
 from odoo.exceptions import UserError
-from odoo.tests import tagged
+from odoo.tests import Form, tagged
 from odoo.tests.common import RecordCapturer
 
 from odoo.addons.base.tests.common import BaseCommon
@@ -315,6 +315,51 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
         )
         self.assertEqual(counterpart.location_dest_id, self.stock_location2)
         self._assert_counterpart_locations(counterpart)
+
+    def test_picking_creation_in_with_backorder(self):
+        """A partial delivery creates a counterpart for the done quantity
+        only, the backorder gets its own counterpart once done."""
+        self.company2.intercompany_picking_creation_mode = "in"
+        picking = (
+            self.env["stock.picking"]
+            .with_context(default_company_id=self.company1.id)
+            .with_user(self.user_demo)
+            .create(
+                {
+                    "partner_id": self.company2.partner_id.id,
+                    "picking_type_id": self.picking_type_out_company1.id,
+                    "location_id": self.stock_location.id,
+                    "location_dest_id": self.env.ref(
+                        "stock.stock_location_customers"
+                    ).id,
+                    "move_ids": [
+                        Command.create(
+                            {
+                                "name": self.product1.name,
+                                "product_id": self.product1.id,
+                                "product_uom_qty": 5.0,
+                                "product_uom": self.uom_unit.id,
+                                "location_id": self.stock_location.id,
+                                "location_dest_id": self.env.ref(
+                                    "stock.stock_location_customers"
+                                ).id,
+                            }
+                        )
+                    ],
+                }
+            )
+        )
+        picking.action_confirm()
+        picking.move_ids.quantity = 2.0
+        Form.from_action(self.env, picking.button_validate()).save().process()
+        backorder = picking.backorder_ids
+        self.assertEqual(backorder.move_ids.product_uom_qty, 3.0)
+        self.assertEqual(picking.intercompany_child_ids.move_ids.product_uom_qty, 2.0)
+        self.assertFalse(backorder.intercompany_child_ids)
+
+        backorder.move_ids.quantity = 3.0
+        backorder.button_validate()
+        self.assertEqual(backorder.intercompany_child_ids.move_ids.product_uom_qty, 3.0)
 
     def test_picking_creation_out(self):
         """In mode 'out', validating a reception from company2 and clicking

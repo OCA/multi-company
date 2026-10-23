@@ -307,9 +307,9 @@ class StockPicking(models.Model):
     # -------------------------------------------------------------------------
 
     def _action_done(self):
-        """Create 'in' counterpart pickings before marking the delivery as done."""
-        counterparts = self._create_counterpart_pickings("in")
+        """Create 'in' counterpart pickings once the delivery is done."""
         res = super()._action_done()
+        counterparts = self._create_counterpart_pickings("in")
         for picking, counterpart in counterparts:
             picking._finalize_counterpart_picking(counterpart)
         return res
