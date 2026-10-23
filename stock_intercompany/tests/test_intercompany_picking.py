@@ -2,6 +2,8 @@
 # Copyright 2022 Akretion (Florian Mounier <florian.mounier@akretion.com>)
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
+from unittest import mock
+
 from odoo import Command
 from odoo.exceptions import UserError
 from odoo.tests import Form, tagged
@@ -383,7 +385,9 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
             self.stock_location,
         )
         picking.action_confirm()
+        self.assertTrue(picking.can_create_out_counterpart)
         picking.action_create_counterpart()
+        self.assertFalse(picking.can_create_out_counterpart)
 
         self.assertTrue(picking.is_locked)
         self.assertTrue(picking.has_counterpart)
@@ -784,6 +788,30 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
         self.assertTrue(eligible.has_counterpart)
         self.assertTrue(simple_eligible.has_counterpart)
         self.assertFalse(wrong_way.has_counterpart)
+
+    def test_get_counterpart_company_guards(self):
+        """`_get_counterpart_company` refuses to create a counterpart when the
+        picking is cancelled, the mode is invalid or a hook vetoes it."""
+        self.company2.intercompany_picking_creation_mode = "in"
+        picking = self._make_picking(
+            self.company1,
+            self.company2.partner_id,
+            self.picking_type_out_company1,
+            self.stock_location,
+            self.env.ref("stock.stock_location_customers"),
+        )
+        picking.action_confirm()
+        # A hook can veto the counterpart creation.
+        with mock.patch.object(
+            type(picking), "_check_intercompany_company", return_value=False
+        ):
+            self.assertFalse(picking._get_counterpart_company("in"))
+        # An invalid mode is rejected.
+        with self.assertRaises(ValueError):
+            picking._get_counterpart_company("invalid")
+        # A cancelled picking never gets a counterpart.
+        picking.action_cancel()
+        self.assertFalse(picking._get_counterpart_company("in"))
 
 
 @tagged("post_install", "-at_install")
