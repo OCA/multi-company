@@ -599,6 +599,35 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
         self.assertEqual(picking.state, "cancel")
         self.assertEqual(counterpart.state, "cancel")
 
+    def test_cancel_refused_when_counterpart_done(self):
+        """Cancelling a picking whose intercompany counterpart is already done
+        must be refused with an explicit error."""
+        self.company2.intercompany_picking_creation_mode = "out"
+        picking = self._make_picking(
+            self.company1,
+            self.company2.partner_id,
+            self.picking_type_in_company1,
+            self.env.ref("stock.stock_location_suppliers"),
+            self.stock_location,
+        )
+        picking.action_confirm()
+        picking.action_create_counterpart()
+
+        counterpart = (
+            self.env["stock.picking"]
+            .sudo()
+            .search([("picking_type_id", "=", self.picking_type_out_company2.id)])
+        )
+        self.assertEqual(len(counterpart), 1)
+        for line in counterpart.move_line_ids:
+            line.quantity = line.intercompany_origin_line_id.quantity
+        counterpart.button_validate()
+        self.assertEqual(counterpart.state, "done")
+
+        with self.assertRaises(UserError):
+            picking.action_cancel()
+        self.assertNotEqual(picking.state, "cancel")
+
     def test_no_unlock_after_counterpart_creation(self):
         """A locked picking with a counterpart cannot be unlocked."""
         self.company2.intercompany_picking_creation_mode = "out"

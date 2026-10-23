@@ -330,12 +330,27 @@ class StockPicking(models.Model):
 
     def action_cancel(self):
         """Also cancel intercompany child pickings when cancelling a picking."""
+        self.invalidate_recordset()
+        for picking in self.sudo():
+            done_children = picking.intercompany_child_ids.filtered(
+                lambda child: child.state == "done"
+            )
+            if done_children:
+                raise UserError(
+                    _(
+                        "You cannot cancel %(picking)s because its intercompany "
+                        "counterpart %(counterparts)s is already done.",
+                        picking=picking.name,
+                        counterparts=", ".join(done_children.mapped("name")),
+                    )
+                )
         res = super().action_cancel()
         if not res:
             return res
-        self.invalidate_recordset()
         for picking in self.sudo():
-            picking.intercompany_child_ids.action_cancel()
+            picking.intercompany_child_ids.filtered(
+                lambda child: child.state != "cancel"
+            ).action_cancel()
         return res
 
     def action_toggle_is_locked(self):
