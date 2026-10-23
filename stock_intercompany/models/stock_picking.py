@@ -70,7 +70,8 @@ class StockPicking(models.Model):
         Mode 'out' — triggered by a reception (← supplier): create a delivery.
         """
         self.ensure_one()
-        assert mode in ("in", "out"), f"Invalid mode: {mode}"
+        if mode not in ("in", "out"):
+            raise ValueError(f"Invalid mode: {mode}")
 
         if self.state == "cancel":
             return False
