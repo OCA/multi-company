@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-05-31 18:29+0000\n"
+"PO-Revision-Date: 2026-10-24 14:46+0000\n"
 "Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
 "Language-Team: none\n"
 "Language: sl\n"
@@ -35,7 +35,7 @@ msgstr "Družba"
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Prikazani naziv"
 
 #. module: base_multi_company
 #. odoo-python
@@ -48,7 +48,7 @@ msgstr ""
 #. module: base_multi_company
 #: model:ir.model.fields,field_description:base_multi_company.field_multi_company_abstract__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: base_multi_company
 #: model:ir.model,name:base_multi_company.model_multi_company_abstract
