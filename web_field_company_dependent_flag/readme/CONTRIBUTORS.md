@@ -1,0 +1,4 @@
+- [Akretion](https://akretion.com):
+  - David BEAL \<david.beal@akretion.com\>
+- [PyTech](https://www.pytech.it):
+  - Simone Rubino \<<simone.rubino@pytech.it>\>
