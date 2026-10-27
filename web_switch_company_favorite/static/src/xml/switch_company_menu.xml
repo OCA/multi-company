@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+<!-- Copyright 2026 ACSONE SA/NV
+     License LGPL-3.0 or later (https://www.gnu.org/licenses/lgpl.html).
+     @author Pierre Verkest <pierre@verkest.fr> -->
+
+<t t-inherit="web.SwitchCompanyMenu" t-inherit-mode="extension">
+        <xpath expr="//t[@t-call='web.SwitchCompanyMenu.Items']" position="replace">
+            <t t-call="web_switch_company_favorite.SwitchCompanyTabMenu" />
+        </xpath>
+    </t>
+
+<t t-inherit="web.MobileSwitchCompanyMenu" t-inherit-mode="extension">
+        <xpath expr="//t[@t-call='web.SwitchCompanyMenu.Items']" position="replace">
+            <t t-call="web_switch_company_favorite.SwitchCompanyTabMenu" />
+        </xpath>
+    </t>
+
+<t t-name="web_switch_company_favorite.SwitchCompanyTabMenu">
+        <div class="o_company_menu_wrapper">
+            <!-- Tab selector -->
+            <div class="d-flex border-bottom o_company_menu_tabs">
+                <button
+                    type="button"
+                    class="btn btn-sm flex-fill py-2 border-0 rounded-0 shadow-none o_company_tab_btn o_company_tab_companies"
+                    t-att-class="state.activeTab === 'companies' ? 'active fw-bold text-primary' : 'text-muted'"
+                    t-on-click="() => this.setActiveTab('companies')"
+                >
+                    <i class="fa fa-building me-1" /> Companies
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-sm flex-fill py-2 border-0 rounded-0 shadow-none o_company_tab_btn o_company_tab_favorites"
+                    t-att-class="state.activeTab === 'favorites' ? 'active fw-bold text-primary' : 'text-muted'"
+                    t-on-click="() => this.setActiveTab('favorites')"
+                >
+                    <i class="fa fa-star me-1" /> Favorites
+                </button>
+            </div>
+
+            <!-- Tab 1: Companies list -->
+            <div
+                t-if="state.activeTab === 'companies'"
+                class="o_company_tab_companies_content pt-2"
+            >
+                <t t-call="web.SwitchCompanyMenu.Items" />
+            </div>
+
+            <!-- Tab 2: Favorite Filters -->
+            <div
+                t-if="state.activeTab === 'favorites'"
+                class="d-flex flex-column pt-2 px-2 flex-grow-1 min-height-0 overflow-hidden"
+                style="min-width: 280px;"
+            >
+                <div
+                    class="d-flex justify-content-between align-items-center mb-1 pb-1 border-bottom flex-shrink-0"
+                >
+                    <span
+                        class="fw-bold small text-muted text-uppercase tracking-wider"
+                        style="font-size: 0.75rem;"
+                    >Company Filters</span>
+                    <button
+                        type="button"
+                        class="btn btn-xs btn-outline-primary d-none d-md-flex align-items-center gap-1 py-1 px-1"
+                        t-on-click="createFavoriteFilter"
+                        style="font-size: 0.75rem;"
+                    >
+                        <i class="fa fa-plus-circle" /> Create
+                    </button>
+                </div>
+
+                <div
+                    class="o_company_favorites_list overflow-auto flex-grow-1"
+                    style="max-height: 300px; min-height: 120px;"
+                >
+                    <t t-if="!state.favorites || !state.favorites.length">
+                        <div
+                            class="text-muted text-center py-2 small d-flex flex-column align-items-center justify-content-center"
+                        >
+                            <i class="fa fa-filter fa-2x mb-1 text-black-50" />
+                            No favorite filters found.
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="list-group list-group-flush">
+                            <t
+                                t-foreach="userFavorites"
+                                t-as="favorite_filter"
+                                t-key="favorite_filter.id"
+                            >
+                                <t t-call="web_switch_company_favorite.FavoriteItem" />
+                            </t>
+                            <t
+                                t-if="userFavorites.length &amp;&amp; sharedFavorites.length"
+                            >
+                                <div class="dropdown-divider my-2" role="separator" />
+                            </t>
+                            <t
+                                t-foreach="sharedFavorites"
+                                t-as="favorite_filter"
+                                t-key="favorite_filter.id"
+                            >
+                                <t t-call="web_switch_company_favorite.FavoriteItem" />
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+<t t-name="web_switch_company_favorite.FavoriteItem">
+        <div
+            class="o_favorite_filter_item d-flex align-items-center border-bottom border-light rounded-1 justify-content-between"
+        >
+            <div
+                class="d-flex align-items-center flex-grow-1 cursor-pointer overflow-hidden me-2"
+                t-on-click="() => this.applyFavoriteFilter(favorite_filter)"
+                t-att-title="favorite_filter.name"
+            >
+                <i
+                    t-att-class="favorite_filter.user_ids &amp;&amp; favorite_filter.user_ids.length === 0 ? 'fa fa-users text-info me-2' : 'fa fa-user text-muted me-2'"
+                    t-att-title="favorite_filter.user_ids &amp;&amp; favorite_filter.user_ids.length === 0 ? 'Shared filter' : 'Private filter'"
+                />
+                <span
+                    class="small text-truncate text-dark fw-medium"
+                    t-esc="favorite_filter.name"
+                />
+            </div>
+            <div
+                class="d-none d-md-flex align-items-center gap-1 o_favorite_filter_actions"
+            >
+                <button
+                    type="button"
+                    class="btn btn-sm btn-link p-1 text-muted hover-text-dark"
+                    t-on-click.stop="() => this.editFavoriteFilter(favorite_filter)"
+                    title="Edit filter"
+                >
+                    <i class="fa fa-cog" />
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-sm btn-link p-1 text-danger hover-text-danger"
+                    t-on-click.stop="() => this.deleteFavoriteFilter(favorite_filter)"
+                    title="Delete filter"
+                >
+                    <i class="fa fa-trash-o" />
+                </button>
+            </div>
+        </div>
+    </t>
+
+</templates>
