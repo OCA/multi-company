@@ -61,8 +61,7 @@ Authors
 Contributors
 ------------
 
-- \`ForgeFlow
-  <`https://www.forgeflow.com\\>\\\` <https://www.forgeflow.com\>\`>`__:
+- `ForgeFlow <https://www.forgeflow.com>`__:
 
   - Jordi Masvidal
 
