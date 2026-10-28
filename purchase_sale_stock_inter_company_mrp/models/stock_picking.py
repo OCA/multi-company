@@ -63,7 +63,8 @@ class StockPicking(models.Model):
                 }
                 for po_move in po_move_pending:
                     qty = qty_by_product.get(po_move.product_id, 0.0)
-                    po_move.move_line_ids.write({"quantity": qty, "picked": True})
+                    po_move._set_quantity_done(qty)
+                    po_move.picked = True
         return super()._action_done_intercompany_actions(purchase)
 
     def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
