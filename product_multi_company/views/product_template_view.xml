@@ -24,7 +24,7 @@
             </xpath>
             <!-- Trick for allowing to set this field via Form -->
             <xpath expr="//div[@name='button_box']" position="inside">
-                <field name="company_id" class="d-none" />
+                <field name="company_id" invisible="1" />
             </xpath>
         </field>
     </record>
