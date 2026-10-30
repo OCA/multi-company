@@ -46,9 +46,9 @@ class AccountMove(models.Model):
         if not supplier_invoice.ref:
             supplier_invoice.write({"ref": self.name})
 
-    def action_post(self):
+    def _post(self, soft=True):
         """Validated invoice generate cross invoice base on company rules"""
-        res = super().action_post()
+        res = super()._post(soft=soft)
         # Intercompany account entries or receipts aren't supported
         supported_types = {"out_invoice", "in_invoice", "out_refund", "in_refund"}
         for src_invoice in self.filtered(lambda x: x.move_type in supported_types):
