@@ -1,0 +1,61 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* product_category_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-07-04 09:25+0000\n"
+"PO-Revision-Date: 2022-07-04 11:26+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 3.1\n"
+
+#. module: product_category_company
+#: model:ir.model.fields,field_description:product_category_company.field_product_category__child_id
+msgid "Child Categories"
+msgstr ""
+
+#. module: product_category_company
+#: model:ir.model.fields,field_description:product_category_company.field_product_category__company_id
+msgid "Company"
+msgstr ""
+
+#. module: product_category_company
+#: model:ir.model.fields,field_description:product_category_company.field_product_category__parent_id
+msgid "Parent Category"
+msgstr "Catégorie mère"
+
+#. module: product_category_company
+#: model:ir.model,name:product_category_company.model_product_category
+msgid "Product Category"
+msgstr "Catégorie d'article"
+
+#~ msgid "Display Name"
+#~ msgstr "Nom affiché"
+
+#~ msgid "Last Modified on"
+#~ msgstr "Dernière modification le"
+
+#, python-format
+#~ msgid "The category %s must be shared as the child %s belong to company %s."
+#~ msgstr ""
+#~ "La catégorie %s doit être partagée comme la catégorie enfant %s "
+#~ "appartient à la la société %s."
+
+#, python-format
+#~ msgid "The category %s must be shared as the child %s is shared."
+#~ msgstr "La catégorie %s doit être partagée comme la catégorie enfant %s."
+
+#, python-format
+#~ msgid ""
+#~ "The parent category and your category %s must belong to the same company."
+#~ msgstr ""
+#~ "La catégorie parent et votre catégorie %s doivent appartenir à la même "
+#~ "société."
