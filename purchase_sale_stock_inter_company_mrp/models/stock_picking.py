@@ -54,16 +54,25 @@ class StockPicking(models.Model):
                         .filtered(lambda ml: ml.quantity > 0)
                         .mapped("quantity")
                     )
-                _, bom_sub_lines = purchase_bom.explode(
-                    sale_line.product_id, sale_qty_done
+                bom_qty = sale_line.product_id.uom_id._compute_quantity(
+                    sale_qty_done, purchase_bom.product_uom_id
                 )
-                qty_by_product = {
-                    bom_line.product_id: bom_line_data["qty"]
+                _, bom_sub_lines = purchase_bom.explode(
+                    sale_line.product_id, bom_qty / purchase_bom.product_qty
+                )
+                qty_by_bom_line = {
+                    bom_line: bom_line.product_uom_id._compute_quantity(
+                        bom_line_data["qty"], bom_line.product_id.uom_id
+                    )
                     for bom_line, bom_line_data in bom_sub_lines
                 }
                 for po_move in po_move_pending:
-                    qty = qty_by_product.get(po_move.product_id, 0.0)
-                    po_move._set_quantity_done(qty)
+                    qty = qty_by_bom_line.get(po_move.bom_line_id, 0.0)
+                    po_move._set_quantity_done(
+                        po_move.product_id.uom_id._compute_quantity(
+                            qty, po_move.product_uom
+                        )
+                    )
                     po_move.picked = True
         return super()._action_done_intercompany_actions(purchase)
 
@@ -96,8 +105,12 @@ class StockPicking(models.Model):
     def _compute_kit_quantities_done(self, move_ids, product_id, kit_qty, kit_bom):
         """Based on Odoo standard _compute_kit_quantities method.
         We use the quantity of the moves instead of the product_qty.
+
+        ``kit_qty`` must be expressed in the UoM of ``kit_bom``.
         """
         qty_ratios = []
+        # explode expects a number of BOM applications, not a kit quantity.
+        kit_qty = kit_qty / kit_bom.product_qty
         boms, bom_sub_lines = kit_bom.explode(product_id, kit_qty)
         for bom_line, bom_line_data in bom_sub_lines:
             # skip service since we never deliver them
@@ -117,7 +130,9 @@ class StockPicking(models.Model):
                 # to know how many are considered delivered.
                 uom_qty_per_kit = bom_line_data["qty"] / bom_line_data["original_qty"]
                 qty_per_kit = bom_line.product_uom_id._compute_quantity(
-                    uom_qty_per_kit, bom_line.product_id.uom_id, round=False
+                    uom_qty_per_kit / kit_bom.product_qty,
+                    bom_line.product_id.uom_id,
+                    round=False,
                 )
                 if not qty_per_kit:
                     continue
