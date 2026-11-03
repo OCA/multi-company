@@ -4,8 +4,8 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from odoo import Command, api, fields, models
-from odoo.osv import expression
-from odoo.tools import ormcache
+from odoo.api import ormcache
+from odoo.fields import Domain
 from odoo.tools.safe_eval import safe_eval
 
 
@@ -15,7 +15,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     def _default_sequence_ids(self):
         # this is a "trick" for avoiding glue modules
-        exclude_seq_list = self.env["ir.config_parameter"].get_param(
+        IrConfigParameter = self.env["ir.config_parameter"].sudo()
+        exclude_seq_list = IrConfigParameter.get_str(
             "account_multicompany_easy_creation.exclude_sequence_list",
             [
                 False,
@@ -39,7 +40,6 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
     )
     currency_id = fields.Many2one(
         comodel_name="res.currency",
-        string="Currency",
         required=True,
         default=lambda s: s.env.company.currency_id,
     )
@@ -117,15 +117,21 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
 
     def _chart_template_selection(self):
         """We obtain those actually installed."""
-        chart_template_options = []
         chart_template = self.env["account.chart.template"]
-        for key, name in chart_template.with_context(
-            chart_template_only_installed=True
-        )._select_chart_template(self.env.company.country_id):
-            chart_template_mapping = chart_template._get_chart_template_mapping()[key]
-            if chart_template_mapping["installed"]:
-                chart_template_options.append((key, name))
-        return chart_template_options
+        mapping = chart_template._get_chart_template_mapping()
+        installed_modules = (
+            self.env["ir.module.module"]
+            .sudo()
+            .search([("state", "=", "installed")])
+            .mapped("name")
+        )
+        return [
+            (key, name)
+            for key, name in chart_template._select_chart_template(
+                self.env.company.country_id
+            )
+            if mapping[key]["module"] in installed_modules
+        ]
 
     @api.depends("chart_template")
     def _compute_country_id(self):
@@ -196,8 +202,8 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         for i, bank_wiz in enumerate(self.bank_ids):
             bank = ResPartnerBank.create(
                 {
-                    "acc_number": bank_wiz.acc_number,
-                    "bank_id": bank_wiz.bank_id.id,
+                    "account_number": bank_wiz.account_number,
+                    "bank_name": bank_wiz.bank_name,
                     "partner_id": self.new_company_id.partner_id.id,
                     "company_id": self.new_company_id.id,
                     "allow_out_payment": bank_wiz.allow_out_payment,
@@ -205,16 +211,20 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             )
             vals.update(
                 {
-                    "name": bank.acc_number,
-                    "bank_acc_number": bank.acc_number,
+                    "name": bank.account_number,
+                    "bank_account_id": bank.id,
                 }
             )
             if i < len(bank_journals):
                 bank_journals[i].update(vals)
             else:
-                account_account = AccountAccount.create(
+                account_account = AccountAccount.with_context(
+                    skip_auto_account_journal_creation=True
+                ).create(
                     {
-                        "code": f"57200{i + 1}",
+                        "code": AccountAccount.with_company(
+                            self.new_company_id
+                        )._search_new_account_code("572000"),
                         "name": vals["name"],
                         "account_type": "asset_cash",
                         "company_ids": [Command.link(vals["company_id"])],
@@ -234,7 +244,7 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             sequence.copy({"company_id": self.new_company_id.id})
 
     def create_company(self):
-        self = self.with_context(skip_install_l10n_modules=True)
+        self = self.with_context(skip_install_l10n_modules=True)  # noqa: PLW0642
         self.new_company_id = self.env["res.company"].create(
             {
                 "name": self.name,
@@ -373,11 +383,11 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
         field_name = record_field.name
         record_domain = [(field_name, "!=", False)]
         if "company_ids" in env_model._fields:
-            record_domain = expression.AND(
+            record_domain = Domain.AND(
                 [record_domain, [("company_ids", "in", [user_company.id, False])]]
             )
         elif "company_id" in env_model._fields:
-            record_domain = expression.AND(
+            record_domain = Domain.AND(
                 [record_domain, [("company_id", "in", [user_company.id, False])]]
             )
         records_user_company = env_model.with_company(user_company).search(
@@ -464,14 +474,10 @@ class AccountMulticompanyBankWiz(models.TransientModel):
     wizard_id = fields.Many2one(
         comodel_name="account.multicompany.easy.creation.wiz",
     )
-    acc_number = fields.Char(
-        string="Account Number",
+    account_number = fields.Char(
         required=True,
     )
-    bank_id = fields.Many2one(
-        comodel_name="res.bank",
-        string="Bank",
-    )
+    bank_name = fields.Char()
     allow_out_payment = fields.Boolean(
         string="Allow Out Payments",
         default=True,

@@ -69,8 +69,8 @@
                         <page string="Banks">
                             <field name="bank_ids">
                                 <list editable="bottom">
-                                    <field name="acc_number" />
-                                    <field name="bank_id" />
+                                    <field name="account_number" />
+                                    <field name="bank_name" />
                                     <field
                                         name="allow_out_payment"
                                         widget="boolean_toggle"

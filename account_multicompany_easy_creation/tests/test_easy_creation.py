@@ -13,24 +13,23 @@ class TestEasyCreation(BaseCommon):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.env.ref("base.user_admin").write(
+        cls._test_user.write(
             {
-                "groups_id": [
+                "group_ids": [
                     Command.link(cls.env.ref("account.group_account_manager").id),
                     Command.link(cls.env.ref("account.group_account_user").id),
+                    Command.link(cls.env.ref("base.group_system").id),
                 ],
             }
         )
         cls.test_user = new_test_user(
             cls.env,
             login="test-user",
-            groups=",".join(
-                [
-                    "account.group_account_manager",
-                    "account.group_account_user",
-                    "base.group_system",
-                    "base.group_partner_manager",
-                ]
+            groups=(
+                "account.group_account_manager,"
+                "account.group_account_user,"
+                "base.group_system,"
+                "base.group_partner_manager"
             ),
         )
         cls.test_extra_user = new_test_user(cls.env, login="test-extra-user")
@@ -64,7 +63,6 @@ class TestEasyCreation(BaseCommon):
                 "name": "Test extra product",
             }
         )
-        cls.bank = cls.env["res.bank"].create({"name": "Test bank"})
 
     def _test_model_items(self, model, company):
         env_model = self.env[model]
@@ -88,11 +86,11 @@ class TestEasyCreation(BaseCommon):
         wizard_form.user_ids.add(self.test_user)
         wizard_form.user_ids.add(self.test_extra_user)
         with wizard_form.bank_ids.new() as bank_line_form:
-            bank_line_form.acc_number = "acc_number-1"
-            bank_line_form.bank_id = self.bank
+            bank_line_form.account_number = "acc_number-1"
+            bank_line_form.bank_name = "Test bank"
         with wizard_form.bank_ids.new() as bank_line_form:
-            bank_line_form.acc_number = "acc_number-2"
-            bank_line_form.bank_id = self.bank
+            bank_line_form.account_number = "acc_number-2"
+            bank_line_form.bank_name = "Test bank"
         record = wizard_form.save()
         record.action_accept()
         self.assertEqual(record.new_company_id.name, "test_company")
@@ -114,18 +112,39 @@ class TestEasyCreation(BaseCommon):
         )
         self.assertEqual(value, record.new_company_id.account_purchase_tax_id.ids)
         # Product taxes
-        self.assertGreater(len(self.product.taxes_id), 1)
-        self.assertGreater(len(self.product.supplier_taxes_id), 1)
-        self.assertGreater(len(self.sale_product.taxes_id), 1)
-        self.assertGreater(len(self.purchase_product.supplier_taxes_id), 1)
+        self.assertGreater(len(self.product.sudo().taxes_id), 1)
+        self.assertGreater(len(self.product.sudo().supplier_taxes_id), 1)
+        self.assertGreater(len(self.sale_product.sudo().taxes_id), 1)
+        self.assertGreater(len(self.purchase_product.sudo().supplier_taxes_id), 1)
         # bank_journals
         bank_journals = self.env["account.journal"].search(
             [("type", "=", "bank"), ("company_id", "=", record.new_company_id.id)]
         )
         self.assertEqual(len(bank_journals), 2)
-        self.assertIn("acc_number-1", bank_journals.mapped("bank_acc_number"))
-        self.assertIn("acc_number-2", bank_journals.mapped("bank_acc_number"))
+        self.assertIn("acc_number-1", bank_journals.mapped("bank_account_number"))
+        self.assertIn("acc_number-2", bank_journals.mapped("bank_account_number"))
 
     @users("test-user")
     def test_wizard_easy_creation_test_user(self):
         self.test_wizard_easy_creation()
+
+    def test_wizard_easy_creation_es_several_banks(self):
+        wizard = self.env["account.multicompany.easy.creation.wiz"]
+        if "es_pymes" not in dict(wizard._chart_template_selection()):
+            self.skipTest("The Spanish chart template (l10n_es) is not installed.")
+        wizard_form = Form(
+            self.env["account.multicompany.easy.creation.wiz"].with_context(
+                allowed_company_ids=self.env.company.ids
+            )
+        )
+        wizard_form.name = "test_company_es"
+        wizard_form.chart_template = "es_pymes"
+        for number in ("acc_number-1", "acc_number-2", "acc_number-3"):
+            with wizard_form.bank_ids.new() as bank_line_form:
+                bank_line_form.account_number = number
+        record = wizard_form.save()
+        record.action_accept()
+        bank_journals = self.env["account.journal"].search(
+            [("type", "=", "bank"), ("company_id", "=", record.new_company_id.id)]
+        )
+        self.assertEqual(len(bank_journals), 3)
