@@ -173,8 +173,8 @@ class ProductTemplate(models.Model):
 
     def _delete_product_taxes(
         self,
-        excl_customer_tax_ids: list[int] = None,
-        excl_supplier_tax_ids: list[int] = None,
+        excl_customer_tax_ids: list[int] | None = None,
+        excl_supplier_tax_ids: list[int] | None = None,
     ):
         """Delete taxes from product excluding chosen taxes
 
@@ -251,7 +251,8 @@ class ProductTemplate(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         new_products = super().create(vals_list)
-        for product in new_products:
+        # Combo products carry no taxes of their own, as in core
+        for product in new_products.filtered(lambda p: p.type != "combo"):
             product.set_multicompany_taxes()
         new_products.invalidate_recordset(fnames=["taxes_id", "supplier_taxes_id"])
         return new_products
