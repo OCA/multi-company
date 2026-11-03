@@ -12,13 +12,17 @@ class ProductMultiCompanyCommon:
                 "name": "Product without company",
             }
         )
-        cls.product_company_1 = cls.product_obj.with_company(cls.company_1).create(
+        cls.product_company_1 = cls.product_obj.with_context(
+            allowed_company_ids=cls.company_1.ids
+        ).create(
             {
                 "name": "Product from company 1",
                 "company_ids": [(6, 0, cls.company_1.ids)],
             }
         )
-        cls.product_company_2 = cls.product_obj.with_company(cls.company_2).create(
+        cls.product_company_2 = cls.product_obj.with_context(
+            allowed_company_ids=cls.company_2.ids
+        ).create(
             {
                 "name": "Product from company 2",
                 "company_ids": [(6, 0, cls.company_2.ids)],
