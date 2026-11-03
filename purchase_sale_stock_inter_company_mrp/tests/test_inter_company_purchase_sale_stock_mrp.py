@@ -105,6 +105,38 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             moves = picking.move_ids.filtered(lambda m, p=product: m.product_id == p)
             self.assertAlmostEqual(sum(moves.mapped(field)), quantity)
 
+    def _enable_sync_picking(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        interco_location = self.env.ref("stock.stock_location_inter_company")
+        self.company_a._set_per_company_inter_company_locations(interco_location)
+
+    def _get_return_wizard(self, sale_picking):
+        return self.env["stock.return.picking"].create({"picking_id": sale_picking.id})
+
+    def _create_returns(self, sale_picking, po=None, quantities=None):
+        return_wizard = self._get_return_wizard(sale_picking)
+        if quantities is None:
+            action = return_wizard.action_create_returns_all()
+        else:
+            for product, quantity in quantities.items():
+                return_wizard.product_return_moves.filtered(
+                    lambda line, p=product: line.product_id == p
+                ).quantity = quantity
+            action = return_wizard.action_create_returns()
+        sale_return = self.env["stock.picking"].browse(action["res_id"])
+        purchase_picking = (po or self.kit_po).picking_ids[0]
+        return sale_return, purchase_picking.return_ids
+
+    def _set_return_done(self, sale_return):
+        for move in sale_return.move_ids:
+            move._set_quantity_done(move.product_uom_qty)
+
+    def _assert_user_error(self, func, message):
+        with self.assertRaises(UserError) as error:
+            func()
+        self.assertIn(message, str(error.exception))
+
     def _create_bom_quantity_boms(self):
         """BOMs with different quantities on each side.
 
@@ -153,11 +185,6 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._create_bom(
             sub_kit, self.company_a, [(self.component_1, 3.0), (self.component_3, 4.0)]
         )
-
-    def _assert_user_error(self, func, message):
-        with self.assertRaises(UserError) as error:
-            func()
-        self.assertIn(message, str(error.exception))
 
     def test_sale_kit(self):
         """BOM only on the sale side"""
@@ -442,8 +469,137 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self.assertTrue(sale_picking.activity_ids)
         self.assertNotEqual(purchase_picking.state, "done")
 
-    def test_plain_product_sync(self):
-        """A non-kit product must keep the standard quantity sync."""
+    def test_purchase_kit_return(self):
+        """A returned kit must sync the returned quantities on both sides,
+        keeping each repeated component on its own BOM line."""
+        self._enable_sync_picking()
+        self.bom.write({"company_id": self.company_a.id})
+        # Repeat component_1 on a second line to check the per-BOM-line split.
+        self.env["mrp.bom.line"].create(
+            {
+                "bom_id": self.bom.id,
+                "product_id": self.component_1.id,
+                "product_qty": 2.0,
+            }
+        )
+        sale_picking = self._approve_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        sale_picking.button_validate()
+        sale_return, purchase_return = self._create_returns(sale_picking)
+        self._set_return_done(sale_return)
+        sale_return.button_validate()
+        component_1_moves = purchase_return.move_ids.filtered(
+            lambda m: m.product_id == self.component_1
+        )
+        # 3 kits: component_1 on two lines (3 + 6) and component_2 (6).
+        self.assertEqual(len(component_1_moves), 2)
+        self._assert_quantities(
+            purchase_return, {self.component_1: 9.0, self.component_2: 6.0}
+        )
+
+    def test_tracked_kit_return(self):
+        """A product tracked after the delivery must be rejected on return."""
+        self._enable_sync_picking()
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        sale_picking.button_validate()
+        # The tracking changes after the delivery.
+        self.component_2.tracking = "lot"
+        return_wizard = self._get_return_wizard(sale_picking)
+        self._assert_user_error(
+            return_wizard.action_create_returns_all, "tracked products"
+        )
+
+    def test_sale_kit_return(self):
+        """Returning part of a 'sale-kit' must return the corresponding kit
+        quantity on the purchase side."""
+        self._enable_sync_picking()
+        sale_picking = self._approve_po()
+        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
+        sale_picking.button_validate()
+        purchase_picking = self.kit_po.picking_ids[0]
+        self.assertEqual(purchase_picking.move_ids.product_id, self.kit_product)
+        # Return only 2 of the 3 delivered kits.
+        sale_return, purchase_return = self._create_returns(
+            sale_picking, quantities={self.component_1: 2.0, self.component_2: 4.0}
+        )
+        self.assertEqual(purchase_return.move_ids.product_id, self.kit_product)
+        self.assertEqual(purchase_return.move_ids.product_uom_qty, 2.0)
+        self._set_return_done(sale_return)
+        sale_return.button_validate()
+        self.assertEqual(purchase_return.move_ids.quantity, 2.0)
+
+    def test_sale_purchase_kit_return_bom_quantity(self):
+        """Returning a 'sale-purchase-kit' must explode the purchase BOM,
+        not copy the sale components quantities."""
+        self._enable_sync_picking()
+        self._create_bom_quantity_boms()
+        # Sell four kits, i.e. two applications of the sale BOM.
+        self.kit_po.order_line.product_qty = 4.0
+        sale_picking = self._approve_po()
+        self._set_done(sale_picking, {self.component_1: 4.0, self.component_2: 8.0})
+        sale_picking.button_validate()
+        sale_return, purchase_return = self._create_returns(sale_picking)
+        # The purchase BOM is exploded: four kits require 4, 8 and 12 units
+        # of the purchase components, whereas the sale side only ships 4
+        # and 8.
+        expected = {
+            self.component_1: 4.0,
+            self.component_2: 8.0,
+            self.component_3: 12.0,
+        }
+        self._assert_quantities(purchase_return, expected, "product_uom_qty")
+        self._set_return_done(sale_return)
+        sale_return.button_validate()
+        self._assert_quantities(purchase_return, expected)
+
+    def test_nested_kit_return(self):
+        """Returning a nested kit must explode the purchase kit BOM."""
+        self._enable_sync_picking()
+        self._create_nested_kit_boms()
+        # Sell two kits.
+        self.kit_po.order_line.product_qty = 2.0
+        sale_picking = self._approve_po()
+        self._set_all_done(sale_picking)
+        sale_picking.button_validate()
+        sale_return, purchase_return = self._create_returns(sale_picking)
+        # Two kits require 6 and 8 units through the purchase sub-kit, plus
+        # 2 component_2 on the top-level purchase BOM.
+        expected = {self.component_1: 6.0, self.component_2: 2.0, self.component_3: 8.0}
+        self._assert_quantities(purchase_return, expected, "product_uom_qty")
+        self._set_return_done(sale_return)
+        sale_return.button_validate()
+        self._assert_quantities(purchase_return, expected)
+
+    def test_mixed_kit_return(self):
+        """A return mixing a kit and a plain product must return both."""
+        self._enable_sync_picking()
+        plain_product = self.env["product.product"].create(
+            {"name": "Plain Product", "is_storable": True}
+        )
+        self.env["purchase.order.line"].create(
+            {
+                "order_id": self.kit_po.id,
+                "product_id": plain_product.id,
+                "product_qty": 2.0,
+                "price_unit": 10.0,
+            }
+        )
+        sale_picking = self._approve_po()
+        self._set_all_done(sale_picking)
+        sale_picking.button_validate()
+        _sale_return, purchase_return = self._create_returns(sale_picking)
+        self._assert_quantities(
+            purchase_return,
+            {self.kit_product: 3.0, plain_product: 2.0},
+            "product_uom_qty",
+        )
+
+    def test_plain_product_return(self):
+        """The kit return override must delegate to the base module for plain
+        products."""
+        self.company_a.sync_picking = True
         product = self.env["product.product"].create(
             {"name": "Plain Product", "is_storable": True}
         )
@@ -459,4 +615,8 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         purchase_picking = po.picking_ids[0]
-        self.assertAlmostEqual(purchase_picking.move_ids.quantity, 3.0)
+        self.assertEqual(purchase_picking.state, "done")
+        sale_return, purchase_return = self._create_returns(sale_picking, po)
+        self.assertEqual(sale_return.move_ids.product_id, product)
+        self.assertEqual(purchase_return.move_ids.product_id, product)
+        self.assertAlmostEqual(purchase_return.move_ids.product_uom_qty, 3.0)
