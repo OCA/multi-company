@@ -173,8 +173,8 @@ class ProductTemplate(models.Model):
 
     def _delete_product_taxes(
         self,
-        excl_customer_tax_ids: list[int] = None,
-        excl_supplier_tax_ids: list[int] = None,
+        excl_customer_tax_ids: list[int] | None = None,
+        excl_supplier_tax_ids: list[int] | None = None,
     ):
         """Delete taxes from product excluding chosen taxes
 
@@ -199,6 +199,9 @@ class ProductTemplate(models.Model):
 
     def set_multicompany_taxes(self):
         self.ensure_one()
+        # Combo products carry no taxes of their own, as in core
+        if self.type == "combo":
+            return
         user_company = self.env.company
         customer_tax = self.taxes_id
         customer_tax_ids = customer_tax.ids

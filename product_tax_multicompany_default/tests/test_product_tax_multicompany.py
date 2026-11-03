@@ -10,9 +10,17 @@ from odoo.tests.common import new_test_user, users
 
 from odoo.addons.base.tests.common import BaseCommon
 
+_logger = logging.getLogger(__name__)
+
 
 @tagged("post_install", "-at_install")
 class TestsProductTaxMulticompany(BaseCommon):
+    _test_user_groups = (
+        "base.group_user",
+        "base.group_erp_manager",
+        "product.group_product_manager",
+    )
+
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
@@ -119,6 +127,37 @@ class TestsProductTaxMulticompany(BaseCommon):
         self.assertIn(self.tax_10_sc1, product.supplier_taxes_id)
         self.assertIn(self.tax_20_sc2, product.supplier_taxes_id)
 
+    def test_combo_product_not_propagated(self):
+        item = self.env["product.product"].create(
+            {"name": "Combo item", "company_id": False}
+        )
+        combo = self.env["product.combo"].create(
+            {
+                "name": "Test combo",
+                "combo_item_ids": [(0, 0, {"product_id": item.id})],
+            }
+        )
+        product = self.env["product.template"].create(
+            {
+                "name": "Test Combo Product",
+                "type": "combo",
+                "combo_ids": [(6, 0, combo.ids)],
+                "company_id": False,
+            }
+        )
+
+        def assert_no_company_2_taxes():
+            # Read stored taxes, as other companies' taxes are not readable
+            for field in ("taxes", "purchase"):
+                self.assertNotIn(
+                    self.company_2.id, dict(product._get_product_taxes(field))
+                )
+
+        assert_no_company_2_taxes()
+        # Same as the "Propagate Taxes" button and list action
+        product.set_multicompany_taxes()
+        assert_no_company_2_taxes()
+
     @users("user_1")
     def test_not_default_tax_if_set(self):
         # use sudo because the account.group_account_manager group
@@ -188,7 +227,7 @@ class TestsProductTaxMulticompany(BaseCommon):
                 "purchase.group_purchase_manager", raise_if_not_found=True
             ).sudo().user_ids = [(4, self.user_12.id)]
         except ValueError as e:
-            logging.info(e)  # Skipping configuration of purchase module
+            _logger.info(e)  # Skipping configuration of purchase module
         # Create product with empty taxes
         # use sudo because the account.group_account_manager group
         # does not have permission to create products.
