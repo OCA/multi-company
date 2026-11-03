@@ -1,6 +1,7 @@
 # Copyright 2024 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+
 from odoo.tests import Form
 
 from odoo.addons.purchase_sale_inter_company.tests import (
@@ -16,38 +17,34 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         super().setUpClass()
         # Create Kit and Components
         cls.kit_product = cls.env["product.product"].create(
-            {
-                "name": "Kit Product",
-                "is_storable": False,
-            }
+            {"name": "Kit Product", "is_storable": False}
         )
         cls.component_1 = cls.env["product.product"].create(
-            {
-                "name": "Component 1",
-                "is_storable": True,
-            }
+            {"name": "Component 1", "is_storable": True}
         )
         cls.component_2 = cls.env["product.product"].create(
+            {"name": "Component 2", "is_storable": True}
+        )
+        cls.component_3 = cls.env["product.product"].create(
+            {"name": "Component 3", "is_storable": True}
+        )
+        cls.uom_box = cls.env["uom.uom"].create(
             {
-                "name": "Component 2",
-                "is_storable": True,
+                "name": "Box (10 Units)",
+                "category_id": cls.env.ref("uom.product_uom_categ_unit").id,
+                "factor": 0.1,
+                "uom_type": "bigger",
+                "rounding": 0.01,
             }
         )
         cls.partner_company_a.company_id = False
         cls.partner_company_b.company_id = False
-        # Create BoM
-        bom = Form(cls.env["mrp.bom"])
-        bom.company_id = cls.company_b
-        bom.product_id = cls.kit_product
-        bom.product_tmpl_id = cls.kit_product.product_tmpl_id
-        bom.type = "phantom"
-        with bom.bom_line_ids.new() as line_form:
-            line_form.product_id = cls.component_1
-            line_form.product_qty = 1.0
-        with bom.bom_line_ids.new() as line_form:
-            line_form.product_id = cls.component_2
-            line_form.product_qty = 3.0
-        cls.bom = bom.save()
+        # One unit of component_1 and two of component_2 per kit.
+        cls.bom = cls._create_bom(
+            cls.kit_product,
+            cls.company_b,
+            [(cls.component_1, 1.0), (cls.component_2, 2.0)],
+        )
         # Create PO
         po = Form(cls.env["purchase.order"])
         po.company_id = cls.company_a
@@ -58,149 +55,113 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             line_form.price_unit = 450.0
         cls.kit_po = po.save()
 
-    def test_purchase_sale_stock_inter_company_mrp_sale_kit(self):
-        self.kit_po.with_user(self.user_company_a).button_approve()
+    @classmethod
+    def _create_bom(cls, product, company, lines, product_qty=1.0, sequence=None):
+        """Create a phantom BOM; lines are (product, qty[, uom]) tuples."""
+        bom = Form(cls.env["mrp.bom"])
+        bom.company_id = company
+        bom.product_id = product
+        bom.product_tmpl_id = product.product_tmpl_id
+        bom.type = "phantom"
+        bom.product_qty = product_qty
+        for line_product, line_qty, *line_uom in lines:
+            with bom.bom_line_ids.new() as line_form:
+                line_form.product_id = line_product
+                line_form.product_qty = line_qty
+                if line_uom:
+                    line_form.product_uom_id = line_uom[0]
+        bom = bom.save()
+        if sequence is not None:
+            # Use sequence=0 for kit product to use a new bom instead of cls.bom
+            bom.sequence = sequence
+        return bom
+
+    def _approve_po(self, po=None):
+        """Approve the PO and return the delivery picking of its sale."""
+        po = po or self.kit_po
+        po.with_user(self.user_company_a).button_approve()
         sale = (
             self.env["sale.order"]
             .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.kit_po.id)])
+            .search([("auto_purchase_order_id", "=", po.id)])
         )
-        sale_picking = sale.picking_ids[0]
+        return sale.picking_ids[0]
+
+    def _set_done(self, picking, quantities):
+        """Set the done quantity of each move by product."""
+        for product, quantity in quantities.items():
+            picking.move_ids.filtered(
+                lambda m, p=product: m.product_id == p
+            )._set_quantity_done(quantity)
+
+    def _assert_quantities(self, picking, expected, field="quantity"):
+        for product, quantity in expected.items():
+            moves = picking.move_ids.filtered(lambda m, p=product: m.product_id == p)
+            self.assertAlmostEqual(sum(moves.mapped(field)), quantity)
+
+    def test_sale_kit(self):
+        """BOM only on the sale side"""
+        sale_picking = self._approve_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
-        component_1_move = sale_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_1
-        )
-        component_2_move = sale_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_2
-        )
-        component_1_move._set_quantity_done(3.0)
-        component_2_move._set_quantity_done(9.0)
+        # Deliver the 3 kits
+        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 1)
         self.assertEqual(purchase_picking.move_ids.quantity, 3.0)
 
-    def test_purchase_sale_stock_inter_company_mrp_sale_kit_partial(self):
-        self.kit_po.with_user(self.user_company_a).button_approve()
-        sale = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.kit_po.id)])
-        )
-        sale_picking = sale.picking_ids[0]
+    def test_sale_kit_partial(self):
+        sale_picking = self._approve_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
-        component_1_move = sale_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_1
-        )
-        component_2_move = sale_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_2
-        )
         # Deliver only 2 kits
-        component_1_move._set_quantity_done(2.0)
-        component_2_move._set_quantity_done(6.0)
+        self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
         sale_picking.with_context(skip_backorder=True).button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 1)
         self.assertEqual(purchase_picking.move_ids.quantity, 2.0)
 
-    def test_purchase_sale_stock_inter_company_mrp_purchase_kit(self):
+    def test_purchase_kit(self):
+        """BOM only on the purchase side"""
         self.bom.write({"company_id": self.company_a.id})
-        self.kit_po.with_user(self.user_company_a).button_approve()
-        sale = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.kit_po.id)])
-        )
-        sale_picking = sale.picking_ids[0]
+        sale_picking = self._approve_po()
         self.assertEqual(len(sale_picking.move_ids), 1)
+        # Deliver the 3 kits
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 2)
-        component_1_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_1
+        self._assert_quantities(
+            purchase_picking, {self.component_1: 3.0, self.component_2: 6.0}
         )
-        component_2_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_2
-        )
-        self.assertEqual(component_1_move.quantity, 3.0)
-        self.assertEqual(component_2_move.quantity, 9.0)
 
-    def test_purchase_sale_stock_inter_company_mrp_purchase_kit_partial(self):
+    def test_purchase_kit_partial(self):
         self.bom.write({"company_id": self.company_a.id})
-        self.kit_po.with_user(self.user_company_a).button_approve()
-        sale = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.kit_po.id)])
-        )
-        sale_picking = sale.picking_ids[0]
+        sale_picking = self._approve_po()
         self.assertEqual(len(sale_picking.move_ids), 1)
         # Deliver only 2 kits
         sale_picking.move_ids._set_quantity_done(2.0)
         sale_picking.with_context(skip_backorder=True).button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 2)
-        component_1_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_1
+        self._assert_quantities(
+            purchase_picking, {self.component_1: 2.0, self.component_2: 4.0}
         )
-        component_2_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_2
-        )
-        self.assertEqual(component_1_move.quantity, 2.0)
-        self.assertEqual(component_2_move.quantity, 6.0)
 
-    def test_purchase_sale_stock_inter_company_mrp_sale_purchase_kit(self):
-        # Create a different BoM for Company A
-        self.component_3 = self.env["product.product"].create(
-            {
-                "name": "Component 3",
-                "is_storable": True,
-            }
+    def test_sale_purchase_kit(self):
+        """2 different BOMs on each side for the same kit product"""
+        self._create_bom(
+            self.kit_product,
+            self.company_a,
+            [(self.component_1, 1.0), (self.component_2, 2.0), (self.component_3, 3.0)],
         )
-        bom = Form(self.env["mrp.bom"])
-        bom.company_id = self.company_a
-        bom.product_id = self.kit_product
-        bom.product_tmpl_id = self.kit_product.product_tmpl_id
-        bom.type = "phantom"
-        with bom.bom_line_ids.new() as line_form:
-            line_form.product_id = self.component_1
-            line_form.product_qty = 1.0
-        with bom.bom_line_ids.new() as line_form:
-            line_form.product_id = self.component_2
-            line_form.product_qty = 2.0
-        with bom.bom_line_ids.new() as line_form:
-            line_form.product_id = self.component_3
-            line_form.product_qty = 5.0
-        bom.save()
-        self.kit_po.with_user(self.user_company_a).button_approve()
-        sale = (
-            self.env["sale.order"]
-            .with_user(self.user_company_b)
-            .search([("auto_purchase_order_id", "=", self.kit_po.id)])
-        )
-        sale_picking = sale.picking_ids[0]
+        sale_picking = self._approve_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
-        component_1_move = sale_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_1
-        )
-        component_2_move = sale_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_2
-        )
-        component_1_move._set_quantity_done(3.0)
-        component_2_move._set_quantity_done(9.0)
+        # Deliver the 3 kits
+        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 3)
-        component_1_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_1
+        self._assert_quantities(
+            purchase_picking,
+            {self.component_1: 3.0, self.component_2: 6.0, self.component_3: 9.0},
         )
-        component_2_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_2
-        )
-        component_3_move = purchase_picking.move_ids.filtered(
-            lambda m: m.product_id == self.component_3
-        )
-        self.assertEqual(component_1_move.quantity, 3.0)
-        self.assertEqual(component_2_move.quantity, 6.0)
-        self.assertEqual(component_3_move.quantity, 15.0)
