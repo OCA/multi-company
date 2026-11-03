@@ -10,6 +10,8 @@ from odoo.tests.common import new_test_user, users
 
 from odoo.addons.base.tests.common import BaseCommon
 
+_logger = logging.getLogger(__name__)
+
 
 @tagged("post_install", "-at_install")
 class TestsProductTaxMulticompany(BaseCommon):
@@ -161,8 +163,8 @@ class TestsProductTaxMulticompany(BaseCommon):
     def test_tax_not_default_set_match(self):
         # use sudo because the account.group_account_manager group
         # does not have permission to create products.
-        self.company_1.account_sale_tax_id = self.tax_20_cc1.id
-        self.company_1.account_purchase_tax_id = self.tax_20_sc1.id
+        self.company_1.sudo().account_sale_tax_id = self.tax_20_cc1.id
+        self.company_1.sudo().account_purchase_tax_id = self.tax_20_sc1.id
         product = (
             self.env["product.product"]
             .sudo()
@@ -188,7 +190,7 @@ class TestsProductTaxMulticompany(BaseCommon):
                 "purchase.group_purchase_manager", raise_if_not_found=True
             ).sudo().user_ids = [(4, self.user_12.id)]
         except ValueError as e:
-            logging.info(e)  # Skipping configuration of purchase module
+            _logger.info(e)  # Skipping configuration of purchase module
         # Create product with empty taxes
         # use sudo because the account.group_account_manager group
         # does not have permission to create products.

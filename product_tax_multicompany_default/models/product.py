@@ -173,8 +173,8 @@ class ProductTemplate(models.Model):
 
     def _delete_product_taxes(
         self,
-        excl_customer_tax_ids: list[int] = None,
-        excl_supplier_tax_ids: list[int] = None,
+        excl_customer_tax_ids: list[int] | None = None,
+        excl_supplier_tax_ids: list[int] | None = None,
     ):
         """Delete taxes from product excluding chosen taxes
 
