@@ -95,6 +95,10 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
                 lambda m, p=product: m.product_id == p
             )._set_quantity_done(quantity)
 
+    def _set_all_done(self, picking):
+        for move in picking.move_ids:
+            move._set_quantity_done(move.product_uom_qty)
+
     def _assert_quantities(self, picking, expected, field="quantity"):
         for product, quantity in expected.items():
             moves = picking.move_ids.filtered(lambda m, p=product: m.product_id == p)
@@ -120,6 +124,33 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             self.company_a,
             [(self.component_1, 3.0), (self.component_2, 6.0), (self.component_3, 9.0)],
             product_qty=3.0,
+        )
+
+    def _create_nested_kit_boms(self):
+        """Nested BOMs for the kit.
+
+        - Sale BOM: kit = 1 x sub-kit + 1 x component_1
+          sub-kit BOM = 1 x component_1 + 2 x component_2
+        - Purchase BOM: kit = 1 x sub-kit + 1 x component_2
+          sub-kit BOM = 3 x component_1 + 4 x component_3
+        """
+        sub_kit = self.env["product.product"].create(
+            {"name": "Sub Kit", "is_storable": True}
+        )
+        self._create_bom(
+            self.kit_product,
+            self.company_b,
+            [(sub_kit, 1.0), (self.component_1, 1.0)],
+            sequence=0,
+        )
+        self._create_bom(
+            sub_kit, self.company_b, [(self.component_1, 1.0), (self.component_2, 2.0)]
+        )
+        self._create_bom(
+            self.kit_product, self.company_a, [(sub_kit, 1.0), (self.component_2, 1.0)]
+        )
+        self._create_bom(
+            sub_kit, self.company_a, [(self.component_1, 3.0), (self.component_3, 4.0)]
         )
 
     def test_sale_kit(self):
@@ -220,6 +251,30 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._assert_quantities(
             purchase_picking,
             {self.component_1: 4.0, self.component_2: 8.0, self.component_3: 12.0},
+        )
+
+    def test_nested_kit_sync(self):
+        """Nested phantom BOMs must be exploded from the kit BOM, not from
+        the sub-BOM of the first component move."""
+        self._create_nested_kit_boms()
+        # Sell two kits.
+        self.kit_po.order_line.product_qty = 2.0
+        sale_picking = self._approve_po()
+        # The component moves belong to the sale BOM and to its sub-BOM.
+        self.assertEqual(len(sale_picking.move_ids.bom_line_id.bom_id), 2)
+        # Delier the 2 kits
+        self._set_all_done(sale_picking)
+        sale_picking.button_validate()
+
+        # Two kits: 2 + 2 component_1 on the sale side.
+        self._assert_quantities(sale_picking, {self.component_1: 4.0})
+        purchase_picking = self.kit_po.picking_ids[0]
+
+        # Two kits require 6 and 8 units through the sub-kit, plus 2
+        # component_2 on the top-level BOM.
+        self._assert_quantities(
+            purchase_picking,
+            {self.component_1: 6.0, self.component_2: 2.0, self.component_3: 8.0},
         )
 
     def test_purchase_kit_other_uoms(self):

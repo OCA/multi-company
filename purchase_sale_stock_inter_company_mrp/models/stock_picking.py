@@ -14,6 +14,17 @@ KIT_QUANTITIES_FILTERS = {
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
+    def _get_intercompany_kit_bom(self, product, company):
+        """Return the phantom BOM of the kit in the given company.
+
+        The BOM is resolved from the product because with nested phantom
+        BOMs the component moves point to a sub-BOM through their
+        ``bom_line_id``, while the sync needs the top-level kit BOM.
+        """
+        return self.env["mrp.bom"]._bom_find(
+            product, company_id=company.id, bom_type="phantom"
+        )[product]
+
     def _set_intercompany_kit_quantities_done(self, purchase, dest_picking):
         """Define the kit quantities received on the reception picking.
 
@@ -55,11 +66,15 @@ class StockPicking(models.Model):
             if sale_line.id in processed_sale_lines:
                 continue
             processed_sale_lines.add(sale_line.id)
-            purchase_bom = purchase_pending_moves[0].bom_line_id.bom_id
+            purchase_bom = self._get_intercompany_kit_bom(
+                sale_line.product_id, purchase.company_id
+            )
             all_sale_moves = self.move_ids.filtered(
                 lambda m, sl=sale_line: m.sale_line_id == sl
             )
-            sale_bom = all_sale_moves[0].bom_line_id.bom_id
+            sale_bom = self._get_intercompany_kit_bom(
+                sale_line.product_id, sale_line.company_id
+            )
             if sale_bom:
                 # 'sale-purchase-kit' situation: recompute how many kits were
                 # delivered from the components actually shipped.
@@ -106,7 +121,10 @@ class StockPicking(models.Model):
     def _get_product_intercompany_qty_done_dict(
         self, sale_move_lines, purchase_move_lines
     ):
-        sale_bom = sale_move_lines.move_id.bom_line_id.bom_id
+        sale_line = sale_move_lines.move_id.sale_line_id
+        sale_bom = self._get_intercompany_kit_bom(
+            sale_line.product_id, sale_line.company_id
+        )
         if not sale_bom:
             return super()._get_product_intercompany_qty_done_dict(
                 sale_move_lines, purchase_move_lines
@@ -114,7 +132,6 @@ class StockPicking(models.Model):
         # 'sale-kit' situation: N sale moves (components) → 1 po move (kit product)
         # Compute the number of kits delivered
         # from all the component moves, not only the current zip pair.
-        sale_line = sale_move_lines.move_id.sale_line_id
         kit_qty_sold = sale_line.product_uom._compute_quantity(
             sale_line.product_uom_qty, sale_bom.product_uom_id
         )
