@@ -3,12 +3,12 @@
 {
     "name": "Quick Company Creation Wizard",
     "summary": "This module adds a wizard to create companies easily",
-    "version": "18.0.1.0.1",
+    "version": "20.0.1.0.0",
     "category": "Multicompany",
     "website": "https://github.com/OCA/multi-company",
     "author": "Tecnativa, Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "installable": True,
     "depends": ["account"],
-    "data": ["wizards/multicompany_easy_creation.xml", "security/ir.model.access.csv"],
+    "data": ["wizards/multicompany_easy_creation.xml", "security/ir.access.csv"],
 }
