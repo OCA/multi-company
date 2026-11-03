@@ -9,8 +9,14 @@ class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
     def _requires_transit_receipt(self):
+        return (
+            super()._requires_transit_receipt()
+            or self._requires_interco_transit_receipt()
+        )
+
+    def _requires_interco_transit_receipt(self):
         company = self.company_id
-        return super()._requires_transit_receipt() or bool(
+        return bool(
             company.sync_picking
             and company.sync_picking_transit_receipt
             and self.sudo().partner_id.commercial_partner_id.ref_company_ids.filtered(
