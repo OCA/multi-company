@@ -1,6 +1,7 @@
 # Copyright 2024 ForgeFlow S.L. (https://www.forgeflow.com)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from unittest import mock
 
 from odoo.tests import Form
 
@@ -304,6 +305,23 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._assert_quantities(
             purchase_picking, {self.component_1: 3.0, self.component_2: 0.0}
         )
+
+    def test_sync_failure_notify(self):
+        """Errors raised while syncing the kit quantities must respect the
+        configured failure action."""
+        self.company_a.sync_picking_failure_action = "notify"
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        with mock.patch.object(
+            type(sale_picking),
+            "_set_intercompany_kit_quantities_done",
+            side_effect=Exception("boom"),
+        ):
+            sale_picking.button_validate()
+        purchase_picking = self.kit_po.picking_ids[0]
+        self.assertTrue(sale_picking.activity_ids)
+        self.assertNotEqual(purchase_picking.state, "done")
 
     def test_plain_product_sync(self):
         """A non-kit product must keep the standard quantity sync."""
