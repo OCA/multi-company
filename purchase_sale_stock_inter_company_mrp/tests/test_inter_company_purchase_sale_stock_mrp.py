@@ -3,6 +3,7 @@
 
 from unittest import mock
 
+from odoo.exceptions import UserError
 from odoo.tests import Form
 
 from odoo.addons.purchase_sale_inter_company.tests import (
@@ -153,6 +154,11 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             sub_kit, self.company_a, [(self.component_1, 3.0), (self.component_3, 4.0)]
         )
 
+    def _assert_user_error(self, func, message):
+        with self.assertRaises(UserError) as error:
+            func()
+        self.assertIn(message, str(error.exception))
+
     def test_sale_kit(self):
         """BOM only on the sale side"""
         sale_picking = self._approve_po()
@@ -277,6 +283,17 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             {self.component_1: 6.0, self.component_2: 2.0, self.component_3: 8.0},
         )
 
+    def test_tracked_nested_kit_component(self):
+        """A tracked component inside a nested BOM must be rejected."""
+        self._create_nested_kit_boms()
+        # component_3 only appears in the purchase sub-BOM, not in the
+        # top-level BOM lines.
+        self.component_3.tracking = "lot"
+        self.kit_po.order_line.product_qty = 2.0
+        sale_picking = self._approve_po()
+        self._set_all_done(sale_picking)
+        self._assert_user_error(sale_picking.button_validate, "tracked products")
+
     def test_purchase_kit_other_uoms(self):
         """The kit quantities must be converted between the BOM, its lines
         and the product UoMs when syncing the destination picking."""
@@ -360,6 +377,53 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._assert_quantities(
             purchase_picking, {self.component_1: 3.0, self.component_2: 0.0}
         )
+
+    def test_tracked_sale_kit_component(self):
+        """A tracked kit component on the sale side is not supported."""
+        self.component_1.tracking = "lot"
+        sale_picking = self._approve_po()
+        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
+        component_1_move = sale_picking.move_ids.filtered(
+            lambda m: m.product_id == self.component_1
+        )
+        component_1_move.move_line_ids.lot_id = self.env["stock.lot"].create(
+            {
+                "name": "LOT-C1",
+                "product_id": self.component_1.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        self._assert_user_error(sale_picking.button_validate, "tracked products")
+
+    def test_tracked_purchase_kit_component(self):
+        """A tracked kit component on the purchase side is not supported."""
+        self.bom.write({"company_id": self.company_a.id})
+        self.component_2.tracking = "lot"
+        sale_picking = self._approve_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        self._assert_user_error(sale_picking.button_validate, "tracked products")
+
+    def test_tracked_sale_kit_product(self):
+        """A tracked kit product on the purchase side is not supported."""
+        self.kit_product.tracking = "lot"
+        sale_picking = self._approve_po()
+        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
+        self._assert_user_error(sale_picking.button_validate, "tracked products")
+
+    def test_tracked_purchase_kit_product(self):
+        """A tracked kit product on the sale side is not supported."""
+        self.bom.write({"company_id": self.company_a.id})
+        self.kit_product.tracking = "lot"
+        sale_picking = self._approve_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        sale_picking.move_ids.move_line_ids.lot_id = self.env["stock.lot"].create(
+            {
+                "name": "LOT-KIT",
+                "product_id": self.kit_product.id,
+                "company_id": self.company_b.id,
+            }
+        )
+        self._assert_user_error(sale_picking.button_validate, "tracked products")
 
     def test_sync_failure_notify(self):
         """Errors raised while syncing the kit quantities must respect the

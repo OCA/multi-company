@@ -75,6 +75,7 @@ class StockPicking(models.Model):
             sale_bom = self._get_intercompany_kit_bom(
                 sale_line.product_id, sale_line.company_id
             )
+            (purchase_pending_moves | all_sale_moves)._check_intercompany_kit_tracking()
             if sale_bom:
                 # 'sale-purchase-kit' situation: recompute how many kits were
                 # delivered from the components actually shipped.
@@ -138,6 +139,9 @@ class StockPicking(models.Model):
         all_sale_moves = self.move_ids.filtered(
             lambda m, sl=sale_line: m.sale_line_id == sl and m.bom_line_id
         )
+        (
+            all_sale_moves | purchase_move_lines.move_id
+        )._check_intercompany_kit_tracking()
         kit_qty_done = all_sale_moves._compute_kit_quantities(
             sale_line.product_id, kit_qty_sold, sale_bom, KIT_QUANTITIES_FILTERS
         )
