@@ -109,6 +109,9 @@ class StockPicking(models.Model):
                 bom_line: bom_line_data["qty"]
                 for bom_line, bom_line_data in purchase_bom_lines
             }
+            purchase_pending_moves._check_intercompany_kit_bom_changed(
+                qty_done_by_bom_line
+            )
             for purchase_move in purchase_pending_moves:
                 # each purchase move's qty done comes from its BOM line's qty.
                 qty_done = qty_done_by_bom_line.get(purchase_move.bom_line_id, 0.0)

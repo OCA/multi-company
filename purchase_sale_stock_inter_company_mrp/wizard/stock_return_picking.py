@@ -49,6 +49,11 @@ class ReturnPicking(models.TransientModel):
         return_wizard.product_return_moves = [
             Command.unlink(prm.id) for prm in exclude_moves
         ]
+        # The return lines must match the quantities exploded from the BOM
+        # of the receipt, otherwise the BOM changed since the receipt.
+        return_wizard.product_return_moves.move_id._check_intercompany_kit_bom_changed(
+            qty_by_bom_line
+        )
         # Check if the kit products actually returned are tracked by lot
         kit_return_lines = return_wizard.product_return_moves.filtered(
             lambda line: line.move_id.bom_line_id in qty_by_bom_line

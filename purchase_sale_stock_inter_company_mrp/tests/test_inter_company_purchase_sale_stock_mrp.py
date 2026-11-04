@@ -596,6 +596,34 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             "product_uom_qty",
         )
 
+    def test_kit_return_bom_changed(self):
+        """A BOM changed since the receipt must block the kit return."""
+        self._enable_sync_picking()
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        sale_picking.button_validate()
+        # Replace the purchase BOM: the receipt moves keep the old BOM lines.
+        self.bom.active = False
+        self._create_bom(self.kit_product, self.company_a, [(self.component_1, 2.0)])
+        return_wizard = self._get_return_wizard(sale_picking)
+        self._assert_user_error(return_wizard.action_create_returns_all, "BOM changed")
+
+    def test_kit_sync_bom_changed(self):
+        """A BOM line added after the receipt must block the sync."""
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_po()
+        # Add a component to the purchase BOM: the receipt has no such move.
+        self.env["mrp.bom.line"].create(
+            {
+                "bom_id": self.bom.id,
+                "product_id": self.component_3.id,
+                "product_qty": 1.0,
+            }
+        )
+        sale_picking.move_ids._set_quantity_done(3.0)
+        self._assert_user_error(sale_picking.button_validate, "BOM changed")
+
     def test_plain_product_return(self):
         """The kit return override must delegate to the base module for plain
         products."""
