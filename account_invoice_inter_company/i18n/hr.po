@@ -1,0 +1,282 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* account_invoice_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 12.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2021-10-08 12:34+0000\n"
+"Last-Translator: Matija Krolo <matija.krolo@ecodica.eu>\n"
+"Language-Team: none\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.3.2\n"
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid "%(company_name)s - Canceled Invoice: %(invoice_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid "%(company_name)s - Invoice: %(invoice_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_generated
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_generated
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__auto_generated
+msgid "Auto Generated Document"
+msgstr "Automatski generirani dokument"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid ""
+"Automatically generate counterpart documents for orders/invoices between "
+"companies"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_company
+msgid "Companies"
+msgstr "Tvrtke"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr "Postavke"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+#, fuzzy
+msgid "Inter Company Invoice User"
+msgstr "Inter Company OCA značajke"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Inter Company OCA features"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoice"
+msgstr "Račun"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__invoice_auto_validation
+msgid "Invoice Auto Validation"
+msgstr "Automatsko potvrđivanje računa"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
+msgid "Invoices Auto Validation"
+msgstr "Automatsko potvrđivanje računa"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoices User"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move
+msgid "Journal Entry"
+msgstr "Stavka temeljnice"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"Please define %(dest_journal_type)s journal for this company: "
+"\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules."
+msgstr ""
+"Odgovorni korisnik za kreiranje računa aktiviran međukompanijskim pravilima."
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules. "
+"If not set the user initiating thetransaction will be used"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
+msgid "Service Multi Company"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_invoice_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_invoice_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__auto_invoice_id
+msgid "Source Invoice"
+msgstr "Izvorni račun"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__auto_invoice_line_id
+msgid "Source Invoice Line"
+msgstr "Stavka izvornog računa"
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"The invoice line '%(line_name)s' doesn't have a product. All invoice lines "
+"should have a product for inter-company invoices."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"This is an autogenerated multi company invoice and you're trying to modify "
+"the amount, which will differ from the source one (%s)"
+msgstr ""
+"Ovo je automatski generiran multi kompanijski račun i pokušavate promijeniti "
+"iznos, što će se razlikovati od izvornog računa (%s)"
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %(dest_amount_total)s but the total amount "
+"of the invoice %(invoice_name)s in the company %(company_name)s is "
+"%(amount_total)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it"
+msgstr ""
+"Kad je račun kreiran temeljem multi kompanijskog pravila za ovu kompaniju, "
+"bit će automatski ovjeren"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it."
+msgstr ""
+"Kad je račun kreiran temeljem multi kompanijskog pravila za ovu kompaniju, "
+"bit će automatski ovjeren."
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"You can't modify this invoice as it has an inter company invoice that's in "
+"posted state.\n"
+"Invoice %(invoice_name)s to %(partner_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"You cannot create invoice in company '%(dest_company_name)s' with product "
+"'%(product_name)s' because it is not multicompany"
+msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "Inter Company OCA features\n"
+#~ "                    <span class=\"fa fa-lg fa-building-o\" title=\"Values "
+#~ "set here are company-specific.\" aria-label=\"Values set here are company-"
+#~ "specific.\" groups=\"base.group_multi_company\" role=\"img\"/>"
+#~ msgstr ""
+#~ "<span class=\"fa fa-lg fa-building-o\" title=\"Ove vrijednosti su "
+#~ "specifične za svaku tvrtku.\" aria-label=\"Ove vrijednosti su specifične "
+#~ "za svaku tvrtku.\" groups=\"base.group_multi_company\" role=\"img\"/>"
+
+#, fuzzy
+#~ msgid "Intercompany user for invoices"
+#~ msgstr "Inter Company OCA značajke"
+
+#, fuzzy
+#~ msgid "Invoicing"
+#~ msgstr "Stavka računa"
+
+#, python-format
+#~ msgid "No Chart of Account Template has been defined !"
+#~ msgstr "Kontni plan nije definiran !"
+
+#~ msgid "Share product to all companies"
+#~ msgstr "Podijeli proizvod sa svim kopanijama"
+
+#, python-format
+#~ msgid "%s - Canceled Invoice: %s"
+#~ msgstr "%s - Storniran račun: %s"
+
+#, python-format
+#~ msgid "%s - Invoice: %s"
+#~ msgstr "%s - Račun: %s"
+
+#~ msgid "ID"
+#~ msgstr "ID"
+
+#, python-format
+#~ msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+#~ msgstr "Molim definirajte %s temeljnicu za ovu kompaniju: \"%s\" (id:%d)."
+
+#, python-format
+#~ msgid ""
+#~ "The invoice line '%s' doesn't have a product. All invoice lines should "
+#~ "have a product for inter-company invoices."
+#~ msgstr ""
+#~ "Stavka računa '%s' nema proizvod. Sve stavke računa trebaju imati "
+#~ "proizvod za među-kompanijske račune."
+
+#, python-format
+#~ msgid ""
+#~ "WARNING!!!!! Failure in the inter-company invoice creation process: the "
+#~ "total amount of this invoice is %s but the total amount of the invoice %s "
+#~ "in the company %s is %s"
+#~ msgstr ""
+#~ "UPOZORENJE!!!!! Greška u procesu među kompanijskog računa: ukupni iznos "
+#~ "ovog računa je %s, a ukupni iznos računa %s u kompaniji %s je %s"
+
+#, python-format
+#~ msgid ""
+#~ "You can't modify this invoice as it has an inter company invoice that's "
+#~ "in posted state.\n"
+#~ "Invoice %s to %s"
+#~ msgstr ""
+#~ "Ne možete uređivati ovaj račun pošto je povezan s među kompanijskim "
+#~ "računom koji je u proknjiženom statusu.\n"
+#~ "Račun %s u %s"
+
+#, python-format
+#~ msgid ""
+#~ "You cannot create invoice in company '%s' with product '%s' because it is "
+#~ "not multicompany"
+#~ msgstr ""
+#~ "Ne možete kreirati račun u kompaniji '%s' s proizvodom '%s' jer nije "
+#~ "multi kompanijski"
