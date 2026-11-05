@@ -23,6 +23,7 @@ class AccountMove(models.Model):
         readonly=True,
         copy=False,
         prefetch=False,
+        index="btree_not_null",
     )
 
     def _find_company_from_invoice_partner(self):
