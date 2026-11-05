@@ -318,6 +318,7 @@ class AccountMoveLine(models.Model):
         readonly=True,
         copy=False,
         prefetch=False,
+        index="btree_not_null",
     )
 
     @api.model
