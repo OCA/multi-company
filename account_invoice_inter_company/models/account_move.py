@@ -3,7 +3,7 @@
 import base64
 import logging
 
-from odoo import api, fields, models
+from odoo import Command, api, fields, models
 from odoo.exceptions import AccessError, UserError
 from odoo.tools import float_compare
 from odoo.tools.misc import clean_context
@@ -196,10 +196,8 @@ class AccountMove(models.Model):
 
     def _create_destination_account_move_line(self, dest_invoice, dest_company):
         dest_move_line_data = []
-        for src_line in self.invoice_line_ids.filtered(
-            lambda x: x.display_type == "product"
-        ):
-            if not src_line.product_id:
+        for src_line in self.invoice_line_ids:
+            if src_line.display_type == "product" and not src_line.product_id:
                 raise UserError(
                     self.env._(
                         "The invoice line '%(line_name)s' doesn't have a product. "
@@ -358,16 +356,36 @@ class AccountMoveLine(models.Model):
         self.ensure_one()
         vals = {
             "product_id": self.product_id.id or False,
-            "price_unit": self.price_unit,
             "product_uom_id": self.product_uom_id.id,
             "quantity": self.quantity,
             "discount": self.discount,
             "move_id": dest_move.id,
             "sequence": self.sequence,
             "auto_invoice_line_id": self.id,
+            "name": self.name,
+            "display_type": self.display_type,
         }
         # Compatibility with module account_invoice_start_end_dates
         if hasattr(self, "start_date") and hasattr(self, "end_date"):
             vals["start_date"] = self.start_date
             vals["end_date"] = self.end_date
+        new_line = self.new(vals)
+        new_taxes = new_line._get_computed_taxes()
+        vals["tax_ids"] = [Command.set(new_taxes.ids)]
+        price_unit = self.price_unit
+        base_line = self.move_id._prepare_product_base_line_for_taxes_computation(self)
+        self.env["account.tax"]._add_tax_details_in_base_line(base_line, dest_company)
+        # case where taxes in the company A are price excluded
+        # but in the company B are price included
+        if self.tax_ids.filtered("price_include") and not new_taxes.filtered(
+            "price_include"
+        ):
+            price_unit = base_line["tax_details"]["raw_total_excluded_currency"]
+        # case where taxes in the company A are price included
+        # but in the company B are price excluded
+        if not self.tax_ids.filtered("price_include") and new_taxes.filtered(
+            "price_include"
+        ):
+            price_unit = base_line["tax_details"]["raw_total_included_currency"]
+        vals["price_unit"] = price_unit
         return vals
