@@ -22,3 +22,8 @@ class ProductProduct(models.Model):
     def write(self, vals):
         self.env["product.template"]._multicompany_patch_vals(vals)
         return super().write(vals)
+
+    def web_save(self, vals, specification, next_id=None):
+        # Same reason as `product.template.web_save`.
+        self.env["product.template"]._multicompany_patch_vals(vals)
+        return super().web_save(vals, specification, next_id=next_id)
