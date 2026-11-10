@@ -276,7 +276,15 @@ class AccountMulticompanyEasyCreationWiz(models.TransientModel):
             self.new_company_id.id, product_taxes
         )
         if tax_ids:
-            product.update({taxes_field: [Command.link(tax_id) for tax_id in tax_ids]})
+            to_unlink_taxes = product[taxes_field].filtered(
+                lambda tax: tax.company_id == self.new_company_id
+            )
+            product.update(
+                {
+                    taxes_field: [Command.unlink(t.id) for t in to_unlink_taxes]
+                    + [Command.link(tax_id) for tax_id in tax_ids]
+                }
+            )
             return True
         return False
 
