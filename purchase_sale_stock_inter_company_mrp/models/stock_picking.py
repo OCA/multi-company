@@ -41,38 +41,38 @@ class StockPicking(models.Model):
             )
             if not purchase_moves:
                 continue
+            purchase_line = sale_line.auto_purchase_line_id
             product = sale_line.product_id
-            sale_bom = sale_moves._get_intercompany_kit_bom(
+            sale_bom = sale_line.move_ids._get_intercompany_kit_bom(
                 product, sale_line.company_id
             )
-            purchase_bom = purchase_moves._get_intercompany_kit_bom(
+            purchase_bom = purchase_line.move_ids._get_intercompany_kit_bom(
                 product, purchase.company_id
             )
             if not sale_bom and not purchase_bom:
                 continue
             (sale_moves | purchase_moves)._check_intercompany_kit_tracking()
-            kit_qty_done = sale_moves._get_intercompany_kit_qty_done(
+            kit_qty_delivered = sale_line.move_ids._get_intercompany_kit_qty_delivered(
                 sale_line, sale_bom
             )
             if purchase_bom:
                 qty_by_bom_line = purchase_bom._explode_intercompany_kit(
-                    product, kit_qty_done
+                    product, kit_qty_delivered
                 )
-                purchase_moves._check_intercompany_kit_bom_changed(qty_by_bom_line)
-                for purchase_move in purchase_moves:
-                    bom_line = purchase_move.bom_line_id
-                    purchase_move._set_quantity_done(
-                        bom_line.product_uom_id._compute_quantity(
-                            qty_by_bom_line[bom_line], purchase_move.product_uom
-                        )
-                    )
             else:
-                purchase_moves._set_quantity_done(
-                    product.uom_id._compute_quantity(
-                        kit_qty_done, purchase_moves.product_uom
+                qty_by_bom_line = {self.env["mrp.bom.line"]: kit_qty_delivered}
+            qty_received_by_bom_line = (
+                purchase_line.move_ids._get_intercompany_qty_received_by_bom_line()
+            )
+            sign = -1 if self._is_intercompany_return_reception() else 1
+            for bom_line, moves in purchase_moves.grouped("bom_line_id").items():
+                moves._set_intercompany_qty_done(
+                    sign
+                    * (
+                        qty_by_bom_line[bom_line]
+                        - qty_received_by_bom_line.get(bom_line, 0.0)
                     )
                 )
-            purchase_moves.picked = True
             kit_moves |= sale_moves
         return kit_moves
 

@@ -89,12 +89,13 @@ class ReturnPicking(models.TransientModel):
             receipt_line_moves = receipt_moves.filtered(
                 lambda m, pl=purchase_line: m.purchase_line_id == pl
             )
+            purchase_line_moves = purchase_line.sudo().move_ids
             product = sale_line.product_id
-            sale_bom = sale_return_moves._get_intercompany_kit_bom(
+            sale_bom = sale_line.move_ids._get_intercompany_kit_bom(
                 product, sale_line.company_id
             )
-            purchase_bom = receipt_line_moves._get_intercompany_kit_bom(
-                product, receipt_line_moves.company_id
+            purchase_bom = purchase_line_moves._get_intercompany_kit_bom(
+                product, purchase_line_moves.company_id
             )
             if not sale_bom and not purchase_bom:
                 # Plain product, not related to a kit: keep the returned
@@ -104,22 +105,14 @@ class ReturnPicking(models.TransientModel):
                 )
                 continue
             (sale_return_moves | receipt_line_moves)._check_intercompany_kit_tracking()
-            kit_qty_returned = sale_return_moves._get_intercompany_kit_qty_done(
+            kit_qty_returned = sale_return_moves._get_intercompany_kit_qty_returned(
                 sale_line, sale_bom
             )
             if not purchase_bom:
                 return_qty[(purchase_line, no_bom_line)] += kit_qty_returned
                 continue
-            qty_by_bom_line = purchase_bom._explode_intercompany_kit(
+            for bom_line, qty in purchase_bom._explode_intercompany_kit(
                 product, kit_qty_returned
-            )
-            # The return lines must match the quantities exploded from the BOM
-            # of the receipt, otherwise the BOM changed since the receipt.
-            receipt_line_moves._check_intercompany_kit_bom_changed(qty_by_bom_line)
-            for bom_line, qty in qty_by_bom_line.items():
-                return_qty[(purchase_line, bom_line)] += (
-                    bom_line.product_uom_id._compute_quantity(
-                        qty, bom_line.product_id.uom_id
-                    )
-                )
+            ).items():
+                return_qty[(purchase_line, bom_line)] += qty
         return return_qty

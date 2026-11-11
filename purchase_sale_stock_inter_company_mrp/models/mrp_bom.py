@@ -10,4 +10,9 @@ class MrpBom(models.Model):
     def _explode_intercompany_kit(self, product, kit_qty):
         bom_qty = product.uom_id._compute_quantity(kit_qty, self.product_uom_id)
         _, bom_lines = self.explode(product, bom_qty / self.product_qty)
-        return {bom_line: bom_line_data["qty"] for bom_line, bom_line_data in bom_lines}
+        return {
+            bom_line: bom_line.product_uom_id._compute_quantity(
+                bom_line_data["qty"], bom_line.product_id.uom_id
+            )
+            for bom_line, bom_line_data in bom_lines
+        }

@@ -231,6 +231,49 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertAlmostEqual(purchase_picking.move_ids.quantity, 2.0)
 
+    def test_sale_kit_bom_replaced_before_delivery(self):
+        sale_picking = self._approve_kit_po()
+        self.bom.active = False
+        self._create_bom(
+            self.kit_product, self.company_b, [(self.component_1, 2.0)], sequence=0
+        )
+        self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
+        self._assert_user_error(
+            lambda: self._validate_without_backorder(sale_picking), "BOM changed"
+        )
+
+    def test_sale_kit_components_split_over_backorder(self):
+        self._enable_sync_picking()
+        sale_picking = self._approve_kit_po()
+        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 2.0})
+        sale_picking.with_context(skip_backorder=True).button_validate()
+        backorder = sale_picking.backorder_ids
+        self.assertEqual(backorder.move_ids.product_id, self.component_2)
+        self._set_done(backorder, {self.component_2: 4.0})
+        backorder.button_validate()
+        self.assertEqual(self.kit_po.order_line.qty_received, 3.0)
+
+    def test_sale_kit_two_pending_receipt_moves(self):
+        sale_picking = self._approve_kit_po()
+        purchase_move = self.kit_po.picking_ids[0].move_ids
+        purchase_move.product_uom_qty = 2.0
+        purchase_move.copy({"product_uom_qty": 1.0})._action_confirm(merge=False)
+        self.assertEqual(len(self.kit_po.picking_ids[0].move_ids), 2)
+        self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
+        self._validate_without_backorder(sale_picking)
+        purchase_picking = self.kit_po.picking_ids[0]
+        self.assertAlmostEqual(sum(purchase_picking.move_ids.mapped("quantity")), 2.0)
+
+    def test_purchase_kit_pending_move_without_bom_line(self):
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_kit_po()
+        component_move = self.kit_po.picking_ids[0].move_ids[0]
+        component_move.copy({"bom_line_id": False})._action_confirm(merge=False)
+        sale_picking.move_ids._set_quantity_done(2.0)
+        self._assert_user_error(
+            lambda: self._validate_without_backorder(sale_picking), "BOM changed"
+        )
+
     def test_sale_kit_bom_archived_before_delivery(self):
         sale_picking = self._approve_kit_po()
         self.bom.active = False
