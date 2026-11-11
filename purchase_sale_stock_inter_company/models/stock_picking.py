@@ -97,12 +97,13 @@ class StockPicking(models.Model):
             dest_picking = self.intercompany_picking_id.with_user(
                 intercompany_user
             ).with_company(dest_company)
-            # Hook to deal with purchase moves related to phantom BOM in a different way
-            self._set_intercompany_kit_quantities_done(purchase, dest_picking)
-            for move in self.move_ids.filtered(lambda m: m.state != "cancel"):
-                # Avoid purchase moves related to phantom BOM
-                if self._is_intercompany_purchase_kit_move(move, dest_picking):
-                    continue
+            # Hook to deal with moves related to phantom BOM in a different way
+            kit_moves = self._set_intercompany_kit_quantities_done(
+                purchase, dest_picking
+            )
+            for move in (self.move_ids - kit_moves).filtered(
+                lambda m: m.state != "cancel"
+            ):
                 move_lines = move.move_line_ids.filtered(lambda x: x.quantity > 0)
                 # To identify the correct move to write to,
                 # use both the SO-PO link and the intercompany_picking_id link
@@ -249,17 +250,11 @@ class StockPicking(models.Model):
         """Update the destination picking quantities for kit moves.
 
         Intercompany kit moves need special handling because the sale and
-        purchase sides have different move structures. Overridden in
+        purchase sides have different move structures. Return the sale moves
+        handled, skipped by the generic synchronization. Overridden in
         `purchase_sale_stock_inter_company_mrp`.
         """
-        return False
-
-    def _is_intercompany_purchase_kit_move(self, move, dest_picking):
-        """Return whether the move is a kit move on the destination picking.
-
-        Overridden in `purchase_sale_stock_inter_company_mrp`.
-        """
-        return False
+        return self.env["stock.move"]
 
     def _is_intercompany_return_reception(self):
         """

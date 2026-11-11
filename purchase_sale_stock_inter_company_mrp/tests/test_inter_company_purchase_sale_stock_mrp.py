@@ -203,6 +203,42 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self.assertEqual(len(purchase_picking.move_ids), 1)
         self.assertEqual(purchase_picking.move_ids.quantity, 3.0)
 
+    def test_sale_kit_order_in_dozens(self):
+        self.env["ir.config_parameter"].sudo().set_param("stock.propagate_uom", "1")
+        self.kit_po.order_line.write(
+            {"product_uom": self.env.ref("uom.product_uom_dozen").id, "product_qty": 2}
+        )
+        sale_picking = self._approve_kit_po()
+        self._set_done(sale_picking, {self.component_1: 12.0, self.component_2: 24.0})
+        self._validate_without_backorder(sale_picking)
+        purchase_picking = self.kit_po.picking_ids[0]
+        self.assertAlmostEqual(purchase_picking.move_ids.quantity, 1.0)
+
+    def test_sale_kit_component_on_two_move_lines(self):
+        sale_picking = self._approve_kit_po()
+        component_2_move = sale_picking.move_ids.filtered(
+            lambda m: m.product_id == self.component_2
+        )
+        move_line_vals = component_2_move._prepare_move_line_vals()
+        component_2_move.move_line_ids = [
+            Command.clear(),
+            Command.create(dict(move_line_vals, quantity=2)),
+            Command.create(dict(move_line_vals, quantity=2)),
+        ]
+        self._set_done(sale_picking, {self.component_1: 2.0})
+        sale_picking.move_ids.picked = True
+        self._validate_without_backorder(sale_picking)
+        purchase_picking = self.kit_po.picking_ids[0]
+        self.assertAlmostEqual(purchase_picking.move_ids.quantity, 2.0)
+
+    def test_sale_kit_bom_archived_before_delivery(self):
+        sale_picking = self._approve_kit_po()
+        self.bom.active = False
+        self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
+        self._assert_user_error(
+            lambda: self._validate_without_backorder(sale_picking), "BOM changed"
+        )
+
     def test_sale_kit_partial(self):
         sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
@@ -579,6 +615,15 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._assert_user_error(
             return_wizard.action_create_returns_all, "tracked products"
         )
+
+    def test_sale_kit_return_bom_archived(self):
+        self._enable_sync_picking()
+        sale_picking = self._approve_kit_po()
+        self._set_all_done(sale_picking)
+        sale_picking.button_validate()
+        self.bom.active = False
+        return_wizard = self._get_return_wizard(sale_picking)
+        self._assert_user_error(return_wizard.action_create_returns_all, "BOM changed")
 
     def test_sale_kit_return(self):
         """Returning part of a 'sale-kit' must return the corresponding kit

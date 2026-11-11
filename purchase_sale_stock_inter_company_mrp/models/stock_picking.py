@@ -3,27 +3,9 @@
 
 from odoo import models
 
-# The moves passed to _compute_kit_quantities are the moves of the sale
-# picking: only the cancelled ones are excluded, nothing to subtract.
-KIT_QUANTITIES_FILTERS = {
-    "incoming_moves": lambda m: m.state != "cancel",
-    "outgoing_moves": lambda m: False,
-}
-
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
-
-    def _get_intercompany_kit_bom(self, product, company):
-        """Return the phantom BOM of the kit in the given company.
-
-        The BOM is resolved from the product because with nested phantom
-        BOMs the component moves point to a sub-BOM through their
-        ``bom_line_id``, while the sync needs the top-level kit BOM.
-        """
-        return self.env["mrp.bom"]._bom_find(
-            product, company_id=company.id, bom_type="phantom"
-        )[product]
 
     def _set_intercompany_kit_quantities_done(self, purchase, dest_picking):
         """Define the kit quantities received on the reception picking.
@@ -50,112 +32,49 @@ class StockPicking(models.Model):
         delivered (the same goods are sold and purchased); only the BOM and
         UoM used to decompose them may differ.
         """
-        processed_sale_lines = set()
-        for sale_move in self.move_ids:
-            sale_line = sale_move.sale_line_id
-            # In a 'sale-purchase-kit' situation, process all the component
-            # moves of a sale line at once when going through the first
-            # component move (skip the other ones related to the same line).
-            if sale_line.id in processed_sale_lines:
-                continue
-            purchase_pending_moves = self._get_intercompany_purchase_pending_moves(
+        kit_moves = super()._set_intercompany_kit_quantities_done(
+            purchase, dest_picking
+        )
+        for sale_line, sale_moves in self.move_ids.grouped("sale_line_id").items():
+            purchase_moves = self._get_intercompany_purchase_pending_moves(
                 sale_line, dest_picking
             )
-            if not purchase_pending_moves.bom_line_id:
-                # The 'sale-kit' situation is not handled here, but in the
-                # `_get_product_intercompany_qty_done_dict()` override.
+            if not purchase_moves:
                 continue
-            processed_sale_lines.add(sale_line.id)
-            purchase_bom = self._get_intercompany_kit_bom(
-                sale_line.product_id, purchase.company_id
+            product = sale_line.product_id
+            sale_bom = sale_moves._get_intercompany_kit_bom(
+                product, sale_line.company_id
             )
-            if not purchase_bom:
-                purchase_pending_moves._check_intercompany_kit_bom_changed({})
-            all_sale_moves = self.move_ids.filtered(
-                lambda m, sl=sale_line: m.sale_line_id == sl
+            purchase_bom = purchase_moves._get_intercompany_kit_bom(
+                product, purchase.company_id
             )
-            sale_bom = self._get_intercompany_kit_bom(
-                sale_line.product_id, sale_line.company_id
+            if not sale_bom and not purchase_bom:
+                continue
+            (sale_moves | purchase_moves)._check_intercompany_kit_tracking()
+            kit_qty_done = sale_moves._get_intercompany_kit_qty_done(
+                sale_line, sale_bom
             )
-            (purchase_pending_moves | all_sale_moves)._check_intercompany_kit_tracking()
-            if sale_bom:
-                # 'sale-purchase-kit' situation: recompute how many kits were
-                # delivered from the components actually shipped.
-                kit_qty_sold = sale_line.product_uom._compute_quantity(
-                    sale_line.product_uom_qty, sale_bom.product_uom_id
+            if purchase_bom:
+                qty_by_bom_line = purchase_bom._explode_intercompany_kit(
+                    product, kit_qty_done
                 )
-                kit_qty_done = all_sale_moves._compute_kit_quantities(
-                    sale_line.product_id, kit_qty_sold, sale_bom, KIT_QUANTITIES_FILTERS
-                )
-                sale_qty_done = sale_bom.product_uom_id._compute_quantity(
-                    kit_qty_done, sale_line.product_id.uom_id
-                )
-            else:
-                # 'purchase-kit' situation: the delivered quantity is the kit
-                # move quantity (len(all_sale_moves) == 1).
-                sale_qty_done = sum(
-                    all_sale_moves.mapped(
-                        lambda m: m.product_uom._compute_quantity(
-                            m.quantity, m.product_id.uom_id
+                purchase_moves._check_intercompany_kit_bom_changed(qty_by_bom_line)
+                for purchase_move in purchase_moves:
+                    bom_line = purchase_move.bom_line_id
+                    purchase_move._set_quantity_done(
+                        bom_line.product_uom_id._compute_quantity(
+                            qty_by_bom_line[bom_line], purchase_move.product_uom
                         )
                     )
-                )
-            # The kits received equal the kits delivered: express
-            # sale_qty_done in the purchase BOM UoM before exploding it.
-            purchase_qty_done = sale_line.product_id.uom_id._compute_quantity(
-                sale_qty_done, purchase_bom.product_uom_id
-            )
-            _, purchase_bom_lines = purchase_bom.explode(
-                sale_line.product_id, purchase_qty_done / purchase_bom.product_qty
-            )
-            # Map each purchase BOM line to its quantity, kept in the line UoM.
-            qty_done_by_bom_line = {
-                bom_line: bom_line_data["qty"]
-                for bom_line, bom_line_data in purchase_bom_lines
-            }
-            purchase_pending_moves._check_intercompany_kit_bom_changed(
-                qty_done_by_bom_line
-            )
-            for purchase_move in purchase_pending_moves:
-                # each purchase move's qty done comes from its BOM line's qty.
-                qty_done = qty_done_by_bom_line.get(purchase_move.bom_line_id, 0.0)
-                purchase_move._set_quantity_done(
-                    purchase_move.bom_line_id.product_uom_id._compute_quantity(
-                        qty_done, purchase_move.product_uom
+            else:
+                purchase_moves._set_quantity_done(
+                    product.uom_id._compute_quantity(
+                        kit_qty_done, purchase_moves.product_uom
                     )
                 )
-                purchase_move.picked = True
-
-    def _get_product_intercompany_qty_done_dict(
-        self, sale_move_lines, purchase_move_lines
-    ):
-        sale_line = sale_move_lines.move_id.sale_line_id
-        sale_bom = self._get_intercompany_kit_bom(
-            sale_line.product_id, sale_line.company_id
-        )
-        if not sale_bom:
-            return super()._get_product_intercompany_qty_done_dict(
-                sale_move_lines, purchase_move_lines
-            )
-        # 'sale-kit' situation: N sale moves (components) → 1 po move (kit product)
-        # Compute the number of kits delivered
-        # from all the component moves, not only the current zip pair.
-        kit_qty_sold = sale_line.product_uom._compute_quantity(
-            sale_line.product_uom_qty, sale_bom.product_uom_id
-        )
-        all_sale_moves = self.move_ids.filtered(
-            lambda m, sl=sale_line: m.sale_line_id == sl and m.bom_line_id
-        )
-        (
-            all_sale_moves | purchase_move_lines.move_id
-        )._check_intercompany_kit_tracking()
-        kit_qty_done = all_sale_moves._compute_kit_quantities(
-            sale_line.product_id, kit_qty_sold, sale_bom, KIT_QUANTITIES_FILTERS
-        )
-        sale_qty_done = sale_bom.product_uom_id._compute_quantity(
-            kit_qty_done, sale_line.product_id.uom_id
-        )
-        return {purchase_move_lines.product_id: sale_qty_done}
+            purchase_moves.picked = True
+            kit_moves |= sale_moves
+        return kit_moves
 
     def _get_intercompany_purchase_pending_moves(self, sale_line, dest_picking):
         """Return the pending moves of the destination picking for the sale line."""
@@ -163,10 +82,3 @@ class StockPicking(models.Model):
             lambda x, dp=dest_picking: x.picking_id == dp
             and x.state not in ["done", "cancel"]
         )
-
-    def _is_intercompany_purchase_kit_move(self, move, dest_picking):
-        """Return whether the sale move targets a kit on the purchase side."""
-        purchase_pending_moves = self._get_intercompany_purchase_pending_moves(
-            move.sale_line_id, dest_picking
-        )
-        return bool(purchase_pending_moves.bom_line_id)
