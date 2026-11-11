@@ -700,6 +700,61 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             purchase_return, {self.kit_product: 5.0}, "product_uom_qty"
         )
 
+    def test_mixed_kit_return_by_lot(self):
+        if "lot_id" not in self.env["stock.return.picking.line"]._fields:
+            self.skipTest("stock_picking_return_lot is not installed")
+        self._enable_sync_picking()
+        self.bom.write({"company_id": self.company_a.id})
+        serial_product = self.env["product.product"].create(
+            {"name": "Serial Product", "is_storable": True, "tracking": "serial"}
+        )
+        serial_1, serial_2 = self.env["stock.lot"].create(
+            [
+                {"name": "SN1", "product_id": serial_product.id, "company_id": False},
+                {"name": "SN2", "product_id": serial_product.id, "company_id": False},
+            ]
+        )
+        self.env["purchase.order.line"].create(
+            {
+                "order_id": self.kit_po.id,
+                "product_id": serial_product.id,
+                "product_qty": 2.0,
+                "price_unit": 10.0,
+            }
+        )
+        sale_picking = self._approve_kit_po()
+        sale_picking.move_ids.filtered(
+            lambda m: m.product_id == self.kit_product
+        )._set_quantity_done(3.0)
+        serial_move = sale_picking.move_ids.filtered(
+            lambda m: m.product_id == serial_product
+        )
+        move_line_vals = serial_move._prepare_move_line_vals()
+        serial_move.move_line_ids = [
+            Command.clear(),
+            Command.create(dict(move_line_vals, quantity=1, lot_id=serial_1.id)),
+            Command.create(dict(move_line_vals, quantity=1, lot_id=serial_2.id)),
+        ]
+        sale_picking.move_ids.picked = True
+        sale_picking.button_validate()
+        return_wizard = self._get_return_wizard(sale_picking)
+        return_wizard.product_return_moves.filtered(
+            lambda line: line.lot_id == serial_2
+        ).unlink()
+        return_wizard.action_create_returns()
+        purchase_return = self.kit_po.picking_ids[0].return_ids
+        self._assert_quantities(
+            purchase_return,
+            {self.component_1: 3.0, self.component_2: 6.0, serial_product: 1.0},
+            "product_uom_qty",
+        )
+        self.assertEqual(
+            purchase_return.move_ids.filtered(
+                lambda m: m.product_id == serial_product
+            ).restrict_lot_id,
+            serial_1,
+        )
+
     def test_kit_return_bom_changed(self):
         """A BOM changed since the receipt must block the kit return."""
         self._enable_sync_picking()

@@ -70,6 +70,15 @@ class ReturnPicking(models.TransientModel):
             bom_line = po_return_line.move_id.bom_line_id
             if bom_line:
                 quantity = qty_by_bom_line[purchase_line][bom_line]
+            elif "lot_id" in po_return_line._fields and po_return_line.lot_id:
+                quantity = sum(
+                    self.product_return_moves.filtered(
+                        lambda line, pl=purchase_line, lot=po_return_line.lot_id: (
+                            line.move_id.sale_line_id.auto_purchase_line_id == pl
+                            and line.lot_id == lot
+                        )
+                    ).mapped("quantity")
+                )
             else:
                 quantity = qty_by_product[purchase_line]
             po_return_line.write({"quantity": quantity})
