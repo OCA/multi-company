@@ -78,7 +78,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             bom.sequence = sequence
         return bom
 
-    def _approve_po(self, po=None):
+    def _approve_kit_po(self, po=None):
         """Approve the PO and return the delivery picking of its sale."""
         po = po or self.kit_po
         po.with_user(self.user_company_a).button_approve()
@@ -188,7 +188,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
 
     def test_sale_kit(self):
         """BOM only on the sale side"""
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
         # Deliver the 3 kits
         self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
@@ -198,7 +198,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self.assertEqual(purchase_picking.move_ids.quantity, 3.0)
 
     def test_sale_kit_partial(self):
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
         # Deliver only 2 kits
         self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
@@ -210,7 +210,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
     def test_purchase_kit(self):
         """BOM only on the purchase side"""
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 1)
         # Deliver the 3 kits
         sale_picking.move_ids._set_quantity_done(3.0)
@@ -223,7 +223,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
 
     def test_purchase_kit_partial(self):
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 1)
         # Deliver only 2 kits
         sale_picking.move_ids._set_quantity_done(2.0)
@@ -239,7 +239,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         validate the receipt of the kit components."""
         self.company_a.sync_picking = True
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
@@ -252,7 +252,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             self.company_a,
             [(self.component_1, 1.0), (self.component_2, 2.0), (self.component_3, 3.0)],
         )
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
         # Deliver the 3 kits
         self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
@@ -270,7 +270,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._create_bom_quantity_boms()
         # Sell four kits, i.e. two applications of the sale BOM.
         self.kit_po.order_line.product_qty = 4.0
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._assert_quantities(
             sale_picking,
             {self.component_1: 4.0, self.component_2: 8.0},
@@ -292,7 +292,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._create_nested_kit_boms()
         # Sell two kits.
         self.kit_po.order_line.product_qty = 2.0
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         # The component moves belong to the sale BOM and to its sub-BOM.
         self.assertEqual(len(sale_picking.move_ids.bom_line_id.bom_id), 2)
         # Delier the 2 kits
@@ -317,7 +317,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         # top-level BOM lines.
         self.component_3.tracking = "lot"
         self.kit_po.order_line.product_qty = 2.0
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_all_done(sale_picking)
         self._assert_user_error(sale_picking.button_validate, "tracked products")
 
@@ -339,7 +339,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         line_1.product_qty = 10.0
         line_2.product_qty = 1.0
         line_2.product_uom_id = self.uom_box
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
@@ -366,7 +366,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
                 "product_qty": 2.0,
             }
         )
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
@@ -393,7 +393,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             self.company_a,
             [(self.component_1, 1.0), (self.component_2, 0.0)],
         )
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         # On Sale side the optional component does not create a move
         self.assertEqual(len(sale_picking.move_ids), 1)
         self._set_done(sale_picking, {self.component_2: 6.0})
@@ -408,7 +408,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
     def test_tracked_sale_kit_component(self):
         """A tracked kit component on the sale side is not supported."""
         self.component_1.tracking = "lot"
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
         component_1_move = sale_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_1
@@ -426,14 +426,14 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         """A tracked kit component on the purchase side is not supported."""
         self.bom.write({"company_id": self.company_a.id})
         self.component_2.tracking = "lot"
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         self._assert_user_error(sale_picking.button_validate, "tracked products")
 
     def test_tracked_sale_kit_product(self):
         """A tracked kit product on the purchase side is not supported."""
         self.kit_product.tracking = "lot"
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
         self._assert_user_error(sale_picking.button_validate, "tracked products")
 
@@ -441,7 +441,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         """A tracked kit product on the sale side is not supported."""
         self.bom.write({"company_id": self.company_a.id})
         self.kit_product.tracking = "lot"
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.move_ids.move_line_ids.lot_id = self.env["stock.lot"].create(
             {
@@ -457,7 +457,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         configured failure action."""
         self.company_a.sync_picking_failure_action = "notify"
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         with mock.patch.object(
             type(sale_picking),
@@ -482,7 +482,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
                 "product_qty": 2.0,
             }
         )
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         sale_return, purchase_return = self._create_returns(sale_picking)
@@ -501,7 +501,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         """A product tracked after the delivery must be rejected on return."""
         self._enable_sync_picking()
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         # The tracking changes after the delivery.
@@ -515,7 +515,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         """Returning part of a 'sale-kit' must return the corresponding kit
         quantity on the purchase side."""
         self._enable_sync_picking()
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
         sale_picking.button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
@@ -537,7 +537,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._create_bom_quantity_boms()
         # Sell four kits, i.e. two applications of the sale BOM.
         self.kit_po.order_line.product_qty = 4.0
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_done(sale_picking, {self.component_1: 4.0, self.component_2: 8.0})
         sale_picking.button_validate()
         sale_return, purchase_return = self._create_returns(sale_picking)
@@ -560,7 +560,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self._create_nested_kit_boms()
         # Sell two kits.
         self.kit_po.order_line.product_qty = 2.0
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_all_done(sale_picking)
         sale_picking.button_validate()
         sale_return, purchase_return = self._create_returns(sale_picking)
@@ -586,7 +586,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
                 "price_unit": 10.0,
             }
         )
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         self._set_all_done(sale_picking)
         sale_picking.button_validate()
         _sale_return, purchase_return = self._create_returns(sale_picking)
@@ -600,7 +600,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         """A BOM changed since the receipt must block the kit return."""
         self._enable_sync_picking()
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         # Replace the purchase BOM: the receipt moves keep the old BOM lines.
@@ -612,7 +612,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
     def test_kit_sync_bom_changed(self):
         """A BOM line added after the receipt must block the sync."""
         self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_po()
+        sale_picking = self._approve_kit_po()
         # Add a component to the purchase BOM: the receipt has no such move.
         self.env["mrp.bom.line"].create(
             {
@@ -639,7 +639,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             line_form.product_qty = 3.0
             line_form.price_unit = 10.0
         po = po.save()
-        sale_picking = self._approve_po(po)
+        sale_picking = self._approve_kit_po(po)
         sale_picking.move_ids._set_quantity_done(3.0)
         sale_picking.button_validate()
         purchase_picking = po.picking_ids[0]
