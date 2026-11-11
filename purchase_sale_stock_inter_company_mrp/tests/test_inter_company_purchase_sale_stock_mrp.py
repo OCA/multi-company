@@ -207,6 +207,15 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self.assertEqual(len(purchase_picking.move_ids), 1)
         self.assertEqual(purchase_picking.move_ids.quantity, 2.0)
 
+    def test_sale_kit_missing_component_no_backorder(self):
+        sale_picking = self._approve_kit_po()
+        self._set_done(sale_picking, {self.component_1: 3.0})
+        sale_picking.with_context(
+            skip_backorder=True, picking_ids_not_to_backorder=sale_picking.ids
+        ).button_validate()
+        purchase_picking = self.kit_po.picking_ids[0]
+        self.assertEqual(purchase_picking.move_ids.quantity, 0.0)
+
     def test_purchase_kit(self):
         """BOM only on the purchase side"""
         self.bom.write({"company_id": self.company_a.id})

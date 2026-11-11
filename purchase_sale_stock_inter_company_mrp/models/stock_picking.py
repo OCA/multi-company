@@ -3,10 +3,10 @@
 
 from odoo import models
 
-# The moves passed to _compute_kit_quantities are all done incoming moves of
-# the sale picking, so there is nothing to exclude nor to subtract.
+# The moves passed to _compute_kit_quantities are the moves of the sale
+# picking: only the cancelled ones are excluded, nothing to subtract.
 KIT_QUANTITIES_FILTERS = {
-    "incoming_moves": lambda m: True,
+    "incoming_moves": lambda m: m.state != "cancel",
     "outgoing_moves": lambda m: False,
 }
 
