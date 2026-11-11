@@ -649,6 +649,13 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         sale_picking.move_ids._set_quantity_done(3.0)
         self._assert_user_error(sale_picking.button_validate, "BOM changed")
 
+    def test_kit_sync_bom_archived(self):
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_kit_po()
+        self.bom.active = False
+        sale_picking.move_ids._set_quantity_done(3.0)
+        self._assert_user_error(sale_picking.button_validate, "BOM changed")
+
     def test_plain_product_return(self):
         """The kit return override must delegate to the base module for plain
         products."""

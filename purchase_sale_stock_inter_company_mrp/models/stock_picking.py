@@ -69,6 +69,8 @@ class StockPicking(models.Model):
             purchase_bom = self._get_intercompany_kit_bom(
                 sale_line.product_id, purchase.company_id
             )
+            if not purchase_bom:
+                purchase_pending_moves._check_intercompany_kit_bom_changed({})
             all_sale_moves = self.move_ids.filtered(
                 lambda m, sl=sale_line: m.sale_line_id == sl
             )
