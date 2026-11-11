@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Canarias Conectada
+     License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <!-- ``base.res_partner_rule`` (patched by ``partner_multi_company``'s
+         post_init_hook to use ``company_ids``) always exempts any contact
+         linked to an internal user (``partner_share = False``) from the
+         company scoping, so a colleague's contact card, from another
+         company or even the same one, stays visible to everyone. Global
+         (no ``groups``) rules are ANDed together (see
+         ``ir.rule._compute_domain``), so this rule tightens that exemption
+         away without touching the existing one: it must still hold for the
+         record to be visible, on top of the base rule.
+
+         Deliberately no group-based exemption (e.g.
+         ``base.group_multi_company``): the goal is that every user, no
+         matter how many companies they are allowed into, only sees
+         contacts belonging to a company they are actually assigned to:
+         a user assigned to 2 out of 50 companies stays scoped to those 2.
+         A real system administrator does not need a bypass here: install
+         ``res_company_admin_sync`` and they are kept assigned to every
+         company automatically, so the plain company-scoping condition
+         below already lets them see everything.
+
+         A user only gets to see an internal-user contact if: it is not
+         actually internal (``partner_share = True``, e.g. a portal
+         customer, untouched by this rule), it is their own contact (safety
+         net), it has been deliberately shared (blank ``company_ids``, same
+         "shared" convention as the rest of the stack), or it belongs to a
+         company they are actually assigned to. Hiding administrators
+         specifically is a separate, non-multi-company concern: see
+         ``partner_hide_admin_contact``.
+
+         Deliberately ``user.company_ids`` (every company the user
+         belongs to) and NOT the bare ``company_ids`` eval-context
+         variable (``self.env.companies``, only the ones *currently
+         active* in the company switcher): visibility must not depend on
+         which companies happen to be checked in that dropdown right now.
+         Odoo core has several built-in mechanisms that read another
+         internal user's contact regardless of the acting user's active
+         company selection, e.g. Discuss auto-subscribing every
+         internal user to a channel when a new user is created
+         (`mail/models/discuss/discuss_channel.py`,
+         `_subscribe_users_automatically_get_members`) enumerates every
+         user in the relevant group, not just the ones sharing the active
+         company. Scoping by the active selection made those crash with
+         an AccessError the moment an administrator had narrowed their
+         switcher to fewer companies than they actually belong to. -->
+    <record id="res_partner_rule_restrict_cross_company" model="ir.rule">
+        <field
+            name="name"
+        >res.partner: restrict internal-user contacts to own company</field>
+        <field name="model_id" ref="base.model_res_partner" />
+        <field name="domain_force">
+            ['|', '|', '|', ('partner_share', '=', True), ('id', '=', user.partner_id.id), ('company_ids', '=', False), ('company_ids', 'in', user.company_ids.ids)]
+        </field>
+    </record>
+</odoo>
