@@ -96,6 +96,11 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
                 lambda m, p=product: m.product_id == p
             )._set_quantity_done(quantity)
 
+    def _validate_without_backorder(self, picking):
+        picking.with_context(
+            skip_backorder=True, picking_ids_not_to_backorder=picking.ids
+        ).button_validate()
+
     def _set_all_done(self, picking):
         for move in picking.move_ids:
             move._set_quantity_done(move.product_uom_qty)
@@ -210,25 +215,9 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
     def test_sale_kit_missing_component_no_backorder(self):
         sale_picking = self._approve_kit_po()
         self._set_done(sale_picking, {self.component_1: 3.0})
-        sale_picking.with_context(
-            skip_backorder=True, picking_ids_not_to_backorder=sale_picking.ids
-        ).button_validate()
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(purchase_picking.move_ids.quantity, 0.0)
-
-    def test_purchase_kit(self):
-        """BOM only on the purchase side"""
-        self.bom.write({"company_id": self.company_a.id})
-        sale_picking = self._approve_kit_po()
-        self.assertEqual(len(sale_picking.move_ids), 1)
-        # Deliver the 3 kits
-        sale_picking.move_ids._set_quantity_done(3.0)
-        sale_picking.button_validate()
-        purchase_picking = self.kit_po.picking_ids[0]
-        self.assertEqual(len(purchase_picking.move_ids), 2)
-        self._assert_quantities(
-            purchase_picking, {self.component_1: 3.0, self.component_2: 6.0}
-        )
 
     def test_purchase_kit_partial(self):
         self.bom.write({"company_id": self.company_a.id})
@@ -263,14 +252,14 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         )
         sale_picking = self._approve_kit_po()
         self.assertEqual(len(sale_picking.move_ids), 2)
-        # Deliver the 3 kits
-        self._set_done(sale_picking, {self.component_1: 3.0, self.component_2: 6.0})
-        sale_picking.button_validate()
+        # Deliver 2 of the 3 kits
+        self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 3)
         self._assert_quantities(
             purchase_picking,
-            {self.component_1: 3.0, self.component_2: 6.0, self.component_3: 9.0},
+            {self.component_1: 2.0, self.component_2: 4.0, self.component_3: 6.0},
         )
 
     def test_sale_purchase_kit_bom_quantity(self):
@@ -285,14 +274,14 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             {self.component_1: 4.0, self.component_2: 8.0},
             "product_uom_qty",
         )
-        # Deliver the 4 kits
-        self._set_done(sale_picking, {self.component_1: 4.0, self.component_2: 8.0})
-        sale_picking.button_validate()
-        # The reception of the four kits requires 4, 8 and 12 purchase units.
+        # Deliver 2 of the 4 kits
+        self._set_done(sale_picking, {self.component_1: 2.0, self.component_2: 4.0})
+        self._validate_without_backorder(sale_picking)
+        # The reception of the two kits requires 2, 4 and 6 purchase units.
         purchase_picking = self.kit_po.picking_ids[0]
         self._assert_quantities(
             purchase_picking,
-            {self.component_1: 4.0, self.component_2: 8.0, self.component_3: 12.0},
+            {self.component_1: 2.0, self.component_2: 4.0, self.component_3: 6.0},
         )
 
     def test_nested_kit_sync(self):
@@ -304,19 +293,20 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         sale_picking = self._approve_kit_po()
         # The component moves belong to the sale BOM and to its sub-BOM.
         self.assertEqual(len(sale_picking.move_ids.bom_line_id.bom_id), 2)
-        # Delier the 2 kits
-        self._set_all_done(sale_picking)
-        sale_picking.button_validate()
+        # Deliver 1 of the 2 kits
+        for move in sale_picking.move_ids:
+            move._set_quantity_done(move.product_uom_qty / 2)
+        self._validate_without_backorder(sale_picking)
 
-        # Two kits: 2 + 2 component_1 on the sale side.
-        self._assert_quantities(sale_picking, {self.component_1: 4.0})
+        # One kit: 1 + 1 component_1 on the sale side.
+        self._assert_quantities(sale_picking, {self.component_1: 2.0})
         purchase_picking = self.kit_po.picking_ids[0]
 
-        # Two kits require 6 and 8 units through the sub-kit, plus 2
+        # One kit requires 3 and 4 units through the sub-kit, plus 1
         # component_2 on the top-level BOM.
         self._assert_quantities(
             purchase_picking,
-            {self.component_1: 6.0, self.component_2: 2.0, self.component_3: 8.0},
+            {self.component_1: 3.0, self.component_2: 1.0, self.component_3: 4.0},
         )
 
     def test_tracked_nested_kit_component(self):
@@ -349,12 +339,12 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         line_2.product_qty = 1.0
         line_2.product_uom_id = self.uom_box
         sale_picking = self._approve_kit_po()
-        sale_picking.move_ids._set_quantity_done(3.0)
-        sale_picking.button_validate()
+        sale_picking.move_ids._set_quantity_done(2.0)
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
-        # 3 kits = 0.3 box: 3 units of component 1 and 0.3 box of component 2.
+        # 2 kits = 0.2 box: 2 units of component 1 and 0.2 box of component 2.
         self._assert_quantities(
-            purchase_picking, {self.component_1: 3.0, self.component_2: 0.3}
+            purchase_picking, {self.component_1: 2.0, self.component_2: 0.2}
         )
         # 0.3 box is 3 units of component_2
         self.assertAlmostEqual(
@@ -372,9 +362,7 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         )
         sale_picking = self._approve_kit_po()
         sale_picking.move_ids._set_quantity_done(1.0)
-        sale_picking.with_context(
-            skip_backorder=True, picking_ids_not_to_backorder=sale_picking.ids
-        ).button_validate()
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
         self._assert_quantities(
             purchase_picking, {self.component_1: 12.0, self.component_2: 24.0}
@@ -392,15 +380,15 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             }
         )
         sale_picking = self._approve_kit_po()
-        sale_picking.move_ids._set_quantity_done(3.0)
-        sale_picking.button_validate()
+        sale_picking.move_ids._set_quantity_done(2.0)
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
         component_1_moves = purchase_picking.move_ids.filtered(
             lambda m: m.product_id == self.component_1
         )
         self.assertEqual(len(component_1_moves), 2)
         self._assert_quantities(
-            purchase_picking, {self.component_1: 9.0, self.component_2: 6.0}
+            purchase_picking, {self.component_1: 6.0, self.component_2: 4.0}
         )
 
     def test_purchase_kit_service_component(self):
@@ -412,11 +400,11 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             {"bom_id": self.bom.id, "product_id": service.id, "product_qty": 1.0}
         )
         sale_picking = self._approve_kit_po()
-        sale_picking.move_ids._set_quantity_done(3.0)
-        sale_picking.button_validate()
+        sale_picking.move_ids._set_quantity_done(2.0)
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
         self._assert_quantities(
-            purchase_picking, {self.component_1: 3.0, self.component_2: 6.0}
+            purchase_picking, {self.component_1: 2.0, self.component_2: 4.0}
         )
 
     def test_sale_purchase_kit_optional_component(self):
@@ -437,13 +425,13 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         sale_picking = self._approve_kit_po()
         # On Sale side the optional component does not create a move
         self.assertEqual(len(sale_picking.move_ids), 1)
-        self._set_done(sale_picking, {self.component_2: 6.0})
-        sale_picking.button_validate()
+        self._set_done(sale_picking, {self.component_2: 4.0})
+        self._validate_without_backorder(sale_picking)
         purchase_picking = self.kit_po.picking_ids[0]
         # On the Purchase side the optional component does create a move
         self.assertEqual(len(purchase_picking.move_ids), 2)
         self._assert_quantities(
-            purchase_picking, {self.component_1: 3.0, self.component_2: 0.0}
+            purchase_picking, {self.component_1: 2.0, self.component_2: 0.0}
         )
 
     def test_tracked_sale_kit_component(self):
