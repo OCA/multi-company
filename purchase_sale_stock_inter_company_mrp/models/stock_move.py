@@ -36,7 +36,9 @@ class StockMove(models.Model):
         each BOM line in ``qty_by_bom_line`` must be in the move's BOM lines,
         otherwise the BOM changed since the receipt.
         """
-        bom_line_ids = {line.id for line in qty_by_bom_line if line}
+        bom_line_ids = {
+            line.id for line in qty_by_bom_line if line.product_id.type == "consu"
+        }
         moves = self.filtered("bom_line_id")
         move_bom_line_ids = set(moves.bom_line_id.ids)
         if bom_line_ids == move_bom_line_ids:

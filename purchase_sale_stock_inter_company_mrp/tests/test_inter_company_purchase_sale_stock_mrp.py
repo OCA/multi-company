@@ -387,6 +387,22 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             purchase_picking, {self.component_1: 9.0, self.component_2: 6.0}
         )
 
+    def test_purchase_kit_service_component(self):
+        self.bom.write({"company_id": self.company_a.id})
+        service = self.env["product.product"].create(
+            {"name": "Assembly", "type": "service"}
+        )
+        self.env["mrp.bom.line"].create(
+            {"bom_id": self.bom.id, "product_id": service.id, "product_qty": 1.0}
+        )
+        sale_picking = self._approve_kit_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        sale_picking.button_validate()
+        purchase_picking = self.kit_po.picking_ids[0]
+        self._assert_quantities(
+            purchase_picking, {self.component_1: 3.0, self.component_2: 6.0}
+        )
+
     def test_sale_purchase_kit_optional_component(self):
         """Optional (zero-quantity) components must not change the kit
         quantity.
