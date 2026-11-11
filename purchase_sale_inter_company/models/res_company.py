@@ -23,5 +23,4 @@ class ResCompany(models.Model):
     )
     intercompany_sale_user_id = fields.Many2one(
         comodel_name="res.users",
-        string="Intercompany Sale User",
     )
