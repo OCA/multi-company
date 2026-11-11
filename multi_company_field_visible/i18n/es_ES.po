@@ -1,0 +1,46 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* multi_company_field_visible
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__id
+msgid "ID"
+msgstr "ID"
+
+#. module: multi_company_field_visible
+#: model:ir.model,name:multi_company_field_visible.model_multi_company_abstract
+msgid "Multi-Company Abstract"
+msgstr "Abstracto multicompañía"
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__own_company_ids
+msgid "Own Company"
+msgstr "Compañía propia"
+
+#. module: multi_company_field_visible
+#: model:ir.model.fields,field_description:multi_company_field_visible.field_multi_company_abstract__show_own_company_field
+msgid "Show Own Company Field"
+msgstr "Mostrar campo de compañía propia"
+
+#. module: multi_company_field_visible
+#. odoo-python
+#: code:addons/multi_company_field_visible/models/multi_company_abstract.py:0
+msgid "You must assign at least your own company to “%(name)s”."
+msgstr "Debe asignar al menos su propia compañía a «%(name)s»."
