@@ -3,6 +3,7 @@
 
 from unittest import mock
 
+from odoo import Command
 from odoo.exceptions import UserError
 from odoo.tests import Form
 
@@ -228,6 +229,17 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         sale_picking.with_context(skip_backorder=True).button_validate()
         purchase_picking = self.kit_po.picking_ids[0]
         self.assertEqual(len(purchase_picking.move_ids), 2)
+        self._assert_quantities(
+            purchase_picking, {self.component_1: 2.0, self.component_2: 4.0}
+        )
+
+    def test_purchase_kit_validated_by_sale_user(self):
+        self.bom.write({"company_id": self.company_a.id})
+        self.user_company_b.groups_id |= self.env.ref("stock.group_stock_user")
+        sale_picking = self._approve_kit_po().with_user(self.user_company_b)
+        sale_picking.move_ids._set_quantity_done(2.0)
+        self._validate_without_backorder(sale_picking)
+        purchase_picking = self.kit_po.picking_ids[0]
         self._assert_quantities(
             purchase_picking, {self.component_1: 2.0, self.component_2: 4.0}
         )
@@ -524,6 +536,34 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
         self.assertEqual(len(component_1_moves), 2)
         self._assert_quantities(
             purchase_return, {self.component_1: 9.0, self.component_2: 6.0}
+        )
+
+    def test_purchase_kit_return_by_sale_user(self):
+        self._enable_sync_picking()
+        self.bom.write({"company_id": self.company_a.id})
+        sale_picking = self._approve_kit_po()
+        sale_picking.move_ids._set_quantity_done(3.0)
+        sale_picking.button_validate()
+        stock_user_group = self.env.ref("stock.group_stock_user")
+        self.user_company_b.groups_id |= stock_user_group
+        self.intercompany_sale_user_id.write(
+            {
+                "groups_id": [Command.link(stock_user_group.id)],
+                "email": "ic@example.com",
+            }
+        )
+        self.company_a.intercompany_sale_user_id = self.intercompany_sale_user_id
+        return_wizard = (
+            self.env["stock.return.picking"]
+            .with_user(self.user_company_b)
+            .create({"picking_id": sale_picking.id})
+        )
+        return_wizard.action_create_returns_all()
+        purchase_return = self.kit_po.picking_ids[0].return_ids
+        self._assert_quantities(
+            purchase_return,
+            {self.component_1: 3.0, self.component_2: 6.0},
+            "product_uom_qty",
         )
 
     def test_tracked_kit_return(self):

@@ -25,7 +25,7 @@ class ReturnPicking(models.TransientModel):
         """
         po_reception_picking = self.picking_id.intercompany_picking_id
         has_kit, qty_by_bom_line, qty_by_product = self._get_purchase_return_quantities(
-            new_picking, po_reception_picking
+            new_picking, po_reception_picking.sudo()
         )
         if not has_kit:
             return super()._create_intercompany_return_wizard(new_picking)
@@ -94,7 +94,7 @@ class ReturnPicking(models.TransientModel):
             sale_bom = self.picking_id._get_intercompany_kit_bom(
                 sale_line.product_id, sale_line.company_id
             )
-            purchase_bom = self.picking_id._get_intercompany_kit_bom(
+            purchase_bom = po_reception_picking._get_intercompany_kit_bom(
                 sale_line.product_id, po_reception_picking.company_id
             )
             if not purchase_bom:
