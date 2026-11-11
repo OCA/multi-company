@@ -665,6 +665,41 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             "product_uom_qty",
         )
 
+    def _add_kit_po_line(self, quantity):
+        self.env["purchase.order.line"].create(
+            {
+                "order_id": self.kit_po.id,
+                "product_id": self.kit_product.id,
+                "product_qty": quantity,
+                "price_unit": 450.0,
+            }
+        )
+
+    def test_purchase_kit_return_two_order_lines(self):
+        self._enable_sync_picking()
+        self.bom.write({"company_id": self.company_a.id})
+        self._add_kit_po_line(2.0)
+        sale_picking = self._approve_kit_po()
+        self._set_all_done(sale_picking)
+        sale_picking.button_validate()
+        _sale_return, purchase_return = self._create_returns(sale_picking)
+        self._assert_quantities(
+            purchase_return,
+            {self.component_1: 5.0, self.component_2: 10.0},
+            "product_uom_qty",
+        )
+
+    def test_sale_kit_return_two_order_lines(self):
+        self._enable_sync_picking()
+        self._add_kit_po_line(2.0)
+        sale_picking = self._approve_kit_po()
+        self._set_all_done(sale_picking)
+        sale_picking.button_validate()
+        _sale_return, purchase_return = self._create_returns(sale_picking)
+        self._assert_quantities(
+            purchase_return, {self.kit_product: 5.0}, "product_uom_qty"
+        )
+
     def test_kit_return_bom_changed(self):
         """A BOM changed since the receipt must block the kit return."""
         self._enable_sync_picking()
