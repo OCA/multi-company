@@ -94,9 +94,11 @@ class StockPicking(models.Model):
                 # 'purchase-kit' situation: the delivered quantity is the kit
                 # move quantity (len(all_sale_moves) == 1).
                 sale_qty_done = sum(
-                    all_sale_moves.mapped("move_line_ids")
-                    .filtered(lambda ml: ml.quantity > 0)
-                    .mapped("quantity")
+                    all_sale_moves.mapped(
+                        lambda m: m.product_uom._compute_quantity(
+                            m.quantity, m.product_id.uom_id
+                        )
+                    )
                 )
             # The kits received equal the kits delivered: express
             # sale_qty_done in the purchase BOM UoM before exploding it.

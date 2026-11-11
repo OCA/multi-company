@@ -364,6 +364,22 @@ class TestPurchaseSaleStockInterCompanyMrp(TestPurchaseSaleInterCompany):
             3.0,
         )
 
+    def test_purchase_kit_order_in_dozens(self):
+        self.env["ir.config_parameter"].sudo().set_param("stock.propagate_uom", "1")
+        self.bom.write({"company_id": self.company_a.id})
+        self.kit_po.order_line.write(
+            {"product_uom": self.env.ref("uom.product_uom_dozen").id, "product_qty": 2}
+        )
+        sale_picking = self._approve_kit_po()
+        sale_picking.move_ids._set_quantity_done(1.0)
+        sale_picking.with_context(
+            skip_backorder=True, picking_ids_not_to_backorder=sale_picking.ids
+        ).button_validate()
+        purchase_picking = self.kit_po.picking_ids[0]
+        self._assert_quantities(
+            purchase_picking, {self.component_1: 12.0, self.component_2: 24.0}
+        )
+
     def test_purchase_kit_duplicate_component(self):
         """A component repeated on several BOM lines must be split per line
         instead of receiving the full quantity on each move."""
