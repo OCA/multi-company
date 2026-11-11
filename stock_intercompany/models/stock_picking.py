@@ -205,7 +205,12 @@ class StockPicking(models.Model):
             "warehouse_id": False,
             "route_ids": [Command.clear()],
             "rule_id": False,
+            "group_id": False,
         }
+        move_fields = self.env["stock.move"]._fields
+        for order_line_field in ("sale_line_id", "purchase_line_id"):
+            if order_line_field in move_fields:
+                common_move_vals[order_line_field] = False
         common_line_vals = {
             "company_id": company.id,
             "location_id": location_src.id,

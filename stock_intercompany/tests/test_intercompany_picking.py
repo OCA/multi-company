@@ -180,20 +180,24 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
         self.assertTrue(picking.move_ids.location_final_id)
         self.assertTrue(picking.move_ids.warehouse_id)
         self.assertTrue(picking.move_ids.route_ids)
+        self.assertTrue(picking.move_ids.group_id)
         self.assertTrue(counterpart.move_ids)
         for move in counterpart.move_ids:
             self.assertFalse(move.location_final_id)
             self.assertFalse(move.warehouse_id)
             self.assertFalse(move.route_ids)
             self.assertFalse(move.rule_id)
+            self.assertNotEqual(move.group_id, picking.move_ids.group_id)
 
     def _set_procurement_values(self, picking):
         warehouse = self.picking_type_out_company1.warehouse_id
+        group = self.env["procurement.group"].create({"name": picking.name})
         picking.move_ids.write(
             {
                 "warehouse_id": warehouse.id,
                 "route_ids": [Command.set(warehouse.route_ids.ids)],
                 "location_final_id": picking.location_dest_id.id,
+                "group_id": group.id,
             }
         )
 
