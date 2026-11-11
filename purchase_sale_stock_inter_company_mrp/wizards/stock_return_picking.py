@@ -97,6 +97,11 @@ class ReturnPicking(models.TransientModel):
             purchase_bom = self.picking_id._get_intercompany_kit_bom(
                 sale_line.product_id, po_reception_picking.company_id
             )
+            if not purchase_bom:
+                po_reception_picking.move_ids.filtered(
+                    lambda m, sl=sale_line: m.purchase_line_id
+                    == sl.auto_purchase_line_id
+                )._check_intercompany_kit_bom_changed({})
             if not sale_bom and not purchase_bom:
                 # Plain product, not related to a kit: keep the returned
                 # quantity as is.
