@@ -53,17 +53,17 @@ class StockPicking(models.Model):
         processed_sale_lines = set()
         for sale_move in self.move_ids:
             sale_line = sale_move.sale_line_id
+            # In a 'sale-purchase-kit' situation, process all the component
+            # moves of a sale line at once when going through the first
+            # component move (skip the other ones related to the same line).
+            if sale_line.id in processed_sale_lines:
+                continue
             purchase_pending_moves = self._get_intercompany_purchase_pending_moves(
                 sale_line, dest_picking
             )
             if not purchase_pending_moves.bom_line_id:
                 # The 'sale-kit' situation is not handled here, but in the
                 # `_get_product_intercompany_qty_done_dict()` override.
-                continue
-            # In a 'sale-purchase-kit' situation, process all the component
-            # moves of a sale line at once when going through the first
-            # component move (skip the other ones related to the same line).
-            if sale_line.id in processed_sale_lines:
                 continue
             processed_sale_lines.add(sale_line.id)
             purchase_bom = self._get_intercompany_kit_bom(
