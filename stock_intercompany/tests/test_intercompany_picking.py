@@ -1088,3 +1088,61 @@ class TestIntercompanySyncOptions(TestIntercompanyCommon):
         cp_lines_with_lot = counterpart.move_line_ids.filtered("lot_id")
         self.assertEqual(len(cp_lines_with_lot), 1)
         self.assertEqual(cp_lines_with_lot.lot_id, self.lot_serial)
+
+    def _make_out_counterpart(self, product, qty):
+        self.company2.intercompany_picking_creation_mode = "out"
+        reception = self._make_picking(
+            self.company1,
+            self.company2.partner_id,
+            self.picking_type_in_company1,
+            self.env.ref("stock.stock_location_suppliers"),
+            self.stock_location,
+            product=product,
+            qty=qty,
+        )
+        reception.action_confirm()
+        reception.action_create_counterpart()
+        return reception, reception.intercompany_child_ids.sudo()
+
+    def _validate_without_backorder(self, picking):
+        picking.with_context(
+            skip_backorder=True, picking_ids_not_to_backorder=picking.ids
+        ).button_validate()
+
+    def test_out_counterpart_done_syncs_qty_back(self):
+        self.company2.intercompany_sync_qty_done = True
+        reception, delivery = self._make_out_counterpart(self.product1, 5.0)
+        delivery.move_line_ids.quantity = 3.0
+        self._validate_without_backorder(delivery)
+        self.assertEqual(delivery.state, "done")
+        self.assertNotEqual(reception.state, "done")
+        self.assertEqual(sum(reception.move_line_ids.mapped("quantity")), 3.0)
+
+    def test_out_counterpart_done_without_sync_qty(self):
+        self.company2.intercompany_sync_qty_done = False
+        reception, delivery = self._make_out_counterpart(self.product1, 5.0)
+        delivery.move_line_ids.quantity = 3.0
+        self._validate_without_backorder(delivery)
+        self.assertEqual(sum(reception.move_line_ids.mapped("quantity")), 5.0)
+
+    def test_out_counterpart_done_shares_lot_back(self):
+        self.company2.intercompany_sync_qty_done = True
+        self.company2.intercompany_share_lot = True
+        reception, delivery = self._make_out_counterpart(self.product_lot, 3.0)
+        lot = (
+            self.env["stock.lot"]
+            .sudo()
+            .create(
+                {
+                    "name": "LOTB",
+                    "product_id": self.product_lot.id,
+                    "company_id": self.company2.id,
+                }
+            )
+        )
+        delivery.move_line_ids.write({"lot_id": lot.id, "quantity": 3.0})
+        self._validate_without_backorder(delivery)
+        self.assertEqual(delivery.state, "done")
+        self.assertFalse(lot.company_id)
+        self.assertEqual(reception.move_line_ids.lot_id, lot)
+        self.assertEqual(sum(reception.move_line_ids.mapped("quantity")), 3.0)

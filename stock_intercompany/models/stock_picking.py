@@ -293,7 +293,7 @@ class StockPicking(models.Model):
           visible in all companies, then assign them to the matching counterpart
           move lines.
         """
-        if not counterpart_picking:
+        if not counterpart_picking or self.state != "done":
             return
         dest_company = counterpart_picking.sudo().company_id
         sync_qty = dest_company.intercompany_sync_qty_done
@@ -312,6 +312,35 @@ class StockPicking(models.Model):
                 vals["lot_id"] = self._share_lot(origin_line.lot_id).id
             if vals:
                 cp_line.write(vals)
+
+    def _sync_from_done_counterpart_picking(self, counterpart_picking):
+        dest_company = counterpart_picking.sudo().company_id
+        sync_qty = dest_company.intercompany_sync_qty_done
+        share_lot = dest_company.intercompany_share_lot
+        if not sync_qty and not share_lot:
+            return
+
+        for cp_move in counterpart_picking.sudo().move_ids:
+            origin_move = cp_move.intercompany_origin_move_id
+            if not origin_move or origin_move.state in ("done", "cancel"):
+                continue
+            if not sync_qty and not cp_move.move_line_ids.lot_id:
+                continue
+            line_vals = []
+            for cp_line in cp_move.move_line_ids:
+                vals = {
+                    "product_id": cp_line.product_id.id,
+                    "product_uom_id": cp_line.product_uom_id.id,
+                    "location_id": origin_move.location_id.id,
+                    "location_dest_id": origin_move.location_dest_id.id,
+                    "picking_id": origin_move.picking_id.id,
+                    "quantity": cp_line.quantity if sync_qty else 0.0,
+                }
+                if share_lot and cp_line.lot_id:
+                    vals["lot_id"] = self._share_lot(cp_line.lot_id).id
+                line_vals.append(Command.create(vals))
+            origin_move.move_line_ids.unlink()
+            origin_move.move_line_ids = line_vals
 
     def _share_lot(self, lot):
         """Make *lot* company-independent so it is visible across all companies.
@@ -339,6 +368,10 @@ class StockPicking(models.Model):
         counterparts = self._create_counterpart_pickings("in")
         for picking, counterpart in counterparts:
             picking._finalize_counterpart_picking(counterpart)
+        for picking in self.sudo().filtered("intercompany_parent_id"):
+            origin = picking.intercompany_parent_id
+            if origin.state not in ("done", "cancel"):
+                origin._sync_from_done_counterpart_picking(picking)
         return res
 
     def action_create_counterpart(self):
