@@ -181,6 +181,10 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
         self.assertTrue(picking.move_ids.warehouse_id)
         self.assertTrue(picking.move_ids.route_ids)
         self.assertTrue(picking.move_ids.group_id)
+        self.assertTrue(picking.move_ids.restrict_partner_id)
+        self.assertTrue(picking.move_ids.orderpoint_id)
+        self.assertTrue(picking.move_line_ids.owner_id)
+        self.assertTrue(picking.move_line_ids.result_package_id)
         self.assertTrue(counterpart.move_ids)
         for move in counterpart.move_ids:
             self.assertFalse(move.location_final_id)
@@ -188,17 +192,39 @@ class TestIntercompanyDelivery(TestIntercompanyCommon):
             self.assertFalse(move.route_ids)
             self.assertFalse(move.rule_id)
             self.assertNotEqual(move.group_id, picking.move_ids.group_id)
+            self.assertFalse(move.restrict_partner_id)
+            self.assertFalse(move.orderpoint_id)
+        for line in counterpart.move_line_ids:
+            self.assertFalse(line.owner_id)
+            self.assertFalse(line.result_package_id)
 
     def _set_procurement_values(self, picking):
         warehouse = self.picking_type_out_company1.warehouse_id
         group = self.env["procurement.group"].create({"name": picking.name})
+        owner = self.env["res.partner"].create({"name": "Owner"})
+        orderpoint = self.env["stock.warehouse.orderpoint"].create(
+            {
+                "product_id": self.product1.id,
+                "location_id": self.stock_location.id,
+                "warehouse_id": warehouse.id,
+                "company_id": self.company1.id,
+            }
+        )
         picking.move_ids.write(
             {
                 "warehouse_id": warehouse.id,
                 "route_ids": [Command.set(warehouse.route_ids.ids)],
                 "location_final_id": picking.location_dest_id.id,
                 "group_id": group.id,
+                "restrict_partner_id": owner.id,
+                "orderpoint_id": orderpoint.id,
             }
+        )
+        package = self.env["stock.quant.package"].create(
+            {"company_id": self.company1.id}
+        )
+        picking.move_line_ids.write(
+            {"owner_id": owner.id, "result_package_id": package.id}
         )
 
     def test_counterpart_in_resets_procurement_values(self):

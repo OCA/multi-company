@@ -206,17 +206,41 @@ class StockPicking(models.Model):
             "route_ids": [Command.clear()],
             "rule_id": False,
             "group_id": False,
+            "scrap_id": False,
+            "restrict_partner_id": False,
+            "orderpoint_id": False,
         }
         move_fields = self.env["stock.move"]._fields
-        for order_line_field in ("sale_line_id", "purchase_line_id"):
-            if order_line_field in move_fields:
-                common_move_vals[order_line_field] = False
+        for field_name in (
+            "sale_line_id",
+            "purchase_line_id",
+            "created_production_id",
+            "production_id",
+            "raw_material_production_id",
+            "unbuild_id",
+            "consume_unbuild_id",
+            "operation_id",
+            "bom_line_id",
+            "byproduct_id",
+        ):
+            if field_name in move_fields:
+                common_move_vals[field_name] = False
         common_line_vals = {
             "company_id": company.id,
             "location_id": location_src.id,
             "location_dest_id": location_dest.id,
             "picking_type_id": intercompany_type.id,
+            "package_id": False,
+            "result_package_id": False,
+            "package_level_id": False,
+            "owner_id": False,
+            "consume_line_ids": [Command.clear()],
+            "produce_line_ids": [Command.clear()],
         }
+        line_fields = self.env["stock.move.line"]._fields
+        for field_name in ("workorder_id", "production_id"):
+            if field_name in line_fields:
+                common_line_vals[field_name] = False
 
         move_ids = []
         for sm in self.move_ids.sudo():
