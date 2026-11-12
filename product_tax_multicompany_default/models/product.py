@@ -30,11 +30,11 @@ class ProductTemplate(models.Model):
         for one in self:
             # A unique constraint in account.tax makes it impossible to have
             # duplicated tax names by company
-            if self.company_id:
+            if one.company_id:
                 continue
             one.divergent_company_taxes = one._is_divergent_company_taxes(
                 "taxes"
-            ) or self._is_divergent_company_taxes("purchase")
+            ) or one._is_divergent_company_taxes("purchase")
 
     def _is_divergent_company_taxes(self, tax_type):
         """Returns true or false if there are differences in product taxes.
