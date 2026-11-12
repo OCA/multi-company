@@ -277,6 +277,7 @@ class StockPicking(models.Model):
         for picking in self:
             counterpart = picking._create_counterpart_picking(mode)
             if counterpart:
+                picking._finalize_counterpart_picking(counterpart)
                 counterparts.append((picking, counterpart))
         return counterparts
 
@@ -365,9 +366,7 @@ class StockPicking(models.Model):
     def _action_done(self):
         """Create 'in' counterpart pickings once the delivery is done."""
         res = super()._action_done()
-        counterparts = self._create_counterpart_pickings("in")
-        for picking, counterpart in counterparts:
-            picking._finalize_counterpart_picking(counterpart)
+        self._create_counterpart_pickings("in")
         for picking in self.sudo().filtered("intercompany_parent_id"):
             origin = picking.intercompany_parent_id
             if origin.state not in ("done", "cancel"):
@@ -381,9 +380,7 @@ class StockPicking(models.Model):
         reception pickings whose partner is an inter-company partner configured
         with 'Delivery Only' or 'Create Both' mode.
         """
-        counterparts = self._create_counterpart_pickings("out")
-        for picking, counterpart in counterparts:
-            picking._finalize_counterpart_picking(counterpart)
+        self._create_counterpart_pickings("out")
         return True
 
     def action_cancel(self):
