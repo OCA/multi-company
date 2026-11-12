@@ -20,6 +20,7 @@ class TestGluePurchaseSaleStockIntercompany(TestPurchaseSaleStockInterCompany):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, test_stock_intercompany=True))
         # Configure stock_intercompany on both companies so that it would
         # normally create counterpart pickings on its own.
         cls.company_a.intercompany_in_type_id = cls.warehouse_a.in_type_id
