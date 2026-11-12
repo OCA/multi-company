@@ -25,6 +25,7 @@ class TestGluePurchaseSaleStockIntercompany(TestPurchaseSaleStockInterCompany):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        cls.env = cls.env(context=dict(cls.env.context, test_stock_intercompany=True))
         # Configure stock_intercompany on both companies in "Create Both" mode
         # so that it would normally create counterpart pickings in both directions
         # on its own — the glue module must neutralise this when the PO/SO flow
