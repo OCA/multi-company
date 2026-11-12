@@ -1,0 +1,32 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* utm_source_multi_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-09-18 15:42+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.10.4\n"
+
+#. module: utm_source_multi_company
+#: model:ir.model.fields,field_description:utm_source_multi_company.field_utm_source__company_id
+msgid "Company"
+msgstr "Azienda"
+
+#. module: utm_source_multi_company
+#: model:ir.model.constraint,message:utm_source_multi_company.constraint_utm_source_unique_name
+msgid "The name must be unique per company"
+msgstr "Il nome deve essere univoco per azienda"
+
+#. module: utm_source_multi_company
+#: model:ir.model,name:utm_source_multi_company.model_utm_source
+msgid "UTM Source"
+msgstr "Origine UTM"
