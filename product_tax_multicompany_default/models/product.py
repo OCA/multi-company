@@ -20,6 +20,20 @@ class ProductTemplate(models.Model):
         ),
     )
 
+    def _get_tax_source_company(self):
+        """Company whose taxes are propagated to the other companies.
+
+        A branch uses the taxes of its parent company and usually has none of
+        its own, so the first company of the hierarchy owning taxes is used.
+        """
+        company = self.env.company
+        tax_model = self.env["account.tax"].sudo().with_context(active_test=False)
+        while company.parent_id and not tax_model.search_count(
+            [("company_id", "=", company.id)], limit=1
+        ):
+            company = company.parent_id
+        return company
+
     @api.depends("company_id", "taxes_id", "supplier_taxes_id")
     def _compute_divergent_company_taxes(self):
         """Know if this product has divergent taxes across companies."""
@@ -28,89 +42,78 @@ class ProductTemplate(models.Model):
         if self.env["res.company"].search_count([]) == 1:
             return
         for one in self:
-            # A unique constraint in account.tax makes it impossible to have
-            # duplicated tax names by company
-            if self.company_id:
+            if one.company_id:
                 continue
             one.divergent_company_taxes = one._is_divergent_company_taxes(
                 "taxes"
-            ) or self._is_divergent_company_taxes("purchase")
+            ) or one._is_divergent_company_taxes("purchase")
 
     def _is_divergent_company_taxes(self, tax_type):
         """Returns true or false if there are differences in product taxes.
 
+        For every other company, the taxes the product has in that company are
+        compared with the taxes that ``set_multicompany_taxes`` would set there
+        from the taxes of the current company.
+
         :param tax_type: can be 'taxes' or 'purchase'
         """
         self.ensure_one()
-        all_companies = self.env["res.company"].search(
+        if tax_type == "taxes":
+            field_name = "taxes_id"
+            field_name_data = "account_sale_tax_id"
+        elif tax_type == "purchase":
+            field_name = "supplier_taxes_id"
+            field_name_data = "account_purchase_tax_id"
+        else:
+            raise ValueError("tax_type should be 'taxes' or 'purchase'")
+        current_company = self._get_tax_source_company()
+        other_companies = self.env["res.company"].search(
             [
                 # Useful for tests, to avoid pollution
                 ("id", "not in", self.env.context.get("ignored_company_ids", [])),
+                ("id", "!=", current_company.id),
             ]
         )
-        current_company = self.env.company
-
-        company_tax_bd_map = dict(self._origin._get_product_taxes(tax_type))
-        for company_id in list(company_tax_bd_map.keys()):
-            if company_id not in all_companies.ids or company_id == current_company.id:
-                company_tax_bd_map.pop(company_id)
-        if tax_type == "taxes":
-            current_tax = self.taxes_id
-            field_name_data = "account_sale_tax_id"
-        elif tax_type == "purchase":
-            current_tax = self.supplier_taxes_id
-            field_name_data = "account_purchase_tax_id"
-        propagate_taxes = False
-
-        # Tax-free
-        if not current_tax:
-            # Since all companies can have an empty tax field,if there is data
-            # in the database, it means that we can propagate leaving it empty.
-            if len(company_tax_bd_map) > 0:
-                propagate_taxes = True
-        # No tax in other products
-        elif not company_tax_bd_map:
-            # If we do not have any taxes in the database and we add a tax, it means
-            # that we can update the product taxes.
-            current_product_tax_ids = current_tax.filtered(
-                lambda tax: tax.company_id == current_company
-            ).ids
-            current_product_taxes_other_companies = set()
-            other_companies = all_companies.filtered(
-                lambda company: company.id != current_company.id
+        # Read the taxes of every company: the field may be read with sudo
+        # (compute_sudo) or by a user that only sees the current company.
+        all_taxes = self.sudo()[field_name]
+        current_taxes = all_taxes.filtered(
+            lambda tax: tax.company_id == current_company
+        )
+        # Same rule as set_multicompany_taxes: when the current company has its
+        # default taxes, the other companies get their own default taxes.
+        use_defaults = sorted(current_taxes.ids) == sorted(
+            self._taxes_by_company(field_name_data, current_company)
+        )
+        for company in other_companies:
+            company_taxes = set(
+                all_taxes.filtered(lambda tax, c=company: tax.company_id == c).ids
             )
-            for company in other_companies:
-                current_product_taxes_other_companies.update(
-                    self._taxes_by_company(
-                        field_name_data, company, current_product_tax_ids
-                    )
+            # Tax-free: taxes in other companies can be propagated as empty
+            if not current_taxes:
+                if company_taxes:
+                    return True
+                continue
+            if use_defaults:
+                # Only taxes owned by the company: a branch uses the taxes of
+                # its parent company and has none of its own.
+                expected = (
+                    self.env["account.tax"]
+                    .sudo()
+                    .browse(self._taxes_by_company(field_name_data, company))
+                    .filtered(lambda tax, c=company: tax.company_id == c)
+                    .ids
                 )
-            if len(current_product_taxes_other_companies) > 0:
-                propagate_taxes = True
-        else:
-            current_names = current_tax.filtered(
-                lambda tax: tax.company_id == current_company
-            ).mapped("name")
-            current_product_tax_ids = current_tax.filtered(
-                lambda tax: tax.company_id == current_company
-            ).ids
-            for company in all_companies - current_company:
-                if company_tax_bd_map.get(company.id) and current_names == list(
-                    company_tax_bd_map.get(company.id).values()
-                ):
+            else:
+                expected = self._taxes_by_company(
+                    field_name_data, company, current_taxes.ids
+                )
+                # Skip companies where not every tax has an equivalent
+                if len(expected) != len(current_taxes):
                     continue
-                # We are looking to see if there are any taxes that can be applied to
-                # other companies from the taxes that the current product has.
-                current_product_taxes_other_companies = self._taxes_by_company(
-                    field_name_data,
-                    self.env["res.company"].browse(company.id),
-                    current_product_tax_ids,
-                )
-                if len(current_product_taxes_other_companies) == len(current_tax):
-                    propagate_taxes = True
-                    break
-
-        return propagate_taxes
+            if expected and set(expected) != company_taxes:
+                return True
+        return False
 
     def _get_product_taxes(self, field):
         """Returns taxes on purchase or sales taxes
@@ -196,18 +199,20 @@ class ProductTemplate(models.Model):
             supplier_sql += tax_where
             supplier_sql_params.append(tuple(excl_supplier_tax_ids))
         self.env.cr.execute(supplier_sql, supplier_sql_params)
+        # The relations were changed in SQL: drop the cached values
+        self.invalidate_recordset(fnames=["taxes_id", "supplier_taxes_id"])
 
     def set_multicompany_taxes(self):
         self.ensure_one()
-        user_company = self.env.company
-        customer_tax = self.taxes_id
-        customer_tax_ids = customer_tax.ids
-        if not customer_tax.filtered(lambda tax: tax.company_id == user_company):
-            customer_tax_ids = []
-        supplier_tax = self.supplier_taxes_id
-        supplier_tax_ids = supplier_tax.ids
-        if not supplier_tax.filtered(lambda tax: tax.company_id == user_company):
-            supplier_tax_ids = []
+        user_company = self._get_tax_source_company()
+        # Only the taxes of the current company are the source: the fields may
+        # also hold the taxes of other companies (sudo, several active companies)
+        customer_tax_ids = self.taxes_id.filtered(
+            lambda tax: tax.company_id == user_company
+        ).ids
+        supplier_tax_ids = self.supplier_taxes_id.filtered(
+            lambda tax: tax.company_id == user_company
+        ).ids
         default_customer_tax_ids = self._taxes_by_company(
             "account_sale_tax_id", user_company
         )

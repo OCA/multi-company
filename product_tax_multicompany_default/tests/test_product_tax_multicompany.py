@@ -318,3 +318,122 @@ class TestsProductTaxMulticompany(BaseCommon):
         self.assertTrue(product.divergent_company_taxes)
         product.set_multicompany_taxes()
         self.assertFalse(product.divergent_company_taxes)
+
+    def _create_multicompany_product(self, sale_tax, purchase_tax):
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
+        return (
+            self.env["product.template"]
+            .with_user(self.user_1)
+            .with_context(ignored_company_ids=self.alien_companies.ids)
+            .sudo()
+            .create(
+                {
+                    "company_id": False,
+                    "name": "test product",
+                    "taxes_id": [(6, 0, sale_tax.ids)],
+                    "supplier_taxes_id": [(6, 0, purchase_tax.ids)],
+                }
+            )
+        )
+
+    def _company_taxes(self, taxes, company):
+        return taxes.filtered(lambda tax: tax.company_id == company)
+
+    def test_divergent_taxes_detection_changed_tax(self):
+        """A tax changed in one company is detected while the other company
+        still has the previous tax, and propagation replaces it."""
+        product = self._create_multicompany_product(self.tax_20_cc1, self.tax_20_sc1)
+        self.assertEqual(
+            self._company_taxes(product.taxes_id, self.company_2), self.tax_20_cc2
+        )
+        self.assertFalse(product.divergent_company_taxes)
+        # The tax is changed in company 1 only
+        product.taxes_id = (product.taxes_id - self.tax_20_cc1) | self.tax_30_cc1
+        self.assertTrue(product.divergent_company_taxes)
+        product.set_multicompany_taxes()
+        self.assertEqual(
+            self._company_taxes(product.taxes_id, self.company_2), self.tax_30_cc2
+        )
+        self.assertFalse(product.divergent_company_taxes)
+        # Same flow with supplier taxes
+        product.supplier_taxes_id = (
+            product.supplier_taxes_id - self.tax_20_sc1
+        ) | self.tax_30_sc1
+        self.assertTrue(product.divergent_company_taxes)
+        product.set_multicompany_taxes()
+        self.assertEqual(
+            self._company_taxes(product.supplier_taxes_id, self.company_2),
+            self.tax_30_sc2,
+        )
+        self.assertFalse(product.divergent_company_taxes)
+
+    def test_set_multicompany_taxes_other_company_taxes_read(self):
+        """Taxes of other companies read in the field (several active
+        companies, sudo) are not used as source of the propagation."""
+        product = self._create_multicompany_product(self.tax_20_cc1, self.tax_20_sc1)
+        product.write(
+            {
+                "taxes_id": [(3, self.tax_20_cc1.id), (4, self.tax_30_cc1.id)],
+                "supplier_taxes_id": [
+                    (3, self.tax_20_sc1.id),
+                    (4, self.tax_30_sc1.id),
+                ],
+            }
+        )
+        product.with_company(self.company_1).set_multicompany_taxes()
+        self.assertEqual(
+            self._company_taxes(product.taxes_id, self.company_2), self.tax_30_cc2
+        )
+        self.assertEqual(
+            self._company_taxes(product.supplier_taxes_id, self.company_2),
+            self.tax_30_sc2,
+        )
+        self.assertEqual(
+            self._company_taxes(product.taxes_id, self.company_1), self.tax_30_cc1
+        )
+
+    def test_divergent_taxes_detection_translated_names(self):
+        """Taxes with several translations are not reported as divergent
+        when they are the same in every company."""
+        self.env["res.lang"]._activate_lang("es_ES")
+        taxes = self.tax_20_cc1 | self.tax_20_cc2 | self.tax_20_sc1 | self.tax_20_sc2
+        for tax in taxes.sudo():
+            tax.update_field_translations("name", {"es_ES": tax.name + " ES"})
+        product = self._create_multicompany_product(self.tax_20_cc1, self.tax_20_sc1)
+        self.assertEqual(
+            self._company_taxes(product.taxes_id, self.company_2), self.tax_20_cc2
+        )
+        self.assertFalse(product.divergent_company_taxes)
+
+    def test_branch_company(self):
+        """A branch uses the taxes of its parent company: working from the
+        branch neither removes the taxes nor reports them as divergent."""
+        branch = self.env["res.company"].create(
+            {"name": "Test branch of company 1", "parent_id": self.company_1.id}
+        )
+        # use sudo because the account.group_account_manager group
+        # does not have permission to create products.
+        product = (
+            self.env["product.template"]
+            .with_user(self.user_1)
+            .with_context(ignored_company_ids=self.alien_companies.ids)
+            .sudo()
+            .with_company(branch)
+            .create({"company_id": False, "name": "test product"})
+        )
+        for _step in ("create", "propagate"):
+            self.assertEqual(
+                self._company_taxes(product.taxes_id, self.company_1),
+                self.tax_10_cc1,
+            )
+            self.assertEqual(
+                self._company_taxes(product.taxes_id, self.company_2),
+                self.tax_20_cc2,
+            )
+            self.assertEqual(
+                self._company_taxes(product.supplier_taxes_id, self.company_2),
+                self.tax_20_sc2,
+            )
+            self.assertFalse(product.divergent_company_taxes)
+            product.set_multicompany_taxes()
