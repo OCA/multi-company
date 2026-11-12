@@ -9,7 +9,6 @@ class CalendarEventType(models.Model):
 
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         default=lambda self: self.env.company,
         ondelete="cascade",
     )

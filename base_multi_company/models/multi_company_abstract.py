@@ -17,7 +17,6 @@ class MultiCompanyAbstract(models.AbstractModel):
     _description = "Multi-Company Abstract"
 
     company_id = fields.Many2one(
-        string="Company",
         comodel_name="res.company",
         compute="_compute_company_id",
         search="_search_company_id",
