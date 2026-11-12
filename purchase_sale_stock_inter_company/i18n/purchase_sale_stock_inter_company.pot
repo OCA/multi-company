@@ -1,0 +1,184 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* purchase_sale_stock_inter_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_stock_picking__state
+msgid ""
+" * Draft: The transfer is not confirmed yet. Reservation doesn't apply.\n"
+" * Waiting another operation: This transfer is waiting for another operation before being ready.\n"
+" * Waiting: The transfer is waiting for the availability of some products.\n"
+"(a) The shipping policy is \"As soon as possible\": no product could be reserved.\n"
+"(b) The shipping policy is \"When all products are ready\": not all the products could be reserved.\n"
+" * Ready: The transfer is ready to be processed.\n"
+"(a) The shipping policy is \"As soon as possible\": at least one product has been reserved.\n"
+"(b) The shipping policy is \"When all products are ready\": all product have been reserved.\n"
+" * Done: The transfer has been processed.\n"
+" * Cancelled: The transfer has been cancelled."
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
+msgid "Block PO manual picking validation"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__raise
+msgid "Block and raise error"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__block_po_manual_picking_validation
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__block_po_manual_picking_validation
+msgid "Block manual validation of picking in the destination company"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_company
+msgid "Companies"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields.selection,name:purchase_sale_stock_inter_company.selection__res_company__sync_picking_failure_action__notify
+msgid "Continue, but create activity to notify someone"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid ""
+"Default value to set on Sale Orders that will be created based on Purchase "
+"Orders made to this company."
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#. odoo-python
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+msgid ""
+"Failure to confirm picking for PO %(purchase_name)s. Original picking "
+"%(picking_name)s still confirmed, please check the other side manually."
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__intercompany_picking_id
+msgid "Intercompany Picking"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#. odoo-python
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+msgid ""
+"Manual validation of the picking is not allowed in the destination company."
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
+#: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
+msgid "On sync picking failure"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking_failure_action
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking_failure_action
+msgid "Pick action to perform on sync picking failure"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_move_line
+msgid "Product Moves (Stock Move Line)"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_purchase_order
+msgid "Purchase Order"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_sale_order_line
+msgid "Sales Order Line"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_stock_picking__state
+msgid "Status"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model_terms:ir.ui.view,arch_db:purchase_sale_stock_inter_company.res_config_settings_view_form
+msgid "Sync picking"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking
+msgid "Sync the receipt from the destination company with the delivery"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_company__sync_picking
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__sync_picking
+msgid ""
+"Sync the receipt from the destination company with the delivery from the "
+"source company"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__sync_picking
+msgid "Sync the receipt with the delivery"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#. odoo-python
+#: code:addons/purchase_sale_stock_inter_company/models/stock_picking.py:0
+msgid ""
+"There's no corresponding line in PO %(po)s for assigning qty from "
+"%(pick_name)s for product %(product)s"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model,name:purchase_sale_stock_inter_company.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__notify_user_id
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
+msgid "User to Notify"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,help:purchase_sale_stock_inter_company.field_res_config_settings__notify_user_id
+msgid "User to notify incase of sync picking failure."
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_company__warehouse_id
+msgid "Warehouse For Sale Orders"
+msgstr ""
+
+#. module: purchase_sale_stock_inter_company
+#: model:ir.model.fields,field_description:purchase_sale_stock_inter_company.field_res_config_settings__warehouse_id
+msgid "Warehouse for Sale Orders"
+msgstr ""
