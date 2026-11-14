@@ -318,3 +318,37 @@ class TestsProductTaxMulticompany(BaseCommon):
         self.assertTrue(product.divergent_company_taxes)
         product.set_multicompany_taxes()
         self.assertFalse(product.divergent_company_taxes)
+
+    def test_divergent_taxes_detection_several_products(self):
+        """Divergency is computed for each product of a recordset."""
+        products = (
+            self.env["product.template"]
+            .with_user(self.user_1)
+            .with_context(ignored_company_ids=self.alien_companies.ids)
+            .sudo()
+            .create(
+                [
+                    {
+                        "company_id": False,
+                        "name": name,
+                        "supplier_taxes_id": [(6, 0, self.tax_20_sc1.ids)],
+                        "taxes_id": [(6, 0, self.tax_20_cc1.ids)],
+                    }
+                    for name in ("test product 1", "test product 2")
+                ]
+            )
+        )
+        products[1].taxes_id -= self.tax_20_cc2
+        # A single-company product in the same batch is still skipped
+        products |= (
+            self.env["product.template"]
+            .sudo()
+            .create({"name": "test product 3", "company_id": self.company_1.id})
+        )
+        products.invalidate_recordset(["divergent_company_taxes"])
+        self.assertEqual(
+            products.with_context(ignored_company_ids=self.alien_companies.ids).mapped(
+                "divergent_company_taxes"
+            ),
+            [False, True, False],
+        )
