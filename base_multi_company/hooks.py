@@ -1,0 +1,88 @@
+# Copyright 2015-2016 Pedro M. Baeza <pedro.baeza@tecnativa.com>
+# Copyright 2017 LasLabs Inc.
+# License LGPL-3 - See http://www.gnu.org/licenses/lgpl-3.0.html
+import warnings
+
+__all__ = [
+    "post_init_hook",
+    "uninstall_hook",
+]
+
+
+def set_security_rule(env, rule_ref):
+    """Set the condition for multi-company in an access record.
+
+    :param: env: Environment
+    :param: rule_ref: XML-ID of the access record to change.
+    """
+    warnings.warn(
+        "This hook is deprecated. Use `fill_company_ids` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    access = env.ref(rule_ref)
+    if access:  # safeguard if it's deleted
+        access.write(
+            {
+                "active": True,
+                "domain": (
+                    "['|', ('company_ids', '=', False),"
+                    " ('company_ids', 'in', company_ids)]"
+                ),
+            }
+        )
+
+
+def post_init_hook(env, rule_ref, model_name):
+    """Set the access domain and default `company_ids` to `company_id`.
+
+    Args:
+        env (Environment): Environment to use for operation.
+        rule_ref (string): XML ID of the access record whose domain is updated.
+        model_name (string): Name of Odoo model object to search for
+            existing records.
+    """
+    set_security_rule(env, rule_ref)
+    fill_company_ids(env, model_name)
+
+
+def fill_company_ids(env, model_name):
+    """Fill company_ids with company_id values."""
+    # Copy company values
+    model = env[model_name]
+    table_name = model._fields["company_ids"].relation
+    column1 = model._fields["company_ids"].column1
+    column2 = model._fields["company_ids"].column2
+    SQL = f"""
+        INSERT INTO {table_name}
+        ({column1}, {column2})
+        SELECT id, company_id FROM {model._table} WHERE company_id IS NOT NULL
+        ON CONFLICT DO NOTHING
+    """
+    env.cr.execute(SQL)
+
+
+def uninstall_hook(env, rule_ref):
+    """Restore the access record to its base value.
+
+    Args:
+        env (Environment): Environment to use for operation.
+        rule_ref (string): XML ID of the access record to deactivate.
+    """
+    warnings.warn(
+        "This hook is deprecated.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    # Deactivate the access record
+    access = env.ref(rule_ref)
+    if access:  # safeguard if it's deleted
+        access.write(
+            {
+                "active": False,
+                "domain": (
+                    "['|', ('company_ids', '=', False),"
+                    " ('company_ids', 'in', company_ids)]"
+                ),
+            }
+        )
