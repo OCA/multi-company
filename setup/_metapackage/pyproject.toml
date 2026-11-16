@@ -1,0 +1,11 @@
+[project]
+name = "odoo-addons-oca-multi-company"
+version = "20.0.20261116.0"
+dependencies = [
+    "odoo-addon-base_multi_company==20.0.*",
+]
+classifiers=[
+    "Programming Language :: Python",
+    "Framework :: Odoo",
+    "Framework :: Odoo :: 20.0",
+]
