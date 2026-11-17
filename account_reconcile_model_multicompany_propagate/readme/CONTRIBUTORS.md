@@ -1,0 +1,2 @@
+- Emilio Pascual ([Moduon](https://www.moduon.team/))
+- Loida Vilaplana ([Moduon](https://www.moduon.team/))
