@@ -1,0 +1,69 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* res_company_search_view
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-07-14 04:40+0000\n"
+"Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
+"Language-Team: none\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 5.15.2\n"
+
+#. module: res_company_search_view
+#: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
+msgid "Archived"
+msgstr "Arhivirano"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__city
+msgid "City"
+msgstr "Kraj"
+
+#. module: res_company_search_view
+#: model:ir.model,name:res_company_search_view.model_res_company
+msgid "Companies"
+msgstr "Družbe"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__country_id
+#: model_terms:ir.ui.view,arch_db:res_company_search_view.view_res_company_search
+msgid "Country"
+msgstr "Država"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__display_name
+msgid "Display Name"
+msgstr "Prikazani naziv"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__state_id
+msgid "Fed. State"
+msgstr "Zv. država"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__id
+msgid "ID"
+msgstr "ID"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__street
+msgid "Street"
+msgstr "Ulica"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__street2
+msgid "Street2"
+msgstr "Ulica2"
+
+#. module: res_company_search_view
+#: model:ir.model.fields,field_description:res_company_search_view.field_res_company__zip
+msgid "Zip"
+msgstr "Poštna št."
