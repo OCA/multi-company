@@ -185,7 +185,7 @@ class PurchaseOrder(models.Model):
             {
                 "order_id": sale_order.id,
                 "product_id": purchase_line.product_id.id,
-                "product_uom_id": purchase_line.product_uom_id.id,
+                "product_uom_id": purchase_line.uom_id.id,
                 "product_uom_qty": purchase_line.product_qty,
                 "auto_purchase_line_id": purchase_line.id,
                 "display_type": purchase_line.display_type,
@@ -193,7 +193,7 @@ class PurchaseOrder(models.Model):
         )
         for onchange_method in new_line._onchange_methods["product_id"]:
             onchange_method(new_line)
-        new_line.update({"product_uom_id": purchase_line.product_uom_id.id})
+        new_line.update({"product_uom_id": purchase_line.uom_id.id})
         if new_line.display_type in ["line_section", "line_note"]:
             new_line.update({"name": purchase_line.name})
         return new_line._convert_to_write(new_line._cache)
