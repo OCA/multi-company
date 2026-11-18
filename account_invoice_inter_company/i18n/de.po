@@ -1,0 +1,293 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * account_invoice_inter_company
+#
+# Translators:
+# Lars Nolte <nolte@nolte-eng.de>, 2018
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 11.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-19 03:39+0000\n"
+"PO-Revision-Date: 2018-01-19 03:39+0000\n"
+"Last-Translator: Lars Nolte <nolte@nolte-eng.de>, 2018\n"
+"Language-Team: German (https://www.transifex.com/oca/teams/23907/de/)\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid "%(company_name)s - Canceled Invoice: %(invoice_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid "%(company_name)s - Invoice: %(invoice_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_generated
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_generated
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__auto_generated
+msgid "Auto Generated Document"
+msgstr "Automatisch erstelltes Dokument"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid ""
+"Automatically generate counterpart documents for orders/invoices between "
+"companies"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_company
+msgid "Companies"
+msgstr "Unternehmen"
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_res_config_settings
+msgid "Config Settings"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+#, fuzzy
+msgid "Inter Company Invoice User"
+msgstr "Rechnungsstellung zwischen Unternehmen"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+#, fuzzy
+msgid "Inter Company OCA features"
+msgstr "Rechnungsstellung zwischen Unternehmen"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoice"
+msgstr "Rechnung"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_company__invoice_auto_validation
+msgid "Invoice Auto Validation"
+msgstr "Automatische Rechnungsprüfung"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
+msgid "Invoices Auto Validation"
+msgstr "automatische Rechnungsprüfung"
+
+#. module: account_invoice_inter_company
+#: model_terms:ir.ui.view,arch_db:account_invoice_inter_company.res_config_settings_view_form
+msgid "Invoices User"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move
+msgid "Journal Entry"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model,name:account_invoice_inter_company.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"Please define %(dest_journal_type)s journal for this company: "
+"\"%(dest_company_name)s\" (id:%(dest_company_id)d)."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__intercompany_invoice_user_id
+msgid ""
+"Responsible user for creation of invoices triggered by intercompany rules. "
+"If not set the user initiating thetransaction will be used"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:product.template,name:account_invoice_inter_company.product_consultant_multi_company_product_template
+msgid "Service Multi Company"
+msgstr "Service mehrere Unternehmen"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_bank_statement_line__auto_invoice_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move__auto_invoice_id
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_payment__auto_invoice_id
+msgid "Source Invoice"
+msgstr "Quellrechnung"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,field_description:account_invoice_inter_company.field_account_move_line__auto_invoice_line_id
+msgid "Source Invoice Line"
+msgstr "Quellrechnungszeile"
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"The invoice line '%(line_name)s' doesn't have a product. All invoice lines "
+"should have a product for inter-company invoices."
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"This is an autogenerated multi company invoice and you're trying to modify "
+"the amount, which will differ from the source one (%s)"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"WARNING!!!!! Failure in the inter-company invoice creation process: the "
+"total amount of this invoice is %(dest_amount_total)s but the total amount "
+"of the invoice %(invoice_name)s in the company %(company_name)s is "
+"%(amount_total)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_company__invoice_auto_validation
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it"
+msgstr ""
+"Wenn eine Rechnung nach einer Regel für mehrere Unternehmen für diese Firma "
+"erstellt wird, wird sie automatisch validiert"
+
+#. module: account_invoice_inter_company
+#: model:ir.model.fields,help:account_invoice_inter_company.field_res_config_settings__invoice_auto_validation
+msgid ""
+"When an invoice is created by a multi company rule for this company, it will "
+"automatically validate it."
+msgstr ""
+"Wenn eine Rechnung nach einer Regel für mehrere Unternehmen für diese Firma "
+"erstellt wird, wird sie automatisch validiert."
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"You can't modify this invoice as it has an inter company invoice that's in "
+"posted state.\n"
+"Invoice %(invoice_name)s to %(partner_name)s"
+msgstr ""
+
+#. module: account_invoice_inter_company
+#. odoo-python
+#: code:addons/account_invoice_inter_company/models/account_move.py:0
+#, python-format
+msgid ""
+"You cannot create invoice in company '%(dest_company_name)s' with product "
+"'%(product_name)s' because it is not multicompany"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Intercompany user for invoices"
+#~ msgstr "Rechnungsstellung zwischen Unternehmen"
+
+#, fuzzy
+#~ msgid "Invoicing"
+#~ msgstr "Rechnungszeile"
+
+#, python-format
+#~ msgid "No Chart of Account Template has been defined !"
+#~ msgstr "Es wurde keine Kontenplanvorlage definiert!"
+
+#, python-format
+#~ msgid "%s - Canceled Invoice: %s"
+#~ msgstr "%s Stornierte Rechnung: %s"
+
+#, python-format
+#~ msgid "%s - Invoice: %s"
+#~ msgstr "%s - Rechnung: %s"
+
+#, python-format
+#~ msgid "Please define %s journal for this company: \"%s\" (id:%d)."
+#~ msgstr ""
+#~ "Bitte definieren Sie für diese Firma das Journal %s: \"%s\" (id: %d)."
+
+#, python-format
+#~ msgid ""
+#~ "The invoice line '%s' doesn't have a product. All invoice lines should "
+#~ "have a product for inter-company invoices."
+#~ msgstr ""
+#~ "Die Rechnungszeile '%s' hat kein Produkt. Alle Rechnungszeilen sollten "
+#~ "ein Produkt für zwischenbetriebliche Rechnungen haben."
+
+#, python-format
+#~ msgid ""
+#~ "WARNING!!!!! Failure in the inter-company invoice creation process: the "
+#~ "total amount of this invoice is %s but the total amount of the invoice %s "
+#~ "in the company %s is %s"
+#~ msgstr ""
+#~ "WARNUNG!!!!!\n"
+#~ " Fehler beim Erstellen der Rechnung zwischen Unternehmen: Der "
+#~ "Gesamtbetrag dieser Rechnung ist %s, aber der Gesamtbetrag der Rechnung "
+#~ "%s in der Firma %s ist %s"
+
+#~ msgid "Please define %s account for this company: \"%s\" (id:%d)."
+#~ msgstr "Bitte definieren Sie %s Account für diese Firma: \"%s\" (id: %d)."
+
+#~ msgid "Automate inter-company invoicing"
+#~ msgstr "Automatisierung der zwischenbetrieblichen Rechnungsstellung"
+
+#~ msgid ""
+#~ "Configure company rules to automatically create invoices when one of your "
+#~ "company sells/buys to another of your company."
+#~ msgstr ""
+#~ "Konfigurieren Sie Unternehmensregeln so, dass Rechnungen automatisch "
+#~ "erstellt werden, wenn eines Ihrer Unternehmen ein anderes Unternehmen "
+#~ "Ihres Unternehmens verkauft / kauft."
+
+#~ msgid ""
+#~ "Dear Sir/Madam,\n"
+#~ "\n"
+#~ "Our records indicate that some payments on your account are still due. "
+#~ "Please find details below.\n"
+#~ "If the amount has already been paid, please disregard this notice. "
+#~ "Otherwise, please forward us the total amount stated below.\n"
+#~ "If you have any queries regarding your account, Please contact us.\n"
+#~ "\n"
+#~ "Thank you in advance for your cooperation.\n"
+#~ "Best Regards,"
+#~ msgstr ""
+#~ "Sehr geehrte Damen und Herren, Unsere Unterlagen weisen darauf hin, dass "
+#~ "einige Zahlungen auf Ihrem Konto noch fällig sind. Einzelheiten dazu "
+#~ "finden Sie unten aufgeführt. Wenn der Betrag bereits bezahlt wurde, "
+#~ "ignorieren Sie bitte diesen Hinweis. Andernfalls senden Sie uns bitte den "
+#~ "unten angegebenen Gesamtbetrag. Wenn Sie Fragen zu Ihrem Konto haben, "
+#~ "kontaktieren Sie uns bitte. Vielen Dank im Voraus für Ihre Mitarbeit."
+
+#~ msgid "French VAT exemption according to articles 262 I of \"CGI\""
+#~ msgstr ""
+#~ "Französische Mehrwertsteuerbefreiung gemäß Artikel 262 I von \"CGI\""
+
+#~ msgid ""
+#~ "French VAT exemption according to articles 262 ter I (for products) and/"
+#~ "or 283-2 (for services) of \"CGI\""
+#~ msgstr ""
+#~ "Französische Mehrwertsteuerbefreiung gemäß Artikel 262 I (für Produkte) "
+#~ "und / oder 283-2 (für Dienstleistungen) von \"CGI\""
