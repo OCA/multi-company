@@ -177,3 +177,51 @@ class TestPurchaseSaleStockInterCompanyTransitReceipt(
         physical_receipt = self._physical_receipts(purchase)
         self.assertEqual(physical_receipt.state, "assigned")
         self.assertEqual(physical_receipt.move_line_ids.lot_id, serials)
+
+    def test_make_to_order_purchase_through_transit_receipt(self):
+        mto_route = self.env.ref("stock.route_warehouse0_mto")
+        mto_route.active = True
+        buy_route = self.env.ref("purchase_stock.route_warehouse0_buy")
+        product = self.env["product.product"].create(
+            {
+                "name": "Make To Order Product",
+                "is_storable": True,
+                "route_ids": [Command.set([mto_route.id, buy_route.id])],
+                "seller_ids": [
+                    Command.create(
+                        {
+                            "partner_id": self.partner_company_b.id,
+                            "company_id": False,
+                        }
+                    )
+                ],
+            }
+        )
+        group = self.env["procurement.group"].create({"name": "Sale"})
+        ProcurementGroup = self.env["procurement.group"].with_company(self.company_a)
+        ProcurementGroup.run(
+            [
+                ProcurementGroup.Procurement(
+                    product,
+                    4,
+                    product.uom_id,
+                    self.env.ref("stock.stock_location_customers"),
+                    group.name,
+                    group.name,
+                    self.company_a,
+                    {"warehouse_id": self.warehouse_a, "group_id": group},
+                )
+            ]
+        )
+        delivery = self.env["stock.picking"].search([("group_id", "=", group.id)])
+        purchase = self.env["purchase.order"].search(
+            [("order_line.product_id", "=", product.id)]
+        )
+        self.assertEqual(purchase.picking_type_id, self.warehouse_a.transit_in_type_id)
+        sale = self._approve_po(purchase)
+        self._ship(sale, 4)
+        self.assertEqual(purchase.picking_ids.state, "done")
+        physical_receipt = self._physical_receipts(purchase)
+        self.assertEqual(physical_receipt.move_ids.move_dest_ids, delivery.move_ids)
+        self.assertEqual(delivery.state, "waiting")
+        self.assertEqual(purchase.order_line.qty_received, 0)
