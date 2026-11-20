@@ -1,0 +1,47 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* crm_lost_reason_multi_company
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-07-01 09:06+0000\n"
+"Last-Translator: Matjaz Mozetic <matjaz@luxim.si>\n"
+"Language-Team: none\n"
+"Language: sl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || "
+"n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 5.15.2\n"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model.fields,field_description:crm_lost_reason_multi_company.field_crm_lost_reason__company_id
+msgid "Company"
+msgstr "Družba"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model.fields,help:crm_lost_reason_multi_company.field_crm_lost_reason__company_id
+msgid ""
+"Company that uses this lost reason. Other companies will not be able to see "
+"or use it."
+msgstr ""
+"Družba, ki uporablja ta vzrok poraza. Druge družbe ga ne bodo mogle videti "
+"ali uporabljati."
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model,name:crm_lost_reason_multi_company.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Indic/priložnost"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model.fields,field_description:crm_lost_reason_multi_company.field_crm_lead__lost_reason_id
+msgid "Lost Reason"
+msgstr "Vzrok poraza"
+
+#. module: crm_lost_reason_multi_company
+#: model:ir.model,name:crm_lost_reason_multi_company.model_crm_lost_reason
+msgid "Opp. Lost Reason"
+msgstr "Pril. vzrok poraza"
