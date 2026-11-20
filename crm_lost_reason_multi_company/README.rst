@@ -61,6 +61,7 @@ Contributors
 ------------
 
 - Souheil Bejaoui <souheil.bejaoui@acsone.eu>
+- Jasmin Solanki <jasmin.solanki@forgeflow.com>
 
 Maintainers
 -----------

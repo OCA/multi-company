@@ -10,7 +10,6 @@ class CrmLostReason(models.Model):
 
     company_id = fields.Many2one(
         "res.company",
-        "Company",
         ondelete="cascade",
         help="Company that uses this lost reason. "
         "Other companies will not be able to see or use it.",
