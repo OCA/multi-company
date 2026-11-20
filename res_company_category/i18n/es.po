@@ -1,0 +1,129 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* res_company_category
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2024-01-02 20:36+0000\n"
+"Last-Translator: Ivorra78 <informatica@totmaterial.es>\n"
+"Language-Team: none\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.17\n"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: res_company_category
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Archived"
+msgstr "Archivado"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company__category_id
+msgid "Category"
+msgstr "Categoría"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__child_ids
+msgid "Category Childs"
+msgstr "Categoría Infantil"
+
+#. module: res_company_category
+#: model:ir.actions.act_window,name:res_company_category.action_company_category_to_company
+#: model:ir.model,name:res_company_category.model_res_company
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_ids
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_qty
+msgid "Companies Quantity"
+msgstr "Cantidad de Compañías"
+
+#. module: res_company_category
+#: model:ir.actions.act_window,name:res_company_category.action_company_category
+#: model:ir.model,name:res_company_category.model_res_company_category
+#: model:ir.ui.menu,name:res_company_category.menu_company_category
+msgid "Company Categories"
+msgstr "Categorías de Compañía"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__complete_name
+msgid "Complete Name"
+msgstr "Nombre Completo"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__display_name
+msgid "Display Name"
+msgstr "Mostrar Nombre"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__id
+msgid "ID"
+msgstr "ID"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category____last_update
+msgid "Last Modified on"
+msgstr "Última Modificación el"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__write_uid
+msgid "Last Updated by"
+msgstr "Última Actualización por"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__write_date
+msgid "Last Updated on"
+msgstr "Última Actualización el"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__name
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Name"
+msgstr "Nombre"
+
+#. module: res_company_category
+#: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__normal
+msgid "Normal"
+msgstr "Normal"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_id
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Parent Category"
+msgstr "Categoría Parental"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_path
+msgid "Parent Path"
+msgstr "Ruta Parental"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__type
+msgid "Type"
+msgstr "Tipo"
+
+#. module: res_company_category
+#: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__view
+msgid "View"
+msgstr "Vista"

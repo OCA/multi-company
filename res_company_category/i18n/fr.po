@@ -1,0 +1,129 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * res_company_category
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-14 11:55+0000\n"
+"PO-Revision-Date: 2022-10-14 11:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__active
+msgid "Active"
+msgstr "active"
+
+#. module: res_company_category
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Archived"
+msgstr "Archivé"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company__category_id
+msgid "Category"
+msgstr "Catégorie"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__child_ids
+msgid "Category Childs"
+msgstr "Catégories filles"
+
+#. module: res_company_category
+#: model:ir.actions.act_window,name:res_company_category.action_company_category_to_company
+#: model:ir.model,name:res_company_category.model_res_company
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_ids
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Companies"
+msgstr "Sociétés"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__company_qty
+msgid "Companies Quantity"
+msgstr "Nombre de sociétés"
+
+#. module: res_company_category
+#: model:ir.actions.act_window,name:res_company_category.action_company_category
+#: model:ir.model,name:res_company_category.model_res_company_category
+#: model:ir.ui.menu,name:res_company_category.menu_company_category
+msgid "Company Categories"
+msgstr "Catégories de société"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__complete_name
+msgid "Complete Name"
+msgstr "Nom Complet"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__create_uid
+msgid "Created by"
+msgstr "Créé par"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__create_date
+msgid "Created on"
+msgstr "Créé le"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__display_name
+msgid "Display Name"
+msgstr "Nom affiché"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__id
+msgid "ID"
+msgstr ""
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category____last_update
+msgid "Last Modified on"
+msgstr "Dernière modification le"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__write_uid
+msgid "Last Updated by"
+msgstr "Dernière mise à jour par"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__write_date
+msgid "Last Updated on"
+msgstr "Dernière mise à jour le"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__name
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Name"
+msgstr "Nom"
+
+#. module: res_company_category
+#: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__normal
+msgid "Normal"
+msgstr ""
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_id
+#: model_terms:ir.ui.view,arch_db:res_company_category.view_res_company_category_form
+msgid "Parent Category"
+msgstr "Catégorie mère"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__parent_path
+msgid "Parent Path"
+msgstr "Chemin parent"
+
+#. module: res_company_category
+#: model:ir.model.fields,field_description:res_company_category.field_res_company_category__type
+msgid "Type"
+msgstr ""
+
+#. module: res_company_category
+#: model:ir.model.fields.selection,name:res_company_category.selection__res_company_category__type__view
+msgid "View"
+msgstr ""
