@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Copyright 2026 ForgeFlow S.L.
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<odoo>
+    <record id="crm_lead_view_form" model="ir.ui.view">
+        <field name="name">crm.lead.form (in crm_stage_multi_company)</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='stage_id']" position="attributes">
+                <attribute name="domain">[
+                    '|', ('team_ids', 'in', team_id), ('team_ids', '=', False),
+                    ('company_id', 'in', [company_id, False]),
+                ]</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
