@@ -3,13 +3,12 @@
 
 {
     "name": "Crm Tag Multi Company Sale",
-    "summary": """
-            Ensure multi-company check in sale order tag ids""",
-    "version": "19.0.1.0.0",
+    "summary": "Ensure multi-company check in sale order tag ids",
+    "version": "20.0.1.0.0",
     "license": "AGPL-3",
     "author": "ForgeFlow,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "depends": ["crm_tag_multi_company", "sale"],
-    "data": [],
+    "data": ["views/sale_order_views.xml"],
     "auto_install": True,
 }
