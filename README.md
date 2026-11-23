@@ -21,7 +21,7 @@ Available addons
 ----------------
 addon | version | maintainers | summary
 --- | --- | --- | ---
-[account_invoice_inter_company](account_invoice_inter_company/) | 18.0.1.0.8 |  | Intercompany invoice rules
+[account_invoice_inter_company](account_invoice_inter_company/) | 18.0.1.0.9 |  | Intercompany invoice rules
 [account_multicompany_easy_creation](account_multicompany_easy_creation/) | 18.0.1.0.1 |  | This module adds a wizard to create companies easily
 [base_multi_company](base_multi_company/) | 18.0.1.1.1 | <a href='https://github.com/pedrobaeza'><img src='https://github.com/pedrobaeza.png' width='32' height='32' style='border-radius:50%;' alt='pedrobaeza'/></a> | Provides a base for adding multi-company support to models.
 [calendar_event_multi_company](calendar_event_multi_company/) | 18.0.1.0.0 |  | This module add multi-company management to calendar events
@@ -40,7 +40,7 @@ addon | version | maintainers | summary
 [product_multi_company](product_multi_company/) | 18.0.1.0.1 |  | Select individually the product template visibility on each company
 [product_multi_company_stock](product_multi_company_stock/) | 18.0.1.0.1 |  | Does not allow to remove company if there is stock or moves in that company
 [product_tax_multicompany_default](product_tax_multicompany_default/) | 18.0.1.0.1 | <a href='https://github.com/Shide'><img src='https://github.com/Shide.png' width='32' height='32' style='border-radius:50%;' alt='Shide'/></a> | Product Tax Multi Company Default
-[purchase_sale_inter_company](purchase_sale_inter_company/) | 18.0.1.0.7 |  | Intercompany PO/SO rules
+[purchase_sale_inter_company](purchase_sale_inter_company/) | 18.0.1.0.8 |  | Intercompany PO/SO rules
 [purchase_sale_lot_intercompany](purchase_sale_lot_intercompany/) | 18.0.1.0.0 | <a href='https://github.com/Kev-Roche'><img src='https://github.com/Kev-Roche.png' width='32' height='32' style='border-radius:50%;' alt='Kev-Roche'/></a> | Intercompany PO/SO lot number propagation
 [purchase_sale_note_intercompany](purchase_sale_note_intercompany/) | 18.0.1.0.0 | <a href='https://github.com/Kev-Roche'><img src='https://github.com/Kev-Roche.png' width='32' height='32' style='border-radius:50%;' alt='Kev-Roche'/></a> | Propagate note from purchase to sale line
 [purchase_sale_stock_inter_company](purchase_sale_stock_inter_company/) | 18.0.1.1.3 |  | Intercompany PO/SO rules with warehouse
