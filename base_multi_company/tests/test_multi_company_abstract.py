@@ -11,6 +11,7 @@ class TestMultiCompanyAbstract(common.SavepointCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        # Check tests execution with class
         cls.loader = FakeModelLoader(cls.env, cls.__module__)
         cls.loader.backup_registry()
 
