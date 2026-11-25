@@ -54,6 +54,7 @@ class TestModule(common.TransactionCase):
             {
                 "name": "New Child Category",
                 "parent_id": new_root_categ.id,
+                "is_favorite": False,
             }
         )
         self.assertFalse(new_child_categ.is_favorite)
@@ -73,9 +74,19 @@ class TestModule(common.TransactionCase):
             {
                 "name": "New Child Category",
                 "parent_id": new_root_categ.id,
+                "is_favorite": True,
             }
         )
         self.assertTrue(self._change_company(new_child_categ).is_favorite)
+
+    def test_22_create_new_category_favorite_undefined(self):
+        new_root_categ = self.ProductCategory.create(
+            {
+                "name": "New Root Category",
+            }
+        )
+        self.assertTrue(new_root_categ.is_favorite)
+        self.assertTrue(self._change_company(new_root_categ).is_favorite)
 
     def test_30_create_new_company(self):
         company_vals = {
