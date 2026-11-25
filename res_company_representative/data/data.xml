@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026-TODAY NICO SOLUTIONS - ENGINEERING & IT (<https://www.nico-solutions.de>)
+     License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl). -->
+<odoo noupdate="1">
+    <record id="role_ceo" model="res.company.representative.role">
+        <field name="name">CEO</field>
+    </record>
+    <record id="role_authorized_officer" model="res.company.representative.role">
+        <field name="name">Authorized Officer</field>
+    </record>
+</odoo>

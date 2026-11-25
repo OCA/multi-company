@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_company_representative_manager,access.company.representative.manager,model_res_company_representative,base.group_no_one,1,1,1,1
+access_company_representative_role_manager,access.company.representative.role.manager,model_res_company_representative_role,base.group_no_one,1,1,1,1
