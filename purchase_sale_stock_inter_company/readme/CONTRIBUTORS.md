@@ -1,4 +1,5 @@
 - Adria Gil Sorribes \<<adria.gil@forgeflow.com>\>
+- Jasmin Solanki \<<jasmin.solanki@forgeflow.com>\>
 - \`Akretion \<<https://www.akretion.com>\>\`:
   - Chafique Delli \<<chafique.delli@akretion.com>\>
   - Pierrick Brun \<<pierrick.brun@akretion.com>\>

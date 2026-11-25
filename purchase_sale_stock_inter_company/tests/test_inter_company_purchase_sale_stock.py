@@ -581,7 +581,9 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         self.assertEqual(purchase.picking_ids.location_dest_id.usage, "internal")
         self.assertEqual(sale.picking_ids.location_id.usage, "internal")
         self.assertEqual(sale.picking_ids.location_dest_id.usage, "internal")
-        self.assertEqual(sale.picking_ids.move_ids.location_final_id.usage, "transit")
+        self.assertEqual(
+            sale.picking_ids.move_ids.forecasted_location_id.usage, "transit"
+        )
         # validate the SO internal picking
         so_internal_pick = sale.picking_ids
         so_move = so_internal_pick.move_ids
@@ -599,13 +601,11 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         self.assertEqual(po_picking.state, "waiting")
         # validate the SO picking
         so_picking = sale.picking_ids.filtered(
-            lambda x: x.location_dest_id.usage == "customer"
+            lambda x: x.picking_type_id == self.warehouse_c.out_type_id
         )
         so_picking.with_user(self.user_company_b).button_validate()
         self.assertEqual(so_picking.state, "done")
-        # The location at the picking level is set to Customer by the operation type,
-        # but at the move level, it is Transit.
-        self.assertEqual(so_picking.location_dest_id.usage, "customer")
+        self.assertEqual(so_picking.location_dest_id.usage, "transit")
         self.assertEqual(so_picking.move_ids.location_dest_id.usage, "transit")
         # the move in the receipt should have a "next move" due to "two_steps"
         self.assertTrue(purchase.picking_ids.move_ids.move_dest_ids)
@@ -701,19 +701,18 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         po_lots = po_picking.move_line_ids.lot_id
         self.assertEqual(so_lots, po_lots)
         self.assertFalse(so_lots.company_id)
-        return_wizard = self.env["stock.return.picking"].create(
-            {"picking_id": so_picking.id}
-        )
-        action = return_wizard.action_create_returns_all()
-        so_return = self.env["stock.picking"].browse(action["res_id"])
+        so_return = so_picking._create_return()
+        so_return.action_return_all()
+        so_return.action_confirm()
+        self.assertEqual(len(sale.picking_ids), 2)
+        self.assertEqual(so_picking.return_count, 1)
+        self.assertEqual(so_return.state, "assigned")
+        # The purchase return is created when the sale return is validated
+        self.assertFalse(po_picking.return_ids)
+        so_return.button_validate()
         po_return = po_picking.return_ids
         self.assertEqual(len(purchase.picking_ids), 2)
-        self.assertEqual(len(sale.picking_ids), 2)
         self.assertEqual(po_picking.return_count, 1)
-        self.assertEqual(so_picking.return_count, 1)
-        self.assertEqual(po_return.state, "assigned")
-        self.assertEqual(so_return.state, "assigned")
-        so_return.button_validate()
         self.assertEqual(po_return.state, "done")
         self.assertEqual(so_return.state, "done")
         so_return_lots = so_return.move_line_ids.lot_id
@@ -759,36 +758,22 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         self.assertEqual(so_lots, po_lots)
         self.assertFalse(so_lots.company_id)
         # Generate a first return for 2 products, and validate it
-        return_wizard = self.env["stock.return.picking"].create(
-            {"picking_id": so_picking.id}
-        )
-        if "lot_id" in return_wizard.product_return_moves._fields:
-            return_wizard.product_return_moves.filtered(
-                lambda x: x.lot_id == self.serial_3
-            ).unlink()
-        else:
-            return_wizard.product_return_moves.quantity = 2
-        action = return_wizard.action_create_returns()
-        so_return = self.env["stock.picking"].browse(action["res_id"])
+        so_return = so_picking._create_return()
+        so_return.move_ids.product_uom_qty = 2
+        so_return.action_confirm()
+        self.assertEqual(len(sale.picking_ids), 2)
+        self.assertEqual(so_picking.return_count, 1)
+        self.assertEqual(so_return.state, "assigned")
+        move_line_vals = so_return.move_ids._prepare_move_line_vals()
+        so_return.move_ids.move_line_ids = [
+            Command.clear(),
+            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_1.id)),
+            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_2.id)),
+        ]
+        so_return.button_validate()
         po_return = po_picking.return_ids
         self.assertEqual(len(purchase.picking_ids), 2)
-        self.assertEqual(len(sale.picking_ids), 2)
         self.assertEqual(po_picking.return_count, 1)
-        self.assertEqual(so_picking.return_count, 1)
-        self.assertEqual(po_return.state, "assigned")
-        self.assertEqual(so_return.state, "assigned")
-        if "restrict_lot_id" not in so_return.move_ids._fields:
-            move_line_vals = so_return.move_ids._prepare_move_line_vals()
-            so_return.move_ids.move_line_ids = [
-                Command.clear(),
-                Command.create(
-                    dict(move_line_vals, quantity=1, lot_id=self.serial_1.id)
-                ),
-                Command.create(
-                    dict(move_line_vals, quantity=1, lot_id=self.serial_2.id)
-                ),
-            ]
-        so_return.button_validate()
         self.assertEqual(po_return.state, "done")
         self.assertEqual(so_return.state, "done")
         so_return_lots = so_return.move_line_ids.lot_id
@@ -796,33 +781,21 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         self.assertEqual(so_return_lots, po_return_lots)
         self.assertNotIn(self.serial_3, so_return_lots)
         # Generate a second return
-        return_wizard = self.env["stock.return.picking"].create(
-            {"picking_id": so_picking.id}
-        )
-        if "lot_id" in return_wizard.product_return_moves._fields:
-            return_wizard.product_return_moves.filtered(
-                lambda x: x.lot_id != self.serial_3
-            ).unlink()
-        else:
-            return_wizard.product_return_moves.quantity = 1
-        action = return_wizard.action_create_returns()
-        so_return2 = self.env["stock.picking"].browse(action["res_id"])
+        so_return2 = so_picking._create_return()
+        so_return2.move_ids.product_uom_qty = 1
+        so_return2.action_confirm()
+        self.assertEqual(len(sale.picking_ids), 3)
+        self.assertEqual(so_picking.return_count, 2)
+        self.assertEqual(so_return2.state, "assigned")
+        move_line_vals = so_return2.move_ids._prepare_move_line_vals()
+        so_return2.move_ids.move_line_ids = [
+            Command.clear(),
+            Command.create(dict(move_line_vals, quantity=1, lot_id=self.serial_3.id)),
+        ]
+        so_return2.button_validate()
         po_return2 = po_picking.return_ids - po_return
         self.assertEqual(len(purchase.picking_ids), 3)
-        self.assertEqual(len(sale.picking_ids), 3)
         self.assertEqual(po_picking.return_count, 2)
-        self.assertEqual(so_picking.return_count, 2)
-        self.assertEqual(po_return2.state, "assigned")
-        self.assertEqual(so_return2.state, "assigned")
-        if "restrict_lot_id" not in so_return.move_ids._fields:
-            move_line_vals = so_return2.move_ids._prepare_move_line_vals()
-            so_return2.move_ids.move_line_ids = [
-                Command.clear(),
-                Command.create(
-                    dict(move_line_vals, quantity=1, lot_id=self.serial_3.id)
-                ),
-            ]
-        so_return2.button_validate()
         self.assertEqual(po_return2.state, "done")
         self.assertEqual(so_return2.state, "done")
         so_return2_lots = so_return2.move_line_ids.lot_id
@@ -881,21 +854,16 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
                 delivery = sale.picking_ids
                 self._validate_sale_picking(delivery, 3)
                 po_moves = purchase.order_line.move_ids
-                wizard = (
-                    self.env["stock.return.picking"]
-                    .with_user(self.user_company_b)
-                    .create({"picking_id": delivery.id})
-                )
-                wizard.product_return_moves.quantity = 1
-                action = wizard.action_create_exchanges()
-                self._validate_sale_picking(
-                    self.env["stock.picking"].browse(action["res_id"]), 1
-                )
+                so_return = delivery.with_user(self.user_company_b)._create_return()
+                so_return.move_ids.product_uom_qty = 1
+                so_return.action_confirm()
+                self._validate_sale_picking(so_return, 1)
                 po_return = purchase.picking_ids.filtered("return_id")
                 self.assertEqual(po_return.state, "done")
                 self.assertEqual(purchase.order_line.qty_received, 2)
+                action = so_return.with_user(self.user_company_b).action_exchange()
                 self._validate_sale_picking(
-                    sale.picking_ids.filtered(lambda p: p.state != "done"), 1
+                    self.env["stock.picking"].browse(action["res_id"]), 1
                 )
                 new_po_move = (
                     purchase.order_line.move_ids - po_moves - po_return.move_ids
@@ -920,19 +888,6 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         self.assertEqual(purchase.picking_ids.state, "done")
         self.assertEqual(purchase.order_line.qty_received, 3)
 
-    def _return_sale_picking(self, picking, qty):
-        wizard = (
-            self.env["stock.return.picking"]
-            .with_user(self.user_company_b)
-            .with_context(allowed_company_ids=self.company_b.ids)
-            .create({"picking_id": picking.id})
-        )
-        wizard.product_return_moves.quantity = qty
-        action = wizard.action_create_returns()
-        return_picking = self.env["stock.picking"].browse(action["res_id"])
-        self._validate_sale_picking(return_picking, qty)
-        return return_picking
-
     def test_sync_return_purchase_company_with_sale_user(self):
         self.company_a.intercompany_sale_user_id = self.user_company_a
         self.company_a.sync_picking = True
@@ -943,24 +898,12 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         sale = self._approve_po(purchase)
         delivery = sale.picking_ids.with_context(allowed_company_ids=self.company_b.ids)
         self._validate_sale_picking(delivery, 3)
-        self._return_sale_picking(delivery, 1)
+        so_return = delivery.with_user(self.user_company_b)._create_return()
+        so_return.move_ids.product_uom_qty = 1
+        so_return.action_confirm()
+        self._validate_sale_picking(so_return, 1)
         self.assertEqual(purchase.picking_ids.filtered("return_id").state, "done")
         self.assertEqual(purchase.order_line.qty_received, 2)
-
-    def test_sync_picking_return_of_return(self):
-        # Returning the sale return delivers the goods again
-        self.company_a.sync_picking = True
-        self.company_b.sync_picking = True
-        purchase = self._create_purchase_order(
-            self.partner_company_b, self.consumable_product
-        )
-        sale = self._approve_po(purchase)
-        self._validate_sale_picking(sale.picking_ids, 3)
-        so_return = self._return_sale_picking(sale.picking_ids, 1)
-        self.assertEqual(purchase.order_line.qty_received, 2)
-        self._return_sale_picking(so_return, 1)
-        self.assertEqual(purchase.order_line.qty_received, 3)
-        self.assertFalse(purchase.activity_ids)
 
     def test_sync_return_ignores_foreign_intercompany_picking(self):
         self.company_a.sync_picking = True
@@ -975,10 +918,75 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         other_sale = self._approve_po(other_purchase)
         self._validate_sale_picking(sale.picking_ids, 3)
         self._validate_sale_picking(other_sale.picking_ids, 3)
-        sale.picking_ids.intercompany_picking_id = other_purchase.picking_ids
-        self._return_sale_picking(sale.picking_ids, 1)
+        delivery = sale.picking_ids
+        delivery.intercompany_picking_id = other_purchase.picking_ids
+        so_return = (
+            delivery.with_user(self.user_company_b)
+            .with_context(allowed_company_ids=self.company_b.ids)
+            ._create_return()
+        )
+        so_return.move_ids.product_uom_qty = 1
+        so_return.action_confirm()
+        self._validate_sale_picking(so_return, 1)
         self.assertFalse(other_purchase.picking_ids.filtered("return_id"))
         self.assertEqual(other_purchase.order_line.qty_received, 3)
+
+    def test_sync_return_with_forged_intercompany_picking(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        for target in ("other_po", "same_po"):
+            with self.subTest(target=target):
+                purchase = self._create_purchase_order(
+                    self.partner_company_b, self.consumable_product
+                )
+                sale = self._approve_po(purchase)
+                other_purchase = self._create_purchase_order(
+                    self.partner_company_b, self.consumable_product
+                )
+                other_sale = self._approve_po(other_purchase)
+                self._validate_sale_picking(sale.picking_ids, 3)
+                self._validate_sale_picking(other_sale.picking_ids, 3)
+                receipt = purchase.picking_ids
+                so_return = (
+                    sale.picking_ids.with_user(self.user_company_b)
+                    .with_context(allowed_company_ids=self.company_b.ids)
+                    ._create_return()
+                )
+                so_return.move_ids.product_uom_qty = 1
+                so_return.action_confirm()
+                so_return.intercompany_picking_id = (
+                    other_purchase.picking_ids if target == "other_po" else receipt
+                )
+                self._validate_sale_picking(so_return, 1)
+                po_return = purchase.picking_ids - receipt
+                self.assertEqual(po_return.state, "done")
+                self.assertEqual(so_return.intercompany_picking_id, po_return)
+                self.assertEqual(purchase.order_line.qty_received, 2)
+                self.assertFalse(other_purchase.picking_ids.filtered("return_id"))
+                self.assertEqual(other_purchase.order_line.qty_received, 3)
+
+    def test_sync_return_capped_to_received_quantity(self):
+        self.company_a.sync_picking = True
+        self.company_b.sync_picking = True
+        purchase = self._create_purchase_order(
+            self.partner_company_b, self.consumable_product
+        )
+        sale = self._approve_po(purchase)
+        delivery = sale.picking_ids
+        self._validate_sale_picking(delivery, 3)
+        for _i in range(2):
+            so_return = (
+                delivery.with_user(self.user_company_b)
+                .with_context(allowed_company_ids=self.company_b.ids)
+                ._create_return()
+            )
+            so_return.action_confirm()
+            self._validate_sale_picking(so_return, 3)
+        po_returns = purchase.picking_ids.filtered("return_id")
+        self.assertEqual(len(po_returns), 1)
+        self.assertEqual(sum(po_returns.move_ids.mapped("quantity")), 3)
+        self.assertEqual(purchase.order_line.qty_received, 0)
+        self.assertTrue(purchase.activity_ids)
 
     def test_sync_picking_ignores_foreign_intercompany_picking(self):
         self.company_a.sync_picking = True
@@ -993,39 +1001,23 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleStockInterCompanyCommon)
         self._approve_po(other_purchase)
         other_receipt = other_purchase.picking_ids
         other_receipt.move_ids.write({"quantity": 3, "picked": True})
-        self._validate_sale_picking(sale.picking_ids, 3)
-        so_return = self._return_sale_picking(sale.picking_ids, 1)
-        wizard = (
-            self.env["stock.return.picking"]
-            .with_user(self.user_company_b)
+        delivery = sale.picking_ids.with_context(allowed_company_ids=self.company_b.ids)
+        self._validate_sale_picking(delivery, 3)
+        so_return = delivery.with_user(self.user_company_b)._create_return()
+        so_return.move_ids.product_uom_qty = 1
+        so_return.action_confirm()
+        self._validate_sale_picking(so_return, 1)
+        redelivery = (
+            so_return.with_user(self.user_company_b)
             .with_context(allowed_company_ids=self.company_b.ids)
-            .create({"picking_id": so_return.id})
+            ._create_return()
         )
-        wizard.product_return_moves.quantity = 1
-        action = wizard.action_create_returns()
-        redelivery = self.env["stock.picking"].browse(action["res_id"])
+        redelivery.action_confirm()
         redelivery.intercompany_picking_id = other_receipt
         self._validate_sale_picking(redelivery, 1)
         self.assertNotEqual(other_receipt.state, "done")
         self.assertEqual(other_purchase.order_line.qty_received, 0)
         self.assertNotEqual(redelivery.intercompany_picking_id, other_receipt)
-
-    def test_sync_return_capped_to_received_quantity(self):
-        self.company_a.sync_picking = True
-        self.company_b.sync_picking = True
-        purchase = self._create_purchase_order(
-            self.partner_company_b, self.consumable_product
-        )
-        sale = self._approve_po(purchase)
-        delivery = sale.picking_ids
-        self._validate_sale_picking(delivery, 3)
-        self._return_sale_picking(delivery, 3)
-        self._return_sale_picking(delivery, 3)
-        po_returns = purchase.picking_ids.filtered("return_id")
-        self.assertEqual(len(po_returns), 1)
-        self.assertEqual(sum(po_returns.move_ids.mapped("quantity")), 3)
-        self.assertEqual(purchase.order_line.qty_received, 0)
-        self.assertTrue(purchase.activity_ids)
 
     def test_sync_picking_transit_several_pending_moves(self):
         """Receipt from transit, without stock to reserve, with several pending

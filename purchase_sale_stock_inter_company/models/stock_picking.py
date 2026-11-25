@@ -2,6 +2,8 @@
 # Copyright 2018 Tecnativa - Pedro M. Baeza
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+from collections import defaultdict
+
 from odoo import SUPERUSER_ID, api, fields, models
 from odoo.exceptions import UserError
 
@@ -69,8 +71,63 @@ class StockPicking(models.Model):
             )
         ):
             purchase = picking.sale_id.sudo().auto_purchase_order_id
+            if picking._is_intercompany_return_reception():
+                # Only set by this sync: ignore any value written before
+                picking.sudo().intercompany_picking_id = False
+                picking.sudo()._create_intercompany_return()
             picking.sudo()._action_done_intercompany_actions(purchase)
         return res
+
+    def _create_intercompany_return(self):
+        """
+        Create the return of the inter-company receipt in the purchase company
+        for the quantities returned with this picking.
+        :return: browse_record(stock.picking) the purchase return
+        """
+        self.ensure_one()
+        purchase = self.sale_id.sudo().auto_purchase_order_id
+        po_picking = self.return_id.intercompany_picking_id.sudo()
+        # The return is created as superuser: only trust a picking of the
+        # purchase order linked to the sale order
+        if not purchase or po_picking.purchase_id != purchase:
+            return self.browse()
+        # Superuser restricted to the purchase company: the user validating
+        # the return may have no access to it
+        po_return = po_picking.with_context(
+            allowed_company_ids=po_picking.company_id.ids
+        )._create_return()
+        returned_qty = defaultdict(float)
+        for move in self.move_ids.filtered(lambda m: m.state == "done"):
+            returned_qty[move.product_id] += move.uom_id._compute_quantity(
+                move.quantity, move.product_id.uom_id
+            )
+        for po_move in po_return.move_ids:
+            product = po_move.product_id
+            origin_move = po_move.origin_returned_move_id
+            # Never return more than received minus what is already returned
+            returned_moves = origin_move.returned_move_ids.filtered(
+                lambda m: m.state != "cancel" and m not in po_return.move_ids
+            )
+            returnable_qty = origin_move.uom_id._compute_quantity(
+                origin_move.quantity, product.uom_id
+            ) - sum(
+                m.uom_id._compute_quantity(m.product_uom_qty, product.uom_id)
+                for m in returned_moves
+            )
+            qty = max(min(returned_qty[product], returnable_qty), 0.0)
+            returned_qty[product] -= qty
+            po_move.product_uom_qty = product.uom_id._compute_quantity(
+                qty, po_move.uom_id
+            )
+        po_return.move_ids.filtered(
+            lambda m: m.uom_id.is_zero(m.product_uom_qty)
+        ).unlink()
+        if not po_return.move_ids:
+            po_return.unlink()
+            return self.browse()
+        po_return.action_confirm()
+        self.intercompany_picking_id = po_return
+        return po_return
 
     def _get_product_intercompany_qty_done_dict(self, sale_move_lines, po_move_lines):
         """
@@ -299,7 +356,7 @@ class StockPicking(models.Model):
         :return: bool
         """
         return (
-            # The return of an inter-company return delivers the goods again
+            # An exchange is the return of an inter-company return
             (not self.return_id or self.return_id._is_intercompany_return_reception())
             and self.location_dest_id.usage in ["customer", "transit"]
             and self.sale_id.sudo().auto_purchase_order_id

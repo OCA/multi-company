@@ -52,6 +52,13 @@ When Company A sends a product tracked by lot or serial number, a new
 lot/serial number with the same name is created in Company B to match
 it, if one doesn't already exist.
 
+When Company B validates the return of an inter-company delivery, the
+return of the matching receipt is created in Company A for the returned
+quantities and lots, and it is validated when Company A synchronizes
+pickings. Odoo 20.0 has no return wizard anymore, so this purchase
+return is created when the sale return is validated. An exchange (the
+return of that return) is synchronized like a new delivery.
+
 **Table of contents**
 
 .. contents::
@@ -105,6 +112,7 @@ Contributors
 ------------
 
 - Adria Gil Sorribes <adria.gil@forgeflow.com>
+- Jasmin Solanki <jasmin.solanki@forgeflow.com>
 - \`Akretion <https://www.akretion.com>\`:
 
   - Chafique Delli <chafique.delli@akretion.com>
