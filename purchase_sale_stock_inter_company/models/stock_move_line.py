@@ -74,9 +74,10 @@ class StockMoveLine(models.Model):
         po_moves = self.env["stock.move"]
         if purchase_line_origin:
             po_moves = purchase_line_origin.move_ids.filtered(
-                lambda m: m.picking_id
-                == self.move_id.picking_id.intercompany_picking_id
-                and m.product_id == self.product_id
+                lambda m: (
+                    m.picking_id == self.move_id.picking_id.intercompany_picking_id
+                    and m.product_id == self.product_id
+                )
             )
         return po_moves
 

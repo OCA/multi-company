@@ -21,8 +21,10 @@ class StockPicking(models.Model):
         # type of picking, and it has not been validated nor canceled
         # we compute it's state based on the other picking state
         for picking in self.filtered(
-            lambda pick: pick._is_intercompany_reception()
-            and pick.state not in ["done", "cancel"]
+            lambda pick: (
+                pick._is_intercompany_reception()
+                and pick.state not in ["done", "cancel"]
+            )
         ):
             # intercompany_picking_id is set when the picking is validated
             # meanwhile, the state should remain in 'waiting'
@@ -40,12 +42,14 @@ class StockPicking(models.Model):
         # if the flag is set,
         # block the validation of the picking in the destination company
         if self.filtered(
-            lambda picking: picking.company_id.block_po_manual_picking_validation
-            and (
-                picking._is_intercompany_reception()
-                or picking._is_intercompany_return_delivery()
+            lambda picking: (
+                picking.company_id.block_po_manual_picking_validation
+                and (
+                    picking._is_intercompany_reception()
+                    or picking._is_intercompany_return_delivery()
+                )
+                and picking.state in ["done", "waiting", "assigned"]
             )
-            and picking.state in ["done", "waiting", "assigned"]
         ):
             raise UserError(
                 self.env._(
@@ -59,8 +63,10 @@ class StockPicking(models.Model):
         res = super()._action_done()
         # Only DropShip pickings
         for picking in self.filtered(
-            lambda pick: pick._is_intercompany_delivery()
-            or pick._is_intercompany_return_reception()
+            lambda pick: (
+                pick._is_intercompany_delivery()
+                or pick._is_intercompany_return_reception()
+            )
         ):
             purchase = picking.sale_id.sudo().auto_purchase_order_id
             picking.sudo()._action_done_intercompany_actions(purchase)
@@ -118,8 +124,10 @@ class StockPicking(models.Model):
                 # use both the SO-PO link and the intercompany_picking_id link
                 po_move_pending = (
                     move.sale_line_id.auto_purchase_line_id.move_ids.filtered(
-                        lambda x, ic_pick=dest_picking: x.picking_id == ic_pick
-                        and x.state not in ["done", "cancel"]
+                        lambda x, ic_pick=dest_picking: (
+                            x.picking_id == ic_pick
+                            and x.state not in ["done", "cancel"]
+                        )
                     )
                 )
                 # stock_restrict_lot and purchase_sale_lot_intercompany compatibility

@@ -64,8 +64,9 @@ class ReturnPicking(models.TransientModel):
         ]
         for wizard_line in self.product_return_moves:
             dest_line = return_wizard.product_return_moves.filtered(
-                lambda line, wizard_line=wizard_line: line.product_id
-                == wizard_line.product_id
+                lambda line, wizard_line=wizard_line: (
+                    line.product_id == wizard_line.product_id
+                )
             )
             # stock_picking_return_lot compatibility
             if "lot_id" in wizard_line._fields:
