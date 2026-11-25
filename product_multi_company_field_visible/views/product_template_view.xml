@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2026 Canarias Conectada
+     License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html -->
+<odoo>
+    <record id="product_template_form_view" model="ir.ui.view">
+        <field name="name">product.template.form.own.company</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view" />
+        <field name="arch" type="xml">
+            <!-- Sits next to the admin-only ``company_ids`` added by
+                 product_multi_company; shown only to non multi-company users. -->
+            <xpath
+                expr="//page[@name='general_information']//field[@name='company_ids']"
+                position="after"
+            >
+                <field
+                    name="own_company_ids"
+                    string="Company"
+                    widget="many2many_tags"
+                    options="{'no_create': True}"
+                    invisible="not show_own_company_field"
+                    domain="[('id', 'in', allowed_company_ids)]"
+                />
+                <field name="show_own_company_field" invisible="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>
