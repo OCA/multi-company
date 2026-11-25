@@ -156,3 +156,102 @@ class TestPurchaseSaleStockInterCompany(TestPurchaseSaleInterCompany):
 
         # NEW behavior: matching warehouse must be used
         self.assertEqual(sale.warehouse_id, partner_wh)
+
+    def _validate_sale_picking(self, sale_picking, qty):
+        sale_picking.sudo().action_confirm()
+        sale_picking.move_ids.quantity_done = qty
+        return sale_picking.sudo().button_validate()
+
+    def test_sync_intercompany_picking_qty_purchase_already_done(self):
+        """A purchase picking validated before the sale picking keeps its quantity."""
+        self.product.type = "product"
+        self.partner_company_b.company_id = False
+        purchase = self.purchase_company_a
+        sale = self._approve_po()
+        sale.action_confirm()
+        purchase_picking = purchase.picking_ids
+        for move in purchase_picking.move_ids:
+            move.quantity_done = move.product_uom_qty
+        purchase_picking._action_done()
+        self.assertEqual(purchase_picking.state, "done")
+        svl_domain = [("stock_move_id", "in", purchase_picking.move_ids.ids)]
+        svl_count = self.env["stock.valuation.layer"].sudo().search_count(svl_domain)
+        self._validate_sale_picking(sale.picking_ids, 3.0)
+        self.assertEqual(purchase_picking.move_line_ids.qty_done, 3)
+        self.assertEqual(purchase_picking.move_ids.product_uom_qty, 3)
+        self.assertEqual(purchase.order_line.qty_received, 3)
+        self.assertEqual(
+            self.env["stock.valuation.layer"].sudo().search_count(svl_domain),
+            svl_count,
+        )
+
+    def test_sync_intercompany_picking_qty_single_validation(self):
+        """Validating only the sale picking validates the purchase picking."""
+        self.product.type = "product"
+        self.partner_company_b.company_id = False
+        purchase = self.purchase_company_a
+        sale = self._approve_po()
+        sale.action_confirm()
+        self._validate_sale_picking(sale.picking_ids, 3.0)
+        self.assertEqual(purchase.picking_ids.state, "done")
+        self.assertEqual(purchase.picking_ids.move_line_ids.qty_done, 3)
+        self.assertEqual(purchase.order_line.qty_received, 3)
+
+    def test_sync_intercompany_picking_qty_over_delivery_open_line(self):
+        """Extra quantity goes to the open line, never to the done one."""
+        self.product.type = "product"
+        self.partner_company_b.company_id = False
+        purchase = self.purchase_company_a
+        sale = self._approve_po()
+        sale.action_confirm()
+        res_dict = self._validate_sale_picking(sale.picking_ids[0], 1.0)
+        self.env["stock.backorder.confirmation"].with_context(
+            **res_dict["context"]
+        ).process()
+        done_picking = purchase.picking_ids.filtered(lambda p: p.state == "done")
+        open_picking = purchase.picking_ids - done_picking
+        self.assertEqual(done_picking.move_line_ids.qty_done, 1)
+        sale_picking2 = sale.picking_ids.filtered(lambda p: p.state != "done")
+        self._validate_sale_picking(sale_picking2, 3.0)
+        self.assertEqual(done_picking.move_line_ids.qty_done, 1)
+        self.assertEqual(open_picking.move_line_ids.qty_done, 3)
+        self.assertEqual(purchase.order_line.qty_received, 4)
+
+    def test_sync_intercompany_picking_qty_mixed_done_and_open(self):
+        """Only the product still open in the purchase receives the quantity."""
+        self.product.type = "product"
+        self.partner_company_b.company_id = False
+        product2 = self.env["product.product"].create(
+            {"name": "Product 2", "type": "product"}
+        )
+        purchase = self.purchase_company_a
+        purchase.write(
+            {"order_line": [(0, 0, {"product_id": product2.id, "product_qty": 1})]}
+        )
+        sale = self._approve_po()
+        sale.action_confirm()
+        purchase_picking = purchase.picking_ids
+        for move in purchase_picking.move_ids:
+            move.quantity_done = (
+                move.product_uom_qty if move.product_id == self.product else 0
+            )
+        res_dict = purchase_picking.button_validate()
+        self.env["stock.backorder.confirmation"].with_context(
+            **res_dict["context"]
+        ).process()
+        open_picking = purchase.picking_ids - purchase_picking
+        self.assertEqual(open_picking.move_ids.product_id, product2)
+        sale_picking = sale.picking_ids
+        sale_picking.sudo().action_confirm()
+        for move in sale_picking.move_ids:
+            move.quantity_done = move.product_uom_qty
+        sale_picking.sudo().button_validate()
+        line_product = purchase.order_line.filtered(
+            lambda line: line.product_id == self.product
+        )
+        line_product2 = purchase.order_line - line_product
+        self.assertEqual(purchase_picking.move_line_ids.qty_done, 3)
+        self.assertEqual(line_product.qty_received, 3)
+        self.assertEqual(open_picking.state, "done")
+        self.assertEqual(open_picking.move_line_ids.qty_done, 1)
+        self.assertEqual(line_product2.qty_received, 1)

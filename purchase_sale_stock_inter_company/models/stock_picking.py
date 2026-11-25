@@ -41,6 +41,11 @@ class StockPicking(models.Model):
                         }
                     )
                 )
+            po_move_lines = po_move_lines.filtered(
+                lambda ml: ml.state not in ("done", "cancel")
+            )
+            if not po_move_lines:
+                continue
             product_qty_done = self._get_product_intercompany_qty_done_dict(
                 sale_move_lines, po_move_lines
             )
