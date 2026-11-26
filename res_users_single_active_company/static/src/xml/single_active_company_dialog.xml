@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t
+        t-name="res_users_single_active_company.SingleActiveCompanyDialog"
+        t-inherit="web.Dialog"
+        t-inherit-mode="primary"
+        owl="1"
+    >
+        <xpath expr="//t[@t-call='web.Dialog.header']" position="attributes">
+            <attribute name="t-if">false</attribute>
+        </xpath>
+        <xpath expr="//header" position="inside">
+            <h4 class="modal-title text-break" t-esc="dialogTitle" />
+        </xpath>
+        <xpath expr="//main" position="inside">
+            <p t-esc="dialogBody" />
+            <div
+                class="form-check"
+                t-foreach="companies"
+                t-as="company"
+                t-key="company.id"
+            >
+                <input
+                    type="radio"
+                    class="form-check-input"
+                    name="single_active_company"
+                    t-att-id="'o_single_active_company_' + company.id"
+                    t-att-data-company-id="company.id"
+                    t-att-checked="state.selectedCompanyId === company.id"
+                    t-on-change="() => this.selectCompany(company.id)"
+                />
+                <label
+                    class="form-check-label"
+                    t-att-for="'o_single_active_company_' + company.id"
+                    t-att-data-company-id="company.id"
+                    t-esc="company.name"
+                />
+            </div>
+        </xpath>
+        <xpath
+            expr="//footer//button[hasclass('o-default-button')]"
+            position="attributes"
+        >
+            <attribute name="t-if">false</attribute>
+        </xpath>
+        <xpath expr="//footer" position="inside">
+            <button
+                type="button"
+                class="btn btn-primary o_single_active_company_confirm"
+                t-att-disabled="!state.selectedCompanyId || state.confirming"
+                t-on-click="confirm"
+            >
+                <t t-esc="confirmLabel" />
+            </button>
+        </xpath>
+    </t>
+
+</templates>

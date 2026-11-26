@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="base.user_demo" model="res.users" context="{'no_reset_password': True}">
+        <field name="company_id" ref="base.main_company" />
+        <field
+            name="company_ids"
+            eval="[(4, ref('base.main_company')), (4, ref('res_company_demo'))]"
+        />
+        <field name="groups_id" eval="[(4, ref('base.group_multi_company'))]" />
+        <field name="allow_single_company" eval="True" />
+    </record>
+</odoo>

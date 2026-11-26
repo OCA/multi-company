@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="res_partner_company_demo" model="res.partner">
+        <field name="name">My Company, Chicago</field>
+        <field name="is_company" eval="True" />
+        <field name="active" eval="True" />
+        <field name="street">90 Streets Avenue</field>
+        <field
+            name="country_id"
+            model="res.country"
+            search="[('code', 'ilike', 'us')]"
+        />
+        <field
+            name="state_id"
+            model="res.country.state"
+            search="[('code', 'ilike', 'il')]"
+        />
+        <field name="zip">60610</field>
+        <field name="city">Chicago</field>
+        <field name="email">chicago@yourcompany.com</field>
+        <field name="phone">+1 312 349 3030</field>
+        <field name="website">www.example.com</field>
+        <field name="company_id" eval="False" />
+    </record>
+    <record id="res_company_demo" model="res.company">
+        <field name="name">Single Active Company</field>
+        <field name="currency_id" ref="base.USD" />
+        <field name="partner_id" ref="res_partner_company_demo" />
+        <field
+            name="user_ids"
+            eval="[(4, ref('base.user_admin')), (4, ref('base.user_demo'))]"
+        />
+    </record>
+    <record id="base.group_multi_company" model="res.groups">
+        <field
+            name="users"
+            eval="[(4, ref('base.user_admin')), (4, ref('base.user_demo'))]"
+        />
+    </record>
+</odoo>
