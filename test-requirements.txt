@@ -1,0 +1,3 @@
+odoo-addon-purchase_sale_stock_inter_company @ git+https://github.com/OCA/multi-company.git@refs/pull/1102/head#subdirectory=purchase_sale_stock_inter_company
+odoo-addon-purchase_sale_inter_company @ git+https://github.com/OCA/multi-company.git@refs/pull/1097/head#subdirectory=purchase_sale_inter_company
+odoo-addon-account_invoice_inter_company @ git+https://github.com/OCA/multi-company.git@refs/pull/1081/head#subdirectory=account_invoice_inter_company
