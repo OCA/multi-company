@@ -26,7 +26,7 @@ class StockPicking(models.Model):
         # Sale Kit: kits delivered based on the components delivered
         if sale_bom:
             order_qty = sale_line.product_uom_id._compute_quantity(
-                sale_line.product_uom_qty, sale_bom.product_uom_id
+                sale_line.product_uom_qty, sale_bom.uom_id
             )
             filters = {
                 "incoming_moves": lambda m: True,
@@ -37,19 +37,15 @@ class StockPicking(models.Model):
             )._compute_kit_quantities(
                 sale_line.product_id, order_qty, sale_bom, filters
             )
-            qty_done, qty_uom = kit_qty, sale_bom.product_uom_id
+            qty_done, qty_uom = kit_qty, sale_bom.uom_id
         else:
-            qty_done = sum(sale_moves.move_line_ids.mapped("quantity_product_uom"))
+            qty_done = sum(sale_moves.mapped("quantity_product_uom"))
             qty_uom = sale_line.product_id.uom_id
         if not purchase_bom:
-            return {
-                product: qty_uom._compute_quantity(
-                    qty_done, po_move_lines.product_uom_id
-                )
-            }
+            return {product: qty_uom._compute_quantity(qty_done, po_move_lines.uom_id)}
         # Purchase Kit: components received based on the kits delivered
         factor = (
-            qty_uom._compute_quantity(qty_done, purchase_bom.product_uom_id)
+            qty_uom._compute_quantity(qty_done, purchase_bom.uom_id)
             / purchase_bom.product_qty
         )
         _boms, bom_sub_lines = purchase_bom.explode(
@@ -67,14 +63,14 @@ class StockPicking(models.Model):
         )
         res = {}
         for move in po_moves:
-            qty = move.bom_line_id.product_uom_id._compute_quantity(
-                qty_by_bom_line.get(move.bom_line_id, 0.0), move.product_uom
+            qty = move.bom_line_id.uom_id._compute_quantity(
+                qty_by_bom_line.get(move.bom_line_id, 0.0), move.uom_id
             )
             if move == po_move:
-                res[move.product_id] = move.product_uom._compute_quantity(
-                    qty, po_move_lines.product_uom_id
+                res[move.product_id] = move.uom_id._compute_quantity(
+                    qty, po_move_lines.uom_id
                 )
                 continue
             move._set_quantity_done(qty)
-            move.picked = not move.product_uom.is_zero(qty)
+            move.picked = not move.uom_id.is_zero(qty)
         return res
