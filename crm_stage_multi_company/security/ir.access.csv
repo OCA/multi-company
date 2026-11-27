@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,operation,domain
+crm_stage_company_rule,CRM Stage Multi-Company,crm.stage,,crud,"[('company_id', 'in', company_ids + [False])]"
