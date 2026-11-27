@@ -19,18 +19,7 @@ class ReturnPicking(models.TransientModel):
         )
 
     def _create_intercompany_return_wizard(self, new_picking):
-        intercompany_picking = self.picking_id.intercompany_picking_id
-        dest_company = intercompany_picking.sudo().company_id
-        intercompany_user = dest_company.intercompany_sale_user_id
-        intercompany_picking = intercompany_picking.with_user(intercompany_user)
-        vals = {"picking_id": intercompany_picking.id}
-        return_wizard = (
-            self.env["stock.return.picking"]
-            .with_context(active_id=intercompany_picking.id)
-            .with_user(intercompany_user)
-            .with_company(dest_company)
-            .create(vals)
-        )
+        return_wizard = self._new_intercompany_return_wizard()
         # stock_picking_return_lot compatibility
         if "lot_id" in return_wizard.product_return_moves._fields:
             exclude_moves = return_wizard.product_return_moves.filtered(
@@ -55,3 +44,17 @@ class ReturnPicking(models.TransientModel):
                 )
             dest_line.write({"quantity": wizard_line.quantity})
         return return_wizard
+
+    def _new_intercompany_return_wizard(self):
+        intercompany_picking = self.picking_id.intercompany_picking_id
+        dest_company = intercompany_picking.sudo().company_id
+        intercompany_user = dest_company.intercompany_sale_user_id
+        intercompany_picking = intercompany_picking.with_user(intercompany_user)
+        vals = {"picking_id": intercompany_picking.id}
+        return (
+            self.env["stock.return.picking"]
+            .with_context(active_id=intercompany_picking.id)
+            .with_user(intercompany_user)
+            .with_company(dest_company)
+            .create(vals)
+        )
