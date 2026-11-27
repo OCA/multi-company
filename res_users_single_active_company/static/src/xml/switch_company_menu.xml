@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t t-inherit="web.SwitchCompanyMenu" t-inherit-mode="extension" owl="1">
+        <xpath expr="//Dropdown" position="attributes">
+            <attribute
+                name="class"
+            >'o_switch_company_menu d-none d-md-block' + (isSingleActiveCompany ? ' o_single_active_company' : '')</attribute>
+        </xpath>
+    </t>
+
+    <t t-inherit="web.SwitchCompanyItem" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[@data-menu='company']" position="attributes">
+            <attribute
+                name="t-att-data-single-active-company"
+            >isSingleActiveCompany ? 1 : 0</attribute>
+        </xpath>
+    </t>
+
+</templates>

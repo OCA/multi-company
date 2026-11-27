@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+
+    <t
+        t-name="res_users_single_active_company.SingleActiveCompanyDialog"
+        t-inherit="web.Dialog"
+        t-inherit-mode="primary"
+        owl="1"
+    >
+        <xpath expr="//t[@t-call='web.Dialog.header']" position="replace">
+            <h4 class="modal-title text-break">
+                <i class="fa fa-building-o me-2" role="img" aria-hidden="true" />
+                <t t-esc="dialogTitle" />
+            </h4>
+        </xpath>
+        <xpath expr="//main" position="inside">
+            <p class="text-muted mb-3" t-esc="dialogBody" />
+            <div class="o_single_active_company_list" role="radiogroup">
+                <button
+                    type="button"
+                    class="o_single_active_company_item d-flex align-items-center w-100 text-start border-0 rounded-0"
+                    role="radio"
+                    t-foreach="companies"
+                    t-as="company"
+                    t-key="company.id"
+                    t-att-data-company-id="company.id"
+                    t-att-aria-checked="state.selectedCompanyId === company.id ? 'true' : 'false'"
+                    t-att-class="{
+                        'alert-primary': state.selectedCompanyId === company.id,
+                    }"
+                    t-on-click="() => this.selectCompany(company.id)"
+                >
+                    <span class="btn btn-light border-0 p-2">
+                        <i
+                            class="fa fa-fw py-1"
+                            t-att-class="state.selectedCompanyId === company.id ? 'fa-check-square text-primary' : 'fa-square-o'"
+                        />
+                    </span>
+                    <span
+                        class="company_label pe-3"
+                        t-att-class="state.selectedCompanyId === company.id ? 'text-900 fw-bold' : ''"
+                        t-esc="company.name"
+                    />
+                </button>
+            </div>
+        </xpath>
+        <xpath
+            expr="//footer//button[hasclass('o-default-button')]"
+            position="attributes"
+        >
+            <attribute name="t-if">false</attribute>
+        </xpath>
+        <xpath expr="//footer" position="inside">
+            <button
+                type="button"
+                class="btn btn-primary ms-auto o_single_active_company_confirm"
+                t-att-disabled="!state.selectedCompanyId || state.confirming"
+                t-on-click="confirm"
+            >
+                <t t-esc="confirmLabel" />
+            </button>
+        </xpath>
+    </t>
+
+</templates>
