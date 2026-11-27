@@ -1,0 +1,34 @@
+.o_single_active_company_dialog {
+    .modal-title .fa {
+        color: $o-brand-primary;
+    }
+
+    .o_single_active_company_list {
+        border: $border-width solid $border-color;
+        border-radius: $border-radius;
+        overflow: hidden;
+    }
+
+    .o_single_active_company_item {
+        background-color: transparent;
+
+        & + & {
+            border-top: $border-width solid $border-color;
+        }
+
+        &:hover,
+        &:focus-visible {
+            background-color: rgba($o-brand-primary, 0.08);
+        }
+
+        &.alert-primary {
+            margin: 0;
+            border-radius: 0;
+
+            &:hover,
+            &:focus-visible {
+                background-color: var(--bs-alert-bg, #cfe2ff);
+            }
+        }
+    }
+}
