@@ -1,10 +1,11 @@
 [project]
 name = "odoo-addons-oca-multi-company"
-version = "20.0.20261125.0"
+version = "20.0.20261127.0"
 dependencies = [
     "odoo-addon-account_multicompany_easy_creation==20.0.*",
     "odoo-addon-base_multi_company==20.0.*",
     "odoo-addon-crm_tag_multi_company==20.0.*",
+    "odoo-addon-partner_category_multi_company==20.0.*",
     "odoo-addon-product_multi_company==20.0.*",
 ]
 classifiers=[
