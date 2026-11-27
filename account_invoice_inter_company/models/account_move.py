@@ -148,7 +148,11 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        self = self.with_context(check_move_validity=False)
+        # Remove default_ context keys
+        ctx = clean_context(self.env.context)
+        ctx["check_move_validity"] = False
+        # pylint: disable=W8121
+        self = self.with_context(ctx)
         # check intercompany product
         self._check_intercompany_product(dest_company)
         # if an invoice has already been generated
@@ -237,7 +241,6 @@ class AccountMove(models.Model):
         :rtype dest_company : res.company record
         """
         self.ensure_one()
-        self = self.with_context(**clean_context(self.env.context))
         # check if the journal is define in dest company
         dest_journal = self._check_dest_journal(dest_company)
         vals = {
@@ -345,6 +348,10 @@ class AccountMoveLine(models.Model):
             **{"allowed_company_ids": [dest_company.id]}
         ).check_access("read")
 
+    def _get_intercompany_taxes(self, vals):
+        new_line = self.new(vals)
+        return new_line._get_computed_taxes()
+
     @api.model
     def _prepare_account_move_line(self, dest_move, dest_company):
         """Generate invoice line values
@@ -369,8 +376,7 @@ class AccountMoveLine(models.Model):
         if hasattr(self, "start_date") and hasattr(self, "end_date"):
             vals["start_date"] = self.start_date
             vals["end_date"] = self.end_date
-        new_line = self.new(vals)
-        new_taxes = new_line._get_computed_taxes()
+        new_taxes = self._get_intercompany_taxes(vals)
         vals["tax_ids"] = [Command.set(new_taxes.ids)]
         price_unit = self.price_unit
         base_line = self.move_id._prepare_product_base_line_for_taxes_computation(self)
