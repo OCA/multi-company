@@ -8,9 +8,6 @@ class ResPartnerCategory(models.Model):
     _inherit = "res.partner.category"
     _check_company_auto = True
 
-    company_id = fields.Many2one(
-        "res.company",
-        ondelete="cascade",
-    )
+    company_id = fields.Many2one("res.company", ondelete="cascade")
 
     parent_id = fields.Many2one(check_company=True)

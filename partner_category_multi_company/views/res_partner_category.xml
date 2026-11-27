@@ -25,6 +25,11 @@
             <list position="inside">
                 <field name="company_id" groups="base.group_multi_company" />
             </list>
+            <field name="parent_id" position="attributes">
+                <attribute
+                    name="domain"
+                >[('id', '!=', id), ('company_id', 'in', [company_id, False])]</attribute>
+            </field>
         </field>
     </record>
 </odoo>
