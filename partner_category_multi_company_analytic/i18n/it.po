@@ -1,0 +1,39 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* partner_category_multi_company_analytic
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 16.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-02-25 16:06+0000\n"
+"Last-Translator: mymage <stefano.consolaro@mymage.it>\n"
+"Language-Team: none\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.6.2\n"
+
+#. module: partner_category_multi_company_analytic
+#: model:ir.model,name:partner_category_multi_company_analytic.model_account_analytic_distribution_model
+msgid "Analytic Distribution Model"
+msgstr "Modello distribuzione analitica"
+
+#. module: partner_category_multi_company_analytic
+#: model:ir.model.fields,field_description:partner_category_multi_company_analytic.field_account_analytic_distribution_model__partner_category_id
+msgid "Partner Category"
+msgstr "Categoria del partner"
+
+#. module: partner_category_multi_company_analytic
+#: model:ir.model.fields,help:partner_category_multi_company_analytic.field_account_analytic_distribution_model__partner_category_id
+msgid ""
+"Select a partner category for which the analytic distribution will be used "
+"(e.g. create new customer invoice or Sales order if we select this partner, "
+"it will automatically take this as an analytic account)"
+msgstr ""
+"Selezionare una categoria di partner per la quale verrà utilizzata la "
+"distribuzione analitica (ad esempio, creare una nuova fattura cliente o un "
+"ordine di vendita, se selezioniamo questo partner, verrà automaticamente "
+"considerato un account analitico)"
