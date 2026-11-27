@@ -31,6 +31,7 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move__display_name
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move_line__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__display_name
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__display_name
@@ -50,6 +51,7 @@ msgstr ""
 
 #. module: purchase_sale_inter_company
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move__id
+#: model:ir.model.fields,field_description:purchase_sale_inter_company.field_account_move_line__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_purchase_order_line__id
 #: model:ir.model.fields,field_description:purchase_sale_inter_company.field_res_company__id
@@ -78,6 +80,11 @@ msgstr ""
 #. module: purchase_sale_inter_company
 #: model:ir.model,name:purchase_sale_inter_company.model_account_move
 msgid "Journal Entry"
+msgstr ""
+
+#. module: purchase_sale_inter_company
+#: model:ir.model,name:purchase_sale_inter_company.model_account_move_line
+msgid "Journal Item"
 msgstr ""
 
 #. module: purchase_sale_inter_company
