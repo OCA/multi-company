@@ -7,7 +7,7 @@
         Multi-company check in Partner categories""",
     "version": "16.0.1.0.0",
     "license": "AGPL-3",
-    "author": "ForgeFlow," "Odoo Community Association (OCA)",
+    "author": "ForgeFlow,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/multi-company",
     "depends": ["analytic", "partner_category_multi_company"],
     "data": [
